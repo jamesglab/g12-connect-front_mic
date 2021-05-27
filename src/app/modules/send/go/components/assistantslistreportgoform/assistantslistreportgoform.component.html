@@ -1,0 +1,18 @@
+
+<div *ngIf="!isLoading$" class="row">
+
+        <div *ngFor="let assistant of assistants;" class="col-xl-6 col-sm-12 p-2">
+            <mat-card class="mat-elevation-z0">
+                <div style="display: flex; justify-content: center;">
+                    <div style="width: 10%;">
+                        <mat-checkbox #check (click)="handleTakeList(assistant, check.checked);"></mat-checkbox>
+                    </div>
+                    <div style="width: 90%;">
+                        <p>{{assistant.name }} {{assistant.lastName}}</p>
+                    </div>
+                </div>
+            </mat-card>
+        </div>
+
+</div>
+  

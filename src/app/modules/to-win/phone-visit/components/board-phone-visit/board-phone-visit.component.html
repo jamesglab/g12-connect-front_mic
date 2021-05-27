@@ -1,0 +1,236 @@
+<div class="card card-custom example example-compact gutter-b">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Fono Visita</h3>
+        </div>
+        <div class="card-toolbar">
+            <div class="example-tools justify-content-center">
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">phone</mat-icon>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center mb-5">
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="!isLoading" class="card-body">
+        <div>
+            <div class="row">
+                <div class="col-xl-3 col-sm-12">
+
+                    <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+                        <!-- Header -->
+                        <div class="card-header border-0 bg-danger py-5">
+                            <h3 class="card-title font-weight-bolder text-white">Semana</h3>
+                            <div class="card-toolbar text-white">
+                                {{getCurrentWeekBoard()}}
+                            </div>
+                        </div>
+                        <!-- Body -->
+                        <div class="card-body p-0 position-relative overflow-hidden">
+                            <!--begin::Stats-->
+                            <div class="card-spacer">
+                                <!--begin::Row-->
+                                <div class="row m-0">
+                                    <div class="col-xl-12 col-sm-12 bg-light-warning rounded-xl
+                                    d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--warning);">accessibility_new</mat-icon>
+                                        <a class="text-warning font-weight-bold font-size-h6">
+                                            {{ boardData?.weekWon }} Ganados
+                                        </a>
+                                    </div>
+                                    <div class="col-xl-12 col-sm-12 bg-light-primary rounded-xl
+                                    d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--primary);">phone</mat-icon>
+                                        <a class="text-primary font-weight-bold font-size-h6">
+                                            {{ boardData?.weekCalls }} Llamados
+                                        </a>
+                                    </div>
+                                </div>
+                                <!--end::Row-->
+                                <!--begin::Row-->
+                                <div class="row m-0">
+                                    <div class="col-xl-12 col-sm-12 bg-light-danger rounded-xl
+                                    d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--danger);">home</mat-icon>
+                                        <a class="text-danger font-weight-bold font-size-h6">
+                                            {{ boardData?.weekVisited }} Visitados
+                                        </a>
+                                    </div>
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Stats-->
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="col-xl-3 col-sm-12">
+
+                    <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+                        <!-- Header -->
+                        <div class="card-header border-0 bg-warning py-5">
+                            <h3 class="card-title font-weight-bolder text-white">Mes</h3>
+                            <div class="card-toolbar text-white">
+                                {{ currentMonth() }}
+                            </div>
+                        </div>
+
+
+                        <!-- Body -->
+                        <div class="card-body p-0 position-relative overflow-hidden">
+                            <!--begin::Stats-->
+                            <div class="card-spacer">
+                                <!--begin::Row-->
+                                <div class="row m-0">
+                                    <div class="col-xl-12 col-sm-12 bg-light-warning rounded-xl
+                                    d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--warning);">accessibility_new</mat-icon>
+                                        <a class="text-warning font-weight-bold font-size-h6">
+                                            {{ boardData?.monthWon }} Ganados
+                                        </a>
+                                    </div>
+                                    <div class="col-xl-12 col-sm-12 bg-light-primary rounded-xl
+                                    d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--primary);">phone</mat-icon>
+                                        <a class="text-primary font-weight-bold font-size-h6">
+                                            {{ boardData?.monthCalls }} Llamados
+                                        </a>
+                                    </div>
+                                </div>
+                                <!--end::Row-->
+                                <!--begin::Row-->
+                                <div class="row m-0">
+                                    <div class="col-xl-12 col-sm-12 bg-light-danger rounded-xl
+                                    d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--danger);">home</mat-icon>
+                                        <a class="text-danger font-weight-bold font-size-h6">
+                                            {{ boardData?.monthVisited }} Visitados
+                                        </a>
+                                    </div>
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Stats-->
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-xl-3 col-sm-12">
+
+
+                    <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+                        <!-- Header -->
+                        <div class="card-header border-0 bg-primary py-5">
+                            <h3 class="card-title font-weight-bolder text-white">Trimestre</h3>
+                            <div class="card-toolbar text-white">
+                                {{ getLastThreeMonths() }}
+                            </div>
+                        </div>
+
+
+                        <!-- Body -->
+                        <div class="card-body p-0 position-relative overflow-hidden">
+                            <!--begin::Stats-->
+                            <div class="card-spacer">
+                                <!--begin::Row-->
+                                <div class="row m-0">
+                                    <div class="col-xl-12 col-sm-12 bg-light-warning rounded-xl
+                                        d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--warning);">accessibility_new</mat-icon>
+                                        <a class="text-warning font-weight-bold font-size-h6">
+                                            {{ boardData?.quarterWon }} Ganados
+                                        </a>
+                                    </div>
+                                    <div class="col-xl-12 col-sm-12 bg-light-primary rounded-xl
+                                        d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--primary);">phone</mat-icon>
+                                        <a class="text-primary font-weight-bold font-size-h6">
+                                            {{ boardData?.quarterCalls }} Llamados
+                                        </a>
+                                    </div>
+                                </div>
+                                <!--end::Row-->
+                                <!--begin::Row-->
+                                <div class="row m-0">
+                                    <div class="col-xl-12 col-sm-12 bg-light-danger rounded-xl
+                                        d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--danger);">home</mat-icon>
+                                        <a class="text-danger font-weight-bold font-size-h6">
+                                            {{ boardData?.quarterVisited }} Visitados
+                                        </a>
+                                    </div>
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Stats-->
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-xl-3 col-sm-12">
+
+                    <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+                        <!-- Header -->
+                        <div class="card-header border-0 bg-success py-5">
+                            <h3 class="card-title font-weight-bolder text-white">Total</h3>
+                            <div class="card-toolbar text-white">
+                                General
+                            </div>
+                        </div>
+
+
+                        <!-- Body -->
+                        <div class="card-body p-0 position-relative overflow-hidden">
+                            <!--begin::Stats-->
+                            <div class="card-spacer">
+                                <!--begin::Row-->
+                                <div class="row m-0">
+                                    <div class="col-xl-12 col-sm-12 bg-light-warning rounded-xl
+                                        d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--warning);">accessibility_new</mat-icon>
+                                        <a class="text-warning font-weight-bold font-size-h6">
+                                            {{ boardData?.totalWon }} Ganados
+                                        </a>
+                                    </div>
+                                    <div class="col-xl-12 col-sm-12 bg-light-primary rounded-xl
+                                        d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--primary);">phone</mat-icon>
+                                        <a class="text-primary font-weight-bold font-size-h6">
+                                            {{ boardData?.totalCalls }} Llamados
+                                        </a>
+                                    </div>
+                                </div>
+                                <!--end::Row-->
+                                <!--begin::Row-->
+                                <div class="row m-0">
+                                    <div class="col-xl-12 col-sm-12 bg-light-danger rounded-xl
+                                        d-flex justify-content-center align-items-center p-3 mb-5">
+                                        <mat-icon style="color: var(--danger);">home</mat-icon>
+                                        <a class="text-danger font-weight-bold font-size-h6">
+                                            {{ boardData?.totalVisited }} Visitados
+                                        </a>
+                                    </div>
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Stats-->
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

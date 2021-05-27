@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-xl-12 col-sm-12">
+
+        <div class="card card-custom example example-compact gutter-b">
+            <div class="card-header">
+                <div class="card-title d-block pb-2">
+                    <h3 class="card-label pt-4 pb-4">Lideres Célula</h3>
+                    <h6 style="font-size: small; color: rgb(163, 163, 163);">
+                        Aquí podrás buscar, registrar o asignar por número de documento al líder de tu ministerio. 
+                    </h6>
+                </div>
+                <div class="card-toolbar">
+                    <div class="example-tools justify-content-center">
+                      <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">library_books</mat-icon>
+                    </div>
+                  </div>
+            </div>
+            <div class="card-body">
+                <div>
+                    <div class="row">
+                        <div class="col-xl-1 col-sm-12">
+                            <button type="button" class="btn btn-primary" matTooltip="Nuevo lider Célula" (click)="handleAdd();">
+                                <mat-icon style="font-size: 25px;">person_add_alt_1</mat-icon>
+                            </button>
+                        </div>
+                       
+                            <div class="col-xl-6 col-sm-12">
+                                <mat-form-field class="example-full-width">
+                                    <mat-icon class="mr-2" color="primary" matPrefix>search</mat-icon>
+                                    <input matInput type="search" autocomplete="off" placeholder="Buscar..." #search>
+                                </mat-form-field>
+                            </div>
+                            <ng-container *ngIf="currentLeaders.length > 0">
+                            <div class="col-xl-5 col-sm-12">
+                                <div class="d-flex w-100 justify-content-end">
+                                    <button matTooltip="Descargar archivo" (click)="exportArchive();"
+                                        class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+                                        <mat-icon>cloud_download</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+
+                    <div class="row p-3">
+                        <div class="col-xl-12 col-sm-12">
+                            <app-go-leaders-table *ngIf="currentUser" [search]="search.value" [user]="currentUser" (onRenderData)="onRenderData($event);">
+                            </app-go-leaders-table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

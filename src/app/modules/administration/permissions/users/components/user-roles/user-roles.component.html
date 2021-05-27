@@ -1,0 +1,115 @@
+<form [formGroup]="asignRoleForm">
+    <div class="modal-body">
+
+        <div class="row" *ngIf="isLoading">
+            <div class="col-xl-12 col-sm-12">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="!isLoading">
+
+            <div class="col-xl-12 col-sm-12">
+                <div class="card card-custom example example-compact gutter-b">
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-xl-6 col-sm-12">
+
+                                <div class="row pb-5">
+                                    <div class="col-xl-12">
+                                        <h6>Agregar Rol</h6>
+                                    </div>
+                                </div>
+
+                                <div class="row pb-5">
+                                    <div class="col-xl-12">
+                                        <mat-form-field class="example-full-width">
+                                            <mat-icon class="mr-2" color="primary" matPrefix>search</mat-icon>
+                                            <input matInput type="search" autocomplete="off" placeholder="Buscar..."
+                                                #search (keyup)="onSearch('allRoles', search.value)">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row cards-content">
+                                    <div class="col-xl-12">
+
+                                        <ng-container *ngFor="let item of form.allRolesSearch.value; let i = index;">
+                                            <div class="card card-custom example example-compact gutter-b">
+                                                <div class="info">
+                                                    <button type="button" class="close"
+                                                        (click)="removeObject('allRolesSearch', i);">
+                                                        <mat-icon>chevron_right</mat-icon>
+                                                    </button>
+                                                    <p>{{ item.name }}</p>
+                                                    <p class="description">{{ item.description }}</p>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-xl-6 col-sm-12">
+
+                                <div class="row pb-5">
+                                    <div class="col-xl-12">
+                                        <h6>Roles Actuales</h6>
+                                    </div>
+                                </div>
+
+                                <div class="row pb-5">
+                                    <div class="col-xl-12">
+                                        <mat-form-field class="example-full-width">
+                                            <mat-icon class="mr-2" color="primary" matPrefix>search</mat-icon>
+                                            <input matInput type="search" autocomplete="off" placeholder="Buscar..."
+                                                #search2 (keyup)="onSearch('ListRoles', search2.value)">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row cards-content">
+                                    <div class="col-xl-12">
+
+                                        <ng-container *ngFor="let item of form.ListRolesSearch.value; let i = index;">
+                                            <div class="card card-custom example example-compact gutter-b">
+                                                <div class="info">
+                                                    <button type="button" class="close"
+                                                        (click)="removeObject('ListRolesSearch', i)">
+                                                        <mat-icon>close</mat-icon>
+                                                    </button>
+                                                    <p>{{ item.name }}</p>
+                                                    <p class="description">{{ item.description }}</p>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.close('canceled')" ngbAutofocus>Cancelar</button>
+        <!-- <button class="btn btn-primary" type="button">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Loading...
+      </button> -->
+        <!-- <button class="btn btn-primary">Guardar</button> -->
+    </div>
+</form>

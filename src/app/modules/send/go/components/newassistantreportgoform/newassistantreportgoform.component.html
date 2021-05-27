@@ -1,0 +1,111 @@
+<form [formGroup]="newAssistantForm" (ngSubmit)="onSubmit();" style="margin-bottom: 30px;">
+    <div class="row" style="margin-bottom: 20px;">
+        <div class="col-xl-6 col-sm-12">
+
+            <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Tipo de documento</mat-label>
+                <mat-select type="select" formControlName="idDocumentType">
+                    <mat-option *ngFor="let type of documentTypes" value="{{type.idDetailMaster}}">{{type.description}}</mat-option>
+                </mat-select>
+                <!-- <mat-error *ngIf="submitted && form.idDocumentType.errors?.required">Por favor selecciona tipo de documento</mat-error> -->
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Nombre *</mat-label>
+                <input matInput autocomplete="off" formControlName="name">
+                <mat-error *ngIf="submitted && form.name.errors?.required">
+                    El nombre es requerido
+                </mat-error>
+                <mat-error *ngIf="form.name.errors?.pattern">
+                    El nombre no es valido
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Correo *</mat-label>
+                <input matInput autocomplete="off" formControlName="email">
+                <mat-error *ngIf="submitted && form.email.errors?.required">
+                    El correo es requerido
+                </mat-error>
+                <mat-error *ngIf="form.email.errors?.email">
+                    El correo no es valido
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Edad *</mat-label>
+                <input matInput min="0" autocomplete="off" formControlName="edad" (keypress)="numberOnly($event);" onKeyPress="if(this.value.length == 2) return false;">
+                <mat-error *ngIf="submitted && form.edad.errors?.required">
+                    La edad es requerida
+                </mat-error>
+                <mat-error *ngIf="form.edad.errors?.pattern || form.edad.errors?.maxlength"> La edad no es valida </mat-error>
+            </mat-form-field>
+
+        </div>
+        <div class="col-xl-6 col-sm-12">
+
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Número de documento</mat-label>
+                <input matInput type="text" autocomplete="off" min="0" 
+                formControlName="documentNumber" onKeyPress="if(this.value.length == 11) return false;"
+                (blur)="searchAssistant();">
+                <!-- <mat-error *ngIf="submitted && form.documentNumber.errors?.required">
+                    El número de documento es requerido
+                </mat-error> -->
+                <mat-error *ngIf="form.documentNumber.errors?.pattern || form.documentNumber.errors?.minlength">
+                    El número de documento no es valido
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Apellido *</mat-label>
+                <input matInput autocomplete="off" formControlName="lastName">
+                <mat-error *ngIf="submitted && form.lastName.errors?.required">El apellido es requerido </mat-error>
+                <mat-error *ngIf="form.lastName.errors?.pattern"> El apellido no es valido </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Celular *</mat-label>
+                <input matInput autocomplete="off" formControlName="phone" (keypress)="numberOnly($event);" onKeyPress="if(this.value.length == 10) return false;">
+                <mat-error *ngIf="submitted && form.phone.errors?.required">
+                    El celular es requerido
+                </mat-error>
+                <mat-error *ngIf="form.phone.errors?.pattern || form.phone.errors?.minlength">
+                    El celular no es valido
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Tipo de persona *</mat-label>
+                <mat-select type="select" formControlName="idPersonType">
+                    <mat-option *ngFor="let type of personTypes" value="{{type.id}}">{{type.description}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && form.idPersonType.errors?.required">Por favor selecciona un tipo de persona</mat-error>
+            </mat-form-field>
+
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-6 col-sm-12">
+            <button class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">Agregar</button>
+        </div>
+        <ng-container *ngIf="isLoading">
+            <span class="spinner spinner-primary ml-5"></span>
+          </ng-container>
+        <div class="col-xl-6 col-sm-12">
+            <div style="display: flex; justify-content: center;">
+                <div style="width: 10%;">
+                    <mat-checkbox formControlName="terms"></mat-checkbox>
+                </div>
+                <div style="width: 90%; display: block;">
+                    Acepto
+                    <a href="https://mci12.com/politicasdedatos/" target="_blank"> terminos y condiciones.</a>
+                    <mat-error *ngIf="submitted && form.terms.errors?.required">Terminos y condiciones no aceptados</mat-error>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

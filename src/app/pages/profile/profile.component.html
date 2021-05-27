@@ -1,0 +1,311 @@
+<ng-container *ngIf="_user">
+  <form>
+
+    <div class="row">
+
+      <div class="col-xl-3 col-sm-12">
+        <div class="card card-custom card-stretch gutter-b">
+
+          <div class="card-header border-0 mt-4 d-flex justify-content-center">
+
+            <div class="symbol symbol-100 mr-5 pt-4">
+              <div class="symbol-label"
+                style="background-image: url('./assets/media/users/300_21.png'); border-radius: 50%;"></div>
+            </div>
+
+
+            <h3 class="card-title align-items-center flex-column">
+              <span class="card-label font-weight-bolder text-dark">{{ _user.leader }}</span>
+              <span class="text-muted mt-3 font-weight-bold font-size-sm">Administrador</span>
+            </h3>
+
+          </div>
+          <!-- Body -->
+          <div class="card-body pt-8">
+            <div class="d-flex justify-content-center">
+              <a class="btn btn-sm btn-light-success font-weight-bolder py-2 px-5 cursor-pointer"
+                (click)="onChangePassword();">Cambiar contraseña</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-xl-9 col-sm-12">
+        <div class="card card-custom example example-compact gutter-b">
+          <div class="card-header">
+            <div class="card-title">
+              <h3 class="card-label">Información personal</h3>
+            </div>
+            <div class="card-toolbar">
+              <div class="example-tools justify-content-center">
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">person</mat-icon>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="row">
+                <div class="col-xl-6 col-sm-12">
+
+                  <!-- <mat-form-field appearance="fill" class="example-full-width">
+                                  <mat-label>Tipo GO</mat-label>
+                                  <mat-select type="select">
+                                      <mat-option *ngFor="let item of goTypes" value="{{item.ticeId}}" [title]="item.ticeDescripcion">
+                                          {{item.ticeCodigo}}</mat-option>
+                                          <mat-option value="one">one</mat-option>
+                                  </mat-select>
+                                  <mat-error *ngIf="form.typeGo.errors?.required">El tipo es requerido
+                                  </mat-error>
+                              </mat-form-field> -->
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Tipo de documento</mat-label>
+                    <input matInput autocomplete="off">
+                    <!-- <mat-error *ngIf="form.theme.errors?.required">
+                                    El tema es requerido
+                                </mat-error>
+                                <mat-error *ngIf="form.theme.errors?.pattern">
+                                    El tema no es valido
+                                </mat-error> -->
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Nombre</mat-label>
+                    <input matInput autocomplete="off">
+                    <!-- <mat-error *ngIf="form.theme.errors?.required">
+                                  El tema es requerido
+                              </mat-error>
+                              <mat-error *ngIf="form.theme.errors?.pattern">
+                                  El tema no es valido
+                              </mat-error> -->
+                  </mat-form-field>
+
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Genero</mat-label>
+                    <input matInput autocomplete="off">
+                    <!-- <mat-error *ngIf="form.theme.errors?.required">
+                                    El tema es requerido
+                                </mat-error>
+                                <mat-error *ngIf="form.theme.errors?.pattern">
+                                    El tema no es valido
+                                </mat-error> -->
+                  </mat-form-field>
+
+                </div>
+                <div class="col-xl-6 col-sm-12">
+
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Número de documento</mat-label>
+                    <input matInput autocomplete="off">
+
+                  </mat-form-field>
+
+
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Apellido</mat-label>
+                    <input matInput autocomplete="off">
+
+                  </mat-form-field>
+
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Estado Civil</mat-label>
+                    <input matInput autocomplete="off">
+                  </mat-form-field>
+
+                </div>
+              </div>
+
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-xl-6 col-sm-6">
+        <div class="card card-custom example example-compact gutter-b">
+          <div class="card-header">
+            <div class="card-title">
+              <h3 class="card-label">Información de contacto</h3>
+            </div>
+            <div class="card-toolbar">
+              <div class="example-tools justify-content-center">
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">person</mat-icon>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div>
+
+
+              <div class="row">
+                <div class="col-xl-6 col-sm-12">
+
+                  <!-- <mat-form-field appearance="fill" class="example-full-width">
+                                <mat-label>Tipo GO</mat-label>
+                                <mat-select type="select">
+                                    <mat-option *ngFor="let item of goTypes" value="{{item.ticeId}}" [title]="item.ticeDescripcion">
+                                        {{item.ticeCodigo}}</mat-option>
+                                        <mat-option value="one">one</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="form.typeGo.errors?.required">El tipo es requerido
+                                </mat-error>
+                            </mat-form-field> -->
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Direccion</mat-label>
+                    <input matInput autocomplete="off">
+                    <!-- <mat-error *ngIf="form.theme.errors?.required">
+                                  El tema es requerido
+                              </mat-error>
+                              <mat-error *ngIf="form.theme.errors?.pattern">
+                                  El tema no es valido
+                              </mat-error> -->
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Barrio</mat-label>
+                    <input matInput autocomplete="off">
+                    <!-- <mat-error *ngIf="form.theme.errors?.required">
+                                El tema es requerido
+                            </mat-error>
+                            <mat-error *ngIf="form.theme.errors?.pattern">
+                                El tema no es valido
+                            </mat-error> -->
+                  </mat-form-field>
+
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Localidad</mat-label>
+                    <input matInput autocomplete="off">
+                    <!-- <mat-error *ngIf="form.theme.errors?.required">
+                                  El tema es requerido
+                              </mat-error>
+                              <mat-error *ngIf="form.theme.errors?.pattern">
+                                  El tema no es valido
+                              </mat-error> -->
+                  </mat-form-field>
+
+                </div>
+                <div class="col-xl-6 col-sm-12">
+
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput autocomplete="off">
+
+                  </mat-form-field>
+
+
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Correo</mat-label>
+                    <input matInput autocomplete="off">
+
+                  </mat-form-field>
+
+                </div>
+              </div>
+
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class="col-xl-6 col-sm-6">
+        <div class="card card-custom example example-compact gutter-b">
+          <div class="card-header">
+            <div class="card-title">
+              <h3 class="card-label">Información ministerial</h3>
+            </div>
+            <div class="card-toolbar">
+              <div class="example-tools justify-content-center">
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">person</mat-icon>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div>
+
+
+              <div class="row">
+                <div class="col-xl-6 col-sm-12">
+
+                  <!-- <mat-form-field appearance="fill" class="example-full-width">
+                                <mat-label>Tipo GO</mat-label>
+                                <mat-select type="select">
+                                    <mat-option *ngFor="let item of goTypes" value="{{item.ticeId}}" [title]="item.ticeDescripcion">
+                                        {{item.ticeCodigo}}</mat-option>
+                                        <mat-option value="one">one</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="form.typeGo.errors?.required">El tipo es requerido
+                                </mat-error>
+                            </mat-form-field> -->
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Red</mat-label>
+                    <input matInput autocomplete="off">
+                    <!-- <mat-error *ngIf="form.theme.errors?.required">
+                                  El tema es requerido
+                              </mat-error>
+                              <mat-error *ngIf="form.theme.errors?.pattern">
+                                  El tema no es valido
+                              </mat-error> -->
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Pastor Principal</mat-label>
+                    <input matInput autocomplete="off">
+                    <!-- <mat-error *ngIf="form.theme.errors?.required">
+                                El tema es requerido
+                            </mat-error>
+                            <mat-error *ngIf="form.theme.errors?.pattern">
+                                El tema no es valido
+                            </mat-error> -->
+                  </mat-form-field>
+
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Lider</mat-label>
+                    <input matInput autocomplete="off">
+                    <!-- <mat-error *ngIf="form.theme.errors?.required">
+                                  El tema es requerido
+                              </mat-error>
+                              <mat-error *ngIf="form.theme.errors?.pattern">
+                                  El tema no es valido
+                              </mat-error> -->
+                  </mat-form-field>
+
+                </div>
+                <div class="col-xl-6 col-sm-12">
+
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Invitado por</mat-label>
+                    <input matInput autocomplete="off">
+
+                  </mat-form-field>
+
+
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Peticion</mat-label>
+                    <input matInput autocomplete="off">
+
+                  </mat-form-field>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xl-12 col-sm-12">
+                  <button
+                    class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">Actualizar</button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+  </form>
+</ng-container>

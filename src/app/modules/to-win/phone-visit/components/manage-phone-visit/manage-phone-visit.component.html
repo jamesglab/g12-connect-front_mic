@@ -1,0 +1,112 @@
+<div class="card card-custom example example-compact gutter-b">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Filtros de Busqueda</h3>
+        </div>
+        <div class="card-toolbar">
+            <div class="example-tools justify-content-center">
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">search</mat-icon>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row" *ngIf="notFound">
+            <div class="col-xl-6 col-sm-12">
+                <ngb-alert type="danger" (close)="notFound = !notFound;"
+                >Lo sentimos, no existen datos con el filtro seleccionado.</ngb-alert>
+            </div>
+        </div>
+        <div>
+            <form [formGroup]="filterForm" (ngSubmit)="onSubmit();">
+                <div class="row">
+
+                    <div class="col-xl-5 col-sm-12">
+
+                        <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
+                            <input matInput [min]="minDateS" [max]="maxDateS" 
+                            [matDatepicker]="firstDate" placeholder="Fecha inicial *" formControlName="StartDateWin">
+                            <mat-datepicker-toggle matSuffix [for]="firstDate" >
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #firstDate disabled="false"></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
+                            <input matInput [min]="minDateE" [max]="maxDateE" 
+                            [matDatepicker]="secondDate" placeholder="Fecha final *" formControlName="EndDateWin">
+                            <mat-datepicker-toggle matSuffix [for]="secondDate">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #secondDate disabled="false"></mat-datepicker>
+                        </mat-form-field>
+
+                    </div>
+
+                    <div class="col-xl-7 col-sm-12">
+
+                        <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
+                            <mat-label>Lider de 12 *</mat-label>
+                            <mat-select type="select" formControlName="IdLeader">
+                                <mat-option *ngFor="let pastor of pastors" value="{{pastor.id}}">{{ pastor.name }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="form.IdLeader.errors?.required">El lider es requerido
+                            </mat-error>
+                        </mat-form-field>
+
+                        <ng-container *ngIf="zones.length > 0">
+                            <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
+                                <mat-label>Selecciona zona</mat-label>
+                                <mat-select type="select" formControlName="IdZone">
+                                    <mat-option *ngFor="let zone of zones" value="{{zone.idZone}}">{{ zone.zone }}
+                                    </mat-option>
+                                </mat-select>
+                                <!-- <mat-error *ngIf="form.IdZone.errors?.required">La zona es requerida
+                                </mat-error> -->
+                            </mat-form-field>
+                        </ng-container>
+
+                        <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
+                            <mat-label>Medio de contacto</mat-label>
+                            <mat-select type="select" formControlName="Call">
+                                <mat-option [value]="null">Ninguna</mat-option>
+                                <mat-option value="1">Llamada</mat-option>
+                                <mat-option value="2">Visita</mat-option>
+                            </mat-select>
+                            <!-- <mat-error *ngIf="submitted && form.week.errors?.required">Selecciona una semana por favor
+                            </mat-error> -->
+                        </mat-form-field>
+
+                    </div>
+                    <div class="col-xl-12 col-sm-12">
+                        <!-- -->
+                        <button [disabled]="filterForm.invalid" *ngIf="!isLoading"
+                        class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+                            Buscar
+                        </button>
+
+                        <div *ngIf="isLoading" class="spinner-border text-primary ml-5" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+            <div class="row pt-5 ml-sm-0 ml-xl-1">
+                <div class="col-xl-6 col-sm-12">
+                    <mat-form-field class="example-full-width">
+                        <mat-icon class="mr-2" color="primary" matPrefix>search</mat-icon>
+                        <input matInput type="search" autocomplete="off" placeholder="Buscar..." #search>
+                      </mat-form-field>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+
+                    <app-phone-visit-table [phoneVisitData]="phoneVisitData" [search]="search.value"
+                    (reload)="getToStart();"></app-phone-visit-table>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

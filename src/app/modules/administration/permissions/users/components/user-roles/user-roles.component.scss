@@ -1,0 +1,10 @@
+.cards-content {
+    max-height: 250px;
+    overflow: auto;
+    .info{
+        padding: 15px;
+        .description{
+            color: rgb(192, 191, 191);
+        }
+    } 
+}

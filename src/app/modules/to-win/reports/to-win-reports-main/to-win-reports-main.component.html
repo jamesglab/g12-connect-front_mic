@@ -1,0 +1,109 @@
+<div class="row">
+    <div class="col-xl-12 col-sm-12">
+        <div class="card card-custom example example-compact gutter-b">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3 class="card-label">Reportes Ganar</h3>
+                </div>
+                <div class="card-toolbar">
+                    <div class="example-tools justify-content-center">
+                        <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">description</mat-icon>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div>
+                    <app-reports-filter (filtered)="handleOnFiltered($event);"></app-reports-filter>
+
+                    <div *ngIf="isLoading" class="text-center mb-5">
+                        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+
+                    <app-dashboard-reports [mainData]="mainData"></app-dashboard-reports>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 col-sm-12">
+        <div class="row">
+            <div class="col-xl-12 col-sm-12">
+
+                <div class="card card-custom example example-compact gutter-b">
+                    <div class="card-header d-flex">
+                        <div class="w-75">
+                            <div class="card-title d-block">
+                                <h3 class="card-label pt-4 pb-4">Información general</h3>
+                                <h6 style="font-size: small; color: rgb(204, 201, 201);"></h6>
+                            </div>
+                        </div>
+                        <div class="card-toolbar">
+                            <div class="example-tools justify-content-center">
+                                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">info</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <div class="row">
+                                <div class="col-xl-1 col-sm-1">
+                                    <button (click)="getStart();" type="button" class="btn btn-primary"
+                                        matTooltip="Volver a inicio">
+                                        <mat-icon style="font-size: 25px;">home</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="col-xl-6 col-sm-12">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-icon class="mr-2" color="primary" matPrefix>search</mat-icon>
+                                        <input matInput type="search" autocomplete="off" placeholder="Buscar..."
+                                            #search>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-xl-5 col-sm-12 d-flex justify-content-end">
+                                    <ng-container *ngIf="currentUser.objectsList['G005']">
+                                        <button matTooltip="Descargar archivo" (click)="downloadMainDataReport();"
+                                            class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+                                            <mat-icon>cloud_download</mat-icon>
+                                        </button>
+                                    </ng-container>
+                                </div>
+                            </div>
+
+                            <div *ngIf="currentLeader?.leader" class="row pt-3 pb-3">
+                                <div class="col-xl-12 col-sm-12">
+                                    <span class="btn btn-sm btn-light-success font-weight-bolder py-2 px-5 ml-5">
+                                        Equipo de {{ currentLeader?.leader.split(" ")[0] }}
+                                        {{ currentLeader?.leader.split(" ")[1]}}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div *ngIf="isLoading" class="text-center mb-5">
+                                <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+
+                            <div class="row pt-3 pb-3">
+                                <div class="col-xl-12 col-sm-12">
+                                    <app-win-report-table [mainData]="mainData" [search]="search.value"
+                                        (onViewTeam)="handleOnViewTeam($event);"></app-win-report-table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

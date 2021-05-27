@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-xl-12 col-sm-12">
+
+        <div class="card card-custom example example-compact gutter-b">
+            <div class="card-header">
+                <div class="card-title d-block pb-2">
+                    <h3 class="card-label pt-4 pb-4">Reporte Consolidado</h3>
+                    <h6 style="font-size: small; color: rgb(163, 163, 163);">
+                        En esta sección podrás ver el consolidado de las células, Go y reuniónes de 12 de tu equipo
+                        principal.
+                    </h6>
+                </div>
+                <div class="card-toolbar">
+                    <div class="example-tools justify-content-center">
+                        <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">perm_data_setting</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <app-report-consolidated></app-report-consolidated>
+            </div>
+        </div>
+
+        <div class="card card-custom example example-compact gutter-b">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3 class="card-label">Reporte estado Célula</h3>
+                </div>
+                <div class="card-toolbar">
+                    <div class="example-tools justify-content-center">
+                        <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">perm_data_setting</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <app-report-status-go></app-report-status-go>
+            </div>
+        </div>
+
+        <div class="card card-custom example example-compact gutter-b">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3 class="card-label">Consolidado estado células</h3>
+                </div>
+                <div class="card-toolbar">
+                    <div class="example-tools justify-content-center">
+                        <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">perm_data_setting</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" style="max-height: 500px; overflow: auto;">
+                <app-leadersgoreport></app-leadersgoreport>
+            </div>
+        </div>
+
+    </div>
+</div>

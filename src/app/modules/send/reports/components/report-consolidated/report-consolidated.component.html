@@ -1,0 +1,256 @@
+<div>
+
+    <div class="row">
+
+        <div class="col-xl-9 col-sm-12">
+            <form [formGroup]="getReportForm" (ngSubmit)="onSubmit();" style="width: 100%;">
+
+                <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
+                    <mat-label>Selecciona año</mat-label>
+                    <mat-select #year type="select" formControlName="year" (selectionChange)="setDisabled('year', year.value);">
+                        <mat-option *ngFor="let year of yearsforSelect" disabled="{{year.disabled}}"
+                            value="{{year.id}}">{{ year.name }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="submitted && form.year.errors?.required">Selecciona un año por favor
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
+                    <mat-label>Selecciona mes</mat-label>
+                    <mat-select type="select" formControlName="month" (selectionChange)="setDisabled('month');">
+                        <mat-option value="">Ninguno</mat-option>
+                        <mat-option *ngFor="let month of monthsforSelect" value="{{month.id}}">{{month.name}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="submitted && form.month.errors?.required">Selecciona un mes por favor
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
+                    <mat-label>Selecciona semana</mat-label>
+                    <mat-select type="select" formControlName="week">
+                        <mat-option value="">Ninguna</mat-option>
+                        <mat-option *ngFor="let week of weeksOfMonth" value="{{week.number}}">{{week.name}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="submitted && form.week.errors?.required">Selecciona una semana por favor
+                    </mat-error>
+                </mat-form-field>
+
+                <button *ngIf="!isLoading$" [disabled]="getReportForm.invalid"
+                    class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+                    Buscar
+                </button>
+
+                <button *ngIf="!isLoading$" matTooltip="Limpiar Filtro" type="button" (click)="cleanFilter();"
+                    class="btn ml-4 cursor-pointer">
+                    <mat-icon style="color: #3699FF">360</mat-icon>
+                </button>
+
+                <div *ngIf="isLoading$" class="spinner-border text-primary ml-5" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="col-xl-3 col-sm-12 justify-content-end">
+            <button matTooltip="Consolidado Asistentes" (click)="downloadAssistants();"
+                class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+                <mat-icon>accessibility</mat-icon>
+            </button>
+            <button matTooltip="Consolidado Células" (click)="downloadCells();"
+                class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+                <mat-icon>ac_unit</mat-icon>
+            </button>
+            <button *ngIf="permission" matTooltip="Consolidado Nacional" (click)="downloadNational();"
+                class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+                <mat-icon>public</mat-icon>
+            </button>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <ng-container *ngIf="dataSource?.data.length > 0">
+            <div class="col-xl-6 col-sm-12">
+                <mat-form-field class="example-full-width">
+                    <mat-icon class="mr-2" color="primary" matSuffix>search</mat-icon>
+                    <input matInput #search type="search" autocomplete="off" placeholder="Buscar..."
+                        (keyup)="applyFilter(search.value);">
+                </mat-form-field>
+            </div>
+            <div class="col-xl-6 col-sm-12">
+                <div class="d-flex w-100 justify-content-end">
+                    <button *ngIf="dataSource?.data.length > 0" matTooltip="Descargar archivo"
+                        (click)="exportArchive();"
+                        class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+                        <mat-icon>cloud_download</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+
+    <div class="row" *ngIf="isError">
+        <div class="col-xl-6 col-sm-12">
+            <ngb-alert type="danger" (close)="isError = !isError;"
+            >Lo sentimos, no existen datos.</ngb-alert>
+        </div>
+    </div>
+
+    <div class="row pt-3 pb-3">
+        <div class="col-xl-12 col-sm-12">
+
+            <div class="example-container mat-elevation-z1">
+                <mat-table *ngIf="dataSource?.data.length > 0" #table [dataSource]="dataSource">
+
+                    <ng-container matColumnDef="leaderName">
+                        <mat-header-cell *matHeaderCellDef>Lider</mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" class="cursor-pointer"
+                            [ngClass]="{ 'is-leader font-weight-bolder': standOutLeader(i)}">
+                            {{element.name}} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="allGo">
+                        <mat-header-cell *matHeaderCellDef class="d-flex justify-content-center"> Total GO
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index"
+                            class="cursor-pointer d-flex justify-content-center"
+                            [ngClass]="{ 'is-leader font-weight-bolder': standOutLeader(i)}">
+                            {{element.totalGo}} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="all12">
+                        <mat-header-cell *matHeaderCellDef class="d-flex justify-content-center"> Total G12
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index"
+                            class="cursor-pointer d-flex justify-content-center"
+                            [ngClass]="{ 'is-leader font-weight-bolder': standOutLeader(i)}">
+                            {{element.total12}} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="allCell">
+                        <mat-header-cell *matHeaderCellDef class="d-flex justify-content-center"> Total Células
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index"
+                            class="cursor-pointer d-flex justify-content-center"
+                            [ngClass]="{ 'is-leader font-weight-bolder': standOutLeader(i)}">
+                            {{element.totalCel}} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="all">
+                        <mat-header-cell *matHeaderCellDef class="d-flex justify-content-center"> Total
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index"
+                            class="cursor-pointer d-flex justify-content-center"
+                            [ngClass]="{ 'is-leader font-weight-bolder': standOutLeader(i)}">
+                            {{ element.total }}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="assistants">
+                        <mat-header-cell *matHeaderCellDef class="d-flex justify-content-center">
+                            {{ renderHeader('assistants') }}</mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index"
+                            class="cursor-pointer d-flex justify-content-center"
+                            [ngClass]="{ 'is-leader font-weight-bolder': standOutLeader(i)}">
+                            {{ element.assistants }}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="reported">
+                        <mat-header-cell *matHeaderCellDef class="d-flex justify-content-center">
+                            <div class="d-block w-100 pt-3">
+                                <div class="w-100 d-flex justify-content-end">
+                                    {{ (validateForMonthTotalRow() && ! validateForWeekTotalRow()) ? '(GO - G12 - Células)' : '(Go - G1' }}
+                                </div>
+                                <p class="w-100">Reportadas</p>
+                            </div>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index"
+                            class="cursor-pointer d-flex justify-content-center"
+                            [ngClass]="{ 'is-leader font-weight-bolder': standOutLeader(i)}">
+                            {{ element.reported }}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="notReported">
+                        <mat-header-cell *matHeaderCellDef class="d-flex justify-content-center">
+                            <div class="d-block w-100 pt-3">
+                                <div class="w-100 d-flex justify-content-right">
+                                    2 - Células)
+                                </div>
+                                <p class="w-100">No Reportadas</p>
+                            </div>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index"
+                            class="cursor-pointer d-flex justify-content-center"
+                            [ngClass]="{ 'is-leader font-weight-bolder': standOutLeader(i)}">
+                            {{ element.notReported }}</mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+                <ng-container *ngIf="dataSource?.data.length > 0">
+                    <div class="row" style="margin-right: 0px;
+                    margin-left: 0px; background-color: #E1F0FF !important">
+
+                        <div
+                            class="col mat-cell cdk-cell cdk-column-leaderName mat-column-leaderName text-primary font-weight-bolder">
+                            <p class="pt-4 pl-4">TOTAL GENERAL</p>
+                        </div>
+
+                        <div style="padding-right: 0px;
+                        padding-left: 0px;" class="col mat-cell cdk-cell cdk-column-allgo mat-column-allGo 
+                        d-flex justify-content-center text-primary font-weight-bolder">
+                            <p class="pt-4 font-size-lg">{{ totalObject?.totalGo }}</p>
+                        </div>
+
+                        <div style="padding-right: 0px;
+                        padding-left: 0px;" class="col mat-cell cdk-cell cdk-column-all12 mat-column-all12 
+                        d-flex justify-content-center text-primary font-weight-bolder">
+                            <p class="pt-4">{{ totalObject?.total12 }}</p>
+                        </div>
+
+                        <div style="padding-right: 0px;
+                        padding-left: 0px;" class="col mat-cell cdk-cell cdk-column-all12 mat-column-all12 
+                        d-flex justify-content-center text-primary font-weight-bolder">
+                            <p class="pt-4">{{ totalObject?.totalCel }}</p>
+                        </div>
+
+                        <div style="padding-right: 0px;
+                        padding-left: 0px;" class="col mat-cell cdk-cell cdk-column-all mat-column-all 
+                        d-flex justify-content-center text-primary font-weight-bolder"
+                            [ngClass]="{'mr-2': validateForYearTotalRow() }">
+                            <p class="pt-4">{{ totalObject?.total }}</p>
+                        </div>
+
+                        <div style="padding-right: 0px;
+                        padding-left: 0px;" class="col mat-cell cdk-cell cdk-column-assistants mat-column-assistants 
+                        d-flex justify-content-center text-primary font-weight-bolder"
+                            [ngClass]="{'mr-5': validateForYearTotalRow() && !validateForWeekTotalRow() }">
+                            <p class="pt-4 pr-2">{{ totalObject?.assistants }}</p>
+                        </div>
+
+                        <div *ngIf="validateForMonthTotalRow()" style="padding-right: 0px;
+                        padding-left: 0px;" class="col mat-cell cdk-cell cdk-column-reported mat-column-reported
+                        d-flex justify-content-center text-primary font-weight-bolder"
+                            [ngClass]="{'mr-5': !validateForWeekTotalRow() }">
+                            <p class="pt-4 pr-3">{{ totalObject?.reported }}</p>
+                        </div>
+
+                        <div *ngIf="validateForWeekTotalRow()" style="padding-right: 0px;
+                        padding-left: 0px;" class="col mat-cell cdk-cell cdk-column-notReported mat-column-notReported 
+                        mr-2 pr-2 d-flex justify-content-center text-primary font-weight-bolder">
+                            <p class="pt-4 pr-5">{{ totalObject?.notReported }}</p>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+                </mat-paginator>
+            </div>
+
+        </div>
+    </div>
+
+</div>

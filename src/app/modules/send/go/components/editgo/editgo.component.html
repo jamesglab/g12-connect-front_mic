@@ -1,0 +1,61 @@
+<form [formGroup]="editGoForm" (ngSubmit)="onSubmit()" *ngIf="ready">
+    <div class="modal-header">
+        <h4 class="modal-title">Editar Célula</h4>
+        <div class="card-toolbar">
+            <div class="example-tools justify-content-center">
+              <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">library_add_check</mat-icon>
+            </div>
+          </div>
+    </div>
+    <div class="modal-body">
+
+        <div class="row">
+            <div class="col-xl-6 col-sm-12">
+                <div class="form-group d-flex justify-content-center w-100">
+                    <ngb-timepicker formControlName="Hour" meridian="true"></ngb-timepicker>
+                    <div class="small form-text text-danger" *ngIf="form.Hour.errors">
+                        <div *ngIf="form.Hour.errors?.required">Selecciona una hora</div>
+                        <div *ngIf="form.Hour.errors?.tooLate">Es demasiado tarde</div>
+                        <div *ngIf="form.Hour.errors?.tooEarly">Es demasiado temprano</div>
+                    </div>
+                </div>
+
+                <mat-form-field appearance="fill" class="example-full-width">
+                    <mat-label>Día *</mat-label>
+                    <mat-select type="select" formControlName="Day">
+                        <mat-option *ngFor="let item of daysOfWeek" value="{{item.name}}">{{ item.name }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.Day.errors?.required">El día es requerido</mat-error>
+                </mat-form-field>
+
+            </div>
+            <div class="col-xl-6 col-sm-12 p-3">
+
+                <mat-form-field appearance="fill" class="example-full-width">
+                    <mat-label>Tipo de Célula *</mat-label>
+                    <mat-select type="select" formControlName="TypeGo">
+                        <mat-option *ngFor="let item of goTypes" value="{{item.idType}}" [matTooltip]="item.des">
+                            {{item.codigo}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.TypeGo.errors?.required">El tipo es requerido
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="example-full-width">
+                    <mat-label>Estado *</mat-label>
+                    <mat-select type="select" formControlName="State">
+                        <mat-option value="true">Activa</mat-option>
+                        <mat-option value="false">Inactiva</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.State.errors?.required">Selecciona un estado por favor.</mat-error>
+                </mat-form-field>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancelar</button>
+        <button class="btn btn-primary">Guardar</button>
+    </div>
+</form>

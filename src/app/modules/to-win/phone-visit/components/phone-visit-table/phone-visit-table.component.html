@@ -1,0 +1,75 @@
+<div class="example-container mat-elevation-z0">
+    <mat-table #table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer"> {{element.nameWin}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="leader">
+            <mat-header-cell *matHeaderCellDef> Lider 12 </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer"> {{element.nameLeader}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+            <mat-header-cell *matHeaderCellDef> Fecha</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer">
+                {{ element.dateWin | date: 'shortDate'}}
+                      </mat-cell>
+        </ng-container>
+        <!--{{ element.date | date:'shortTime'}}-->
+
+        <ng-container matColumnDef="phone">
+            <mat-header-cell *matHeaderCellDef> Teléfono</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer"> {{ element.phone }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="mobile">
+            <mat-header-cell *matHeaderCellDef> Celular</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer"> {{ element.mobile }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element">
+
+                <button mat-button [matMenuTriggerFor]="menu" class="btn btn-sm btn-light-primary font-weight-bolder cursor-pointer">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+
+                <mat-menu #menu="matMenu">
+                    <ng-container *ngIf="permisses['G003']">
+                        <div mat-menu-item class="d-flex justify-content-center ">
+                            <button class="btn">
+                                <mat-icon (click)="handleToReport(element, 'call');" [ngClass]="{'is-success': element.call, 'is-primary': !element.call}"
+                                matTooltip="Reportar Llamada">phone</mat-icon>
+                            </button>
+                        </div>
+    
+                        <div mat-menu-item class="d-flex justify-content-center cursor-pointer primary">
+                            <button class="btn">
+                                <mat-icon (click)="handleToReport(element, 'visited');" [ngClass]="{'is-success': element.visited, 'is-primary': !element.visited}"
+                                matTooltip="Reportar Visita">home</mat-icon>
+                            </button>
+                        </div>
+                    </ng-container>
+                </mat-menu>
+
+            </mat-cell>
+        </ng-container>
+
+        <!--ICONNN-->
+        <!-- <ng-container matColumnDef="seeReport">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element" (click)="handleSeeReportGo(element);" class="cursor-pointer" matTooltip="Reporte GO"
+            style="color: var(--primary); display: flex; justify-content: center;">
+               <mat-icon>description</mat-icon>
+            </mat-cell>
+        </ng-container> -->
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator class="mat-elevation-z0" #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+    </mat-paginator>
+</div>

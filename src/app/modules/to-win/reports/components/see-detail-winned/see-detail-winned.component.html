@@ -1,0 +1,113 @@
+<!-- <form [formGroup]="editGoForm" (ngSubmit)="onSubmit()" *ngIf="ready"> -->
+<div class="modal-header d-flex">
+    <div class="w-75">
+        <div class="card-title d-block">
+            <h3 class="card-label pt-1">Detalle Ganados</h3>
+            <h6 style="font-size: small; color: rgb(150, 149, 149);">
+                {{ element?.leader }}
+            </h6>
+        </div>
+    </div>
+    <div class="card-toolbar">
+        <div class="example-tools justify-content-center">
+            <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">groups</mat-icon>
+        </div>
+    </div>
+</div>
+<div class="modal-body">
+
+    <!-- <div *ngIf="element?.leader" class="row pt-3 pb-3">
+        <div class="col-xl-12 col-sm-12">
+            <span class="btn btn-sm btn-light-success font-weight-bolder py-2 px-5 ml-5">
+                DETALLE DE {{ element?.leader.split(" ")[0] }}
+                {{ element?.leader.split(" ")[1]}}
+            </span>
+        </div>
+    </div> -->
+
+    <div class="row">
+        <div class="col-xl-6 col-sm-6">
+            <mat-form-field class="example-full-width" *ngIf="dataSource">
+                <mat-icon class="mr-2" color="primary" matSuffix>search</mat-icon>
+                <input matInput type="search" autocomplete="off" placeholder="Buscar..." #search
+                    (keyup)="applyFilter(search.value);">
+            </mat-form-field>
+        </div>
+        <div class="col-xl-6 col-sm-6 d-flex justify-content-end">
+
+            <button matTooltip="Descargar archivo" class="btn cursor-pointer">
+                <mat-icon style="color: var(--primary);">cloud_download</mat-icon>
+            </button>
+            <button matTooltip="Regresar" class="btn cursor-pointer" (click)="modal.close()">
+                <mat-icon style="color: var(--primary);">exit_to_app</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <ng-container *ngIf="showNoWin">
+        <div class="row" >
+            <div class="col-xl-12 col-sm-12">
+                <ngb-alert type="danger" (close)="showNoWin = !showNoWin;"
+                >Lo sentimos, {{element?.leader}} no ha ganado personas esta semana.</ngb-alert>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="dataSource">
+        <div class="row pt-3 pb-3">
+            <div class="col-xl-12 col-sm-12">
+                <div class="example-container mat-elevation-z1">
+                    <mat-table #table [dataSource]="dataSource">
+    
+                        <ng-container matColumnDef="name">
+                            <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
+                            <mat-cell *matCellDef="let element" class="cursor-pointer">
+                                {{element.winName}}
+                            </mat-cell>
+                        </ng-container>
+    
+                        <ng-container matColumnDef="leader">
+                            <mat-header-cell *matHeaderCellDef> Lider </mat-header-cell>
+                            <mat-cell *matCellDef="let element" class="cursor-pointer">
+                                {{element.leaderName}}
+                            </mat-cell>
+                        </ng-container>
+    
+                        <ng-container matColumnDef="phone">
+                            <mat-header-cell *matHeaderCellDef> Teléfono </mat-header-cell>
+                            <mat-cell *matCellDef="let element" class="cursor-pointer">
+                                {{ element.phoneWin }}
+                            </mat-cell>
+                        </ng-container>
+    
+                        <ng-container matColumnDef="movil">
+                            <mat-header-cell *matHeaderCellDef> Celular </mat-header-cell>
+                            <mat-cell *matCellDef="let element" class="cursor-pointer">
+                                {{ element.mobileWin }}
+                            </mat-cell>
+                        </ng-container>
+    
+                        <ng-container matColumnDef="address">
+                            <mat-header-cell *matHeaderCellDef> Dirección </mat-header-cell>
+                            <mat-cell *matCellDef="let element" class="cursor-pointer">
+                                {{ element.addressWin }}
+                            </mat-cell>
+                        </ng-container>
+    
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    
+                    </mat-table>
+                    <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+                    </mat-paginator>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+</div>
+<!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancelar</button>
+        <button class="btn btn-primary">Guardar</button>
+    </div> -->
+<!-- </form> -->

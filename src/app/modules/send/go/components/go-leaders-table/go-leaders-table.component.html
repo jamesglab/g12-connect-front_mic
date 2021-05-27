@@ -1,0 +1,42 @@
+<div class="example-container mat-elevation-z0">
+    <mat-table #table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="document">
+            <mat-header-cell *matHeaderCellDef class=""> Documento </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer"> {{element.documentNumber}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Lider </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer"> {{element.name}} {{element.lastName}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+            <mat-header-cell *matHeaderCellDef > Correo </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer"> {{element.email}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+            <mat-header-cell *matHeaderCellDef >Teléfono</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer" >
+                {{element.phone}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="cellphone">
+            <mat-header-cell *matHeaderCellDef>Celular </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer"> {{ element.movil }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="edit">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element" (click)="handleEdit(element);">
+                <button class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">Editar</button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+    </mat-paginator>
+</div>

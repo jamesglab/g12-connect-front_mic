@@ -1,0 +1,65 @@
+<div class="example-container mat-elevation-z0">
+    <mat-table #table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="idObject">
+            <mat-header-cell *matHeaderCellDef> Código </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer">
+                {{element.id}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer">
+                {{element.object}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="objectType">
+            <mat-header-cell *matHeaderCellDef> Tipo de objeto</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer">
+                {{element.typeObject}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+            <mat-header-cell *matHeaderCellDef> Descripción </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer">
+                {{element.description }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="disposable">
+            <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="cursor-pointer">
+                {{element.disposable ? 'Activo' : 'Inactivo' }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element">
+
+                <button mat-button [matMenuTriggerFor]="menu" class="btn btn-sm btn-light-primary font-weight-bolder cursor-pointer">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+
+                <mat-menu #menu="matMenu">
+                    <div mat-menu-item class="d-flex justify-content-center ">
+                        <button class="btn">
+                            <mat-icon (click)="handleEdit(element);" style="color: var(--primary);"
+                            matTooltip="Editar objeto">edit</mat-icon>
+                        </button>
+                    </div>
+                    <div mat-menu-item class="d-flex justify-content-center cursor-pointer primary">
+                        <button class="btn">
+                            <mat-icon (click)="handleClose(element);" style="color: var(--danger);"
+                            matTooltip="Inhabilitar">delete</mat-icon>
+                        </button>
+                    </div>
+                </mat-menu>
+
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator class="mat-elevation-z0" #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+    </mat-paginator>
+</div>

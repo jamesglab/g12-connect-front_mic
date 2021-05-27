@@ -1,0 +1,94 @@
+<div class="row">
+    <div class="col-xl-12 col-sm-12">
+
+        <div class="card card-custom example example-compact gutter-b">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3 class="card-label">Reporte de Célula</h3>
+                </div>
+                <div class="card-toolbar">
+                    <div class="example-tools justify-content-center">
+                        <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">perm_data_setting</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div>
+                    <div class="row">
+                        <ng-container *ngIf="dataSource?.data.length > 0">
+                            <div class="col-xl-6 col-sm-6">
+                                <mat-form-field class="example-full-width">
+                                    <mat-icon class="mr-2" color="primary" matPrefix>search</mat-icon>
+                                    <input matInput type="search" autocomplete="off" placeholder="Buscar..." #search
+                                        (keyup)="applyFilter(search.value);">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-6 col-sm-12">
+                                <div class="d-flex w-100 justify-content-end">
+                                    <button matTooltip="Descargar archivo" (click)="exportArchive();"
+                                        class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+                                        <mat-icon>cloud_download</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+
+                    <div class="row p-3">
+                        <div class="col-xl-12 col-sm-12">
+                            <div class="example-container mat-elevation-z1">
+                                <mat-table #table [dataSource]="dataSource">
+
+                                    <ng-container matColumnDef="topic">
+                                        <mat-header-cell *matHeaderCellDef> Tema </mat-header-cell>
+                                        <mat-cell *matCellDef="let element" class="cursor-pointer"> {{element.topic}}
+                                        </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="year">
+                                        <mat-header-cell *matHeaderCellDef> Año </mat-header-cell>
+                                        <mat-cell *matCellDef="let element" class="cursor-pointer"> {{element.year}}
+                                        </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="month">
+                                        <mat-header-cell *matHeaderCellDef> Mes </mat-header-cell>
+                                        <mat-cell *matCellDef="let element" class="cursor-pointer">
+                                            {{ element.month }} </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="week">
+                                        <mat-header-cell *matHeaderCellDef> Semana </mat-header-cell>
+                                        <mat-cell *matCellDef="let element" class="cursor-pointer">
+                                            {{ element.week }}</mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="isRealized">
+                                        <mat-header-cell *matHeaderCellDef> Realizada </mat-header-cell>
+                                        <mat-cell *matCellDef="let element" class="cursor-pointer">
+                                            {{element.done ? 'Si':  'No'}} </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="attendess">
+                                        <mat-header-cell *matHeaderCellDef> No. Asistentes </mat-header-cell>
+                                        <mat-cell *matCellDef="let element" class="cursor-pointer">
+                                            {{element.numberAttendess}}
+                                        </mat-cell>
+                                    </ng-container>
+
+                                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                </mat-table>
+                                <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"
+                                    [showFirstLastButtons]="true">
+                                </mat-paginator>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

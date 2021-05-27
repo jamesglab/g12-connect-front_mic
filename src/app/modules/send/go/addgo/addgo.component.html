@@ -1,0 +1,139 @@
+<div class="row" *ngIf="showVideo">
+    <div class="col-xl-12 col-sm-12">
+        <div class="card card-custom example example-compact gutter-b">
+            <div class="card-header d-flex">
+                <div class="w-75">
+                    <div class="card-title d-block pb-2">
+                        <h3 class="card-label pt-4 pb-4">Video explicativo</h3>
+                        <h6 style="font-size: small; color: rgb(163, 163, 163);">
+                        </h6>
+                    </div>
+                </div>
+                <div class="card-toolbar">
+                    <div class="example-tools justify-content-center cursor-pointer">
+                        <mat-icon (click)="showVideo = !showVideo;"
+                        style="font-size: xx-large; color: rgb(218, 214, 214);">close</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div>
+                    <div class="row">
+                       <div class="col-xl-12 col-sm-12">
+                        <iframe width="100%" height="550" src="https://www.youtube.com/embed/pVJaezW3f-Y" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                       </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 col-sm-12">
+
+        <div class="card card-custom example example-compact gutter-b">
+            <div class="card-header">
+                <div class="card-title d-block pb-2">
+                    <h3 class="card-label pt-4 pb-4">Nueva Célula</h3>
+                    <h6 style="font-size: small; color: rgb(163, 163, 163);">
+                        En esta sección podrás crear tu reunión de 12, grupo GO y célula. 
+                    </h6>
+                </div>
+                <div class="card-toolbar">
+                    <div class="example-tools justify-content-center">
+                        <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">playlist_add</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <ng-container *ngIf="isLoading$">
+                    <span class="spinner spinner-primary ml-5"></span>
+                </ng-container>
+                <div *ngIf="!isLoading$">
+                    <div class="row">
+                        <div class="col-xl-6 col-sm-12">
+                            <form [formGroup]="addGoForm" (ngSubmit)="onSubmit();">
+                                <div class="row">
+                                    <div class="col-xl-6 col-sm-12">
+                                        <div class="mt-8">
+
+                                            <mat-form-field class="example-full-width" appearance="fill">
+                                                <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="openDate" placeholder="Fecha de apertura *" formControlName="openingDate">
+                                                <mat-datepicker-toggle matSuffix [for]="openDate">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #openDate disabled="false"></mat-datepicker>
+                                            </mat-form-field>
+
+                                            <div>
+                                                <mat-form-field appearance="fill" class="example-full-width">
+                                                    <mat-label>Tipo Célula *</mat-label>
+                                                    <mat-select type="select" formControlName="typeGo">
+                                                        <mat-option *ngFor="let item of goTypes" value="{{item.idType}}" [title]="item.descripcion">
+                                                            {{item.codigo}}</mat-option>
+                                                    </mat-select>
+                                                    <mat-error *ngIf="form.typeGo.errors?.required">El tipo es requerido
+                                                    </mat-error>
+                                                </mat-form-field>
+
+                                                <mat-form-field appearance="fill" class="example-full-width">
+                                                    <mat-label>Lider (12) *</mat-label>
+                                                    <mat-select type="select" formControlName="leader" (selectionChange)="getHostLeadersX($event.value)">
+                                                        <mat-option *ngFor="let leader of leaderShips" value="{{leader.id}}">{{ leader.name }}</mat-option>
+                                                    </mat-select>
+                                                    <mat-error *ngIf="form.leader.errors?.required">El lider es requerido
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-xl-6 col-sm-12">
+                                        <div class="form-group">
+                                            <ngb-timepicker formControlName="hour" meridian="true"></ngb-timepicker>
+                                            <div class="small form-text text-danger" *ngIf="form.hour.errors">
+                                                <div *ngIf="form.hour.errors?.required">Selecciona una hora</div>
+                                                <div *ngIf="form.hour.errors?.tooLate">Es demasiado tarde</div>
+                                                <div *ngIf="form.hour.errors?.tooEarly">Es demasiado temprano</div>
+                                            </div>
+                                        </div>
+
+
+                                        <mat-form-field appearance="fill" class="example-full-width">
+                                            <mat-label>Día *</mat-label>
+                                            <mat-select type="select" formControlName="day">
+                                                <mat-option *ngFor="let day of daysOfWeek" value="{{day.name}}">
+                                                    {{ day.name }}</mat-option>
+                                            </mat-select>
+                                            <mat-error *ngIf="form.day.errors?.required">El día es requerido</mat-error>
+                                        </mat-form-field>
+
+                                        <mat-form-field appearance="fill" class="example-full-width">
+                                            <mat-label>Lider Célula *</mat-label>
+                                            <mat-select type="select" formControlName="host">
+                                                <mat-option *ngFor="let item of hostLeaders" value="{{item.idHost}}">{{ item.name }} 
+                                                    {{item.lastName}}</mat-option>
+                                            </mat-select>
+                                            <mat-error *ngIf="form.day.errors?.required">El día es requerido</mat-error>
+                                        </mat-form-field>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-12 col-sm-12">
+                                        <button class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">Agregar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-xl-6 col-sm-12 img-form"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,35 @@
+<form [formGroup]="createRoleForm" (ngSubmit)="onSubmit()">
+    <div class="modal-header">
+        <h4 class="modal-title">Crear Nuevo Rol</h4>
+        <div class="card-toolbar">
+            <div class="example-tools justify-content-center">
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">settings</mat-icon>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+
+        <div class="row">
+            <div class="col-xl-12 col-sm-12">
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Nombre</mat-label>
+                    <input matInput autocomplete="off" formControlName="Name">
+                    <!-- <mat-error *ngIf="form.Name.errors?.required">El nombre es requerido</mat-error>
+                    <mat-error *ngIf="form.Name.errors?.pattern">El nombre no es valido</mat-error> -->
+                </mat-form-field>
+
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Descripción</mat-label>
+                    <textarea matInput style="max-height: 80px;" formControlName="Description"></textarea>
+                    <!-- <mat-error *ngIf="form.description.errors?.required">La descripción es requerida</mat-error> -->
+                    <!-- <mat-error *ngIf="form.Description.errors?.pattern">La descripción no es valida</mat-error> -->
+                </mat-form-field>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" ngbAutofocus class="btn btn-secondary" (click)="modal.close('canceled')">Cancelar</button>
+        <button class="btn btn-primary" [disabled]="createRoleForm.invalid">Guardar</button>
+    </div>
+</form>

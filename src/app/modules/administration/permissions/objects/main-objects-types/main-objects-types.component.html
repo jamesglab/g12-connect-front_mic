@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="col-xl-12 col-sm-12">
+  
+        <div class="card card-custom example example-compact gutter-b">
+            <div class="card-header d-flex">
+                <div class="w-75">
+                    <div class="card-title d-block pb-2">
+                        <h3 class="card-label pt-4 pb-4">Tipos de objetos</h3>
+                        <!-- <h6 style="font-size: small; color: rgb(163, 163, 163);">
+                            A través de este módulo podrás tomar asistencia, ingresar reportes e información de tus células. 
+                        </h6> -->
+                    </div>
+                </div>
+                <div class="card-toolbar">
+                    <div class="example-tools justify-content-center">
+                        <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">settings</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div>
+                    <div class="row">
+                        <div class="col-xl-1 col-sm-1">
+                            <button type="button" class="btn btn-primary" matTooltip="Nuevo Tipo" (click)="handleCreate($event)">
+                                <mat-icon style="font-size: 25px;">note_add</mat-icon>
+                            </button>
+                        </div>
+                        <div class="col-xl-6 col-sm-6">
+  
+                            <mat-form-field class="example-full-width">
+                                <mat-icon class="mr-2" color="primary" matPrefix>search</mat-icon>
+                                <input matInput type="search" autocomplete="off" placeholder="Buscar..." #searchT>
+                            </mat-form-field>
+  
+                        </div>
+                    </div>
+  
+                    <div class="row p-3">
+                        <div class="col-xl-12 col-sm-12">
+                         <app-objects-types-table [search]="searchT.value" [reload]="reload" (reloaded)="reload = $event"></app-objects-types-table>
+                        </div>
+                    </div>
+  
+                </div>
+            </div>
+        </div>
+  
+    </div>
+  </div>

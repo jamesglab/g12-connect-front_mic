@@ -1,0 +1,55 @@
+<div class="modal-header">
+    <h4 class="modal-title">Crear Lider</h4>
+    <div class="card-toolbar">
+        <div class="example-tools justify-content-center">
+          <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">person_add_alt_1</mat-icon>
+        </div>
+      </div>
+</div>
+<div>
+    <form *ngIf="ready" [formGroup]="addLeaderForm" (ngSubmit)="onSubmit()">
+
+        <div class="modal-body">
+
+            <div class="row">
+                <div class="col-xl-6 col-sm-12">
+
+                    <mat-form-field appearance="fill" class="example-full-width">
+                        <mat-label>Tipo Documento *</mat-label>
+                        <mat-select type="select" formControlName="documentType">
+                            <mat-option *ngFor="let element of documentTypes" value={{element.idDetailMaster}}>
+                                {{element.description}}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.documentType.errors?.required">Tipo Documento</mat-error>
+                    </mat-form-field>
+
+                </div>
+                <div class="col-xl-6 col-sm-12">
+
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Número de documento *</mat-label>
+                        <input matInput autocomplete="off" formControlName="document">
+                        <mat-error *ngIf="form.document.errors?.required">
+                            El número es requerido
+                        </mat-error>
+                        <mat-error *ngIf="form.document.errors?.pattern">
+                            El número no es valido
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="modal.close('canceled')">Cancelar</button>
+            <button *ngIf="isLoading$" class="btn btn-primary" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Loading...
+              </button>
+            <button *ngIf="!isLoading$" class="btn btn-primary">Guardar</button>
+        </div>
+
+    </form>
+
+</div>

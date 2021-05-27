@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="col-xl-12 col-sm-12">
+        <div class="card card-custom example example-compact gutter-b">
+            <div class="card-header">
+                <div class="card-title">
+                    <h3 class="card-label">Buscar Persona</h3>
+                </div>
+                <div class="card-toolbar">
+                    <div class="example-tools justify-content-center">
+                        <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">person</mat-icon>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div>
+                    <app-search-people-filter [documentTypes]="documentTypes" (person)="setPerson($event);"></app-search-people-filter>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="row mb-5">
+    <div class="col-xl-12 col-sm-12">
+        <app-manage-person *ngIf="_person" [person]="_person" (updated)="_person = null;"></app-manage-person>
+    </div>
+</div>

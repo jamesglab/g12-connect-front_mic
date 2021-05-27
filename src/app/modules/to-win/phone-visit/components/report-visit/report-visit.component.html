@@ -1,0 +1,331 @@
+<form [formGroup]="reportVisitForm" (ngSubmit)="onSubmit();">
+    <div class="modal-header">
+        <h4 class="modal-title">{{ info?.settings.title }}</h4>
+        <div class="card-toolbar">
+            <div class="example-tools justify-content-center">
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">
+                    {{ (info.settings.type == 'call') ? 'phonelink_ring' : 'home' }}
+                </mat-icon>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+
+        <mat-accordion class="example-headers-align ">
+            <mat-expansion-panel class="mat-elevation-z-0" [expanded]="step === 0" (opened)="setStep(0)"
+                hideToggle="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h6 class="card-label text-dark">Información Personal</h6>
+                    </mat-panel-title>
+                    <mat-panel-description class="d-flex justify-content-end align-items-end">
+                        Datos Básicos
+                        <mat-icon class="ml-10" style="color: rgb(218, 214, 214);">account_circle</mat-icon>
+
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div class="row">
+                    <div class="col-xl-6 col-sm-6">
+
+                        <mat-form-field appearance="fill" class="example-full-width">
+                            <mat-label>Tipo de documento *</mat-label>
+                            <mat-select type="select" formControlName="idDocumentType">
+                                <mat-option *ngFor="let type of documentTypes" value="{{type.idDetailMaster}}">
+                                    {{type.description}}</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="form.idDocumentType.errors?.required">El tipo de documento es
+                                requerido
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Nombre *</mat-label>
+                            <input matInput autocomplete="off" formControlName="names">
+                            <mat-error *ngIf="form.names.errors?.required">El nombre es requerido
+                            </mat-error>
+                        </mat-form-field>
+
+                        <!--[min]="minDate" [max]="maxDate"-->
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <input matInput [matDatepicker]="birthDate" placeholder="Fecha de nacimiento *"
+                                formControlName="birthDate">
+                            <mat-datepicker-toggle matSuffix [for]="birthDate">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #birthDate disabled="false"></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="example-full-width">
+                            <mat-label>Género *</mat-label>
+                            <mat-select type="select" formControlName="gender">
+                                <mat-option value="M">Masculino</mat-option>
+                                <mat-option value="F">Femenino</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="form.gender.errors?.required">El genero es requerido
+                            </mat-error>
+                        </mat-form-field>
+
+                    </div>
+                    <div class="col-xl-6 col-sm-6">
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Número de documento *</mat-label>
+                            <input matInput autocomplete="off" formControlName="documentNumber">
+                            <mat-error *ngIf="form.documentNumber.errors?.required">El número de documento es
+                                requerido
+                            </mat-error>
+                            <mat-error *ngIf="form.documentNumber.errors?.pattern 
+                            || form.documentNumber.errors?.minlength 
+                            || form.documentNumber.errors?.maxlength">El número de documento no es valido
+                                requerido
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Apellido *</mat-label>
+                            <input matInput autocomplete="off" formControlName="surNames">
+                            <mat-error *ngIf="form.surNames.errors?.required">El apellido es requerido
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="example-full-width">
+                            <mat-label>Estado Civil *</mat-label>
+                            <mat-select type="select" formControlName="idCivilStatus">
+                                <mat-option *ngFor="let status of civilStatus" value="{{status.idDetailMaster}}">
+                                    {{ status.description }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="form.idCivilStatus.errors?.required">El estado civil es requerido
+                            </mat-error>
+                        </mat-form-field>
+
+                    </div>
+                </div>
+                <mat-action-row>
+                    <button type="button"
+                        class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer"
+                        (click)="nextStep()">Siguiente</button>
+                </mat-action-row>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel class="mat-elevation-z-0" [expanded]="step === 1" (opened)="setStep(1)"
+                hideToggle="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h6 class="card-label">Información de Contacto</h6>
+                    </mat-panel-title>
+                    <mat-panel-description class="d-flex justify-content-end align-items-end">
+                        Contacto
+                        <mat-icon class="ml-10" style="color: rgb(218, 214, 214);">contact_mail</mat-icon>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div class="row">
+                    <div class="col-xl-6 col-sm-6">
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Teléfono *</mat-label>
+                            <input matInput autocomplete="off" (keypress)="numberOnly($event);" formControlName="phone">
+                            <mat-error *ngIf="form.phone.errors?.required">El teléfono es requerido.
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Dirección</mat-label>
+                            <input matInput autocomplete="off" formControlName="address">
+                            <mat-error *ngIf="form.address.errors?.required">La dirección es requerida.
+                            </mat-error>
+                            <mat-error *ngIf="form.address.errors?.minlength || 
+                                form.address.errors?.maxlength || 
+                                form.address.errors?.pattern">La dirección no es valida.
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Correo</mat-label>
+                            <input matInput autocomplete="off" formControlName="email">
+                            <mat-error *ngIf="form.email.errors?.required">El correo es requerido
+                            </mat-error>
+                            <mat-error *ngIf="form.email.errors?.email">El correo no es valido.
+                            </mat-error>
+                        </mat-form-field>
+
+                    </div>
+                    <div class="col-xl-6 col-sm-6">
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Celular *</mat-label>
+                            <input matInput autocomplete="off" formControlName="mobile">
+                            <mat-error *ngIf="form.mobile.errors?.pattern || 
+                                form.mobile.errors?.maxlength ||
+                                form.mobile.errors?.minlength">El celular no es valido.
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Barrio</mat-label>
+                            <input matInput autocomplete="off" formControlName="neighborhoods">
+                            <mat-error *ngIf="form.neighborhoods.errors?.pattern">El barrio no es valido.
+                            </mat-error>
+                        </mat-form-field>
+
+                        <ng-container *ngIf="zones.length > 0">
+                            <mat-form-field appearance="fill" class="example-full-width">
+                                <mat-label>Zona *</mat-label>
+                                <mat-select type="select" formControlName="idZone">
+                                    <mat-option *ngFor="let zone of zones" value="{{zone.idZone}}">{{ zone.zone }}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="form.idZone.errors?.required">La zona es requerida
+                                </mat-error>
+                            </mat-form-field>
+                        </ng-container>
+
+                    </div>
+                </div>
+
+                <mat-action-row>
+                    <button type="button"
+                        class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5 cursor-pointer"
+                        (click)="prevStep()">Anterior</button>
+                    <button type="button"
+                        class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer ml-6"
+                        (click)="nextStep()">Siguiente</button>
+                </mat-action-row>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel class="mat-elevation-z-0" [expanded]="step === 2" (opened)="setStep(2)"
+                hideToggle="true">
+                <mat-expansion-panel-header style="height: 70px;">
+                    <mat-panel-title>
+                        <h6 class="card-label">Información Ministerial</h6>
+                    </mat-panel-title>
+                    <mat-panel-description class="d-flex justify-content-end align-items-end">
+                        Ministerio
+                        <mat-icon class="ml-10" style="color: rgb(218, 214, 214);">info</mat-icon>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+
+                <div class="row">
+                    <div class="col-xl-6 col-sm-6">
+                        <!-- <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Red</mat-label>
+                                        <input matInput autocomplete="off">
+                                    </mat-form-field> -->
+
+                        <!-- <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Pastor/Lider principal</mat-label>
+                                        <input matInput autocomplete="off">
+                                    </mat-form-field> -->
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Invitado por</mat-label>
+                            <input matInput autocomplete="off" formControlName="personInvites">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-xl-6 col-sm-6">
+                        <mat-form-field appearance="fill" class="example-full-width">
+                            <mat-label>Reunión *</mat-label>
+                            <mat-select type="select" formControlName="idMeeting">
+                                <mat-option *ngFor="let meet of meetings" value="{{meet.idMeeting}}">
+                                    {{ meet.meetingType }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="form.idMeeting.errors?.required">La reunión es requerida
+                            </mat-error>
+                        </mat-form-field>
+
+                        <!-- <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Lider</mat-label>
+                                        <input matInput autocomplete="off">
+                                    </mat-form-field> -->
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Petición</mat-label>
+                            <input matInput autocomplete="off" formControlName="petition">
+                            <mat-error *ngIf="form.petition.errors?.pattern">La petición no es valida.
+                            </mat-error>
+                        </mat-form-field>
+
+                    </div>
+                </div>
+
+                <mat-action-row>
+                    <button type="button"
+                        class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5 cursor-pointer"
+                        (click)="prevStep()">Anterior</button>
+                    <button type="button"
+                        class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer"
+                        (click)="nextStep()">Siguiente</button>
+                </mat-action-row>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel class="mat-elevation-z-0" [expanded]="step === 3" (opened)="setStep(3)"
+                hideToggle="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h6 class="card-label text-dark">Información Consolidar</h6>
+                    </mat-panel-title>
+                    <mat-panel-description class="d-flex justify-content-end align-items-end">
+                        {{ info?.settings.title }}
+                        <mat-icon class="ml-10" style="color: rgb(218, 214, 214);">
+                            {{ (info.settings.type == 'call') ? 'phonelink_ring' : 'home' }}
+                        </mat-icon>
+
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div class="row">
+                    <div class="col-xl-6 col-sm-6">
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <input matInput [matDatepicker]="Date" placeholder="Fecha de visita *"
+                                formControlName="Date">
+                            <mat-datepicker-toggle matSuffix [for]="Date">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #Date disabled="false"></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="example-full-width">
+                            <mat-label>Resultado *</mat-label>
+                            <mat-select type="select" formControlName="IdResultPhoneVisit">
+                                <mat-option *ngFor="let result of results" value="{{result.id}}">
+                                    {{ result.description }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="form.IdResultPhoneVisit.errors?.required">El resultado es requerido
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-xl-6 col-sm-6">
+                        <mat-form-field class="col">
+                            <mat-label>Comentarios / Observaciones</mat-label>
+                            <textarea matInput style="max-height: 80px;" formControlName="Description"></textarea>
+                            <mat-error *ngIf="form.Description.errors?.pattern">El comentario no es valido.</mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <mat-action-row>
+                    <button type="button"
+                        class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5 cursor-pointer"
+                        (click)="prevStep()">Anterior</button>
+                </mat-action-row>
+            </mat-expansion-panel>
+
+        </mat-accordion>
+
+        <div class="row pt-2 pb-2" *ngIf="info?.isAgain">
+            <div class="col-xl-6 col-sm-12">
+                <p class="text-danger">Ya has reportado una {{info?.settings.title.split(" ")[1].toLowerCase() }}</p>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancelar</button>
+        <button class="btn btn-primary" [disabled]="info?.isAgain">Guardar</button>
+    </div>
+</form>

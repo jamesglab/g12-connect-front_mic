@@ -1,0 +1,67 @@
+
+<form [formGroup]="generalInfoForm" (ngSubmit)="onSubmit();">
+    <div class="row" style="margin-bottom: 20px;">
+        <div class="col-xl-6 col-sm-12">
+    
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Tema *</mat-label>
+                <input matInput autocomplete="off" formControlName="theme">
+                <mat-error *ngIf="form.theme.errors?.required">
+                    El tema es requerido
+                </mat-error>
+                <mat-error *ngIf="form.theme.errors?.pattern">
+                    El tema no es valido
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Año *</mat-label>
+                <mat-select #year type="select" formControlName="year" (selectionChange)="onChangeYear(year.value);">
+                    <mat-option *ngFor="let year of yearsforSelect" value="{{year.id}}" disabled="{{year.disabled}}">{{year.name}}</mat-option>                    
+                </mat-select>
+                <mat-error *ngIf="form.year.errors?.required">Por favor selecciona año</mat-error>
+            </mat-form-field>
+        
+            <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Mes *</mat-label>
+                <mat-select type="select" formControlName="moth" (selectionChange)="setDisabled('month');">
+                    <mat-option *ngFor="let month of monthsforSelect" value="{{month.id}}">{{month.name}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.moth.errors?.required">Por favor selecciona mes</mat-error>
+            </mat-form-field>
+        
+        </div>
+        <div class="col-xl-6 col-sm-12">
+        
+            <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>¿Se realizó? *</mat-label>
+                <mat-select type="select" formControlName="done">
+                    <mat-option value="true">Si</mat-option>
+                    <mat-option value="false">No</mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.done.errors?.required">Selecciona una opción</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Semana *</mat-label>
+                <mat-select type="select" formControlName="week">
+                    <mat-option *ngFor="let week of weeksOfMonth" value="{{week.number}}">{{week.name}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.week.errors?.required">Por favor selecciona semana</mat-error>
+            </mat-form-field>
+        
+        </div>
+    </div>
+    
+    <div class="row" style="margin-bottom: 20px;">
+        <div class="col-xl-6 col-sm-12">
+            <button class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">Enviar Reporte</button>
+        </div>
+
+        <div class="col-xl-6 col- sm-12">
+            <mat-error *ngIf="assistants.length < 1">No olvides marcar la asistencia</mat-error>
+        </div>
+    </div>
+</form>
+
+<hr>
