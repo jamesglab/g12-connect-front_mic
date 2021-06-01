@@ -31,7 +31,7 @@ export class EventsTableComponent implements OnInit {
 
   getAllEvents() {
     const goDataSubscr = this.eventsService
-      .getAll().subscribe((res: any) => {
+      .getFilter({ type: 'G12_EVENT' }).subscribe((res: any) => {
         res.reverse();
         console.log("ALL DATAAA", res);
         if (!this.dataSource) {
@@ -57,6 +57,23 @@ export class EventsTableComponent implements OnInit {
 
   handleErrorImage($event: any) {
     $event.target.src = "https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj";
+  }
+
+  handleToEdit(element: Donation){
+    console.log("HANDLE TO EDIT", element)
+    // const MODAL = this.modalService.open(EditgoComponent,{
+    //   windowClass: 'fadeIn',
+    //   size: 'lg',
+    //   backdrop: true,
+    //   keyboard: true,
+    //   centered: true
+    // })
+    // MODAL.componentInstance.goItem = element;
+    // MODAL.result.then((data) => {
+    //   if(data == "success"){
+    //     this.getGoData();
+    //   }
+    // });
   }
 
   ngOnDestroy() {

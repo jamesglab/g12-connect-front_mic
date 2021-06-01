@@ -23,7 +23,15 @@ export class G12eventsService {
     );
   }
 
-  getOne(){}
+  getFilter(payload: any){
+    return this.http.get<any>(`${environment.microservices.donations}/donations/filter`, 
+    { headers: header, params: payload }).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
 
   create(data: Donation): Observable<any> { //DEFINE THE RESPONSE
     return this.http.post<any>(

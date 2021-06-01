@@ -8,6 +8,7 @@ import { G12eventsComponent } from './g12events.component';
 import { AddEventComponent } from './add-event/add-event.component';
 import { MainEventsComponent } from './main-events/main-events.component';
 import { EventsTableComponent } from './components/events-table/events-table.component';
+import { EditEventComponent } from './components/edit-event/edit-event.component';
 
 
 const routes: Routes = [
@@ -38,7 +39,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent],
+  declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent, EditEventComponent],
   imports: [
     CommonModule,
     SharedModule,

@@ -46,7 +46,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'send',
+        redirectTo: 'dashboard',
         pathMatch: 'full',
       },
       {
