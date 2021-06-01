@@ -5,7 +5,7 @@ export const DynamicAsideMenuConfig = {
       root: true,
       show: true,
       code: "DB000",
-      svg: './assets/media/svg/icons/Design/Layers.svg',
+      svg: './assets/media/svg/icons/Design/PenAndRuller.svg',
       page: '/dashboard',
       translate: 'MENU.DASHBOARD',
       bullet: 'dot',
@@ -16,7 +16,7 @@ export const DynamicAsideMenuConfig = {
       show: true,
       code: "ADM000",
       icon: 'flaticon2-architecture-and-city',
-      svg: './assets/media/svg/icons/Design/Layers.svg',
+      svg: './assets/media/svg/icons/General/Settings-2.svg',
       bullet: 'dot',
       page: '/admin',
       submenu: [
@@ -55,7 +55,7 @@ export const DynamicAsideMenuConfig = {
       root: true,
       code: "DO000",
       alignment: 'left',
-      svg: './assets/media/svg/icons/Design/Layers.svg',
+      svg: './assets/media/svg/icons/Shopping/Dollar.svg',
       page: '/donations',
       show: true,
       submenu: [
@@ -80,10 +80,25 @@ export const DynamicAsideMenuConfig = {
       root: true,
       code: "EVT000",
       alignment: 'left',
-      svg: './assets/media/svg/icons/Design/Layers.svg',
+      svg: './assets/media/svg/icons/Shopping/Ticket.svg',
       page: '/g12events',
       show: true,
-      // submenu: []
+      submenu: [
+        {
+          title: 'Inicio',
+          root: true,
+          show: true,
+          bullet: 'dot',
+          page: '/g12events/home'
+        },
+        {
+          title: 'Nuevo Evento',
+          root: true,
+          show: true,
+          bullet: 'dot',
+          page: '/g12events/add'
+        }
+      ]
     },
     // {
     //   title: 'Mi perfil',

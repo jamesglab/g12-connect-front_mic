@@ -40,11 +40,11 @@
 // }
 // Brand themes
 .brand-dark {
-    @import "./assets/sass/themes/layout/brand/dark.scss";
+  @import "./assets/sass/themes/layout/brand/dark.scss";
 }
 
 .brand-light {
-    @import "./assets/sass/themes/layout/brand/light.scss";
+  @import "./assets/sass/themes/layout/brand/light.scss";
 }
 
 // Aside themes
@@ -56,111 +56,110 @@
 // }
 // hide bootstrap dropdown arrow globally
 .dropdown-toggle::after {
-    display: none !important;
+  display: none !important;
 }
 
 .cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .mat-menu-item .mat-icon {
-    margin-right: 0px !important;
+  margin-right: 0px !important;
 }
 
 .mat-table {
-    font-family: Poppins, Helvetica, "sans-serif";
-    width: 100%;
+  font-family: Poppins, Helvetica, "sans-serif" !important;
+  width: 100%;
 }
 .mat-header-cell {
-    color: rgba(0, 0, 0, 0.54);
-    font-size: 14px !important;
-    text-align: center !important;
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 14px !important;
+  text-align: center !important;
 }
-.mat-cell{
-    font-size: 13px !important;
+.mat-cell {
+  font-size: 13px !important;
+  color: #7e8299 !important;
 }
 
 @media screen and (max-width: 760px) {
+  .mat-table {
+    border: 0;
+    vertical-align: middle;
+  }
 
-    .mat-table {
-      border: 0;
-      vertical-align: middle
-    }
-  
-    .mat-table caption {
-      font-size: 1em;
-    }
-    
-    /*  Enable this to hide header
+  .mat-table caption {
+    font-size: 1em;
+  }
+
+  /*  Enable this to hide header
 
     */
-    .mat-table .mat-header-cell {
-        border: 10px solid;
-        clip: rect(0 0 0 0);
-        height: 1px;
-        margin: -1px;
-        padding: 0;
-        position: absolute;
-        width: 1px;
-        background-color: transparent;
-      }
-    .mat-table .mat-row {
-      border-bottom: 5px solid #ddd;
-      display: block;
-    }
-    /*
+  .mat-table .mat-header-cell {
+    border: 10px solid;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    background-color: transparent;
+  }
+  .mat-table .mat-row {
+    border-bottom: 5px solid #ddd;
+    display: block;
+  }
+  /*
     .mat-table .mat-row:nth-child(even) {background: #CCC}
     .mat-table .mat-row:nth-child(odd) {background: #FFF}
     */
-    .mat-table .mat-cell {
-      border-bottom: 1px solid #ddd;
-      display: block;
-      font-size: 1em;
-      text-align: left;
-      font-weight: bold;
-      height:30px;
-      margin-bottom: 4%;
-    }
-    .mat-table .mat-cell:before {
-      /*
+  .mat-table .mat-cell {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: 1em;
+    text-align: left;
+    font-weight: bold;
+    height: 30px;
+    margin-bottom: 4%;
+  }
+  .mat-table .mat-cell:before {
+    /*
       * aria-label has no advantage, it won't be read inside a table
       content: attr(aria-label);
       */
-      content: attr(data-label);
-      float: left;
-      text-transform: uppercase;
-      font-weight: normal;
-      font-size: .85em;
-     
-    }
-    .mat-table .mat-cell:last-child {
-      border-bottom: 0;
-    }
-      .mat-table .mat-cell:first-child {
-      margin-top: 4%;
-      padding-left: unset !important;
-    }
+    content: attr(data-label);
+    float: left;
+    text-transform: uppercase;
+    font-weight: normal;
+    font-size: 0.85em;
   }
+  .mat-table .mat-cell:last-child {
+    border-bottom: 0;
+  }
+  .mat-table .mat-cell:first-child {
+    margin-top: 4%;
+    padding-left: unset !important;
+  }
+}
 
 .mat-card {
-    font-family: Poppins, Helvetica, "sans-serif";
-    border: 1px solid rgb(233, 231, 231);
+  font-family: Poppins, Helvetica, "sans-serif";
+  border: 1px solid rgb(233, 231, 231);
 }
 
-.mat-expansion-panel{
-    font-family: Poppins, Helvetica, "sans-serif" !important;
-    border: 1px solid rgb(233, 231, 231) !important;
+.mat-expansion-panel {
+  font-family: Poppins, Helvetica, "sans-serif" !important;
+  border: 1px solid rgb(233, 231, 231) !important;
 }
-.mat-expansion-panel-header{
-    font-family: Poppins, Helvetica, "sans-serif" !important; 
+.mat-expansion-panel-header {
+  font-family: Poppins, Helvetica, "sans-serif" !important;
 }
 
 .mat-row:hover {
-    background-color: rgb(210, 229, 250);
+  background-color: rgb(210, 229, 250);
 }
 
 .cdk-global-overlay-wrapper,
 .cdk-overlay-container {
-    z-index: 99999 !important;
-    font-family: Poppins, Helvetica, "sans-serif" !important;
+  z-index: 99999 !important;
+  font-family: Poppins, Helvetica, "sans-serif" !important;
 }

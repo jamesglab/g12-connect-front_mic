@@ -7,7 +7,10 @@ export const environment = {
   appVersion: 'v710demo1', //METRONIC
   USERDATA_KEY: 'authf649fc9a5f55', // METRONIC
   isMockEnabled: false, // METRONIC
-  apiUrl: 'http://51.79.78.171:7003/'
+  apiUrl: 'http://51.79.78.171:7003/', //.NETAPI
+  microservices: {
+    donations: 'https://b69d07270ab7.ngrok.io/api/v2'
+  }
 };
 
 /*

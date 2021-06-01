@@ -9,7 +9,6 @@ export class G12eventsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
+  
 }
