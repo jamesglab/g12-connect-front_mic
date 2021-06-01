@@ -1,95 +1,110 @@
 <div class="row">
-    <div class="col-xl-12 col-sm-12">
+  <div class="col-xl-12 col-sm-12">
 
-        <div class="card card-custom example example-compact gutter-b">
-            <div class="card-header">
-                <div class="card-title d-block pb-2">
-                    <h3 class="card-label pt-4 pb-4">Nuevo Evento</h3>
-                    <h6 style="font-size: small; color: rgb(163, 163, 163);">
-                        En esta sección podrás crear un nuevo evento. El cual será visualizado en eventosg12.com
-                    </h6>
-                </div>
-                <div class="card-toolbar">
-                    <div class="example-tools justify-content-center">
-                        <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">playlist_add</mat-icon>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <!-- <ng-container *ngIf="isLoading$">
+    <div class="card card-custom example example-compact gutter-b">
+      <div class="card-header">
+        <div class="card-title d-block pb-2">
+          <h3 class="card-label pt-4 pb-4">Nuevo Evento</h3>
+          <h6 style="font-size: small; color: rgb(163, 163, 163);">
+            En esta sección podrás crear un nuevo evento. El cual será visualizado en eventosg12.com
+          </h6>
+        </div>
+        <div class="card-toolbar">
+          <div class="example-tools justify-content-center">
+            <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">playlist_add</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <!-- <ng-container *ngIf="isLoading$">
                     <span class="spinner spinner-primary ml-5"></span>
                 </ng-container> -->
-                <!-- <div *ngIf="!isLoading$"> -->
-                <div class="row">
-                    <div class="col-xl-6 col-sm-12">
-                        <form [formGroup]="addEventForm" (ngSubmit)="onSubmit();">
+        <!-- <div *ngIf="!isLoading$"> -->
+        <div class="row">
+          <div class="col-xl-6 col-sm-12">
+            <form [formGroup]="addEventForm" (ngSubmit)="onSubmit();">
 
-                            <mat-form-field class="example-full-width" appearance="fill">
-                                <mat-label>Nombre del evento*</mat-label>
-                                <input matInput autocomplete="off" formControlName="name">
-                                <!-- <mat-error *ngIf="form.document.errors?.required">
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Nombre del evento*</mat-label>
+                <input matInput autocomplete="off" formControlName="name">
+                <!-- <mat-error *ngIf="form.document.errors?.required">
                                     El número es requerido
                                 </mat-error>
                                 <mat-error *ngIf="form.document.errors?.pattern">
                                     El número no es valido
                                 </mat-error> -->
-                            </mat-form-field>
+              </mat-form-field>
 
-                            <mat-form-field class="example-full-width" appearance="fill">
-                                <mat-label>Descripción</mat-label>
-                                <textarea matInput style="max-height: 80px;" formControlName="description"></textarea>
-                                <!-- <mat-error *ngIf="form.description.errors?.required">La descripción es requerida</mat-error> -->
-                                <!-- <mat-error *ngIf="form.Description.errors?.pattern">La descripción no es valida</mat-error> -->
-                            </mat-form-field>
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Descripción</mat-label>
+                <textarea matInput style="max-height: 80px;" formControlName="description"></textarea>
+                <!-- <mat-error *ngIf="form.description.errors?.required">La descripción es requerida</mat-error> -->
+                <!-- <mat-error *ngIf="form.Description.errors?.pattern">La descripción no es valida</mat-error> -->
+              </mat-form-field>
 
-                            <div formGroupName="prices">
-                                <h6>Precio</h6>
-                                <mat-form-field class="example-full-width" appearance="fill">
-                                    <mat-label>COP*</mat-label>
-                                    <input matInput autocomplete="off" formControlName="cop">
-                                    <!-- <mat-error *ngIf="form.document.errors?.required">
+              <div formGroupName="prices">
+                <h6>Precio</h6>
+                <mat-form-field class="example-full-width" appearance="fill">
+                  <mat-label>COP*</mat-label>
+                  <input matInput autocomplete="off" formControlName="cop">
+                  <!-- <mat-error *ngIf="form.document.errors?.required">
                                         El número es requerido
                                     </mat-error>
                                     <mat-error *ngIf="form.document.errors?.pattern">
                                         El número no es valido
                                     </mat-error> -->
-                                </mat-form-field>
-                                <mat-form-field class="example-full-width" appearance="fill">
-                                    <mat-label>USD</mat-label>
-                                    <input matInput autocomplete="off" formControlName="usd">
-                                    <!-- <mat-error *ngIf="form.document.errors?.required">
+                </mat-form-field>
+                <mat-form-field class="example-full-width" appearance="fill">
+                  <mat-label>USD</mat-label>
+                  <input matInput autocomplete="off" formControlName="usd">
+                  <!-- <mat-error *ngIf="form.document.errors?.required">
                                         El número es requerido
                                     </mat-error>
                                     <mat-error *ngIf="form.document.errors?.pattern">
                                         El número no es valido
                                     </mat-error> -->
-                                </mat-form-field>
-                            </div>
-                            <hr>
-                            <mat-form-field class="example-full-width" appearance="fill">
-                                <mat-label>Capacidad</mat-label>
-                                <input matInput autocomplete="off" formControlName="limit">
-                                <!-- <mat-error *ngIf="form.document.errors?.required">
+                </mat-form-field>
+              </div>
+              <hr>
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Capacidad</mat-label>
+                <input matInput autocomplete="off" formControlName="limit">
+                <!-- <mat-error *ngIf="form.document.errors?.required">
                                     El número es requerido
                                 </mat-error>
                                 <mat-error *ngIf="form.document.errors?.pattern">
                                     El número no es valido
                                 </mat-error> -->
-                            </mat-form-field>
+              </mat-form-field>
 
-                            <div class="row">
-                                <div class="col-xl-12 col-sm-12">
-                                    <button
-                                        class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">Agregar</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-xl-6 col-sm-12 img-form"></div>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="validatedCustomFile"
+                  (change)="fileChangeEvent($event)">
+                <label class="custom-file-label"
+                  for="validatedCustomFile">{{addEventForm.get('image')?.value?.name ? addEventForm.get('image').value.name : 'Selecciona imagen'}}</label>
+
+              </div>
+
+
+              <!-- <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="validatedCustomFile" required>
+                                <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
+                                <div class="invalid-feedback">Example invalid custom file feedback</div>
+                              </div> -->
+
+              <div class="row">
+                <div class="col-xl-12 col-sm-12 mt-5">
+                  <button
+                    class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">Agregar</button>
                 </div>
-                <!-- </div> -->
-            </div>
+              </div>
+            </form>
+          </div>
+          <div class="col-xl-6 col-sm-12 img-form"></div>
         </div>
-
+        <!-- </div> -->
+      </div>
     </div>
+
+  </div>
 </div>
