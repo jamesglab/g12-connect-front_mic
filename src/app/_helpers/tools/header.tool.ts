@@ -8,6 +8,11 @@ export const header = new HttpHeaders({
   'Access-Control-Allow-Headers': '*',
 });
 
+export const headerFile = new HttpHeaders({
+  
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': '*',
+});
 export const handleError = (error: HttpErrorResponse) => {
   if (error.error instanceof ErrorEvent) {
     throw error.error.message;

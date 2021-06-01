@@ -87,5 +87,7 @@ export class AddEventComponent implements OnInit {
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
-
+  fileChangeEvent(image) {
+    this.addEventForm.get('image').setValue(image.target.files[0]);
+  }
 }
