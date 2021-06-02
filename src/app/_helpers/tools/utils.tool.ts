@@ -86,6 +86,22 @@ export const parseMonth = (month: number): string => {
     return SHORT_MONTHS_OBJECT[month];
 }
 
+//OBTAIN BASE 64 FROM IMAGE
+export const getBase64 = async(event) => {
+    return new Promise((resolve, reject) => {
+      let file = event.target.files[0];
+      // if (file.size < 2097152) {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (event) {
+          resolve(event.target.result);
+        }
+      // } else {
+      //   reject("Imagen Mayor a 2 MB")
+      // }
+    });
+}
+
 ////////////////////GO CONSOLIDATED REPORT/////////////////////
 export const makeSum = (data: any[], isFinal: boolean, position?: number) => {
     let sumObject: any = { assistants: 0, notReported: 0, reported: 0, total: 0, total12: 0, totalCel: 0, totalGo: 0 };

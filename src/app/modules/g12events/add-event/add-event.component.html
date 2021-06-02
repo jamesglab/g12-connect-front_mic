@@ -42,6 +42,13 @@
                 <!-- <mat-error *ngIf="form.Description.errors?.pattern">La descripción no es valida</mat-error> -->
               </mat-form-field>
 
+              <div class="custom-file mb-5">
+                <input type="file" class="custom-file-input" id="validatedCustomFile"
+                  (change)="fileChangeEvent($event)">
+                <label class="custom-file-label"
+                  for="validatedCustomFile">{{addEventForm.get('image')?.value?.name ? addEventForm.get('image').value.name : 'Selecciona imagen'}}</label>
+              </div>
+
               <div formGroupName="prices">
                 <h6>Precio</h6>
                 <mat-form-field class="example-full-width" appearance="fill">
@@ -76,15 +83,6 @@
                                     El número no es valido
                                 </mat-error> -->
               </mat-form-field>
-
-              <div class="custom-file">
-                <input type="file" class="custom-file-input" id="validatedCustomFile"
-                  (change)="fileChangeEvent($event)">
-                <label class="custom-file-label"
-                  for="validatedCustomFile">{{addEventForm.get('image')?.value?.name ? addEventForm.get('image').value.name : 'Selecciona imagen'}}</label>
-
-              </div>
-
 
               <!-- <div class="custom-file">
                                 <input type="file" class="custom-file-input" id="validatedCustomFile" required>

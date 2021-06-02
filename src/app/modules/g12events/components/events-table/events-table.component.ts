@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { G12eventsService } from '../../_services/g12events.service';
 
 import { Donation } from '../../_models/donation.model';
+import { EditEventComponent } from '../edit-event/edit-event.component';
 
 @Component({
   selector: 'app-events-table',
@@ -23,7 +24,7 @@ export class EventsTableComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private eventsService: G12eventsService) { }
+  constructor(private eventsService: G12eventsService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.getAllEvents();
@@ -61,19 +62,19 @@ export class EventsTableComponent implements OnInit {
 
   handleToEdit(element: Donation){
     console.log("HANDLE TO EDIT", element)
-    // const MODAL = this.modalService.open(EditgoComponent,{
-    //   windowClass: 'fadeIn',
-    //   size: 'lg',
-    //   backdrop: true,
-    //   keyboard: true,
-    //   centered: true
-    // })
-    // MODAL.componentInstance.goItem = element;
-    // MODAL.result.then((data) => {
-    //   if(data == "success"){
-    //     this.getGoData();
-    //   }
-    // });
+    const MODAL = this.modalService.open(EditEventComponent,{
+      windowClass: 'fadeIn',
+      size: 'lg',
+      backdrop: true,
+      keyboard: true,
+      centered: true
+    })
+    MODAL.componentInstance.event = element;
+    MODAL.result.then((data) => {
+      if(data == "success"){
+        this.getAllEvents();
+      }
+    });
   }
 
   ngOnDestroy() {

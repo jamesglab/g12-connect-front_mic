@@ -50,18 +50,23 @@ export class AddEventComponent implements OnInit {
     return this.addEventForm.controls;
   }
 
-  onSubmit() {
+  fileChangeEvent(image) {
+    this.form.image.setValue(image.target.files[0]);
+  }
 
+  onSubmit() {
+   console.log("FORMMMMMM", this.addEventForm)
+   
     if (this.addEventForm.invalid) {
       return;
     }
-    const addEventSubscr = this.eventsService.create(this.addEventForm.getRawValue())
+    const updateEventSubscr = this.eventsService.create(this.addEventForm.getRawValue())
     .subscribe((res: any) => {
-      console.log("REGISTEREDD", res);
-      this.showMessage(1, "!El nuevo evento ha sido registrado con exito¡");
+      console.log("REGISTEREDDD", res);
+      this.showMessage(1, `El evento ${this.form.name.value} ha sido creado correctamente!`);
       this.router.navigate(['g12events']);
     }, err => { throw err; });
-    this.unsubscribe.push(addEventSubscr);
+    this.unsubscribe.push(updateEventSubscr);
     // const addGoSubscr = this._goService.insertGo(this.addGoForm.getRawValue())
     //   .subscribe((res: Response) => {
     //     if (res.result) {
@@ -87,7 +92,5 @@ export class AddEventComponent implements OnInit {
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
-  fileChangeEvent(image) {
-    this.addEventForm.get('image').setValue(image.target.files[0]);
-  }
+
 }

@@ -23,16 +23,9 @@ export class G12eventsService {
       );
   }
 
-  testImage(image) {
-
-    console.log('send image', image)
-    const data = new FormData();
-    data.append('image', image);
-
-    console.log('form data', data)
-    return this.http.post<any>(
-      `${environment.microservices.donations}/donations/testimage`, data,
-      { headers: headerFile }).pipe(
+  getFilter(payload: any) {
+    return this.http.get<any>(`${environment.microservices.donations}/donations/filter`,
+      { headers: header, params: payload }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -40,29 +33,24 @@ export class G12eventsService {
       );
   }
 
-  getFilter(payload: any){
-    return this.http.get<any>(`${environment.microservices.donations}/donations/filter`, 
-    { headers: header, params: payload }).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
-  }
-  
   getOne() { }
+
+  getFormData(data: Donation): FormData {
+    const send_data = new FormData();
+    delete data.base64;
+    
+    console.log("IMAGEEE", data.image)
+    console.log("CODEEE", data.code);
+    if(data.image){ send_data.append("image", data.image) }
+    send_data.append("donation", JSON.stringify(data));
+    return send_data;
+  }
 
   create(data: Donation): Observable<any> { //DEFINE THE RESPONSE
 
-    const sendData = new FormData();
-    if (data.image) {
-      sendData.append('image', data.image);
-    } 
-    sendData.append('donation', JSON.stringify(data));
-
     return this.http.post<any>(
       `${environment.microservices.donations}/donations`,
-      sendData, { headers: headerFile }).pipe(
+      this.getFormData(data), { headers: headerFile }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -70,7 +58,17 @@ export class G12eventsService {
       );
   }
 
-  update() { }
+  update(data: Donation) {
+
+    return this.http.put<any>(
+      `${environment.microservices.donations}/donations`,
+      this.getFormData(data), { headers: headerFile }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 
   delete() { }
 

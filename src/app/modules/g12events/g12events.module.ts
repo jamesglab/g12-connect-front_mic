@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { InlineSVGModule } from 'ng-inline-svg';
 
 import { G12eventsComponent } from './g12events.component';
 import { AddEventComponent } from './add-event/add-event.component';
@@ -45,6 +47,8 @@ const routes: Routes = [
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
+    NgbModule,
+    InlineSVGModule,
     RouterModule.forChild(routes)
   ]
 })

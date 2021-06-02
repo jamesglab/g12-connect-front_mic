@@ -74,11 +74,15 @@
 .mat-header-cell {
   color: rgba(0, 0, 0, 0.54);
   font-size: 14px !important;
-  text-align: center !important;
+  text-align: left !important;
 }
 .mat-cell {
   font-size: 13px !important;
   color: #7e8299 !important;
+}
+
+.w-form {
+  width: 100% !important;
 }
 
 @media screen and (max-width: 760px) {
