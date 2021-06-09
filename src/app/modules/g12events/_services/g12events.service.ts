@@ -59,7 +59,6 @@ export class G12eventsService {
   }
 
   update(data: Donation) {
-
     return this.http.put<any>(
       `${environment.microservices.donations}/donations`,
       this.getFormData(data), { headers: headerFile }).pipe(

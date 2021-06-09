@@ -39,7 +39,7 @@ export class EventsTableComponent implements OnInit {
           this.dataSource = new MatTableDataSource<Donation[]>(res);
           this.dataSource.paginator = this.paginator;
         } else {
-          this.dataSource.data = res.entity;
+          this.dataSource.data = res;
         }
       });
     this.unsubscribe.push(goDataSubscr);

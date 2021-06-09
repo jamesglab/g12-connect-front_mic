@@ -80,7 +80,10 @@ export class EditEventComponent implements OnInit {
     if (this.editEventForm.invalid) {
       return;
     }
-    const addEventSubscr = this.eventsService.update(this.editEventForm.getRawValue())
+    delete this.editEventForm.getRawValue().categorieAdd;
+    const sendData  = this.editEventForm.getRawValue();
+    delete sendData.categorieAdd    
+    const addEventSubscr = this.eventsService.update(sendData)
       .subscribe((res: any) => {
         console.log("UPDATEDDDDDD", res);
         this.showMessage(1, `El evento ${this.form.name.value} ha sido actualizado correctamente!`);
