@@ -97,6 +97,13 @@ export const DynamicAsideMenuConfig = {
           show: true,
           bullet: 'dot',
           page: '/g12events/add'
+        },
+        {
+          title: 'Reportes',
+          root: true,
+          show: true,
+          bullet: 'dot',
+          page: '/g12events/reports'
         }
       ]
     },

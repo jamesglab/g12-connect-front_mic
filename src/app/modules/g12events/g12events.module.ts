@@ -14,6 +14,7 @@ import { EditEventComponent } from './components/edit-event/edit-event.component
 
 import {MatChipsModule} from '@angular/material/chips';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import { EventReportsComponent } from './event-reports/event-reports.component';
 
 const routes: Routes = [
   {
@@ -28,10 +29,10 @@ const routes: Routes = [
         path: 'add',
         component: AddEventComponent
       },
-      // {
-      //   path: 'reports',
-      //   component: DonationsReportsComponent
-      // },
+      {
+        path: 'reports',
+        component: EventReportsComponent
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
         path: '**',
@@ -43,7 +44,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent, EditEventComponent],
+  declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent, 
+    EditEventComponent, EventReportsComponent],
   imports: [
     CommonModule,
     SharedModule,
