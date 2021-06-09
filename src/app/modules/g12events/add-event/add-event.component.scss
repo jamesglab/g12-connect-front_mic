@@ -1,9 +1,35 @@
 .img-form {
-    background-image: url('/assets/media/svg/illustrations/add-event.svg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+  background-image: url('/assets/media/svg/illustrations/add-event.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
+
 .custom-file {
- @apply mb-2
+  @apply mb-2
+}
+
+.example-box.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-chip .cdk-drop-list-dragging {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.remove-item {
+  color: #f14668;
+  cursor: pointer;
+  margin-left : 10px
+}
+
+.example-box{
+    height: 40px;
+    color: #296fa8;
+    background-color: #eff5fb ;
+
+}
+.example-box:hover{
+    background-color: #eff5fb ;
+    color: #296fa8;
 }

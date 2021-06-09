@@ -49,6 +49,28 @@
                   for="validatedCustomFile">{{addEventForm.get('image')?.value?.name ? addEventForm.get('image').value.name : 'Selecciona imagen'}}</label>
               </div>
 
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Agregar Categoria</mat-label>
+                <input matInput autocomplete="off" formControlName="categorieAdd">
+
+                <button *ngIf="addEventForm.get('categorieAdd').value !=''" matSuffix mat-icon-button
+                  (click)="pushCategorie()">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </mat-form-field>
+              <mat-chip-list class="example-chip" cdkDropList cdkDropListOrientation="horizontal"
+                (cdkDropListDropped)="drop($event)">
+                <mat-chip class="example-box" cdkDrag
+                  *ngFor="let item of addEventForm.get('categories').value ; let i = index">
+                  {{item}}
+
+                  <mat-icon class="remove-item" (click)="addEventForm.get('categories').value.splice(i,1)">close</mat-icon>
+
+                </mat-chip>
+              </mat-chip-list>
+
+              <hr>
+
               <div formGroupName="prices">
                 <h6>Precio</h6>
                 <mat-form-field class="example-full-width" appearance="fill">
@@ -72,6 +94,8 @@
                                     </mat-error> -->
                 </mat-form-field>
               </div>
+
+              
               <hr>
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Capacidad</mat-label>
@@ -84,11 +108,8 @@
                                 </mat-error> -->
               </mat-form-field>
 
-              <!-- <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="validatedCustomFile" required>
-                                <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
-                                <div class="invalid-feedback">Example invalid custom file feedback</div>
-                              </div> -->
+
+             
 
               <div class="row">
                 <div class="col-xl-12 col-sm-12 mt-5">

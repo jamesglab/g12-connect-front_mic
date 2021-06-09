@@ -12,6 +12,8 @@ import { MainEventsComponent } from './main-events/main-events.component';
 import { EventsTableComponent } from './components/events-table/events-table.component';
 import { EditEventComponent } from './components/edit-event/edit-event.component';
 
+import {MatChipsModule} from '@angular/material/chips';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 const routes: Routes = [
   {
@@ -49,7 +51,9 @@ const routes: Routes = [
     ReactiveFormsModule,
     NgbModule,
     InlineSVGModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    MatChipsModule,
+    DragDropModule
   ]
 })
 export class G12eventsModule { }

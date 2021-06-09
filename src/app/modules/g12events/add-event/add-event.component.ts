@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
 import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
@@ -35,6 +35,8 @@ export class AddEventComponent implements OnInit {
       name: [null, [Validators.required]],
       description: [null],
       image: [null],
+      categories: [[]],
+      categorieAdd: [''],
       // hour: ['', [Validators.required, hourValidation.bind(this)]],
       prices: this.fb.group({
         cop: [''],
@@ -55,17 +57,17 @@ export class AddEventComponent implements OnInit {
   }
 
   onSubmit() {
-   console.log("FORMMMMMM", this.addEventForm)
-   
+    console.log("FORMMMMMM", this.addEventForm)
+
     if (this.addEventForm.invalid) {
       return;
     }
     const updateEventSubscr = this.eventsService.create(this.addEventForm.getRawValue())
-    .subscribe((res: any) => {
-      console.log("REGISTEREDDD", res);
-      this.showMessage(1, `El evento ${this.form.name.value} ha sido creado correctamente!`);
-      this.router.navigate(['g12events']);
-    }, err => { throw err; });
+      .subscribe((res: any) => {
+        console.log("REGISTEREDDD", res);
+        this.showMessage(1, `El evento ${this.form.name.value} ha sido creado correctamente!`);
+        this.router.navigate(['g12events']);
+      }, err => { throw err; });
     this.unsubscribe.push(updateEventSubscr);
     // const addGoSubscr = this._goService.insertGo(this.addGoForm.getRawValue())
     //   .subscribe((res: Response) => {
@@ -84,7 +86,13 @@ export class AddEventComponent implements OnInit {
     //   })
     // this.unsubscribe.push(addGoSubscr);
   }
-
+  pushCategorie() {
+    this.addEventForm.get('categories').value.push(this.addEventForm.get('categorieAdd').value);
+    this.addEventForm.get('categorieAdd').setValue('');
+  }
+  drop(event: CdkDragDrop<[]>) {
+    moveItemInArray(this.addEventForm.get('categories').value, event.previousIndex, event.currentIndex);
+  }
   showMessage(type: number, message?: string) {
     this.snackBar.openFromComponent(NotificationComponent, notificationConfig(type, message));
   }
