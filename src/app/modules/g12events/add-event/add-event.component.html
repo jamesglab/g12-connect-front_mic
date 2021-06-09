@@ -61,10 +61,10 @@
               <mat-chip-list class="example-chip" cdkDropList cdkDropListOrientation="horizontal"
                 (cdkDropListDropped)="drop($event)">
                 <mat-chip class="example-box" cdkDrag
-                  *ngFor="let item of addEventForm.get('categories').value ; let i = index">
+                  *ngFor="let item of addEventForm.get('category').value ; let i = index">
                   {{item}}
 
-                  <mat-icon class="remove-item" (click)="addEventForm.get('categories').value.splice(i,1)">close</mat-icon>
+                  <mat-icon class="remove-item" (click)="addEventForm.get('category').value.splice(i,1)">close</mat-icon>
 
                 </mat-chip>
               </mat-chip-list>

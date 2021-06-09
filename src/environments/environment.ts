@@ -9,7 +9,7 @@ export const environment = {
   isMockEnabled: false, // METRONIC
   apiUrl: 'http://51.79.78.171:7003/', //.NETAPI
   microservices: {
-    donations: 'https://98c45c14cadf.ngrok.io/api/v2'
+    donations: 'https://dev-api.g12connect.com/api/v2/donations'
   }
 };
 

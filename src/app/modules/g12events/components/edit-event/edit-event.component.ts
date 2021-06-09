@@ -3,11 +3,12 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
 import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
-import { getBase64 } from 'src/app/_helpers/tools/utils.tool'; 
+import { getBase64 } from 'src/app/_helpers/tools/utils.tool';
 
 import { G12eventsService } from '../../_services/g12events.service';
 import { Donation } from '../../_models/donation.model';
@@ -24,7 +25,7 @@ export class EditEventComponent implements OnInit {
   public isLoading: boolean = false;
   private unsubscribe: Subscription[] = [];
 
-  constructor(private fb: FormBuilder, private snackBar: MatSnackBar,private eventsService: G12eventsService, 
+  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private eventsService: G12eventsService,
     private router: Router, public modal: NgbActiveModal) { }
 
   ngOnInit(): void {
@@ -35,11 +36,12 @@ export class EditEventComponent implements OnInit {
     this.editEventForm = this.fb.group({
       id: [this.event.id],
       type: ['G12_EVENT', [Validators.required]],
-      category: ['EVENTOS G12', Validators.required],
+      category: [this.event.category || [], Validators.required],
       name: [this.event.name, [Validators.required]],
       description: [this.event.description],
       image: [this.event.image],
       code: [],
+      categorieAdd :[''],
       base64: [],
       // hour: ['', [Validators.required, hourValidation.bind(this)]],
       prices: this.fb.group({
@@ -51,12 +53,12 @@ export class EditEventComponent implements OnInit {
       location: [],
       status: [this.event.status.toString()]
     })
-    if(this.event.image.url != "" && this.event.image.url){
+    if (this.event.image.url != "" && this.event.image.url) {
       this.form.base64.setValue(this.event.image.url)
-    }else{
+    } else {
       this.form.base64.setValue("https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj")
     }
-    
+
   }
 
   get form() {
@@ -79,12 +81,12 @@ export class EditEventComponent implements OnInit {
       return;
     }
     const addEventSubscr = this.eventsService.update(this.editEventForm.getRawValue())
-    .subscribe((res: any) => {
-      console.log("UPDATEDDDDDD", res);
-      this.showMessage(1, `El evento ${this.form.name.value} ha sido actualizado correctamente!`);
-      this.modal.close("success");
-      this.router.navigate(['g12events']);
-    }, err => { throw err; });
+      .subscribe((res: any) => {
+        console.log("UPDATEDDDDDD", res);
+        this.showMessage(1, `El evento ${this.form.name.value} ha sido actualizado correctamente!`);
+        this.modal.close("success");
+        this.router.navigate(['g12events']);
+      }, err => { throw err; });
     this.unsubscribe.push(addEventSubscr);
     // const addGoSubscr = this._goService.insertGo(this.addGoForm.getRawValue())
     //   .subscribe((res: Response) => {
@@ -112,4 +114,11 @@ export class EditEventComponent implements OnInit {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 
+  drop(event: CdkDragDrop<[]>) {
+    moveItemInArray(this.editEventForm.get('category').value, event.previousIndex, event.currentIndex);
+  }
+  pushCategorie() {
+    this.editEventForm.get('category').value.push(this.editEventForm.get('categorieAdd').value);
+    this.editEventForm.get('categorieAdd').setValue('');
+  }
 }

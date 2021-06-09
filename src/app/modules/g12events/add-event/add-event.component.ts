@@ -31,11 +31,10 @@ export class AddEventComponent implements OnInit {
   buildForm() {
     this.addEventForm = this.fb.group({
       type: ['G12_EVENT', [Validators.required]],
-      category: ['EVENTOS G12', Validators.required],
       name: [null, [Validators.required]],
       description: [null],
       image: [null],
-      categories: [[]],
+      category: [[]],
       categorieAdd: [''],
       // hour: ['', [Validators.required, hourValidation.bind(this)]],
       prices: this.fb.group({
@@ -87,11 +86,11 @@ export class AddEventComponent implements OnInit {
     // this.unsubscribe.push(addGoSubscr);
   }
   pushCategorie() {
-    this.addEventForm.get('categories').value.push(this.addEventForm.get('categorieAdd').value);
+    this.addEventForm.get('category').value.push(this.addEventForm.get('categorieAdd').value);
     this.addEventForm.get('categorieAdd').setValue('');
   }
   drop(event: CdkDragDrop<[]>) {
-    moveItemInArray(this.addEventForm.get('categories').value, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.addEventForm.get('category').value, event.previousIndex, event.currentIndex);
   }
   showMessage(type: number, message?: string) {
     this.snackBar.openFromComponent(NotificationComponent, notificationConfig(type, message));

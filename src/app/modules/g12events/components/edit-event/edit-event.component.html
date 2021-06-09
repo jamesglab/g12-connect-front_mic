@@ -41,6 +41,26 @@
                                 <!-- <mat-error *ngIf="form.Description.errors?.pattern">La descripción no es valida</mat-error> -->
                             </mat-form-field>
 
+                            <mat-form-field class="example-full-width" appearance="fill">
+                                <mat-label>Agregar Categoria</mat-label>
+                                <input matInput autocomplete="off" formControlName="categorieAdd">
+                
+                                <button *ngIf="editEventForm.get('categorieAdd').value !=''" matSuffix mat-icon-button
+                                  (click)="pushCategorie()">
+                                  <mat-icon>add</mat-icon>
+                                </button>
+                              </mat-form-field>
+                              <mat-chip-list class="example-chip" cdkDropList cdkDropListOrientation="horizontal"
+                                (cdkDropListDropped)="drop($event)">
+                                <mat-chip class="example-box" cdkDrag
+                                  *ngFor="let item of editEventForm.get('category').value ; let i = index">
+                                  {{item}}
+                
+                                  <mat-icon class="remove-item" (click)="editEventForm.get('category').value.splice(i,1)">close</mat-icon>
+                
+                                </mat-chip>
+                              </mat-chip-list>
+
                             <div formGroupName="prices">
                                 <h6>Precio</h6>
                                 <mat-form-field class="example-full-width" appearance="fill">
