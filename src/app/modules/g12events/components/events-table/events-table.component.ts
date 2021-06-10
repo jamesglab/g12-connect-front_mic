@@ -4,7 +4,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { G12eventsService } from '../../_services/g12events.service';
-
 import { Donation } from '../../_models/donation.model';
 import { EditEventComponent } from '../edit-event/edit-event.component';
 

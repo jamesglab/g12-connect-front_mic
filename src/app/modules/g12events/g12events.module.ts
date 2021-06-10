@@ -5,6 +5,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InlineSVGModule } from 'ng-inline-svg';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+
+// import { MatNativeDateModule } from '@angular/material/m';
+import { MatMomentDateModule } from "@angular/material-moment-adapter";
 
 import { G12eventsComponent } from './g12events.component';
 import { AddEventComponent } from './add-event/add-event.component';
@@ -12,8 +16,8 @@ import { MainEventsComponent } from './main-events/main-events.component';
 import { EventsTableComponent } from './components/events-table/events-table.component';
 import { EditEventComponent } from './components/edit-event/edit-event.component';
 
-import {MatChipsModule} from '@angular/material/chips';
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import { MatChipsModule } from '@angular/material/chips';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { EventReportsComponent } from './event-reports/event-reports.component';
 
 const routes: Routes = [
@@ -44,7 +48,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent, 
+  declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent,
     EditEventComponent, EventReportsComponent],
   imports: [
     CommonModule,
@@ -55,7 +59,9 @@ const routes: Routes = [
     InlineSVGModule,
     RouterModule.forChild(routes),
     MatChipsModule,
-    DragDropModule
+    DragDropModule,
+    MatDatepickerModule,
+    MatMomentDateModule
   ]
 })
 export class G12eventsModule { }

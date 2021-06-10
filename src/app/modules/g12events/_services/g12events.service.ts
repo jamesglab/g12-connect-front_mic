@@ -13,6 +13,40 @@ export class G12eventsService {
 
   constructor(private http: HttpClient) { }
 
+
+  getTransactions(params?): Observable<any> {
+    console.log('send transacition',params)
+    return this.http.get<any>(
+      `${environment.microservices.reports}/transactions`, { params, headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError((handleError))
+      );
+  }
+
+  getTransactionsEvents(params?): Observable<any> {
+    return this.http.get<any>(
+      `${environment.microservices.reports}/transactions/event`, { params, headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError((handleError))
+      );
+  }
+
+  getTransactionsEventsStatus(params?): Observable<any> {
+    return this.http.get<any>(
+      `${environment.microservices.reports}/transactions/event/status`, { params, headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError((handleError))
+      );
+  }
+
+
+
   getAll(): Observable<any> {
     return this.http.get<any>(`${environment.microservices.donations}/donations`,
       { headers: header }).pipe(
@@ -38,10 +72,10 @@ export class G12eventsService {
   getFormData(data: Donation): FormData {
     const send_data = new FormData();
     delete data.base64;
-    
+
     console.log("IMAGEEE", data.image)
     console.log("CODEEE", data.code);
-    if(data.image){ send_data.append("image", data.image) }
+    if (data.image) { send_data.append("image", data.image) }
     send_data.append("donation", JSON.stringify(data));
     return send_data;
   }
@@ -70,5 +104,8 @@ export class G12eventsService {
   }
 
   delete() { }
+
+
+
 
 }
