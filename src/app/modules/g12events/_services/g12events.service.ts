@@ -17,7 +17,7 @@ export class G12eventsService {
   getTransactions(params?): Observable<any> {
     console.log('send transacition',params)
     return this.http.get<any>(
-      `${environment.microservices.reports}/transactions`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect}reports/transactions`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -27,7 +27,7 @@ export class G12eventsService {
 
   getTransactionsEvents(params?): Observable<any> {
     return this.http.get<any>(
-      `${environment.microservices.reports}/transactions/event`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect}reports/transactions/event`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -38,7 +38,7 @@ export class G12eventsService {
   getPastor(params){
 
     return this.http.get<any>(
-      `${environment.microservices.users}/user/pastor`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect}users/user/pastor`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -47,7 +47,7 @@ export class G12eventsService {
   }
   getTransactionsEventsStatus(params?): Observable<any> {
     return this.http.get<any>(
-      `${environment.microservices.reports}/transactions/event/status`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect}reports/transactions/event/status`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -58,7 +58,7 @@ export class G12eventsService {
 
 
   getAll(): Observable<any> {
-    return this.http.get<any>(`${environment.microservices.donations}/donations`,
+    return this.http.get<any>(`${environment.apiUrlG12Connect}donations/donations`,
       { headers: header }).pipe(
         map((res: any) => {
           return res;
@@ -68,7 +68,7 @@ export class G12eventsService {
   }
 
   getFilter(payload: any) {
-    return this.http.get<any>(`${environment.microservices.donations}/donations/filter`,
+    return this.http.get<any>(`${environment.apiUrlG12Connect}donations/donations/filter`,
       { headers: header, params: payload }).pipe(
         map((res: any) => {
           return res;
@@ -93,7 +93,7 @@ export class G12eventsService {
   create(data: Donation): Observable<any> { //DEFINE THE RESPONSE
 
     return this.http.post<any>(
-      `${environment.microservices.donations}/donations`,
+      `${environment.apiUrlG12Connect}donations/donations`,
       this.getFormData(data), { headers: headerFile }).pipe(
         map((res: any) => {
           return res;
@@ -104,7 +104,7 @@ export class G12eventsService {
 
   update(data: Donation) {
     return this.http.put<any>(
-      `${environment.microservices.donations}/donations`,
+      `${environment.apiUrlG12Connect}donations/donations`,
       this.getFormData(data), { headers: headerFile }).pipe(
         map((res: any) => {
           return res;
