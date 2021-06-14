@@ -35,6 +35,16 @@ export class G12eventsService {
       );
   }
 
+  getPastor(params){
+
+    return this.http.get<any>(
+      `${environment.microservices.users}/user/pastor`, { params, headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError((handleError))
+      );
+  }
   getTransactionsEventsStatus(params?): Observable<any> {
     return this.http.get<any>(
       `${environment.microservices.reports}/transactions/event/status`, { params, headers: header }).pipe(

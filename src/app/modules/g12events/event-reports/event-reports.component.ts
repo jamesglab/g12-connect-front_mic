@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { ExportService } from 'src/app/modules/_services/export.service'
 import { G12eventsService } from '../_services/g12events.service';
 import { ErrorStateMatcher } from '@angular/material/core';
 
@@ -26,11 +27,13 @@ export class EventReportsComponent implements OnInit {
 
   public event_selected = new FormControl(0, []);
   public status = new FormControl(0, []);
+  public pastores: any = [];
+  public pastor_selected = new FormControl(0, []);
   public payments_method = new FormControl(0, []);
-  public displayedColumns: string[] = ['payment_method', 'amount', 'currency', 'petition', 'updated_at', 'status'];
-  public dataSource: MatTableDataSource<any[]>;
-
-  constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef) {
+  public displayedColumns: string[] = ['eventos', 'payment_method', 'amount', 'status', 'created_at'];
+  public dataSource: any;
+  public downloadPastor: boolean = false;
+  constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef, private exportService: ExportService) {
 
   }
 
@@ -38,68 +41,69 @@ export class EventReportsComponent implements OnInit {
 
     this.getEvents();
     this.getTransactions();
+    this.getPastor();
   }
 
+  getPastor() {
+    this._g12Events.getPastor({ userCode: '01', church: '1' }).subscribe(res => {
+      this.pastores = res;
+    });
+
+  }
   getEvents() {
 
     this._g12Events.getFilter({ type: "G12_EVENT" }).subscribe(res => {
       this.events = res;
     })
   }
+
   getTransactions() {
-    this._g12Events.getTransactions({ platform: "donaciones" }).subscribe(res => {
+    if (this.pastor_selected.value.toString() != 0) {
+      this.downloadPastor = true;
+    } else {
+      this.downloadPastor = false;
+    }
+    this._g12Events.getTransactionsEvents(
+      {
+        filterDates: this.range.getRawValue().finish_date ? JSON.stringify({
+          init_date: this.range.getRawValue().init_date.format(),
+          finish_date: this.range.getRawValue().finish_date.format(),
+        }) : '',
+        platform: "EVENTOSG12",
+        event_id: this.event_selected.value.id ? this.event_selected.value.id : null,
+        status: (this.status.value.toString() != 0) ? this.status.value.toString() : null,
+        payment_method: this.payments_method.value,
+        pastor: (this.pastor_selected.value.toString() != 0) ? JSON.stringify({
+          user_code: this.pastor_selected.value.user_code,
+          church_id: this.pastor_selected.value.church_id
+        }) : null
+      }
+    ).subscribe(res => {
       res.map((item, i) => { res[i].status = this.validateStatus(item.status); res[i].payment_method = this.validatePaymentMethod(item.payment_method) })
-      this.dataSource = new MatTableDataSource<any[]>(res);
-      this.cdr.detectChanges();
+      if (!this.dataSource) {
+        this.dataSource = new MatTableDataSource<any[]>(res);
+        this.cdr.detectChanges();
+      } else {
+        this.dataSource.data = res;
+      }
+
     })
   }
-  sendData() {
 
+  exportFile() {
+    const dataToExport = []
+    this.dataSource.data.map(item => {
 
-    console.log(this.event_selected.value)
-    if (this.event_selected.value == 0) {
-      this._g12Events.getTransactions(
-        {
-          filterDates: this.range.getRawValue().finish_date ? JSON.stringify({
-            init_date: this.range.getRawValue().init_date.format(),
-            finish_date: this.range.getRawValue().finish_date.format(),
-          }) : '',
-          platform: "donaciones",
-          status: this.status.value.toString(),
-          payment_method: this.payments_method.value
-        }
-      ).subscribe(res => {
-        res.map((item, i) => { res[i].status = this.validateStatus(item.status); res[i].payment_method = this.validatePaymentMethod(item.payment_method) })
-        this.dataSource.data = res;
-      })
-
-    } else {
-      if (this.status.value != 0) {
-        this._g12Events.getTransactionsEventsStatus(
-          {
-            event_id: this.event_selected.value.id,
-            platform: "donaciones",
-            status: this.status.value.toString(),
-            payment_method: this.payments_method.value
-          }
-        ).subscribe(res => {
-          res.map((item, i) => { res[i].status = this.validateStatus(item.status); res[i].payment_method = this.validatePaymentMethod(item.payment_method) })
-          this.dataSource.data = res;
-
-        })
-      } else {
-        this._g12Events.getTransactionsEvents(
-          {
-            event_id: this.event_selected.value.id,
-            platform: "donaciones",
-            payment_method: this.payments_method.value
-          }
-        ).subscribe(res => {
-          res.map((item, i) => { res[i].status = this.validateStatus(item.status); res[i].payment_method = this.validatePaymentMethod(item.payment_method) })
-          this.dataSource.data = res;
-        })
+      const newData = {
+        evento: item.event,
+        fecha: new Date(item.created_at),
+        methodo_pago: item.payment_method,
+        estado: item.status
       }
-    }
+      dataToExport.push(newData)
+    })
+
+    this.exportService.exportAsExcelFile(dataToExport, !this.downloadPastor ? 'EVENTOSG12' : `${this.pastor_selected.value.name}_EVENTOSG12`)
   }
 
   validateStatus(status) {

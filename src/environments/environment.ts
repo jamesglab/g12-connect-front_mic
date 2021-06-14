@@ -10,8 +10,10 @@ export const environment = {
   apiUrl: 'http://51.79.78.171:7003/', //.NETAPI
   microservices: {
     donations: 'https://api.g12connect.com/api/v2/donations',
-    reports:'http://localhost:3000/api/v2/reports/reports'
+    reports: 'http://localhost:5000/api/v2/reports/reports',
+    users: 'https://api.g12connect.com/api/v2/users'
   }
+
 };
 
 /*
