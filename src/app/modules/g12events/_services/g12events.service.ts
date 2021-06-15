@@ -27,7 +27,7 @@ export class G12eventsService {
 
   getTransactionsEvents(params?): Observable<any> {
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect}reports/transactions/event`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect}reports/reports/transactions/event`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
