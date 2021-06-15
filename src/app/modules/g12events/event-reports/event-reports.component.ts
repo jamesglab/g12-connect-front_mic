@@ -30,9 +30,10 @@ export class EventReportsComponent implements OnInit {
   public pastores: any = [];
   public pastor_selected = new FormControl(0, []);
   public payments_method = new FormControl(0, []);
-  public displayedColumns: string[] = ['eventos', 'payment_method', 'amount', 'status', 'created_at'];
+  public displayedColumns: string[] = ['created_at', 'event', 'status', 'identification', 'name', 'last_name', 'email'];
   public dataSource: any;
   public downloadPastor: boolean = false;
+  public search = new FormControl('', []);
   constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef, private exportService: ExportService) {
 
   }
@@ -57,6 +58,11 @@ export class EventReportsComponent implements OnInit {
     })
   }
 
+
+  filter() {
+    this.dataSource.filter = this.search.value.trim().toLowerCase();
+
+  }
   getTransactions() {
     if (this.pastor_selected.value.toString() != 0) {
       this.downloadPastor = true;
@@ -98,7 +104,11 @@ export class EventReportsComponent implements OnInit {
         evento: item.event,
         fecha: new Date(item.created_at),
         methodo_pago: item.payment_method,
-        estado: item.status
+        estado: item.status,
+        identificación :item.identification,
+        nombre:item.name, 
+        apellido:item.last_name,
+        email:item.email
       }
       dataToExport.push(newData)
     })
