@@ -19,6 +19,10 @@ import { EditEventComponent } from './components/edit-event/edit-event.component
 import { MatChipsModule } from '@angular/material/chips';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { EventReportsComponent } from './event-reports/event-reports.component';
+import { TableReportsComponent } from './event-reports/components/table-reports/table-reports.component';
+import { TableCutComponent } from './event-reports/components/table-cut/table-cut.component';
+import { ShowUsersCountsComponent } from './event-reports/components/show-users-counts/show-users-counts.component';
+import { ShowCutCountsComponent } from './event-reports/components/show-cut-counts/show-cut-counts.component';
 
 const routes: Routes = [
   {
@@ -49,7 +53,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent,
-    EditEventComponent, EventReportsComponent],
+    EditEventComponent, EventReportsComponent, TableReportsComponent, TableCutComponent, ShowUsersCountsComponent, ShowCutCountsComponent],
   imports: [
     CommonModule,
     SharedModule,
