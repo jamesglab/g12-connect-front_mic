@@ -81,16 +81,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.hasError = false;
     const loginSubscr = this.authService
       .login(this.form.email.value.trim(), this.form.password.value.trim())
-      .pipe(first())
-      .subscribe(async (res: Response) => {
-        res = await res;
-        if (res.result) {
+      .subscribe((res: any) => {
           this.authService.getUserByToken();
           this.router.navigate([this.returnUrl]);
-        }else{
-          this.hasError = true;
-        }
-      });
+      }, err => { this.hasError = true; throw err });
     this.unsubscribe.push(loginSubscr);
   }
 

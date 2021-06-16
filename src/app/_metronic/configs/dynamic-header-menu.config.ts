@@ -7,7 +7,7 @@ export const DynamicHeaderMenuConfig = {
       page: '/dashboard',
       code: "DB000",
       show: true,
-      translate: 'MENU.DASHBOARD',
+      translate: 'MENU.DASHBOARD'
     },
     {
       title: 'Administración',
@@ -21,24 +21,21 @@ export const DynamicHeaderMenuConfig = {
           title: 'Gestión Permisos',
           bullet: 'dot',
           show: true,
+          code: "ADM010",
           submenu: [
             {
               title: 'Usuarios',
               show: true,
               bullet: 'dot',
+              code: "ADM011",
               page: '/admin/permissions/users'
             },
             {
               title: 'Roles',
               show: true,
               bullet: 'dot',
+              code: "ADM012",
               page: '/admin/permissions/roles'
-            },
-            {
-              title: 'Objetos',
-              show: true,
-              bullet: 'dot',
-              page: '/admin/permissions/objects'
             }
           ]
         },
@@ -57,6 +54,7 @@ export const DynamicHeaderMenuConfig = {
           root: true,
           show: true,
           bullet: 'dot',
+          code: "DO010",
           page: '/donations/dashboard'
         },
         {
@@ -64,6 +62,7 @@ export const DynamicHeaderMenuConfig = {
           root: true,
           show: true,
           bullet: 'dot',
+          code: "DO020",
           page: '/donations/reports'
         }
       ]
@@ -75,93 +74,30 @@ export const DynamicHeaderMenuConfig = {
       alignment: 'left',
       page: '/g12events',
       show: true,
-      submenu: []
-    },
-    // {
-    //   title: 'Mi Perfil',
-    //   alignment: 'left',
-    //   page: '/profile',
-    //   show: false,
-    // },
-    {
-      title: 'Ganar',
-      bullet: 'dot',
-      page: '/to-win',
-      code: "G000",
-      show: true,
-      icon: 'flaticon-interface-6',
       submenu: [
         {
-          title: 'Personas',
-          bullet: 'dot',
+          title: 'Inicio',
+          root: true,
           show: true,
-          code: "G001",
-          submenu: [
-            {
-              title: 'Registrar Nueva',
-              show: true,
-              page: '/to-win/people',
-            },
-            {
-              title: 'Buscar Persona',
-              show: true,
-              page: '/to-win/people/search',
-            }
-          ]
+          bullet: 'dot',
+          code: "EVT010",
+          page: '/g12events/home'
         },
         {
-          title: 'Fono Visita',
-          bullet: 'dot',
+          title: 'Nuevo Evento',
+          root: true,
           show: true,
-          code: "G002",
-          page: '/to-win/phone-visit'
+          bullet: 'dot',
+          code: "EVT020",
+          page: '/g12events/add'
         },
         {
-          title: 'Reportes Ganar',
-          bullet: 'dot',
-          show: true,
-          code: "G004",
-          page: '/to-win/reports',
-        }
-      ]
-    },
-    {
-      title: 'Enviar',
-      bullet: 'dot',
-      page: '/send',
-      code: "ENV000",
-      show: true,
-      icon: 'flaticon-interface-7',
-      submenu: [
-        {
-          title: 'Gestión Célula',
-          bullet: 'dot',
-          show: true,
-          svg: './assets/media/svg/icons/Design/PenAndRuller.svg',
-          submenu: [
-            {
-              title: 'Lideres',
-              show: true,
-              page: '/send/go/leaders'
-            },
-            {
-              title: 'Nueva Célula',
-              show: true,
-              page: '/send/go/new'
-            },
-            {
-              title: 'Seguimiento Semanal',
-              show: true,
-              page: '/send/go/home'
-            },
-          ],
-        },
-        {
-          title: 'Reportes Célula',
+          title: 'Reportes',
+          root: true,
           show: true,
           bullet: 'dot',
-          svg: './assets/media/svg/icons/Navigation/Up-down.svg',
-          page: '/send/report/home'
+          code: "EVT030",
+          page: '/g12events/reports'
         }
       ]
     }
