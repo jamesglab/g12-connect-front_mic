@@ -102,7 +102,7 @@ export class ForgotPasswordComponent implements OnInit {
     this.parseAttrToInsert();
     //this.errorState = result ? ErrorStates.NoError : ErrorStates.HasError;
     const forgotPassSubscr = this.authService.forgotPassword(this.forgotPasswordForm.getRawValue())
-    .subscribe((res: Response) => {
+    .subscribe((res: any) => {
       if (res) {
         // console.log("THE RESPONSE", res)
         if (res.result) {

@@ -12,7 +12,7 @@ import { StorageService } from '../../../../modules/auth/_services/storage.servi
 })
 export class AsideDynamicComponent implements OnInit, OnDestroy {
 
-  public currentUser: any = this.storageService.getItem("user");
+  public currentUser: any = this.storageService.getItem("auth").user;
   menuConfig: any;
   subscriptions: Subscription[] = [];
 
@@ -62,24 +62,8 @@ export class AsideDynamicComponent implements OnInit, OnDestroy {
     // menu load
     const menuSubscr = this.menu.menuConfig$.subscribe(res => {
       this.menuConfig = res;
-      this.validatePermisses();
     });
     this.subscriptions.push(menuSubscr);
-  }
-
-  validatePermisses(){
-    // console.log("A VER QUE CARAJOS ", JSON.parse(this.currentUser.listObjetos))
-    if(!this.currentUser.email){
-      this.currentUser.email = this.currentUser.user;
-    }
-    // if(this.currentUser.email != "fraycelyavila@mci12.com"){
-      // this.menuConfig.items.map((item, i) => {
-      //   if(item.title == "Administración"){
-      //     item.show = false;
-      //   }
-      // })
-    // }
-    this.cdr.detectChanges();
   }
 
   private getLogo() {

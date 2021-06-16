@@ -48,23 +48,8 @@ export class HeaderMenuDynamicComponent implements OnInit, OnDestroy {
     // menu load
     const menuSubscr = this.menu.menuConfig$.subscribe(res => {
       this.menuConfig = res;
-      this.validatePermisses();
     });
     this.subscriptions.push(menuSubscr);
-  }
-
-  validatePermisses(){
-    if(!this.currentUser.email){
-      this.currentUser.email = this.currentUser.user;
-    }
-    // if(this.currentUser.email != "fraycelyavila@mci12.com"){
-    //   this.menuConfig.items.map((item, i) => {
-    //     if(item.title == "Administración"){
-    //       this.menuConfig.items.splice(i,1)
-    //     }
-    //   })
-    // }
-    this.cdr.detectChanges();
   }
 
   isMenuItemActive(path) {
