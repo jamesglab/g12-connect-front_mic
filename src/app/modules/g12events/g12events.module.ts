@@ -23,6 +23,7 @@ import { TableReportsComponent } from './event-reports/components/table-reports/
 import { TableCutComponent } from './event-reports/components/table-cut/table-cut.component';
 import { ShowUsersCountsComponent } from './event-reports/components/show-users-counts/show-users-counts.component';
 import { ShowCutCountsComponent } from './event-reports/components/show-cut-counts/show-cut-counts.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 const routes: Routes = [
   {
@@ -65,7 +66,8 @@ const routes: Routes = [
     MatChipsModule,
     DragDropModule,
     MatDatepickerModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    MatCheckboxModule
   ]
 })
 export class G12eventsModule { }
