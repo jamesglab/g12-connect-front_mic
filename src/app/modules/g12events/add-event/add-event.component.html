@@ -16,30 +16,17 @@
         </div>
       </div>
       <div class="card-body">
-        <!-- <ng-container *ngIf="isLoading$">
-                    <span class="spinner spinner-primary ml-5"></span>
-                </ng-container> -->
-        <!-- <div *ngIf="!isLoading$"> -->
+
         <div class="row">
           <div class="col-xl-6 col-sm-12">
             <form [formGroup]="addEventForm" (ngSubmit)="onSubmit();">
-
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Nombre del evento*</mat-label>
                 <input matInput autocomplete="off" formControlName="name">
-                <!-- <mat-error *ngIf="form.document.errors?.required">
-                                    El número es requerido
-                                </mat-error>
-                                <mat-error *ngIf="form.document.errors?.pattern">
-                                    El número no es valido
-                                </mat-error> -->
               </mat-form-field>
-
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Descripción</mat-label>
                 <textarea matInput style="max-height: 80px;" formControlName="description"></textarea>
-                <!-- <mat-error *ngIf="form.description.errors?.required">La descripción es requerida</mat-error> -->
-                <!-- <mat-error *ngIf="form.Description.errors?.pattern">La descripción no es valida</mat-error> -->
               </mat-form-field>
 
               <div class="custom-file mb-5">
@@ -60,56 +47,153 @@
               </mat-form-field>
               <mat-chip-list class="example-chip" cdkDropList cdkDropListOrientation="horizontal"
                 (cdkDropListDropped)="drop($event)">
-                <mat-chip class="example-box" cdkDrag
+                <mat-chip class="example-box  mb-5" cdkDrag
                   *ngFor="let item of addEventForm.get('category').value ; let i = index">
                   {{item}}
 
-                  <mat-icon class="remove-item" (click)="addEventForm.get('category').value.splice(i,1)">close</mat-icon>
+                  <mat-icon class="remove-item" (click)="addEventForm.get('category').value.splice(i,1)">close
+                  </mat-icon>
 
                 </mat-chip>
               </mat-chip-list>
+
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Capacidad</mat-label>
+                <input matInput autocomplete="off" formControlName="limit">
+              </mat-form-field>
+
+
+              <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Selecciona un rango del evento</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input matStartDate placeholder="Fecha de inicio" formControlName="initDate">
+                  <input matEndDate placeholder="Fecha de fin" formControlName="finishDate">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+              </mat-form-field>
 
               <hr>
 
               <div formGroupName="prices">
                 <h6>Precio</h6>
-                <mat-form-field class="example-full-width" appearance="fill">
-                  <mat-label>COP*</mat-label>
-                  <input matInput autocomplete="off" formControlName="cop">
-                  <!-- <mat-error *ngIf="form.document.errors?.required">
-                                        El número es requerido
-                                    </mat-error>
-                                    <mat-error *ngIf="form.document.errors?.pattern">
-                                        El número no es valido
-                                    </mat-error> -->
-                </mat-form-field>
-                <mat-form-field class="example-full-width" appearance="fill">
-                  <mat-label>USD</mat-label>
-                  <input matInput autocomplete="off" formControlName="usd">
-                  <!-- <mat-error *ngIf="form.document.errors?.required">
-                                        El número es requerido
-                                    </mat-error>
-                                    <mat-error *ngIf="form.document.errors?.pattern">
-                                        El número no es valido
-                                    </mat-error> -->
-                </mat-form-field>
+                <div class="mt-5 mb-5">
+                  <mat-checkbox [formControl]="select_cut">Seleccionar cortes</mat-checkbox>
+                </div>
+
+
+                <div *ngIf="!select_cut.value">
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>COP*</mat-label>
+                    <input matInput autocomplete="off" formControlName="cop">
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>USD</mat-label>
+                    <input matInput autocomplete="off" formControlName="usd">
+                  </mat-form-field>
+                </div>
+
+
+                <div *ngIf="select_cut.value">
+
+                  <div class="col" *ngFor="let cute of cuts.controls; let i = index">
+
+                    <ng-container [formGroup]="cute">
+
+                      <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+                        <div class="card-header border-0 btn-sm ">
+                          <div class="card-toolbar d-flex" style="width: 100%;">
+                            <div style="width: 90%;">
+                              <p class="h2">Corte {{i+1}}</p>
+                            </div>
+                            <div style="width: 10%;">
+                              <div class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5 cursor-pointer"
+                                (click)="deleteCute(i)">
+                                <mat-icon>close</mat-icon>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="card-body p-0 position-relative overflow-hidden">
+
+                          <div class="p-5">
+                            <div class=" m-0">
+                              <h6>Nombre</h6>
+
+                              <mat-form-field class="example-full-width" appearance="fill">
+                                <mat-label>Nombre*</mat-label>
+                                <input matInput autocomplete="off" formControlName="name">
+                              </mat-form-field>
+                              <h6>Precio</h6>
+
+                              <div class="mt-8">
+                                <mat-form-field class="example-full-width" appearance="fill">
+                                  <mat-label>COP*</mat-label>
+                                  <input matInput autocomplete="off" formControlName="cop">
+                                </mat-form-field>
+                                <mat-form-field class="example-full-width" appearance="fill">
+                                  <mat-label>USD</mat-label>
+                                  <input matInput autocomplete="off" formControlName="usd">
+                                </mat-form-field>
+                              </div>
+
+
+                              <h6>Capacidad</h6>
+                              <div class="mt-8">
+                                <mat-form-field class="example-full-width" appearance="fill">
+                                  <mat-label>Capacidad</mat-label>
+                                  <input matInput autocomplete="off" formControlName="quantity">
+                                </mat-form-field>
+
+                              </div>
+
+                              <h6>Disponibilidad</h6>
+
+                              <mat-form-field appearance="fill" class="example-full-width">
+                                <mat-label>Selecciona un rango para el corte </mat-label>
+                                <mat-date-range-input [rangePicker]="picker">
+                                  <input matStartDate placeholder="Fecha de inicio" formControlName="initDate">
+                                  <input matEndDate placeholder="Fecga de fin" formControlName="finishDate">
+                                </mat-date-range-input>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-date-range-picker #picker></mat-date-range-picker>
+                              </mat-form-field>
+                            </div>
+
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+                    </ng-container>
+
+
+
+                  </div>
+
+                  <div class="d-flex justify-content-center align-self-center">
+
+                    <div (click)='addCute()'
+                      class="more-cut  btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">
+                      <mat-icon>add</mat-icon>
+                    </div>
+
+                  </div>
+                </div>
+
+
               </div>
 
-              
+
               <hr>
-              <mat-form-field class="example-full-width" appearance="fill">
-                <mat-label>Capacidad</mat-label>
-                <input matInput autocomplete="off" formControlName="limit">
-                <!-- <mat-error *ngIf="form.document.errors?.required">
-                                    El número es requerido
-                                </mat-error>
-                                <mat-error *ngIf="form.document.errors?.pattern">
-                                    El número no es valido
-                                </mat-error> -->
-              </mat-form-field>
 
 
-             
+
+
 
               <div class="row">
                 <div class="col-xl-12 col-sm-12 mt-5">

@@ -15,7 +15,7 @@ export class G12eventsService {
 
 
   getTransactions(params?): Observable<any> {
-    console.log('send transacition',params)
+    console.log('send transacition', params)
     return this.http.get<any>(
       `${environment.apiUrlG12Connect}reports/transactions`, { params, headers: header }).pipe(
         map((res: Response) => {
@@ -35,7 +35,7 @@ export class G12eventsService {
       );
   }
 
-  getPastor(params){
+  getPastor(params) {
 
     return this.http.get<any>(
       `${environment.apiUrlG12Connect}users/user/pastor`, { params, headers: header }).pipe(
@@ -79,18 +79,17 @@ export class G12eventsService {
 
   getOne() { }
 
-  getFormData(data: Donation): FormData {
+  getFormData(data): FormData {
     const send_data = new FormData();
-    delete data.base64;
-
-    console.log("IMAGEEE", data.image)
+    delete data.transaction_info.base64;
+    console.log("IMAGEEE", data.image);
     console.log("CODEEE", data.code);
-    if (data.image) { send_data.append("image", data.image) }
+    if (data.transaction_info.image) { send_data.append("image", data.transaction_info.image) }
     send_data.append("donation", JSON.stringify(data));
     return send_data;
   }
 
-  create(data: Donation): Observable<any> { //DEFINE THE RESPONSE
+  create(data): Observable<any> { //DEFINE THE RESPONSE
 
     return this.http.post<any>(
       `${environment.apiUrlG12Connect}donations/donations`,

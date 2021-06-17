@@ -22,29 +22,38 @@ export class DynamicAsideMenuService {
   // Here you able to load your menu from server/data-base/localStorage
   // Default => from DynamicAsideMenuConfig
   private loadMenu() {
-    // console.log("OBJETOS DEL USUARIO", this.storage.getItem("user").objectsList);
-    // DynamicAsideMenuConfig.items.map((item: any) => {
-    //   let validate = validatePermission(this.storage.getItem("user").objectsList, item.code);
-    //   if(!validate){
-    //     item.show = false;
-    //   }else{
-    //     if(item.submenu){
-    //       item.submenu.map(subitem => {
-    //         //FLAG
-    //         ///////////////////I MUST ENHANCE THIS FUNCIONALITY////////////////////////////////////////////
-    //         ///NO VALIDATE CODE-----
-    //         if(subitem.code){
-    //           let _validate = validatePermission(this.storage.getItem("user").objectsList, subitem.code);
-    //           if(!_validate){
-    //             subitem.show = false;
-    //           }
-    //         }
-    //       })
-    //     }
-    //   }
-    // });
+    const { permisses } = this.storage.getItem("auth");
+    DynamicAsideMenuConfig.items.map((item: any) => {
+      let validate = validatePermission(permisses, item.code);
+      if (!validate) {
+        item.show = false;
+      } else {
+        if (item.submenu) {
+          item.submenu.map(subitem => {
+            if(subitem.code){
+              let validate = validatePermission(permisses, subitem.code);
+              if(!validate){
+                subitem.show = false;
+              }else{
+                if(subitem.submenu){
+                  subitem.submenu.map(lastItem => {
+                    if(lastItem.code){
+                      let validate = validatePermission(permisses, lastItem.code);
+                      if(!validate){
+                        lastItem.show = false;
+                      }
+                    }
+                  })
+                }
+              }  
+            }
+          })
+        }
+      }
+    });
     this.setMenu(DynamicAsideMenuConfig);
   }
+
 
   private setMenu(menuConfig) {
     this.menuConfigSubject.next(menuConfig);

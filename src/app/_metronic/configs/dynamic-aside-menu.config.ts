@@ -24,12 +24,14 @@ export const DynamicAsideMenuConfig = {
           title: 'Gestión Permisos',
           bullet: 'dot',
           show: true,
+          code: "ADM010",
           submenu: [
             {
               title: 'Usuarios',
               root: true,
               show: true,
               bullet: 'dot',
+              code: "ADM011",
               page: '/admin/permisses/users'
             },
             {
@@ -37,15 +39,16 @@ export const DynamicAsideMenuConfig = {
               root: true,
               show: true,
               bullet: 'dot',
+              code: "ADM012",
               page: '/admin/permisses/roles'
             },
-            {
-              title: 'Objetos',
-              root: true,
-              show: true,
-              bullet: 'dot',
-              page: '/admin/permisses/objects'
-            }
+            // {
+            //   title: 'Objetos',
+            //   root: true,
+            //   show: true,
+            //   bullet: 'dot',
+            //   page: '/admin/permisses/objects'
+            // }
           ]
         },
       ]
@@ -64,6 +67,7 @@ export const DynamicAsideMenuConfig = {
           root: true,
           show: true,
           bullet: 'dot',
+          code: "DO010",
           page: '/donations/dashboard'
         },
         {
@@ -71,6 +75,7 @@ export const DynamicAsideMenuConfig = {
           root: true,
           show: true,
           bullet: 'dot',
+          code: "DO020",
           page: '/donations/reports'
         }
       ]
@@ -89,6 +94,7 @@ export const DynamicAsideMenuConfig = {
           root: true,
           show: true,
           bullet: 'dot',
+          code: "EVT010",
           page: '/g12events/home'
         },
         {
@@ -96,6 +102,7 @@ export const DynamicAsideMenuConfig = {
           root: true,
           show: true,
           bullet: 'dot',
+          code: "EVT020",
           page: '/g12events/add'
         },
         {
@@ -103,6 +110,7 @@ export const DynamicAsideMenuConfig = {
           root: true,
           show: true,
           bullet: 'dot',
+          code: "EVT030",
           page: '/g12events/reports'
         }
       ]
@@ -128,17 +136,19 @@ export const DynamicAsideMenuConfig = {
           title: 'Personas',
           bullet: 'dot',
           show: true,
-          code: "G001",
+          code: "G010",
           submenu: [
             {
               title: 'Registrar Nueva',
               page: '/to-win/people/new',
-              show: true
+              show: true,
+              code: "G011",
             },
             {
               title: 'Buscar Persona',
               page: '/to-win/people/search',
-              show: true
+              show: true,
+              code: "G012"
             }
           ]
         },
@@ -146,7 +156,7 @@ export const DynamicAsideMenuConfig = {
           title: 'Fono Visita',
           root: true,
           show: true,
-          code: "G002",
+          code: "G020",
           bullet: 'dot',
           page: '/to-win/phone-visit'
         },
@@ -154,7 +164,7 @@ export const DynamicAsideMenuConfig = {
           title: 'Reportes Ganar',
           root: true,
           show: true,
-          code: "G004",
+          code: "G030",
           bullet: 'dot',
           page: '/to-win/reports',
         }
@@ -174,21 +184,25 @@ export const DynamicAsideMenuConfig = {
           title: 'Gestión Célula',
           bullet: 'dot',
           show: true,
+          code: "ENV010",
           submenu: [
             {
               title: 'Lideres',
               page: '/send/go/leaders',
-              show: true
+              show: true,
+              code: "ENV011"
             },
             {
               title: 'Nueva Célula',
               page: '/send/go/new',
-              show: true
+              show: true,
+              code: "ENV012"
             },
             {
               title: 'Seguimiento Semanal',
               page: '/send/go/home',
-              show: true
+              show: true,
+              code: "ENV013"
             }
           ]
         },
@@ -197,7 +211,8 @@ export const DynamicAsideMenuConfig = {
           root: true,
           bullet: 'dot',
           page: '/send/report/home',
-          show: true
+          show: true,
+          code: "ENV020"
         }
 
       ]

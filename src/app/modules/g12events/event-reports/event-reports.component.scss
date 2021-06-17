@@ -22,8 +22,16 @@
   background: #1f6f43;
   color: white;
 }
-.exportExcel:hover{
+
+.exportExcel:hover {
   background: #1f6f43 !important;
   color: white;
 
+}
+
+.inputStyle {
+  border-radius: 5px;
+  background: linear-gradient(0deg, #CDD2E2, #CDD2E2),
+    linear-gradient(0deg, #CDD2E2, #CDD2E2),
+    linear-gradient(0deg, #CDD2E2, #CDD2E2);
 }
