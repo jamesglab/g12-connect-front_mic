@@ -92,7 +92,7 @@ export class G12eventsService {
   create(data): Observable<any> { //DEFINE THE RESPONSE
 
     return this.http.post<any>(
-      `${' https://939ea4245653.ngrok.io/api/v2/'}donations/donations`,
+      `${environment.apiUrlG12Connect}donations/donations`,
       this.getFormData(data), { headers: headerFile }).pipe(
         map((res: any) => {
           return res;

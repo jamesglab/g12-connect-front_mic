@@ -66,15 +66,29 @@ export class AddEventComponent implements OnInit {
     if (this.addEventForm.invalid) {
       return;
     }
-    this.addEventForm.get('initDate').setValue(moment(this.addEventForm.get('initDate').value));
-    this.addEventForm.get('finishDate').setValue(moment(this.addEventForm.get('finishDate').value));
-    const updateEventSubscr = this.eventsService.create({ transaction_info: this.addEventForm.getRawValue(), cuts: this.cutsToSend() })
-      .subscribe((res: any) => {
-        console.log("REGISTEREDDD", res);
-        this.showMessage(1, `El evento ${this.form.name.value} ha sido creado correctamente!`);
-        this.router.navigate(['g12events']);
-      }, err => { throw err; });
-    this.unsubscribe.push(updateEventSubscr);
+    let cont_quantity = 0;
+    this.cuts.value.map(cute => {
+      cont_quantity = cont_quantity + parseInt(cute.quantity);
+    });
+    if (cont_quantity < parseInt(this.addEventForm.value.limit)) {
+      let cuts = this.cutsToSend();
+      if (cuts) {
+        this.addEventForm.get('initDate').setValue(moment(this.addEventForm.get('initDate').value));
+        this.addEventForm.get('finishDate').setValue(moment(this.addEventForm.get('finishDate').value));
+        const updateEventSubscr = this.eventsService.create({ transaction_info: this.addEventForm.getRawValue(), cuts })
+          .subscribe((res: any) => {
+            console.log("REGISTEREDDD", res);
+            this.showMessage(1, `El evento ${this.form.name.value} ha sido creado correctamente!`);
+            this.router.navigate(['g12events']);
+          }, err => { throw err; });
+        this.unsubscribe.push(updateEventSubscr);
+      } else {
+        this.showMessage(2, 'Hay campos vacios requeridos en los cortes');
+      }
+    } else {
+      this.showMessage(2, 'Verifica la capacidad de los cortes');
+    }
+
     // const addGoSubscr = this._goService.insertGo(this.addGoForm.getRawValue())
     //   .subscribe((res: Response) => {
     //     if (res.result) {
@@ -94,13 +108,14 @@ export class AddEventComponent implements OnInit {
   }
 
   cutsToSend() {
-
-    const newCuts = []
+    let newCuts = [];
+    let error = false;
     if (this.cuts.value.length > 0) {
       this.cuts.value.map(cut => {
-        console.log('corte', cut)
-        if (cut.name != '' && cut.cop != '' && cut.quantity != '') {
+        if (cut.name != '' && cut.cop != '' && cut.quantity != '' && cut.initDate != '' && cut.finishDate) {
           newCuts.push({ name: cut.name, prices: { cop: cut.cop, usd: (cut.usd != '') ? cut.usd : null }, quantity: cut.quantity, initDate: moment(cut.initDate), finishDate: moment(cut.finishDate) })
+        } else {
+          error = true
         }
       });
     } else {
@@ -112,8 +127,11 @@ export class AddEventComponent implements OnInit {
         finishDate: moment(this.addEventForm.value.finishDate)
       });
     }
-
-    return newCuts
+    if (error) {
+      return false
+    } else {
+      return newCuts
+    }
   }
   addCute() {
     this.cuts.push(
@@ -126,6 +144,9 @@ export class AddEventComponent implements OnInit {
         finishDate: new FormControl(''),
       })
     );
+  }
+  deleteCute(i) {
+    this.cuts.removeAt(i)
   }
   pushCategorie() {
     this.addEventForm.get('category').value.push(this.addEventForm.get('categorieAdd').value);
