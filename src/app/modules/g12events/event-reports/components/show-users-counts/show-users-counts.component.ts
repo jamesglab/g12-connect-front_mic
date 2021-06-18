@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-show-users-counts',
@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./show-users-counts.component.scss']
 })
 export class ShowUsersCountsComponent implements OnInit {
-
+  @Input() info_users_count;
   constructor() { }
 
   ngOnInit(): void {

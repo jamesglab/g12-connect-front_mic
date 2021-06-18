@@ -37,13 +37,19 @@
               </div>
 
               <mat-form-field class="example-full-width" appearance="fill">
+
+
                 <mat-label>Agregar Categoria</mat-label>
+                <mat-select formControlName="categorieAdd">
+                  <mat-option  (click)="pushCategorie()" *ngFor="let categorie of categories" [value]="categorie.value">{{categorie.value}}</mat-option>
+                </mat-select>
+                <!-- <mat-label>Agregar Categoria</mat-label>
                 <input matInput autocomplete="off" formControlName="categorieAdd">
 
                 <button *ngIf="addEventForm.get('categorieAdd').value !=''" matSuffix mat-icon-button
                   (click)="pushCategorie()">
                   <mat-icon>add</mat-icon>
-                </button>
+                </button> -->
               </mat-form-field>
               <mat-chip-list class="example-chip" cdkDropList cdkDropListOrientation="horizontal"
                 (cdkDropListDropped)="drop($event)">

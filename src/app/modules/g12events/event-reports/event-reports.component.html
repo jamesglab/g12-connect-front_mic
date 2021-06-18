@@ -20,7 +20,7 @@
       <div class="card-body">
         <div class="container">
           <div class="row">
-            <div class="col-3">
+            <div class="col">
               <mat-form-field appearance="fill">
                 <mat-label>Seleccione un año</mat-label>
                 <input matInput [matDatepicker]="dp" [formControl]="date">
@@ -30,7 +30,7 @@
                 </mat-datepicker>
               </mat-form-field>
             </div>
-            <div class="col-2">
+            <div class="col">
               <mat-form-field appearance="fill">
                 <mat-label>Seleccióna un evento</mat-label>
                 <mat-select [formControl]="event_selected">
@@ -39,9 +39,43 @@
                 </mat-select>
               </mat-form-field>
             </div>
+
+            <div class="col">
+              <mat-form-field appearance="fill">
+                <mat-label>Pastores</mat-label>
+                <mat-select [formControl]="pastor_selected">
+                  <mat-option [value]="0">Todos</mat-option>
+                  <mat-option [value]="event" *ngFor="let event of pastores">{{event.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+
+            <div class="col">
+              <mat-form-field appearance="fill">
+                <mat-label>Estado</mat-label>
+                <mat-select [formControl]="status">
+                  <mat-option [value]="0">Todas</mat-option>
+                  <mat-option [value]="1">Aprobado</mat-option>
+                  <mat-option [value]="2">En Proceso</mat-option>
+                  <mat-option [value]="3">Cancelado/Declinado</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="ml-6">
+              <button type="button" class="btn exportExcel btn-search" matTooltip="Buscar"
+                (click)="exportFile()">
+                <mat-icon style="font-size: 25px;">cloud_download</mat-icon>
+              </button>
+            </div>
+            <div class="ml-5">
+              <button type="button" class="btn btn-primary btn-search" matTooltip="Buscar" (click)="getTransactionsMongo()">
+                <mat-icon style="font-size: 25px;">search</mat-icon>
+              </button>
+            </div>
           </div>
 
-          <app-show-users-counts></app-show-users-counts>
+          <app-show-users-counts [info_users_count]='info_users_count'></app-show-users-counts>
         </div>
 
         <div class="m-5">
@@ -80,7 +114,7 @@
         <div class="container">
 
 
-          <app-show-cut-counts></app-show-cut-counts>
+          <app-show-cut-counts [cuts]="cutTransactions"></app-show-cut-counts>
 
           <div class="m-5">
             <app-table-cut [dataSource]="dataSource"></app-table-cut>

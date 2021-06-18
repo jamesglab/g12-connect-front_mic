@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-show-cut-counts',
@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./show-cut-counts.component.scss']
 })
 export class ShowCutCountsComponent implements OnInit {
+
+  @Input() cuts: any;
 
   constructor() { }
 

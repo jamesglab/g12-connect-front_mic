@@ -20,13 +20,15 @@ export class AddEventComponent implements OnInit {
   public addEventForm: FormGroup = null;
   public isLoading: boolean = false;
   private unsubscribe: Subscription[] = [];
-  select_cut = new FormControl(false);
+  public select_cut = new FormControl(false);
   cuts = new FormArray([]);
+  categories = [];
   constructor(private fb: FormBuilder, private snackBar: MatSnackBar,
     private eventsService: G12eventsService, private router: Router) { }
 
   ngOnInit(): void {
     this.buildForm();
+    this.getCategories()
   }
 
   buildForm() {
@@ -59,10 +61,6 @@ export class AddEventComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log("FORMMMMMM", this.addEventForm)
-    console.log("select", this.cuts)
-
-
     if (this.addEventForm.invalid) {
       return;
     }
@@ -107,6 +105,12 @@ export class AddEventComponent implements OnInit {
     // this.unsubscribe.push(addGoSubscr);
   }
 
+
+  getCategories() {
+    this.eventsService.getCategories().subscribe((res: any) => {
+      this.categories = res;
+    })
+  }
   cutsToSend() {
     let newCuts = [];
     let error = false;
@@ -149,8 +153,14 @@ export class AddEventComponent implements OnInit {
     this.cuts.removeAt(i)
   }
   pushCategorie() {
-    this.addEventForm.get('category').value.push(this.addEventForm.get('categorieAdd').value);
-    this.addEventForm.get('categorieAdd').setValue('');
+    let found = false;
+    this.addEventForm.get('category').value.map(item => {
+      if (item == this.addEventForm.get('categorieAdd').value) { found = true }
+    });
+    if (!found) {
+      this.addEventForm.get('category').value.push(this.addEventForm.get('categorieAdd').value);
+      this.addEventForm.get('categorieAdd').setValue('');
+    }
   }
   drop(event: CdkDragDrop<[]>) {
     moveItemInArray(this.addEventForm.get('category').value, event.previousIndex, event.currentIndex);

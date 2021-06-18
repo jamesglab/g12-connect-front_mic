@@ -7,7 +7,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { MatDatepicker } from '@angular/material/datepicker';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 export const MY_FORMATS = {
@@ -21,13 +22,13 @@ export const MY_FORMATS = {
     monthYearA11yLabel: 'MMMM YYYY',
   },
 };
- 
+
 @Component({
   selector: 'app-event-reports',
   templateUrl: './event-reports.component.html',
   styleUrls: ['./event-reports.component.scss'],
-  providers:[
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+  providers: [
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
 
   ]
 })
@@ -43,6 +44,7 @@ export class EventReportsComponent implements OnInit {
   });
   public events: [] = [];
 
+  public cutTransactions: any;
   public event_selected = new FormControl(0, []);
   public status = new FormControl(0, []);
   public pastores: any = [];
@@ -52,6 +54,7 @@ export class EventReportsComponent implements OnInit {
   public dataSource: any;
   public downloadPastor: boolean = false;
   public search = new FormControl('', []);
+  public info_users_count: any;
   constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef, private exportService: ExportService) {
 
   }
@@ -59,7 +62,6 @@ export class EventReportsComponent implements OnInit {
   ngOnInit(): void {
 
     this.getEvents();
-    this.getTransactions();
     this.getPastor();
   }
 
@@ -81,6 +83,53 @@ export class EventReportsComponent implements OnInit {
     this.dataSource.filter = this.search.value.trim().toLowerCase();
 
   }
+
+  getTransactionsMongo() {
+
+    this._g12Events.getTransactionsReports({
+      year: moment(this.date.value).format('YYYY'),
+      platform: "G12_EVENT",
+      event_id: (this.event_selected.value != 0) ? this.event_selected.value.id : '',
+      transaction_status: (this.status.value != 0) ? this.status.value : '',
+      pastor: (this.pastor_selected.value != 0) ? this.pastor_selected.value.user_code : ''
+    }).subscribe((res: any,) => {
+      this.countUsers(res);
+      res.map((item, i) => {
+        res[i].transaction.status = this.validateStatus(item.transaction.status); res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
+      })
+
+      if (!this.dataSource) {
+        this.dataSource = new MatTableDataSource<any[]>(res);
+        this.cdr.detectChanges();
+        console.log('data source', this.dataSource.data)
+      } else {
+        this.dataSource.data = res;
+      }
+      this.separateCuts(res);
+    })
+  }
+
+  async separateCuts(data) {
+
+    let cutTransaction = {};
+    let firstItem = false;
+    data.map(transaction => {
+      if (!firstItem) {
+        cutTransaction[transaction.cut.name] = [transaction];
+        firstItem = true;
+      } else {
+        Object.keys(cutTransaction).map(async (element) => {
+          if (element == transaction.cut.name) {
+            cutTransaction[element].push(transaction);
+          } else {
+            cutTransaction[transaction.cut.name] = [transaction]
+          }
+        });
+      }
+    });
+    this.cutTransactions = cutTransaction;
+  }
+
   getTransactions() {
     if (this.pastor_selected.value.toString() != 0) {
       this.downloadPastor = true;
@@ -114,10 +163,30 @@ export class EventReportsComponent implements OnInit {
     })
   }
 
+  countUsers(data: any[]) {
+
+    let nationals = 0;
+    let internationals = 0;
+    data.map(item => {
+      if (item.user.country.trim().toLowerCase() == 'colombia') {
+        nationals = nationals + 1;
+      } else {
+        internationals = internationals + 1;
+      }
+    });
+    const cont_users = {
+      total: data.length,
+      nationals,
+      internationals
+    }
+    this.info_users_count = cont_users
+  }
+
+
+
   exportFile() {
     const dataToExport = []
     this.dataSource.data.map(item => {
-
       const newData = {
         evento: item.event,
         fecha: new Date(item.created_at),
@@ -154,15 +223,12 @@ export class EventReportsComponent implements OnInit {
     }
   }
 
-
-
-
   chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
     const ctrlValue = this.date.value;
     ctrlValue.year(normalizedYear.year());
     this.date.setValue(ctrlValue);
     datepicker.close();
-    
+
   }
 
   // chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {

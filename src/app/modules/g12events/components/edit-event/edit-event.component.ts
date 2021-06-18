@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -21,15 +21,17 @@ import { Donation } from '../../_models/donation.model';
 export class EditEventComponent implements OnInit {
 
   public editEventForm: FormGroup = null;
-  public event: Donation = null;
+  public event = null;
   public isLoading: boolean = false;
   private unsubscribe: Subscription[] = [];
+  cuts = new FormArray([]);
 
   constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private eventsService: G12eventsService,
     private router: Router, public modal: NgbActiveModal) { }
 
   ngOnInit(): void {
     this.buildForm();
+    this.setCuts();
   }
 
   buildForm() {
@@ -41,7 +43,7 @@ export class EditEventComponent implements OnInit {
       description: [this.event.description],
       image: [this.event.image],
       code: [],
-      categorieAdd :[''],
+      categorieAdd: [''],
       base64: [],
       // hour: ['', [Validators.required, hourValidation.bind(this)]],
       prices: this.fb.group({
@@ -58,6 +60,23 @@ export class EditEventComponent implements OnInit {
     } else {
       this.form.base64.setValue("https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj")
     }
+
+  }
+  setCuts() {
+
+    this.event.financialCut.map(cut => {
+      this.cuts.push(
+        new FormGroup({
+          name: new FormControl(cut.name),
+          cop: new FormControl(cut.prices.cop),
+          usd: new FormControl(cut.prices.usd),
+          quantity: new FormControl(cut.quantity),
+          initDate: new FormControl(cut.date_init),
+          finishDate: new FormControl(cut.date_finish),
+        })
+      );
+    })
+
 
   }
 
@@ -81,8 +100,8 @@ export class EditEventComponent implements OnInit {
       return;
     }
     delete this.editEventForm.getRawValue().categorieAdd;
-    const sendData  = this.editEventForm.getRawValue();
-    delete sendData.categorieAdd    
+    const sendData = this.editEventForm.getRawValue();
+    delete sendData.categorieAdd
     const addEventSubscr = this.eventsService.update(sendData)
       .subscribe((res: any) => {
         console.log("UPDATEDDDDDD", res);
@@ -108,7 +127,9 @@ export class EditEventComponent implements OnInit {
     //   })
     // this.unsubscribe.push(addGoSubscr);
   }
-
+  deleteCute(i) {
+    this.cuts.removeAt(i)
+  }
   showMessage(type: number, message?: string) {
     this.snackBar.openFromComponent(NotificationComponent, notificationConfig(type, message));
   }
