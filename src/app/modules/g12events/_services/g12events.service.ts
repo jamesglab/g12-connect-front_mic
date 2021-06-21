@@ -133,8 +133,4 @@ export class G12eventsService {
         catchError((handleError))
       );
   }
-
-
-
-
 }
