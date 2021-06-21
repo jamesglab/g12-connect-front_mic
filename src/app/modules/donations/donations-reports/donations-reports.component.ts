@@ -19,11 +19,14 @@ export class DonationsReportsComponent implements OnInit {
     start: new FormControl(),
     end: new FormControl()
   });
+  public maxDate: Date;
   public dataSource: any;
   public status = new FormControl(0, []);
   public payment_method = new FormControl(0, []);
   public info_to_export = [];
-  constructor(public readonly _donations: DonationsServices, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef, private exportService: ExportService,) { }
+  constructor(public readonly _donations: DonationsServices, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef, private exportService: ExportService,) {
+    this.maxDate = new Date();
+  }
 
   ngOnInit(): void {
   }
@@ -121,7 +124,7 @@ export class DonationsReportsComponent implements OnInit {
         dataToExport.push(newData)
       });
       this.exportService.exportAsExcelFile(dataToExport, 'DONACIONES_MCI');
-    }else {
+    } else {
       this.showMessage(2, 'No hay datos por exportar');
     }
 

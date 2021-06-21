@@ -22,9 +22,13 @@ export class AddEventComponent implements OnInit {
   private unsubscribe: Subscription[] = [];
   public select_cut = new FormControl(false);
   cuts = new FormArray([]);
+  public minDate: Date;
+  public maxDate: Date;
   categories = [];
   constructor(private fb: FormBuilder, private snackBar: MatSnackBar,
-    private eventsService: G12eventsService, private router: Router) { }
+    private eventsService: G12eventsService, private router: Router) {    
+    this.minDate = new Date();
+  }
 
   ngOnInit(): void {
     this.buildForm();
@@ -61,31 +65,32 @@ export class AddEventComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.addEventForm.invalid) {
-      return;
-    }
-    let cont_quantity = 0;
-    this.cuts.value.map(cute => {
-      cont_quantity = cont_quantity + parseInt(cute.quantity);
-    });
-    if (cont_quantity < parseInt(this.addEventForm.value.limit)) {
-      let cuts = this.cutsToSend();
-      if (cuts) {
-        this.addEventForm.get('initDate').setValue(moment(this.addEventForm.get('initDate').value));
-        this.addEventForm.get('finishDate').setValue(moment(this.addEventForm.get('finishDate').value));
-        const updateEventSubscr = this.eventsService.create({ transaction_info: this.addEventForm.getRawValue(), cuts })
-          .subscribe((res: any) => {
-            console.log("REGISTEREDDD", res);
-            this.showMessage(1, `El evento ${this.form.name.value} ha sido creado correctamente!`);
-            this.router.navigate(['g12events']);
-          }, err => { throw err; });
-        this.unsubscribe.push(updateEventSubscr);
-      } else {
-        this.showMessage(2, 'Hay campos vacios requeridos en los cortes');
-      }
-    } else {
-      this.showMessage(2, 'Verifica la capacidad de los cortes');
-    }
+    console.log(this.addEventForm)
+    // if (this.addEventForm.invalid) {
+    //   return;
+    // }
+    // let cont_quantity = 0;
+    // this.cuts.value.map(cute => {
+    //   cont_quantity = cont_quantity + parseInt(cute.quantity);
+    // });
+    // if (cont_quantity < parseInt(this.addEventForm.value.limit)) {
+    //   let cuts = this.cutsToSend();
+    //   if (cuts) {
+    //     this.addEventForm.get('initDate').setValue(moment(this.addEventForm.get('initDate').value));
+    //     this.addEventForm.get('finishDate').setValue(moment(this.addEventForm.get('finishDate').value));
+    //     const updateEventSubscr = this.eventsService.create({ transaction_info: this.addEventForm.getRawValue(), cuts })
+    //       .subscribe((res: any) => {
+    //         console.log("REGISTEREDDD", res);
+    //         this.showMessage(1, `El evento ${this.form.name.value} ha sido creado correctamente!`);
+    //         this.router.navigate(['g12events']);
+    //       }, err => { throw err; });
+    //     this.unsubscribe.push(updateEventSubscr);
+    //   } else {
+    //     this.showMessage(2, 'Hay campos vacios requeridos en los cortes');
+    //   }
+    // } else {
+    //   this.showMessage(2, 'Verifica la capacidad de los cortes');
+    // }
 
     // const addGoSubscr = this._goService.insertGo(this.addGoForm.getRawValue())
     //   .subscribe((res: Response) => {

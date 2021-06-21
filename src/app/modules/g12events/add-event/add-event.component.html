@@ -41,7 +41,8 @@
 
                 <mat-label>Agregar Categoria</mat-label>
                 <mat-select formControlName="categorieAdd">
-                  <mat-option  (click)="pushCategorie()" *ngFor="let categorie of categories" [value]="categorie.value">{{categorie.value}}</mat-option>
+                  <mat-option (click)="pushCategorie()" *ngFor="let categorie of categories" [value]="categorie.value">
+                    {{categorie.value}}</mat-option>
                 </mat-select>
                 <!-- <mat-label>Agregar Categoria</mat-label>
                 <input matInput autocomplete="off" formControlName="categorieAdd">
@@ -71,7 +72,7 @@
 
               <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>Selecciona un rango del evento</mat-label>
-                <mat-date-range-input [rangePicker]="picker">
+                <mat-date-range-input [rangePicker]="picker" [min]="minDate">
                   <input matStartDate placeholder="Fecha de inicio" formControlName="initDate">
                   <input matEndDate placeholder="Fecha de fin" formControlName="finishDate">
                 </mat-date-range-input>
@@ -158,7 +159,7 @@
 
                               <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Selecciona un rango para el corte </mat-label>
-                                <mat-date-range-input [rangePicker]="picker">
+                                <mat-date-range-input [rangePicker]="picker" [max]="addEventForm.get('finishDate').value" [min]="addEventForm.get('initDate').value">
                                   <input matStartDate placeholder="Fecha de inicio" formControlName="initDate">
                                   <input matEndDate placeholder="Fecga de fin" formControlName="finishDate">
                                 </mat-date-range-input>
