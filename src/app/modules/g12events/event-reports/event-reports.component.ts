@@ -7,8 +7,11 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { MatDatepicker } from '@angular/material/datepicker';
+import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
 
 
 export const MY_FORMATS = {
@@ -55,8 +58,8 @@ export class EventReportsComponent implements OnInit {
   public search = new FormControl('', []);
   public data_cut_table: any;
   public info_users_count: any;
-  public info_to_export: any;
-  constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef, private exportService: ExportService) {
+  public info_to_export: any = [];
+  constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef, private exportService: ExportService, private snackBar: MatSnackBar,) {
 
   }
 
@@ -85,7 +88,8 @@ export class EventReportsComponent implements OnInit {
   getTransactionsMongo() {
 
     this._g12Events.getTransactionsReports({
-      year: moment(this.date.value).format('YYYY'),
+      date_init: `${moment(this.date.value).format('YYYY')}-01-01T00:00:00.000`,
+      date_finish: `${moment(this.date.value).format('YYYY')}-12-31T23:59:00.000`,
       platform: "G12_EVENT",
       event_id: (this.event_selected.value != 0) ? this.event_selected.value.id : '',
       transaction_status: (this.status.value != 0) ? this.status.value : '',
@@ -204,31 +208,37 @@ export class EventReportsComponent implements OnInit {
     this.info_users_count = cont_users
   }
   exportFile() {
-
-    const dataToExport = []
-    this.info_to_export.map(item => {
-      const newData = {
-        evento: item.donation.name,
-        fecha: new Date(item.created_at),
-        'methodo de pago': item.transaction.payment_method,
-        estado: item.transaction.status,
-        costo: item.transaction.amount,
-        moneda: item.transaction.currency,
-        identificación: item.user.identification,
-        nombre: item.user.name,
-        apellido: item.user.last_name,
-        email: item.user.email,
-        telefono: item.user.phone,
-        pais: item.user.country,
-        ciudad: item.user.city,
-        departamento: item.user.departament,
-        genero: item.user.gender 
-      }
-      dataToExport.push(newData)
-    });
-    this.exportService.exportAsExcelFile(dataToExport, !this.downloadPastor ? 'EVENTOSG12' : `${this.pastor_selected.value.name}_EVENTOSG12`)
+    if (this.info_to_export.length > 0) {
+      const dataToExport = []
+      this.info_to_export.map(item => {
+        const newData = {
+          evento: item.donation.name,
+          fecha: new Date(item.created_at),
+          'methodo de pago': item.transaction.payment_method,
+          estado: item.transaction.status,
+          costo: item.transaction.amount,
+          moneda: item.transaction.currency,
+          identificación: item.user.identification,
+          nombre: item.user.name,
+          apellido: item.user.last_name,
+          email: item.user.email,
+          telefono: item.user.phone,
+          pais: item.user.country,
+          ciudad: item.user.city,
+          departamento: item.user.departament,
+          genero: item.user.gender
+        }
+        dataToExport.push(newData)
+      });
+      this.exportService.exportAsExcelFile(dataToExport, !this.downloadPastor ? 'EVENTOSG12' : `${this.pastor_selected.value.name}_EVENTOSG12`);
+    } else {
+      this.showMessage(2, 'No hay datos por exportar');
+    }
   }
 
+  showMessage(type: number, message?: string) {
+    this.snackBar.openFromComponent(NotificationComponent, notificationConfig(type, message));
+  }
   validateStatus(status) {
     if (parseInt(status) == 1) {
       return 'Aprobado'

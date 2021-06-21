@@ -11,9 +11,7 @@ export class ShowCutCountsComponent implements OnInit {
   @Output() send_data = new EventEmitter<any>();
   public selected_cut: any;
   public cuts_show = [];
-
   constructor() { }
-
   ngOnInit(): void {
   }
   ngOnChanges() {
