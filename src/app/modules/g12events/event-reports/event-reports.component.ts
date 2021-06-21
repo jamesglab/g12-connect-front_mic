@@ -43,8 +43,7 @@ export class EventReportsComponent implements OnInit {
     finish_date: new FormControl()
   });
   public events: [] = [];
-
-  public cutTransactions: any;
+  public cutTransactions: any = [];
   public event_selected = new FormControl(0, []);
   public status = new FormControl(0, []);
   public pastores: any = [];
@@ -54,7 +53,9 @@ export class EventReportsComponent implements OnInit {
   public dataSource: any;
   public downloadPastor: boolean = false;
   public search = new FormControl('', []);
+  public data_cut_table: any;
   public info_users_count: any;
+  public info_to_export: any;
   constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef, private exportService: ExportService) {
 
   }
@@ -77,11 +78,8 @@ export class EventReportsComponent implements OnInit {
       this.events = res;
     })
   }
-
-
   filter() {
     this.dataSource.filter = this.search.value.trim().toLowerCase();
-
   }
 
   getTransactionsMongo() {
@@ -99,14 +97,37 @@ export class EventReportsComponent implements OnInit {
       })
 
       if (!this.dataSource) {
-        this.dataSource = new MatTableDataSource<any[]>(res);
+        this.dataSource = new MatTableDataSource<any[]>(this.getObjetcsToTable(res));
+        this.info_to_export = res;
         this.cdr.detectChanges();
-        console.log('data source', this.dataSource.data)
       } else {
-        this.dataSource.data = res;
+        this.dataSource.data = this.getObjetcsToTable(res);
       }
+      this.cutTransactions = [];
+      this.data_cut_table = [];
+      this.info_to_export = res;
       this.separateCuts(res);
     })
+  }
+
+  getObjetcsToTable(data) {
+
+    let newReports = [];
+    data.map(element => {
+      const newReport = {
+        payment_method: element.transaction.payment_method,
+        created_at: element.created_at,
+        event_name: element.donation.name,
+        status: element.transaction.status,
+        identification: element.user.identification,
+        name: element.user.name,
+        last_name: element.user.last_name,
+        email: element.user.email
+      }
+      newReports.push(newReport);
+    });
+    return newReports
+
   }
 
   async separateCuts(data) {
@@ -128,6 +149,7 @@ export class EventReportsComponent implements OnInit {
       }
     });
     this.cutTransactions = cutTransaction;
+
   }
 
   getTransactions() {
@@ -181,25 +203,29 @@ export class EventReportsComponent implements OnInit {
     }
     this.info_users_count = cont_users
   }
-
-
-
   exportFile() {
+
     const dataToExport = []
-    this.dataSource.data.map(item => {
+    this.info_to_export.map(item => {
       const newData = {
-        evento: item.event,
+        evento: item.donation.name,
         fecha: new Date(item.created_at),
-        methodo_pago: item.payment_method,
-        estado: item.status,
-        identificación: item.identification,
-        nombre: item.name,
-        apellido: item.last_name,
-        email: item.email
+        'methodo de pago': item.transaction.payment_method,
+        estado: item.transaction.status,
+        costo: item.transaction.amount,
+        moneda: item.transaction.currency,
+        identificación: item.user.identification,
+        nombre: item.user.name,
+        apellido: item.user.last_name,
+        email: item.user.email,
+        telefono: item.user.phone,
+        pais: item.user.country,
+        ciudad: item.user.city,
+        departamento: item.user.departament,
+        genero: item.user.gender 
       }
       dataToExport.push(newData)
-    })
-
+    });
     this.exportService.exportAsExcelFile(dataToExport, !this.downloadPastor ? 'EVENTOSG12' : `${this.pastor_selected.value.name}_EVENTOSG12`)
   }
 
@@ -228,13 +254,5 @@ export class EventReportsComponent implements OnInit {
     ctrlValue.year(normalizedYear.year());
     this.date.setValue(ctrlValue);
     datepicker.close();
-
   }
-
-  // chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
-  //   const ctrlValue = this.date.value;
-  //   ctrlValue.month(normalizedMonth.month());
-  //   this.date.setValue(ctrlValue);
-  //   datepicker.close();
-  // }
 }
