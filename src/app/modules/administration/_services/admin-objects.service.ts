@@ -18,58 +18,55 @@ export class AdminObjectsService {
 
   constructor(private http: HttpClient, private _storageService: StorageService) { }
 
-  getHeader(): HttpHeaders {
-    let token: string = this._storageService.getItem("user").token;
-    let _header: HttpHeaders = header.append("Authorization", `Bearer ${token}`);
-    return _header;
-  }
+  // getHeader(): HttpHeaders {
+  //   let token: string = this._storageService.getItem("user").token;
+  //   let _header: HttpHeaders = header.append("Authorization", `Bearer ${token}`);
+  //   return _header;
+  // }
 
-  getObjectTypes(): Observable<any> {
-    return this.http.get<Response>(
-      `${environment.apiUrl}Sso/ListTypeObject`, { headers: this.getHeader() }).pipe(
-        map((res: Response) => {
-          return res;
-        }),
-        catchError(this.handleError)
-      );
-    // return new Observable<any>(observer => {
-    //   observer.next({ result: true, entity: [{ idType: 1, name: "Primer tipo" }, { idType: 2, name: "Segundo tipo" }] })
-    // })  
-  }
+  // getObjectTypes(): Observable<any> {
+  //   return this.http.get<Response>(
+  //     `${environment.apiUrl}Sso/ListTypeObject`, { headers: header }).pipe(
+  //       map((res: Response) => {
+  //         return res;
+  //       }),
+  //       catchError(this.handleError)
+  //     );
+  // }
 
-  createObjectType(objectType: ObjectType): Observable<Response> {
-    return this.http.post<Response>(
-      `${environment.apiUrl}Sso/CreateObjectType`, JSON.stringify(objectType), { headers: this.getHeader() }).pipe(
-        map((res: Response) => {
-          return res;
-        }),
-        catchError(this.handleError)
-      );
-  }
+  // createObjectType(objectType: ObjectType): Observable<Response> {
+  //   return this.http.post<Response>(
+  //     `${environment.apiUrl}Sso/CreateObjectType`, JSON.stringify(objectType), { headers: header }).pipe(
+  //       map((res: Response) => {
+  //         return res;
+  //       }),
+  //       catchError(this.handleError)
+  //     );
+  // }
 
-  editObjectType(objectType: ObjectType): Observable<Response> {
-    return this.http.post<Response>(
-      `${environment.apiUrl}Sso/EditTypeObject`, JSON.stringify(objectType), { headers: this.getHeader() }).pipe(
-        map((res: Response) => {
-          return res;
-        }),
-        catchError(this.handleError)
-      );
-  }
+  // editObjectType(objectType: ObjectType): Observable<Response> {
+  //   return this.http.post<Response>(
+  //     `${environment.apiUrl}Sso/EditTypeObject`, JSON.stringify(objectType), { headers: header }).pipe(
+  //       map((res: Response) => {
+  //         return res;
+  //       }),
+  //       catchError(this.handleError)
+  //     );
+  // }
 
-  deleteObjectType(objectType: ObjectType): Observable<Response> {
-    return this.http.post<Response>(
-      `${environment.apiUrl}Sso/DeleteTypeObject`, JSON.stringify(objectType), { headers: this.getHeader() }).pipe(
-        map((res: Response) => {
-          return res;
-        }),
-        catchError(this.handleError)
-      );
-  }
+  // deleteObjectType(objectType: ObjectType): Observable<Response> {
+  //   return this.http.post<Response>(
+  //     `${environment.apiUrl}Sso/DeleteTypeObject`, JSON.stringify(objectType), { headers: header }).pipe(
+  //       map((res: Response) => {
+  //         return res;
+  //       }),
+  //       catchError(this.handleError)
+  //     );
+  // }
 
   getObjects(): Observable<any> {
     return this.http.get<Response>(
-      `${environment.apiUrl}Sso/ListObject`, { headers: this.getHeader() }).pipe(
+      `${environment.apiUrl}Sso/ListObject`, { headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -79,7 +76,7 @@ export class AdminObjectsService {
 
   createObject(object: Object): Observable<Response> {
     return this.http.post<Response>(
-      `${environment.apiUrl}Sso/CreateObject`, JSON.stringify(object), { headers: this.getHeader() }).pipe(
+      `${environment.apiUrlG12Connect}managment/data-dictionary`, JSON.stringify(object), { headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -89,7 +86,7 @@ export class AdminObjectsService {
 
   editObject(object: Object): Observable<Response> {
     return this.http.post<Response>(
-      `${environment.apiUrl}Sso/EditObject`, JSON.stringify(object), { headers: this.getHeader() }).pipe(
+      `${environment.apiUrl}Sso/EditObject`, JSON.stringify(object), { headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -99,7 +96,7 @@ export class AdminObjectsService {
 
   deleteObject(object: { IdObject: number, UserModified: number }): Observable<Response> {
     return this.http.post<Response>(
-      `${environment.apiUrl}Sso/DeleteObject`, JSON.stringify(object), { headers: this.getHeader() }).pipe(
+      `${environment.apiUrl}Sso/DeleteObject`, JSON.stringify(object), { headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),

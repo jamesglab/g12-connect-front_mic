@@ -42,13 +42,14 @@ export const DynamicAsideMenuConfig = {
               code: "ADM012",
               page: '/admin/permisses/roles'
             },
-            // {
-            //   title: 'Objetos',
-            //   root: true,
-            //   show: true,
-            //   bullet: 'dot',
-            //   page: '/admin/permisses/objects'
-            // }
+            {
+              title: 'Objetos',
+              root: true,
+              show: true,
+              bullet: 'dot',
+              code: "ADM013",
+              page: '/admin/permisses/objects'
+            }
           ]
         },
       ]

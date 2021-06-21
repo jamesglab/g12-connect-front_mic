@@ -22,23 +22,23 @@ export class DynamicHeaderMenuService {
   // Here you able to load your menu from server/data-base/localeStorage
   // Default => from DynamicHeaderMenuConfig
   private loadMenu() {
-    const { permisses } = this.storage.getItem("auth");
+    const { permissions } = this.storage.getItem("auth");
     DynamicHeaderMenuConfig.items.map((item: any) => {
-      let validate = validatePermission(permisses, item.code);
+      let validate = validatePermission(permissions, item.code);
       if (!validate) {
         item.show = false;
       } else {
         if (item.submenu) {
           item.submenu.map(subitem => {
             if(subitem.code){
-              let validate = validatePermission(permisses, subitem.code);
+              let validate = validatePermission(permissions, subitem.code);
               if(!validate){
                 subitem.show = false;
               }else{
                 if(subitem.submenu){
                   subitem.submenu.map(lastItem => {
                     if(lastItem.code){
-                      let validate = validatePermission(permisses, lastItem.code);
+                      let validate = validatePermission(permissions, lastItem.code);
                       if(!validate){
                         lastItem.show = false;
                       }

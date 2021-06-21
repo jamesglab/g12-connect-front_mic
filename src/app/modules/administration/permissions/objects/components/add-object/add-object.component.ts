@@ -21,7 +21,7 @@ export class AddObjectComponent implements OnInit {
   private currentUser: any = this._storageService.getItem("user");
   
   public createObjectForm: FormGroup;
-  public objectTypes: any[] = [];
+  // public objectTypes: any[] = [];
 
   public isLoading: boolean = false;
   private unsubscribe: Subscription[] = [];
@@ -32,16 +32,13 @@ export class AddObjectComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
-    this.getObjectTypes();
+    // this.getObjectTypes();
   }
 
   buildForm() {
     this.createObjectForm = this.fb.group({
-      Type: [null, [Validators.required]],
-      Name: [null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9+óÓííéÉáÁ ]+$/)]],
-      Description: [null, [Validators.pattern(/^[a-zA-Z0-9+óÓííéÉáÁ ]+$/)]],
-      Available: [true],
-      UserCreation: [null]
+      value: [null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9+óÓííéÉáÁ ]+$/)]],
+      description: [null, [Validators.pattern(/^[a-zA-Z0-9+óÓííéÉáÁ ]+$/)]]
     });
   }
 
@@ -49,16 +46,16 @@ export class AddObjectComponent implements OnInit {
     return this.createObjectForm.controls;
   }
 
-  getObjectTypes() {
-    const getUserTypesSubscr = this._adminObjectsService
-      .getObjectTypes().subscribe((res: Response) => {
-        if (res.result) {
-          this.objectTypes = res.entity;
-          this.cdr.detectChanges();
-        }
-      }, err => { throw err; });
-    this.unsubscribe.push(getUserTypesSubscr);
-  }
+  // getObjectTypes() {
+  //   const getUserTypesSubscr = this._adminObjectsService
+  //     .getObjectTypes().subscribe((res: Response) => {
+  //       if (res.result) {
+  //         this.objectTypes = res.entity;
+  //         this.cdr.detectChanges();
+  //       }
+  //     }, err => { throw err; });
+  //   this.unsubscribe.push(getUserTypesSubscr);
+  // }
 
   onSubmit() {
 
@@ -72,17 +69,9 @@ export class AddObjectComponent implements OnInit {
     const createRoleSubscr = this._adminObjectsService
       .createObject(this.createObjectForm.getRawValue()).subscribe((res: Response) => {
         this.isLoading = false;
-        if(res){
-          if(res.result){
-            this.showMessage(1,"¡El nuevo objeto ha sido creado con exito!");
-            this.modal.close('success');
-          }else{
-            this.showMessage(2, res.message[0]);
-          }
-        }else{
-          this.showMessage(3)
-        }
-      }, err =>{ this.isLoading = false; throw err; });
+        this.showMessage(1,"¡El nuevo objeto ha sido creado con exito!");
+        this.modal.close('success');
+      }, err =>{ this.isLoading = false; this.showMessage(3,err.error.message); throw err; });
     this.unsubscribe.push(createRoleSubscr);
   }
 
