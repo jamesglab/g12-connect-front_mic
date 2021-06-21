@@ -25,3 +25,8 @@ export interface Donation { //AN EVENT IS A DONATION
     updated_at?: string,
     status: boolean
 }
+
+export interface sendDonation {
+    transaction_info : Donation,
+    cuts : any[]
+}

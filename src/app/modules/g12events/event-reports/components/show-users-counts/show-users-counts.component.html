@@ -1,0 +1,107 @@
+<div class="row mt-5">
+
+  <div class="col-xl-4 col-sm-12">
+
+    <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+      <!-- Header -->
+      <div class="card-header border-0 bg-warning py-5">
+        <h3 class="card-title font-weight-bolder text-white">Usuarios Registrados</h3>
+        <div class="card-toolbar text-white">
+
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="card-body p-0 position-relative overflow-hidden">
+        <!--begin::Stats-->
+        <div class="card-spacer">
+          <!--begin::Row-->
+          <div class="row m-0">
+            <div class="col-xl-12 col-sm-12 bg-light-warning rounded-xl
+                        d-flex justify-content-center align-items-center p-3 mb-5">
+
+              <a class="text-warning font-weight-bold font-size-h6">
+                {{info_users_count?.total ? info_users_count?.total :0}}
+              </a>
+            </div>
+          </div>
+
+        </div>
+        <!--end::Stats-->
+      </div>
+
+    </div>
+
+  </div>
+  <div class="col-xl-4 col-sm-12">
+
+
+    <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+      <!-- Header -->
+      <div class="card-header border-0 bg-primary py-5">
+        <h3 class="card-title font-weight-bolder text-white">Nacionales</h3>
+        <div class="card-toolbar text-white">
+
+        </div>
+      </div>
+
+
+      <!-- Body -->
+      <div class="card-body p-0 position-relative overflow-hidden">
+        <!--begin::Stats-->
+        <div class="card-spacer">
+          <!--begin::Row-->
+          <div class="row m-0">
+            <div class="col-xl-12 col-sm-12 bg-light-primary rounded-xl
+                            d-flex justify-content-center align-items-center p-3 mb-5">
+
+              <a class="text-primary font-weight-bold font-size-h6">
+                {{info_users_count?.nationals ? info_users_count?.nationals : 0}}
+              </a>
+            </div>
+          </div>
+
+        </div>
+        <!--end::Stats-->
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="col-xl-4 col-sm-12">
+
+    <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+      <!-- Header -->
+      <div class="card-header border-0 bg-success py-5">
+        <h3 class="card-title font-weight-bolder text-white">Internacionales</h3>
+        <div class="card-toolbar text-white">
+
+        </div>
+      </div>
+
+
+      <!-- Body -->
+      <div class="card-body p-0 position-relative overflow-hidden">
+        <!--begin::Stats-->
+        <div class="card-spacer">
+          <!--begin::Row-->
+          <div class="row m-0">
+            <div class="col-xl-12 col-sm-12 bg-light-success rounded-xl
+                            d-flex justify-content-center align-items-center p-3 mb-5">
+
+              <a class="text-success font-weight-bold font-size-h6">
+                {{info_users_count?.internationals?info_users_count.internationals:0}}
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

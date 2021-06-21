@@ -1,0 +1,25 @@
+<div class="row">
+
+  <div class="col-xl-4 col-sm-12 select_cut" *ngFor="let item of cuts_show" (click)="sendtable(item)"
+    [ngClass]="{'selected_cut':selected_cut==item}">
+    <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+      <div class="card-header border-0 bg-success py-5">
+        <h3 class="card-title font-weight-bolder text-white">{{item}}</h3>
+        <div class="card-toolbar text-white">
+        </div>
+      </div>
+      <div class="card-body p-0 position-relative overflow-hidden">
+        <div class="card-spacer">
+          <div class="row m-0">
+            <div class="col-xl-12 col-sm-12 bg-light-success rounded-xl
+                                  d-flex justify-content-center align-items-center p-3 mb-5">
+              <a class="text-success font-weight-bold font-size-h6">
+                {{cuts[item].length}}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -4,19 +4,38 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ExportService } from 'src/app/modules/_services/export.service'
 import { G12eventsService } from '../_services/g12events.service';
 import { ErrorStateMatcher } from '@angular/material/core';
+import * as moment from 'moment';
+import { Moment } from 'moment';
+import { MatDatepicker } from '@angular/material/datepicker';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
-
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'YYYY',
+  },
+  display: {
+    dateInput: 'YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @Component({
   selector: 'app-event-reports',
   templateUrl: './event-reports.component.html',
-  styleUrls: ['./event-reports.component.scss']
+  styleUrls: ['./event-reports.component.scss'],
+  providers: [
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+
+  ]
 })
 
 
 export class EventReportsComponent implements OnInit {
-
+  date = new FormControl(moment());
   campaignOne: FormGroup;
   campaignTwo: FormGroup;
   range = new FormGroup({
@@ -24,7 +43,7 @@ export class EventReportsComponent implements OnInit {
     finish_date: new FormControl()
   });
   public events: [] = [];
-
+  public cutTransactions: any = [];
   public event_selected = new FormControl(0, []);
   public status = new FormControl(0, []);
   public pastores: any = [];
@@ -34,6 +53,9 @@ export class EventReportsComponent implements OnInit {
   public dataSource: any;
   public downloadPastor: boolean = false;
   public search = new FormControl('', []);
+  public data_cut_table: any;
+  public info_users_count: any;
+  public info_to_export: any;
   constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef, private exportService: ExportService) {
 
   }
@@ -41,7 +63,6 @@ export class EventReportsComponent implements OnInit {
   ngOnInit(): void {
 
     this.getEvents();
-    this.getTransactions();
     this.getPastor();
   }
 
@@ -57,12 +78,80 @@ export class EventReportsComponent implements OnInit {
       this.events = res;
     })
   }
-
-
   filter() {
     this.dataSource.filter = this.search.value.trim().toLowerCase();
+  }
+
+  getTransactionsMongo() {
+
+    this._g12Events.getTransactionsReports({
+      year: moment(this.date.value).format('YYYY'),
+      platform: "G12_EVENT",
+      event_id: (this.event_selected.value != 0) ? this.event_selected.value.id : '',
+      transaction_status: (this.status.value != 0) ? this.status.value : '',
+      pastor: (this.pastor_selected.value != 0) ? this.pastor_selected.value.user_code : ''
+    }).subscribe((res: any,) => {
+      this.countUsers(res);
+      res.map((item, i) => {
+        res[i].transaction.status = this.validateStatus(item.transaction.status); res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
+      })
+
+      if (!this.dataSource) {
+        this.dataSource = new MatTableDataSource<any[]>(this.getObjetcsToTable(res));
+        this.info_to_export = res;
+        this.cdr.detectChanges();
+      } else {
+        this.dataSource.data = this.getObjetcsToTable(res);
+      }
+      this.cutTransactions = [];
+      this.data_cut_table = [];
+      this.info_to_export = res;
+      this.separateCuts(res);
+    })
+  }
+
+  getObjetcsToTable(data) {
+
+    let newReports = [];
+    data.map(element => {
+      const newReport = {
+        payment_method: element.transaction.payment_method,
+        created_at: element.created_at,
+        event_name: element.donation.name,
+        status: element.transaction.status,
+        identification: element.user.identification,
+        name: element.user.name,
+        last_name: element.user.last_name,
+        email: element.user.email
+      }
+      newReports.push(newReport);
+    });
+    return newReports
 
   }
+
+  async separateCuts(data) {
+
+    let cutTransaction = {};
+    let firstItem = false;
+    data.map(transaction => {
+      if (!firstItem) {
+        cutTransaction[transaction.cut.name] = [transaction];
+        firstItem = true;
+      } else {
+        Object.keys(cutTransaction).map(async (element) => {
+          if (element == transaction.cut.name) {
+            cutTransaction[element].push(transaction);
+          } else {
+            cutTransaction[transaction.cut.name] = [transaction]
+          }
+        });
+      }
+    });
+    this.cutTransactions = cutTransaction;
+
+  }
+
   getTransactions() {
     if (this.pastor_selected.value.toString() != 0) {
       this.downloadPastor = true;
@@ -96,23 +185,47 @@ export class EventReportsComponent implements OnInit {
     })
   }
 
-  exportFile() {
-    const dataToExport = []
-    this.dataSource.data.map(item => {
+  countUsers(data: any[]) {
 
+    let nationals = 0;
+    let internationals = 0;
+    data.map(item => {
+      if (item.user.country.trim().toLowerCase() == 'colombia') {
+        nationals = nationals + 1;
+      } else {
+        internationals = internationals + 1;
+      }
+    });
+    const cont_users = {
+      total: data.length,
+      nationals,
+      internationals
+    }
+    this.info_users_count = cont_users
+  }
+  exportFile() {
+
+    const dataToExport = []
+    this.info_to_export.map(item => {
       const newData = {
-        evento: item.event,
+        evento: item.donation.name,
         fecha: new Date(item.created_at),
-        methodo_pago: item.payment_method,
-        estado: item.status,
-        identificación :item.identification,
-        nombre:item.name, 
-        apellido:item.last_name,
-        email:item.email
+        'methodo de pago': item.transaction.payment_method,
+        estado: item.transaction.status,
+        costo: item.transaction.amount,
+        moneda: item.transaction.currency,
+        identificación: item.user.identification,
+        nombre: item.user.name,
+        apellido: item.user.last_name,
+        email: item.user.email,
+        telefono: item.user.phone,
+        pais: item.user.country,
+        ciudad: item.user.city,
+        departamento: item.user.departament,
+        genero: item.user.gender 
       }
       dataToExport.push(newData)
-    })
-
+    });
     this.exportService.exportAsExcelFile(dataToExport, !this.downloadPastor ? 'EVENTOSG12' : `${this.pastor_selected.value.name}_EVENTOSG12`)
   }
 
@@ -134,5 +247,12 @@ export class EventReportsComponent implements OnInit {
     } else if (payment_method == 'cash') {
       return 'Efectivo'
     }
+  }
+
+  chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
+    const ctrlValue = this.date.value;
+    ctrlValue.year(normalizedYear.year());
+    this.date.setValue(ctrlValue);
+    datepicker.close();
   }
 }
