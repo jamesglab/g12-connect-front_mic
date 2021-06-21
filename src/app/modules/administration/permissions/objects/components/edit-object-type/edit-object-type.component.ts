@@ -57,21 +57,21 @@ export class EditObjectTypeComponent implements OnInit {
     this.form.UserModified.setValue(this.currentUser.idUser);
     this.form.Available.setValue((this.form.Available.value) == "true");
 
-    const editObjectTypeSubscr = this._adminObjectsService
-      .editObjectType(this.editObjectTypeForm.getRawValue()).subscribe((res: Response) => {
-        this.isLoading = false;
-        if (res) {
-          if (res.result) {
-            this.showMessage(1, "¡El tipo de objeto ha sido modificado con exito!");
-            this.modal.close('success');
-          } else {
-            this.showMessage(2, res.message[0]);
-          }
-        } else {
-          this.showMessage(3)
-        }
-      }, err => { this.isLoading = false; this.showMessage(3); throw err; });
-    this.unsubscribe.push(editObjectTypeSubscr);
+    // const editObjectTypeSubscr = this._adminObjectsService
+    //   .editObjectType(this.editObjectTypeForm.getRawValue()).subscribe((res: Response) => {
+    //     this.isLoading = false;
+    //     if (res) {
+    //       if (res.result) {
+    //         this.showMessage(1, "¡El tipo de objeto ha sido modificado con exito!");
+    //         this.modal.close('success');
+    //       } else {
+    //         this.showMessage(2, res.message[0]);
+    //       }
+    //     } else {
+    //       this.showMessage(3)
+    //     }
+    //   }, err => { this.isLoading = false; this.showMessage(3); throw err; });
+    // this.unsubscribe.push(editObjectTypeSubscr);
   }
 
   showMessage(type: number, message?: string) {

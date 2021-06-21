@@ -52,20 +52,20 @@ export class ObjectsTypesTableComponent implements OnInit {
   }
 
   getObjectsTypes() {
-    const getUserTypesSubscr = this._adminObjectsService
-      .getObjectTypes().subscribe((res: Response) => {
-        if (res.result) {
-          res.entity.reverse();
-          if(!this.dataSource){ 
-            this.dataSource = new MatTableDataSource<ObjectType[]>(res.entity);
-            this.dataSource.paginator = this.paginator;
-          }else{
-            this.dataSource.data = res.entity;
-          }
-          this.reloaded.emit(false);
-        }
-      }, err => { throw err; });
-    this.unsubscribe.push(getUserTypesSubscr);
+    // const getUserTypesSubscr = this._adminObjectsService
+    //   .getObjectTypes().subscribe((res: Response) => {
+    //     if (res.result) {
+    //       res.entity.reverse();
+    //       if(!this.dataSource){ 
+    //         this.dataSource = new MatTableDataSource<ObjectType[]>(res.entity);
+    //         this.dataSource.paginator = this.paginator;
+    //       }else{
+    //         this.dataSource.data = res.entity;
+    //       }
+    //       this.reloaded.emit(false);
+    //     }
+    //   }, err => { throw err; });
+    // this.unsubscribe.push(getUserTypesSubscr);
   }
 
   applyFilter() {

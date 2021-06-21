@@ -55,21 +55,21 @@ export class AddObjectTypeComponent implements OnInit {
     this.isLoading = true;
     this.form.UserCreation.setValue(this.currentUser.idUser);
 
-    const createObjectTypeSubscr = this._adminObjectsService
-      .createObjectType(this.createObjectTypeForm.getRawValue()).subscribe((res: Response) => {
-        this.isLoading = false;
-        if(res){
-          if(res.result){
-            this.showMessage(1,"¡El nuevo tipo de objeto ha sido creado con exito!");
-            this.modal.close('success');
-          }else{
-            this.showMessage(2, res.message[0]);
-          }
-        }else{
-          this.showMessage(3)
-        }
-      }, err =>{ this.isLoading = false; this.showMessage(3); throw err; });
-    this.unsubscribe.push(createObjectTypeSubscr);
+    // const createObjectTypeSubscr = this._adminObjectsService
+    //   .createObjectType(this.createObjectTypeForm.getRawValue()).subscribe((res: Response) => {
+    //     this.isLoading = false;
+    //     if(res){
+    //       if(res.result){
+    //         this.showMessage(1,"¡El nuevo tipo de objeto ha sido creado con exito!");
+    //         this.modal.close('success');
+    //       }else{
+    //         this.showMessage(2, res.message[0]);
+    //       }
+    //     }else{
+    //       this.showMessage(3)
+    //     }
+    //   }, err =>{ this.isLoading = false; this.showMessage(3); throw err; });
+    // this.unsubscribe.push(createObjectTypeSubscr);
   }
 
   showMessage(type: number, message?: string) {

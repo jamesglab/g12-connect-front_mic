@@ -51,14 +51,14 @@ export class EditObjectComponent implements OnInit {
   }
 
   getObjectTypes() {
-    const getUserTypesSubscr = this._adminObjectsService
-      .getObjectTypes().subscribe((res: Response) => {
-        if (res.result) {
-          this.objectTypes = res.entity;
-          this.cdr.detectChanges();
-        }
-      }, err => { throw err; });
-    this.unsubscribe.push(getUserTypesSubscr);
+    // const getUserTypesSubscr = this._adminObjectsService
+    //   .getObjectTypes().subscribe((res: Response) => {
+    //     if (res.result) {
+    //       this.objectTypes = res.entity;
+    //       this.cdr.detectChanges();
+    //     }
+    //   }, err => { throw err; });
+    // this.unsubscribe.push(getUserTypesSubscr);
   }
 
   onSubmit() {
