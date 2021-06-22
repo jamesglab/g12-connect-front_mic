@@ -31,7 +31,7 @@ export class EventsTableComponent implements OnInit {
 
   getAllEvents() {
     const goDataSubscr = this.eventsService
-      .getFilter({ type: 'G12_EVENT' }).subscribe((res: any) => {
+      .getAll({ type: 'G12_EVENT' }).subscribe((res: any) => {
         res.reverse();
         console.log("ALL DATAAA", res);
         if (!this.dataSource) {
@@ -56,24 +56,28 @@ export class EventsTableComponent implements OnInit {
   }
 
   handleErrorImage($event: any) {
-    $event.target.src = "https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj";
+    $event.target.src = "assets/media/logos/logoConexion12.png";
   }
 
-  handleToEdit(element: Donation){
-    console.log("HANDLE TO EDIT", element)
-    const MODAL = this.modalService.open(EditEventComponent,{
-      windowClass: 'fadeIn',
-      size: 'lg',
-      backdrop: true,
-      keyboard: true,
-      centered: true
+  handleToEdit(element: Donation) {
+    
+    this.eventsService.getById({ id: element.id }).subscribe(res => {
+      console.log("HANDLE TO EDIT", res)
+      const MODAL = this.modalService.open(EditEventComponent, {
+        windowClass: 'fadeIn',
+        size: 'lg',
+        backdrop: true,
+        keyboard: true,
+        centered: true
+      })
+      MODAL.componentInstance.event = res;
+      MODAL.result.then((data) => {
+        if (data == "success") {
+          this.getAllEvents();
+        }
+      });
     })
-    MODAL.componentInstance.event = element;
-    MODAL.result.then((data) => {
-      if(data == "success"){
-        this.getAllEvents();
-      }
-    });
+
   }
 
   ngOnDestroy() {

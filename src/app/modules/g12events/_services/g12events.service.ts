@@ -56,9 +56,9 @@ export class G12eventsService {
 
 
 
-  getAll(): Observable<any> {
+  getAll(params): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlG12Connect}donations/donations`,
-      { headers: header }).pipe(
+      { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -76,15 +76,26 @@ export class G12eventsService {
       );
   }
 
+  getById(params) {
+    return this.http.get<any>(`${environment.apiUrlG12Connect}donations/donations/id`,
+      { headers: header, params }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
   getOne() { }
 
   getFormData(data: sendDonation): FormData {
     const send_data = new FormData();
-    delete data.transaction_info.image;
-
     console.log("IMAGEEE", data.transaction_info.image)
     console.log("CODEEE", data.transaction_info.code);
+    console.log("CODEEE", data.transaction_info.base64);
     if (data.transaction_info.image) { send_data.append("image", data.transaction_info.image) }
+    delete data.transaction_info.image;
+    delete data.transaction_info.base64;
     send_data.append("donation", JSON.stringify(data));
     return send_data;
   }
