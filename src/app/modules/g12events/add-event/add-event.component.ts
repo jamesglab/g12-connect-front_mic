@@ -50,7 +50,7 @@ export class AddEventComponent implements OnInit {
         cop: [''],
         usd: ['']
       }),
-      visibility: [['eventosg12']],
+      visibility: [null],
       limit: [null],
       location: [],
     })
@@ -78,6 +78,9 @@ export class AddEventComponent implements OnInit {
       if (cuts) {
         this.addEventForm.get('init_date').setValue(moment(this.addEventForm.get('init_date').value));
         this.addEventForm.get('finish_date').setValue(moment(this.addEventForm.get('finish_date').value));
+        const { visibility } = this.addEventForm.getRawValue();
+        this.form.visibility.setValue([visibility]);
+        
         const updateEventSubscr = this.eventsService.create({ transaction_info: this.addEventForm.getRawValue(), cuts })
           .subscribe((res: any) => {
             console.log("REGISTEREDDD", res);
