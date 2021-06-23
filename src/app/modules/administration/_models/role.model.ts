@@ -2,14 +2,11 @@ export type Role = {
     id?: number;
     name: string;
     description: string;
-    available?: boolean;
-    disposable?: boolean;
-    UserCreation?: number;
-    UserModified?: number;
+    status?: boolean;
+    permissions?: any[];
 }
 
 export type RoleObjects = {
-    Rol: number,
-    UserCreate: number,
-    ListObject: [any]
+    id: number,
+    permissions: string[]
 }

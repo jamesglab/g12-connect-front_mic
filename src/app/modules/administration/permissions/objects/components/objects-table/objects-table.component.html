@@ -7,16 +7,10 @@
                 {{element.id}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
+        <ng-container matColumnDef="value">
+            <mat-header-cell *matHeaderCellDef> Valor </mat-header-cell>
             <mat-cell *matCellDef="let element" class="cursor-pointer">
-                {{element.object}} </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="objectType">
-            <mat-header-cell *matHeaderCellDef> Tipo de objeto</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="cursor-pointer">
-                {{element.typeObject}} </mat-cell>
+                {{element.value}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="description">
@@ -25,13 +19,17 @@
                 {{element.description }} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="disposable">
+        <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
             <mat-cell *matCellDef="let element" class="cursor-pointer">
-                {{element.disposable ? 'Activo' : 'Inactivo' }} </mat-cell>
+                
+            <span class="btn btn-sm font-weight-bold cursor-pointer" [ngClass]="{'btn-light-success': element.status, 
+            'btn-light-danger': !element.status}">{{element.status ? 'Activo' : 'Inactivo' }} </span>
+            
+            </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="actions">
+        <!-- <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let element">
 
@@ -54,6 +52,24 @@
                     </div>
                 </mat-menu>
 
+            </mat-cell>
+        </ng-container> -->
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleEdit(element)">
+                    <span
+                      [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"
+                      class="svg-icon svg-icon-md svg-icon-primary"
+                    ></span>
+                  </a>
+
+                  <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleClose(element)">
+                    <span
+                      [inlineSVG]="'./assets/media/svg/icons/General/Trash.svg'"
+                      class="svg-icon svg-icon-md svg-icon-primary"
+                    ></span>
+                  </a>
             </mat-cell>
         </ng-container>
 

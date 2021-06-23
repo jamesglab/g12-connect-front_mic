@@ -6,7 +6,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
 import { AdminObjectsService } from '../../../../_services/admin-objects.service';
-import { Response } from 'src/app/modules/auth/_models/auth.model';
 import { ListObject } from '../../../../_models/object.model';
 
 import { EditObjectComponent } from '../edit-object/edit-object.component';
@@ -28,7 +27,7 @@ export class ObjectsTableComponent implements OnInit {
   public isLoading: boolean;
   private unsubscribe: Subscription[] = [];
 
-  public displayedColumns: String[] = ['idObject', 'name', 'objectType', 'description', 'disposable', 'actions'];
+  public displayedColumns: String[] = ['idObject', 'value', 'description', 'status', 'actions'];
   public dataSource: MatTableDataSource<any[]>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -55,17 +54,16 @@ export class ObjectsTableComponent implements OnInit {
 
   getObjects() {
     const getObjectsSubscr = this._adminObjectsService
-      .getObjects().subscribe((res: Response) => {
-        if (res.result) {
-          res.entity.reverse();
+      .getObjects({ type: 'objectRoles' }).subscribe((res: any) => {
+          res.reverse();
           if (!this.dataSource) {
-            this.dataSource = new MatTableDataSource<ListObject[]>(res.entity);
+            this.dataSource = new MatTableDataSource<ListObject[]>(res);
             this.dataSource.paginator = this.paginator;
           } else {
-            this.dataSource.data = res.entity;
+            this.dataSource.data = res;
           }
           this.reloaded.emit(false);
-        }
+
       }, err => { throw err; });
     this.unsubscribe.push(getObjectsSubscr);
   }
@@ -102,7 +100,7 @@ export class ObjectsTableComponent implements OnInit {
     })
     MODAL.componentInstance.item = {
       type: "objeto", method: "deleteObject", service: "_adminObjectsService",
-      payload: { IdObject: element.id, UserModified: this.currentUser.idUser }
+      payload: { key: element.value, platform: 'conexion12' }
     }
     MODAL.result.then((data) => {
       if (data == "success") {

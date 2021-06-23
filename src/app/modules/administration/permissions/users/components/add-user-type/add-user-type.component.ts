@@ -49,24 +49,24 @@ export class AddUserTypeComponent implements OnInit {
     if (this.createUserTypeForm.invalid) {
       return;
     }
-    this.isLoading = true;
-    this.form.UserCreation.setValue(this.currentUser.idUser);
+    // this.isLoading = true;
+    // this.form.UserCreation.setValue(this.currentUser.idUser);
 
-    const createUserTypeSubscr = this._adminUserService
-      .createUserType(this.createUserTypeForm.getRawValue()).subscribe((res: Response) => {
-        this.isLoading = false;
-        if(res){
-          if(res.result){
-            this.showMessage(1,"¡El tipo de usuario ha sido creado con exito!");
-            this.modal.close('success');
-          }else{
-            this.showMessage(2, res.message[0]);
-          }
-        }else{
-          this.showMessage(3)
-        }
-      }, err =>{ this.isLoading = false; this.showMessage(3); throw err; });
-    this.unsubscribe.push(createUserTypeSubscr);
+    // const createUserTypeSubscr = this._adminUserService
+    //   .createUserType(this.createUserTypeForm.getRawValue()).subscribe((res: Response) => {
+    //     this.isLoading = false;
+    //     if(res){
+    //       if(res.result){
+    //         this.showMessage(1,"¡El tipo de usuario ha sido creado con exito!");
+    //         this.modal.close('success');
+    //       }else{
+    //         this.showMessage(2, res.message[0]);
+    //       }
+    //     }else{
+    //       this.showMessage(3)
+    //     }
+    //   }, err =>{ this.isLoading = false; this.showMessage(3); throw err; });
+    // this.unsubscribe.push(createUserTypeSubscr);
   }
 
   showMessage(type: number, message?: string) {

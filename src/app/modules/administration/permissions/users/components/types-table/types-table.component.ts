@@ -52,20 +52,20 @@ export class TypesTableComponent implements OnInit {
   }
 
   getUserTypes() {
-    const getUserTypesSubscr = this._adminUsersService
-      .getUserTypes().subscribe((res: Response) => {
-        if (res.result) {
-          res.entity.reverse();
-          if (!this.dataSource) {
-            this.dataSource = new MatTableDataSource<UserType[]>(res.entity);
-            this.dataSource.paginator = this.paginator;
-          } else {
-            this.dataSource.data = res.entity;
-          }
-          this.reloaded.emit(false);
-        }
-      }, err => { throw err; });
-    this.unsubscribe.push(getUserTypesSubscr);
+    // const getUserTypesSubscr = this._adminUsersService
+    //   .getUserTypes().subscribe((res: Response) => {
+    //     if (res.result) {
+    //       res.entity.reverse();
+    //       if (!this.dataSource) {
+    //         this.dataSource = new MatTableDataSource<UserType[]>(res.entity);
+    //         this.dataSource.paginator = this.paginator;
+    //       } else {
+    //         this.dataSource.data = res.entity;
+    //       }
+    //       this.reloaded.emit(false);
+    //     }
+    //   }, err => { throw err; });
+    // this.unsubscribe.push(getUserTypesSubscr);
   }
 
   applyFilter() {

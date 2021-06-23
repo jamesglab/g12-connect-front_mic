@@ -37,12 +37,11 @@ export class UserRolesComponent implements OnInit {
 
   buildForm() {
     this.asignRoleForm = this.fb.group({
-      User: [this.user.idUser],
-      UserCreate: [this.currentUser.idUser],
+      id: [this.user.id],
       allRoles: [[]],
       allRolesSearch: [[]],
-      ListRoles: [[]],
-      ListRolesSearch: [[]]
+      listRolesUser: [[]],
+      listRolesUserSearch: [[]]
     });
   }
 
@@ -62,14 +61,14 @@ export class UserRolesComponent implements OnInit {
 
     let array = this.form[nameFormControl.replace("Search", "")].value;
     array.map((_role, _i) => {
-      if (role.idRole == _role.idRole) {
+      if (role.id == _role.id) {
         array.splice(_i, 1);
       }
     })
 
     if (nameFormControl === "allRolesSearch") {
-      this.addObject('ListRoles', role);
-      this.addObject('ListRolesSearch', role);
+      this.addObject('listRolesUser', role);
+      this.addObject('listRolesUserSearch', role);
       this.addRole(role);
     } else {
       this.addObject('allRoles', role);
@@ -82,52 +81,43 @@ export class UserRolesComponent implements OnInit {
 
     this.isLoading = true;
     const getObjectsSubscr = this._adminRolesService
-      .getRoles().subscribe((res: Response) => {
-        if (res.result) {
+      .getRoles().subscribe((res: any) => {
+
           // console.log("ALL ROLES", res.entity);
-          for (let i = 0; i < res.entity.length; i++) {
-            if (res.entity[i].disposable) {
-              this.addObject('allRoles', {
-                idRole: res.entity[i].id,
-                name: res.entity[i].name, description: res.entity[i].description
-              });
-              this.addObject('allRolesSearch', {
-                idRole: res.entity[i].id,
-                name: res.entity[i].name, description: res.entity[i].description
-              })
-            }
+          for (let i = 0; i < res.length; i++) {
+            const { id, name, description } = res[i];
+              this.addObject('allRoles', { id, name, description });
+              this.addObject('allRolesSearch', { id, name, description });
           }
           this.getUserRoles();
-        }
       }, err => { this.isLoading = false; throw err; });
     this.unsubscribe.push(getObjectsSubscr);
   }
 
   getUserRoles() {
     const getUserObjectsSubscr = this._adminUserService
-      .getUserRoles(this.user.idUser).subscribe((res: Response) => {
-        if (res.result) {
+      .getUserRoles(this.user.id).subscribe((res: any) => {
+        console.log("ROLES DEL USUARIO", res);
+        // if (res.result) {
 
           // console.log("RES.ENTITYY", res.entity);
-          for (let i = 0; i < res.entity.length; i++) {
-            this.addObject('ListRoles', {
-              idRole: res.entity[i].idRol,
-              name: res.entity[i].rol, description: res.entity[i].description || ""
-            });
-            this.addObject('ListRolesSearch', {
-              idRole: res.entity[i].idRol,
-              name: res.entity[i].rol, description: res.entity[i].description || ""
-            })
-            this.form.allRoles.value.map((item, _i) => {
-              if (item.idRole == res.entity[i].idRole) {
-                this.form.allObjects.value.splice(_i, 1);
-                this.form.allObjectsSearch.value.splice(_i, 1);
-              }
-            })
+          for (let i = 0; i < res.length; i++) {
+            const { id, name, description } = res[i];
+            this.addObject('listRolesUser', { id, name, description });
+            this.addObject('listRolesUserSearch', { id, name, description });
           }
+          this.form.listRolesUser.value.map((item, _i) => {
+
+            const index = this.form.allRoles.value
+              .findIndex((element) => element.id === item.id);
+            // console.log("INDEX ENCONTRADO EN ALL OBJECTS", index);
+      
+            this.form.allRoles.value.splice(index, 1);
+            this.form.allRolesSearch.value.splice(index, 1);
+          })
+
           this.isLoading = false;
-          this.cdr.detectChanges();
-        }
+        // }
       }, err => { this.isLoading = false; throw err; });
     this.unsubscribe.push(getUserObjectsSubscr);
   }
@@ -140,37 +130,20 @@ export class UserRolesComponent implements OnInit {
 
   addRole(role) {
     const createRoleSubscr = this._adminUserService
-      .createUserRole({ User: this.user.idUser, Role: role.idRole, Available: true, 
-        UserCreation: this.currentUser.idUser }).subscribe((res: Response) => {
-        if (res) {
-          if (res.result) {
-            this.showMessage(1, "¡El rol ha sido añadido con exito!");
-            this.modal.close('success');
-          } else {
-            this.showMessage(2, res.message[0]);
-          }
-        } else {
-          this.showMessage(3)
-        }
+      .createUserRole({ user: this.user.id, role: role.id }).subscribe((res: Response) => {
+        this.showMessage(1, "¡El rol ha sido añadido con exito!");
+        this.modal.close('success');
       }, err => { this.showMessage(3); throw err; });
     this.unsubscribe.push(createRoleSubscr);
   }
 
   deleteRole(role) {
+    // console.log("SE FUE EL AÑADIR", { user: this.user.id, role: role.id })
     const deleteRoleSubscr = this._adminUserService
-      .deleteUserRole({ IdUser: this.user.idUser, IdRol: role.idRole, UserModified: 
-        this.currentUser.idUser }).subscribe((res: Response) => {
-        if (res) {
-          if (res.result) {
-            this.showMessage(1, "¡El rol ha sido eliminado!");
-            this.modal.close('success');
-          } else {
-            this.showMessage(2, res.message[0]);
-          }
-        } else {
-          this.showMessage(3)
-        }
-      }, err => { this.showMessage(3); throw err; });
+      .deleteUserRole({ user: this.user.id, role: role.id }).subscribe((res: Response) => {
+        this.showMessage(1, "¡El rol ha sido eliminado!");
+        this.modal.close('success');
+      }, err => { this.showMessage(3, err.error.message); throw err; });
     this.unsubscribe.push(deleteRoleSubscr);
   }
 

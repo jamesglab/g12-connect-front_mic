@@ -79,54 +79,54 @@ export class UserObjectsComponent implements OnInit {
 
   getAllObjects() {
     this.isLoading = true;
-    const getObjectsSubscr = this._adminObjectsService
-      .getObjects().subscribe((res: Response) => {
-        if (res.result) {
+    // const getObjectsSubscr = this._adminObjectsService
+    //   .getObjects().subscribe((res: Response) => {
+    //     if (res.result) {
           
-          for (let i = 0; i < res.entity.length; i++) {
-            if (res.entity[i].disposable) {
-              this.addObject('allObjects', {
-                IdObject: res.entity[i].id,
-                name: res.entity[i].object, description: res.entity[i].description
-              });
-              this.addObject('allObjectsSearch', {
-                IdObject: res.entity[i].id,
-                name: res.entity[i].object, description: res.entity[i].description
-              })
-            }
-          }
+    //       for (let i = 0; i < res.entity.length; i++) {
+    //         if (res.entity[i].disposable) {
+    //           this.addObject('allObjects', {
+    //             IdObject: res.entity[i].id,
+    //             name: res.entity[i].object, description: res.entity[i].description
+    //           });
+    //           this.addObject('allObjectsSearch', {
+    //             IdObject: res.entity[i].id,
+    //             name: res.entity[i].object, description: res.entity[i].description
+    //           })
+    //         }
+    //       }
 
-          this.getUserObjects();
-        }
-      }, err => { this.isLoading = false; throw err; });
-    this.unsubscribe.push(getObjectsSubscr);
+    //       this.getUserObjects();
+    //     }
+    //   }, err => { this.isLoading = false; throw err; });
+    // this.unsubscribe.push(getObjectsSubscr);
   }
 
   getUserObjects() {
-    const getUserObjectsSubscr = this._adminUserService
-      .getUserObjects(this.user.idUser).subscribe((res: Response) => {
-        if (res.result) {
+    // const getUserObjectsSubscr = this._adminUserService
+    //   .getUserObjects(this.user.idUser).subscribe((res: Response) => {
+    //     if (res.result) {
 
-          for (let i = 0; i < res.entity.length; i++) {
-            this.addObject('ListObject', {
-              IdObject: res.entity[i].idObject,
-              name: res.entity[i].object, description: res.entity[i].description || ""
-            });
-            this.addObject('ListObjectSearch', {
-              IdObject: res.entity[i].idObject,
-              name: res.entity[i].object, description: res.entity[i].description || ""
-            })
-            this.form.allObjects.value.map((item, _i) => {
-              if (item.IdObject == res.entity[i].idObject) {
-                this.form.allObjects.value.splice(_i, 1);
-                this.form.allObjectsSearch.value.splice(_i, 1);
-              }
-            })
-          }
-          this.isLoading = false;
-        }
-      }, err => { this.isLoading = false; throw err; });
-    this.unsubscribe.push(getUserObjectsSubscr);
+    //       for (let i = 0; i < res.entity.length; i++) {
+    //         this.addObject('ListObject', {
+    //           IdObject: res.entity[i].idObject,
+    //           name: res.entity[i].object, description: res.entity[i].description || ""
+    //         });
+    //         this.addObject('ListObjectSearch', {
+    //           IdObject: res.entity[i].idObject,
+    //           name: res.entity[i].object, description: res.entity[i].description || ""
+    //         })
+    //         this.form.allObjects.value.map((item, _i) => {
+    //           if (item.IdObject == res.entity[i].idObject) {
+    //             this.form.allObjects.value.splice(_i, 1);
+    //             this.form.allObjectsSearch.value.splice(_i, 1);
+    //           }
+    //         })
+    //       }
+    //       this.isLoading = false;
+    //     }
+    //   }, err => { this.isLoading = false; throw err; });
+    // this.unsubscribe.push(getUserObjectsSubscr);
   }
 
   onSearch(arrayType: string, value: string) {

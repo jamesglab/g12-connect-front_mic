@@ -28,7 +28,7 @@ export class DeleteItemComponent implements OnInit {
     private _adminUsersService: AdminUsersService, private _adminRolesService: AdminRolesService,
     private _adminObjectsService: AdminObjectsService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   success() {
     this.delete();
@@ -40,18 +40,10 @@ export class DeleteItemComponent implements OnInit {
 
   delete() {
     const deleteItemSubscr = this[this.item.service][this.item.method]({ ...this.item.payload })
-    .subscribe((res: Response) => {
-      if (res) {
-        if (res.result) {
-          this.showMessage(1, "¡El " + this.item.type + " ha sido inactivado!");
-          this.modal.close('success');
-        } else {
-          this.showMessage(2, res.message[0]);
-        }
-      } else {
-        this.showMessage(3)
-      }
-    }, err => { this.showMessage(3); throw err; });
+      .subscribe((res: any) => {
+        this.showMessage(1, "¡El " + this.item.type + " ha sido inactivado!");
+        this.modal.close('success');
+      }, err => { this.showMessage(3, err.error.message); throw err; });
 
     this.unsubscribe.push(deleteItemSubscr);
   }

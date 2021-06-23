@@ -1,18 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { SharedModule } from '../shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { InlineSVGModule } from 'ng-inline-svg';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+// import { MatButtonModule } from '@angular/material/button';
+// import { MatInputModule } from '@angular/material/input';
+// import { MatSelectModule } from '@angular/material/select';
+// import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
+// import { MatTooltipModule } from '@angular/material/tooltip';
+// import { MatMenuModule } from '@angular/material/menu';
+// import { MatTableModule } from '@angular/material/table';
+// import { MatPaginatorModule } from '@angular/material/paginator';
+// import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AdministrationComponent } from './administration.component';
 import { MainUsersComponent } from './permissions/users/main-users/main-users.component';
@@ -75,21 +77,13 @@ const routes: Routes = [
     EditUserTypeComponent, DeleteItemComponent, EditRoleComponent, EditObjectComponent, EditObjectTypeComponent, UserObjectsComponent, UserRolesComponent, RolesObjectsComponent],
   imports: [
     CommonModule,
+    SharedModule,
     RouterModule,
     NgbModule,
     FormsModule,
     ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatInputModule,
-    MatSelectModule,
-    MatMenuModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSnackBarModule,
+    InlineSVGModule,
     RouterModule.forChild(routes)
-  ],
-  providers: [MatIconRegistry]
+  ]
 })
 export class AdministrationModule { }

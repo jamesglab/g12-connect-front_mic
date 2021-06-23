@@ -38,7 +38,9 @@ export class AddObjectComponent implements OnInit {
   buildForm() {
     this.createObjectForm = this.fb.group({
       value: [null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9+óÓííéÉáÁ ]+$/)]],
-      description: [null, [Validators.pattern(/^[a-zA-Z0-9+óÓííéÉáÁ ]+$/)]]
+      type: [null],
+      description: [null, [Validators.pattern(/^[a-zA-Z0-9+óÓííéÉáÁ ]+$/)]],
+      status: [true]
     });
   }
 
@@ -63,8 +65,7 @@ export class AddObjectComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    this.form.UserCreation.setValue(this.currentUser.idUser);
-    this.form.Type.setValue(parseInt(this.form.Type.value));
+    this.form.type.setValue('objectRoles');
 
     const createRoleSubscr = this._adminObjectsService
       .createObject(this.createObjectForm.getRawValue()).subscribe((res: Response) => {

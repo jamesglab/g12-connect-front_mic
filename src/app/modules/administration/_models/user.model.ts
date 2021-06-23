@@ -1,21 +1,22 @@
 export type User = {
-    IdUser?: number;
-    Nickname: string;
-    Password: string;
-    IdWin: string;
-    UserCreate?: number;
-    UserModified?: number;
-    Available: boolean;
-    TypeUser: number;
+    id: number;
+    identification?: string;
+    name?: string;
+    last_name?: string;
+    email?: string;
+    status?: boolean;
+    phone?: string;
 }
 //WARNING, CHANGE AFTER
 
 export type ListUser = {
-    idUser: number;
-    lastName: string;
-    name: string;
-    nickName: string;
-    typeuser: string;
+    id: number;
+    identification?: string;
+    name?: string;
+    last_name?: string;
+    email?: string;
+    status?: boolean;
+    phone?: string;
 }
 
 export type UserType = {

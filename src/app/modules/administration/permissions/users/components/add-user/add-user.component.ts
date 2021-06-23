@@ -78,14 +78,14 @@ export class AddUserComponent implements OnInit {
   }
 
   getUserTypes() {
-    const getUserTypesSubscr = this._adminUserService
-      .getUserTypes().subscribe((res: Response) => {
-        if (res.result) {
-          this.userTypes = res.entity;
-          this.cdr.detectChanges();
-        }
-      }, err => { throw err; });
-    this.unsubscribe.push(getUserTypesSubscr);
+    // const getUserTypesSubscr = this._adminUserService
+    //   .getUserTypes().subscribe((res: Response) => {
+    //     if (res.result) {
+    //       this.userTypes = res.entity;
+    //       this.cdr.detectChanges();
+    //     }
+    //   }, err => { throw err; });
+    // this.unsubscribe.push(getUserTypesSubscr);
   }
 
   searchUser() {

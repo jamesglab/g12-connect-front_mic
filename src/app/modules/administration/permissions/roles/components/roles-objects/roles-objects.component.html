@@ -46,7 +46,7 @@
                                                         (click)="removeObject('allObjectsSearch', i);">
                                                         <mat-icon>chevron_right</mat-icon>
                                                     </button>
-                                                    <p>{{ item.name }}</p>
+                                                    <p>{{ item.value }}</p>
                                                     <p class="description">{{ item.description }}</p>
                                                 </div>
                                             </div>
@@ -69,7 +69,7 @@
                                         <mat-form-field class="example-full-width">
                                             <mat-icon class="mr-2" color="primary" matPrefix>search</mat-icon>
                                             <input matInput type="search" autocomplete="off" placeholder="Buscar..."
-                                                #search2 (keyup)="onSearch('ListObject', search2.value)">
+                                                #search2 (keyup)="onSearch('listObjectsRoleSearch', search2.value)">
                                         </mat-form-field>
                                     </div>
                                 </div>
@@ -77,14 +77,14 @@
                                 <div class="row cards-content">
                                     <div class="col-xl-12">
 
-                                        <ng-container *ngFor="let item of form.ListObjectSearch.value; let i = index;">
+                                        <ng-container *ngFor="let item of form.listObjectsRoleSearch.value; let i = index;">
                                             <div class="card card-custom example example-compact gutter-b">
                                                 <div class="info">
                                                     <button type="button" class="close"
-                                                        (click)="removeObject('ListObjectSearch', i)">
+                                                        (click)="removeObject('listObjectsRoleSearch', i)">
                                                         <mat-icon>close</mat-icon>
                                                     </button>
-                                                    <p>{{ item.name }}</p>
+                                                    <p>{{ item.value }}</p>
                                                     <p class="description">{{ item.description }}</p>
                                                 </div>
                                             </div>

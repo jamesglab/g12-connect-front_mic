@@ -53,25 +53,25 @@ export class EditUserTypeComponent implements OnInit {
     if (this.editUserTypeForm.invalid) {
       return;
     }
-    this.isLoading = true;
-    this.form.UserModified.setValue(this.currentUser.idUser);
-    this.form.Available.setValue((this.form.Available.value) == "true");
+    // this.isLoading = true;
+    // this.form.UserModified.setValue(this.currentUser.idUser);
+    // this.form.Available.setValue((this.form.Available.value) == "true");
 
-    const editUserTypeSubscr = this._adminUserService
-      .editUserType(this.editUserTypeForm.getRawValue()).subscribe((res: Response) => {
-        this.isLoading = false;
-        if (res) {
-          if (res.result) {
-            this.showMessage(1, "¡El tipo de usuario ha sido modificado con exito!");
-            this.modal.close('success');
-          } else {
-            this.showMessage(2, res.message[0]);
-          }
-        } else {
-          this.showMessage(3)
-        }
-      }, err => { this.isLoading = false; this.showMessage(3); throw err; });
-    this.unsubscribe.push(editUserTypeSubscr);
+    // const editUserTypeSubscr = this._adminUserService
+    //   .editUserType(this.editUserTypeForm.getRawValue()).subscribe((res: Response) => {
+    //     this.isLoading = false;
+    //     if (res) {
+    //       if (res.result) {
+    //         this.showMessage(1, "¡El tipo de usuario ha sido modificado con exito!");
+    //         this.modal.close('success');
+    //       } else {
+    //         this.showMessage(2, res.message[0]);
+    //       }
+    //     } else {
+    //       this.showMessage(3)
+    //     }
+    //   }, err => { this.isLoading = false; this.showMessage(3); throw err; });
+    // this.unsubscribe.push(editUserTypeSubscr);
   }
 
   showMessage(type: number, message?: string) {

@@ -21,6 +21,7 @@ export class RolesObjectsComponent implements OnInit {
 
   private currentUser: any = this._storageService.getItem("user");
   public role: any = null;
+  private allObjectsItems: any = {};
   public asignObjectsForm: FormGroup;
 
   public isLoading: boolean = false;
@@ -37,12 +38,11 @@ export class RolesObjectsComponent implements OnInit {
 
   buildForm() {
     this.asignObjectsForm = this.fb.group({
-      Rol: [this.role.id],
-      UserCreate: [this.currentUser.idUser],
+      id: [this.role.id],
       allObjects: [[]],
       allObjectsSearch: [[]],
-      ListObject: [[]],
-      ListObjectSearch: [[]]
+      listObjectsRole: [[]],
+      listObjectsRoleSearch: [[]]
     });
   }
 
@@ -51,25 +51,24 @@ export class RolesObjectsComponent implements OnInit {
   }
 
   addObject(nameFormControl: string, object: any) {
-    this.form[nameFormControl].setValue([...this.form[nameFormControl].value, object])
+    this.form[nameFormControl].setValue([object, ...this.form[nameFormControl].value])
   }
 
   removeObject(nameFormControl: string, i) {
 
-    this.form[nameFormControl].value;
     let object = this.form[nameFormControl].value[i];
-    this.form[nameFormControl].value.splice(i, 1);
+    this.form[nameFormControl].value.splice(i, 1); //PRIMERO ELIMINAR DEL SEARCH
 
     let array = this.form[nameFormControl.replace("Search", "")].value;
     array.map((_object, _i) => {
-      if (object.IdObject == _object.IdObject) {
+      if (object.id == _object.id) {
         array.splice(_i, 1);
       }
     })
 
     if (nameFormControl === "allObjectsSearch") {
-      this.addObject('ListObject', object);
-      this.addObject('ListObjectSearch', object);
+      this.addObject('listObjectsRole', object);
+      this.addObject('listObjectsRoleSearch', object);
     } else {
       this.addObject('allObjects', object);
       this.addObject('allObjectsSearch', object);
@@ -79,58 +78,55 @@ export class RolesObjectsComponent implements OnInit {
   getAllObjects() {
     this.isLoading = true;
     const getObjectsSubscr = this._adminObjectsService
-      .getObjects().subscribe((res: Response) => {
-        if (res.result) {
+      .getObjects({ type: 'objectRoles', status: true }).subscribe((res: any) => {
+        res = res.reverse();
+        for (let i = 0; i < res.length; i++) {
 
-          for (let i = 0; i < res.entity.length; i++) {
-            if (res.entity[i].disposable) {
-              this.addObject('allObjects', {
-                IdObject: res.entity[i].id,
-                name: res.entity[i].object, description: res.entity[i].description
-              });
-              this.addObject('allObjectsSearch', {
-                IdObject: res.entity[i].id,
-                name: res.entity[i].object, description: res.entity[i].description
-              })
-            }
+          if (!this.allObjectsItems[res[i].value]) {
+            this.allObjectsItems[res[i].value] = res[i];
           }
+          const { id, value, description } = res[i];
+          this.addObject('allObjects', { id, value, description });
+          this.addObject('allObjectsSearch', { id, value, description });
 
-          this.getRoleObjects();
         }
+        this.getRoleObjects();
       }, err => { this.isLoading = false; throw err; });
     this.unsubscribe.push(getObjectsSubscr);
   }
 
   getRoleObjects() {
-    const getUserObjectsSubscr = this._adminRolesService
-      .getRoleObjects(this.role.id).subscribe((res: Response) => {
-        if (res.result) {
-          // console.log("RESPONSEEE", res.entity)
-          for (let i = 0; i < res.entity.length; i++) {
-            this.addObject('ListObject', {
-              IdObject: res.entity[i].idObject,
-              name: res.entity[i].object, description: res.entity[i].description || ""
-            });
-            this.addObject('ListObjectSearch', {
-              IdObject: res.entity[i].idObject,
-              name: res.entity[i].object, description: res.entity[i].description || ""
-            })
-            this.form.allObjects.value.map((item, _i) => {
-              if (item.IdObject == res.entity[i].idObject) {
-                this.form.allObjects.value.splice(_i, 1);
-                this.form.allObjectsSearch.value.splice(_i, 1);
-              }
-            })
-          }
-          this.isLoading = false;
-        }
-      }, err => { this.isLoading = false; throw err; });
-    this.unsubscribe.push(getUserObjectsSubscr);
+    // const getUserObjectsSubscr = this._adminRolesService
+    //   .getRoleObjects(this.role.id).subscribe((res: Response) => {
+    // console.log("RESPONSEEE", res.entity)
+    // console.log("COPITASSS", this.role.permissions)
+
+    for (let i = 0; i < this.role.permissions.length; i++) {
+      this.addObject('listObjectsRole', this.allObjectsItems[this.role.permissions[i]]);
+      this.addObject('listObjectsRoleSearch', this.allObjectsItems[this.role.permissions[i]])
+    }
+
+    // console.log("OBJETOS DEL ROLE", this.form.listObjectsRole.value);
+    // console.log("TODOS LOS OBJETOS", this.form.allObjects.value);
+
+    this.form.listObjectsRole.value.map((item, _i) => {
+
+      const index = this.form.allObjects.value
+        .findIndex((element) => element.id === item.id);
+      // console.log("INDEX ENCONTRADO EN ALL OBJECTS", index);
+
+      this.form.allObjects.value.splice(index, 1);
+      this.form.allObjectsSearch.value.splice(index, 1);
+    })
+    this.isLoading = false;
+
+    //   }, err => { this.isLoading = false; throw err; });
+    // this.unsubscribe.push(getUserObjectsSubscr);
   }
 
   onSearch(arrayType: string, value: string) {
     value = value.toLowerCase();
-    let filtered = this.form[arrayType].value.filter(object => object.name.toLowerCase().includes(value));
+    let filtered = this.form[arrayType].value.filter(object => object.value.toLowerCase().includes(value));
     this.form[arrayType + "Search"].setValue(filtered);
   }
 
@@ -140,26 +136,19 @@ export class RolesObjectsComponent implements OnInit {
       return;
     }
 
-    const { Rol, UserCreate, ListObject } = this.asignObjectsForm.getRawValue();
+    const { id, listObjectsRole } = this.asignObjectsForm.getRawValue();
 
-    ListObject.map(item => {
-      delete item.name;
-      delete item.description;
+    let permissions: string[] = [];
+
+    listObjectsRole.map(item => {
+      permissions.push(item.value);
     })
 
     const createRoleObjectSubscr = this._adminRolesService
-      .createRoleObjects({ Rol, UserCreate, ListObject }).subscribe((res: Response) => {
-        if (res) {
-          if (res.result) {
+      .createRoleObjects({ id, permissions }).subscribe((res: Response) => {
             this.showMessage(1, "¡Los objetos han sido modificados correctamente!");
             this.modal.close('success');
-          } else {
-            this.showMessage(2, res.message[0]);
-          }
-        } else {
-          this.showMessage(3)
-        }
-      }, err => { this.showMessage(3); throw err; });
+      }, err => { this.showMessage(3, err.error.message); throw err; });
     this.unsubscribe.push(createRoleObjectSubscr);
   }
 

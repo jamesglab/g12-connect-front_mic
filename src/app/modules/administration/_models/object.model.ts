@@ -1,19 +1,17 @@
 export type Object = {
-    Type: number;
-    Name: string;
-    Description?: string;
-    Available: boolean;
-    UserCreation?: number;
-    UserModified?: number;
+    id: number;
+    name?: string;
+    description?: string;
+    status: boolean;
 }
 
 export type ListObject = {
     id: number;
-    idTypeObject: number;
-    typeObject: string;
-    object: string;
+    type: string;
+    value: string;
     description: string;
-    disposable: boolean;
+    status: boolean;
+    created_at: string;
 }
 
 export type ObjectType = {

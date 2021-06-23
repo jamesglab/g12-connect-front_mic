@@ -37,12 +37,11 @@ export class EditObjectComponent implements OnInit {
 
   buildForm() {
     this.editObjectForm = this.fb.group({
-      IdObject:[this.object.id, Validators.required],
-      Type: [this.object.idTypeObject.toString(), [Validators.required]],
-      Name: [this.object.object, [Validators.required, Validators.pattern(/^[a-zA-Z0-9+,.óÓííéÉáÁúÚ ]+$/)]],
-      Description: [this.object.description, [Validators.pattern(/^[a-zA-Z0-9+,.óÓííéÉáÁúÚ ]+$/)]],
-      Available: [this.object.disposable.toString()],
-      UserModified: [null]
+      id: [this.object.id, Validators.required],
+      value: [{ value: this.object.value, disabled: true }, [Validators.required]],
+      type: [this.object.type],
+      status: [this.object.status.toString()],
+      description: [this.object.description, [Validators.pattern(/^[a-zA-Z0-9+,.óÓííéÉáÁúÚ ]+$/)]]
     });
   }
 
@@ -67,24 +66,14 @@ export class EditObjectComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    this.form.UserModified.setValue(this.currentUser.idUser);
-    this.form.Type.setValue(parseInt(this.form.Type.value));
-    this.form.Available.setValue((this.form.Available.value) == "true");
+    this.form.status.setValue((this.form.status.value) == "true");
 
     const createRoleSubscr = this._adminObjectsService
       .editObject(this.editObjectForm.getRawValue()).subscribe((res: Response) => {
         this.isLoading = false;
-        if (res) {
-          if (res.result) {
-            this.showMessage(1, "¡El objeto ha sido modificado con exito!");
-            this.modal.close('success');
-          } else {
-            this.showMessage(2, res.message[0]);
-          }
-        } else {
-          this.showMessage(3)
-        }
-      }, err => { this.isLoading = false; throw err; });
+        this.showMessage(1, "¡El objeto ha sido modificado con exito!");
+        this.modal.close('success');
+      }, err => { this.isLoading = false; this.showMessage(3, err.error.message); throw err; });
     this.unsubscribe.push(createRoleSubscr);
   }
 

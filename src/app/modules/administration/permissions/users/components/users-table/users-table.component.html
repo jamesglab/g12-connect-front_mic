@@ -4,13 +4,13 @@
         <ng-container matColumnDef="idUser">
             <mat-header-cell *matHeaderCellDef> Código </mat-header-cell>
             <mat-cell *matCellDef="let element" class="cursor-pointer">
-                {{element.idUser}} </mat-cell>
+                {{element.id}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
             <mat-cell *matCellDef="let element" class="cursor-pointer"> 
-                {{element.name}} {{element.lastName }} </mat-cell>
+                {{element.name}} {{element.last_name }} </mat-cell>
         </ng-container>
 
         <!-- <ng-container matColumnDef="lastName">
@@ -19,29 +19,29 @@
                  </mat-cell>
         </ng-container> -->
 
-        <ng-container matColumnDef="nickName">
+        <ng-container matColumnDef="email">
             <mat-header-cell *matHeaderCellDef> Email</mat-header-cell>
             <mat-cell *matCellDef="let element" class="cursor-pointer">
-                {{ element.nickName }}</mat-cell>
+                {{ element.email }}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="typeuser">
-            <mat-header-cell *matHeaderCellDef> Tipo </mat-header-cell>
+        <ng-container matColumnDef="country">
+            <mat-header-cell *matHeaderCellDef> País </mat-header-cell>
             <mat-cell *matCellDef="let element" class="cursor-pointer">
-                {{ element.typeuser }} </mat-cell>
+                {{ element.country }} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="disposable">
+        <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
             <mat-cell *matCellDef="let element" class="cursor-pointer">
-                {{element.disposable ? 'Activo' : 'Inactivo' }} </mat-cell>
+                {{element.status ? 'Activo' : 'Inactivo' }} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="actions">
+        <!-- <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element">
+            <mat-cell *matCellDef="let element"> -->
 
-                <button mat-button [matMenuTriggerFor]="menu" class="btn btn-sm btn-light-primary font-weight-bolder cursor-pointer">
+                <!-- <button mat-button [matMenuTriggerFor]="menu" class="btn btn-sm btn-light-primary font-weight-bolder cursor-pointer">
                     <mat-icon>more_vert</mat-icon>
                 </button>
 
@@ -52,12 +52,7 @@
                             matTooltip="Añadir rol">persons</mat-icon>
                         </button>
                     </div>
-                    <div mat-menu-item class="d-flex justify-content-center ">
-                        <button class="btn">
-                            <mat-icon (click)="handleAddObjects(element);" style="color: var(--success);"
-                            matTooltip="Añadir Objetos">library_books</mat-icon>
-                        </button>
-                    </div>
+
                     <div mat-menu-item class="d-flex justify-content-center ">
                         <button class="btn">
                             <mat-icon (click)="handleEdit(element);" style="color: var(--primary);"
@@ -70,34 +65,37 @@
                             matTooltip="Inhabilitar">close</mat-icon>
                         </button>
                     </div>
-                </mat-menu>
+                </mat-menu> -->
 
-            </mat-cell>
-        </ng-container>
-
-        <!-- <ng-container matColumnDef="report">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element" (click)="handleReportGO(element);">
-                <button class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">Reportar Go</button>
-            </mat-cell>
-        </ng-container>
-
-        
-        <ng-container matColumnDef="seeReport">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element" (click)="handleSeeReportGo(element);" class="cursor-pointer" matTooltip="Reporte GO"
-            style="color: var(--primary); display: flex; justify-content: center;">
-               <mat-icon>description</mat-icon>
-            </mat-cell>
-        </ng-container>
-
-
-        <ng-container matColumnDef="close">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element" (click)="handleClose(element);">
-                <button class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5 cursor-pointer">Cerrar</button>
-            </mat-cell>
+            <!-- </mat-cell>
         </ng-container> -->
+
+
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element">
+        <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleAddRole(element)">
+            <span
+              [inlineSVG]="'./assets/media/svg/icons/General/Duplicate.svg'"
+              class="svg-icon svg-icon-md svg-icon-primary"
+            ></span>
+          </a>
+
+        <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleEdit(element)">
+            <span
+              [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"
+              class="svg-icon svg-icon-md svg-icon-primary"
+            ></span>
+          </a>
+
+          <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleClose(element)">
+            <span
+              [inlineSVG]="'./assets/media/svg/icons/General/Trash.svg'"
+              class="svg-icon svg-icon-md svg-icon-primary"
+            ></span>
+          </a>
+            </mat-cell>
+        </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

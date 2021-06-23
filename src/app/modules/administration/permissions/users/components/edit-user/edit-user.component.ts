@@ -6,6 +6,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
 import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
+import { numberOnly } from 'src/app/_helpers/tools/validators.tool';
 
 import { Response } from 'src/app/modules/auth/_models/auth.model';
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
@@ -18,7 +19,7 @@ import { AdminUsersService } from '../../../../_services/admin-users.service';
 })
 export class EditUserComponent implements OnInit {
 
-  private currentUser: any = this._storageService.getItem("user");
+  //private currentUser: any = this._storageService.getItem("user");
   public user: any = null;
   public editUserForm: FormGroup;
   public userTypes: any[] = [];
@@ -31,20 +32,20 @@ export class EditUserComponent implements OnInit {
     private _adminUserService: AdminUsersService) { }
 
   ngOnInit(): void {
+    console.log("QUÉ PASA TIO", this.user);
     this.buildForm();
     this.getUserTypes();
   }
 
   buildForm() {
     this.editUserForm = this.fb.group({
-      IdUser: [this.user.idUser],
-      Names: [{ value: this.user.name, disabled: true }], //FOR RENDER
-      SurNames: [{ value: this.user.lastName, disabled: true }], // FOR RENDER
-      Type: [{ value: null, disabled: true }], // FOR RENDER
-      TypeUser: [this.user.idTypeuser.toString(), [Validators.required]],
-      Nickname: [this.user.nickName, [Validators.required, Validators.email]],
-      Available: [this.user.disposable.toString()],
-      UserModified: [null],
+      id: [this.user.id],
+      identification: [{ value: this.user.identification, disabled: true }],
+      name: [{ value: this.user.name, disabled: true }], //FOR RENDER
+      last_name: [{ value: this.user.last_name, disabled: true }], // FOR RENDER
+      email: [this.user.email, [Validators.required, Validators.email]],
+      phone: [this.user.phone,[Validators.required, Validators.maxLength(10)]],
+      status: [this.user.status.toString()]
     });
   }
 
@@ -52,24 +53,28 @@ export class EditUserComponent implements OnInit {
     return this.editUserForm.controls;
   }
 
+  numberOnly(event): boolean {
+    return numberOnly(event);
+  }
+
   getUserTypes() {
-    const getUserTypesSubscr = this._adminUserService
-      .getUserTypes().subscribe((res: Response) => {
-        if (res.result) {
-          this.userTypes = res.entity;
-          this.setUserType();
-          this.cdr.detectChanges();
-        }
-      }, err => { throw err; });
-    this.unsubscribe.push(getUserTypesSubscr);
+    // const getUserTypesSubscr = this._adminUserService
+    //   .getUserTypes().subscribe((res: Response) => {
+    //     if (res.result) {
+    //       this.userTypes = res.entity;
+    //       this.setUserType();
+    //       this.cdr.detectChanges();
+    //     }
+    //   }, err => { throw err; });
+    // this.unsubscribe.push(getUserTypesSubscr);
   }
 
   setUserType(){
-    this.userTypes.map(type => {
-      if(parseInt(this.form.TypeUser.value) == type.idType){
-        this.form.Type.setValue(type.name);
-      }
-    })
+    // this.userTypes.map(type => {
+    //   if(parseInt(this.form.TypeUser.value) == type.idType){
+    //     this.form.Type.setValue(type.name);
+    //   }
+    // })
   }
 
   onSubmit() {
@@ -78,23 +83,13 @@ export class EditUserComponent implements OnInit {
       return
     }
 
-    this.form.UserModified.setValue(this.currentUser.idUser);
-    this.form.TypeUser.setValue(parseInt(this.form.TypeUser.value));
-    this.form.Available.setValue((this.form.Available.value) == "true");
+    this.form.status.setValue((this.form.status.value) == "true");
 
     const editUserSubscr = this._adminUserService
       .editUser(this.editUserForm.getRawValue()).subscribe((res: Response) => {
-        if(res){
-          if(res.result){
             this.showMessage(1,"¡El usuario ha sido modificado correctamente!");
             this.modal.close('success');
-          }else{
-            this.showMessage(2, res.message[0]);
-          }
-        }else{
-          this.showMessage(3)
-        }
-      }, err => { this.showMessage(3); throw err;});
+      }, err => { this.showMessage(3, err.error.message); throw err;});
     this.unsubscribe.push(editUserSubscr);
   }
 

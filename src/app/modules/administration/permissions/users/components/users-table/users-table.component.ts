@@ -4,6 +4,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
+import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
+
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
 import { AdminUsersService } from '../../../../_services/admin-users.service';
 import { Response } from 'src/app/modules/auth/_models/auth.model';
@@ -24,22 +28,22 @@ export class UsersTableComponent implements OnInit {
   private currentUser: any = this._storageService.getItem("user");
 
   @Input() public search: String = "";
-  @Input() public reload: boolean = false;
-  @Output() public reloaded: EventEmitter<Boolean> = new EventEmitter();
+  @Output() public endLoading: EventEmitter<boolean> = new EventEmitter();
 
-  public isLoading: boolean;
+  // public isLoading: boolean;
   private unsubscribe: Subscription[] = [];
 
-  public displayedColumns: String[] = ['idUser', 'name', 'nickName', 'typeuser', 'disposable', 'actions'];
+  public displayedColumns: String[] = ['idUser', 'name', 'email', 'country', 'status', 'actions'];
   public dataSource: MatTableDataSource<any[]>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private modalService: NgbModal, private _adminUsersService: AdminUsersService,
-    private _storageService: StorageService) { }
+  constructor(private modalService: NgbModal, private snackBar: MatSnackBar, 
+    private _adminUsersService: AdminUsersService, private _storageService: StorageService) { }
 
   ngOnInit(): void {
-    this.getUsers();
+    // this.getUsers();
+    this.subscribeToChanges();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -48,26 +52,28 @@ export class UsersTableComponent implements OnInit {
         this.applyFilter();
       }
     }
-    if (changes.reload) {
-      if (changes.reload.currentValue) {
-        this.getUsers();
-      }
-    }
+  }
+
+  subscribeToChanges() {
+    const subscr = this._adminUsersService.reload.subscribe((res) => this.getUsers());
+    this.unsubscribe.push(subscr);
   }
 
   getUsers() {
     const getUserTypesSubscr = this._adminUsersService
-      .getUsers().subscribe((res: Response) => {
-        if (res.result) {
-          res.entity.reverse();
+      .getUsers().subscribe((res: any) => {
+        if (res[0]) {
+          res.reverse();
           if (!this.dataSource) {
-            this.dataSource = new MatTableDataSource<ListUser[]>(res.entity);
+            this.dataSource = new MatTableDataSource<ListUser[]>(res);
             this.dataSource.paginator = this.paginator;
           } else {
-            this.dataSource.data = res.entity;
+            this.dataSource.data = res;
           }
-          this.reloaded.emit(false);
+        }else{
+          this.showMessage(3, "Lo sentimos, no hemos encontrado usuarios.")
         }
+        this.endLoading.emit(false);
       }, err => { throw err; });
     this.unsubscribe.push(getUserTypesSubscr);
   }
@@ -77,21 +83,21 @@ export class UsersTableComponent implements OnInit {
     if (this.dataSource.paginator) { this.dataSource.paginator.firstPage(); }
   }
 
-  handleAddObjects(element: ListUser) {
-    const MODAL = this.modalService.open(UserObjectsComponent, {
-      windowClass: 'fadeIn',
-      size: 'lg',
-      backdrop: true,
-      keyboard: true,
-      centered: true
-    })
-    MODAL.componentInstance.user = element;
-    MODAL.result.then((data) => {
-      if (data == "success") {}
-    });
-  }
+  // handleAddObjects(element: ListUser) {
+  //   const MODAL = this.modalService.open(UserObjectsComponent, {
+  //     windowClass: 'fadeIn',
+  //     size: 'lg',
+  //     backdrop: true,
+  //     keyboard: true,
+  //     centered: true
+  //   })
+  //   MODAL.componentInstance.user = element;
+  //   MODAL.result.then((data) => {
+  //     if (data == "success") {}
+  //   });
+  // }
 
-  handleAddRole(element: ListUser){
+  handleAddRole(element: ListUser) {
     const MODAL = this.modalService.open(UserRolesComponent, {
       windowClass: 'fadeIn',
       size: 'lg',
@@ -101,7 +107,7 @@ export class UsersTableComponent implements OnInit {
     })
     MODAL.componentInstance.user = element;
     MODAL.result.then((data) => {
-      if (data == "success") {}
+      if (data == "success") { }
     });
   }
 
@@ -131,13 +137,17 @@ export class UsersTableComponent implements OnInit {
     })
     MODAL.componentInstance.item = {
       type: "usuario", method: "deleteUser", service: "_adminUsersService",
-      payload: { IdUser: element.idUser, UserModified: this.currentUser.idUser }
+      payload: { id: element.id }
     }
     MODAL.result.then((data) => {
       if (data == "success") {
         this.getUsers();
       }
     }, err => { });
+  }
+
+  showMessage(type: number, message?: string) {
+    this.snackBar.openFromComponent(NotificationComponent, notificationConfig(type, message));
   }
 
   ngOnDestroy() {

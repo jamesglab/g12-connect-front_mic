@@ -6,7 +6,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
 import { AdminRolesService } from '../../../../_services/admin-roles.service';
-import { Response } from 'src/app/modules/auth/_models/auth.model';
 import { Role } from '../../../../_models/role.model';
 
 import { EditRoleComponent } from '../edit-role/edit-role.component';
@@ -23,13 +22,11 @@ export class RolesTableComponent implements OnInit {
   private currentUser: any = this._storageService.getItem("user");
   
   @Input() public search: String = "";
-  @Input() public reload: boolean = null;
-  @Output() public reloaded: EventEmitter<Boolean> = new EventEmitter();
 
   public isLoading: boolean;
   private unsubscribe: Subscription[] = [];
 
-  public displayedColumns: String[] = ['idRole', 'name', 'description', 'disposable', 'actions'];
+  public displayedColumns: String[] = ['idRole', 'name', 'description', 'status', 'actions'];
   public dataSource: MatTableDataSource<any[]>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -39,6 +36,7 @@ export class RolesTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.getRoles();
+    this.subscribeToChanges();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -47,24 +45,23 @@ export class RolesTableComponent implements OnInit {
         this.applyFilter();
       }
     }
-    if (changes.reload) {
-      this.getRoles();
-    }
+  }
+
+  subscribeToChanges() {
+   const subscr = this._adminRolesService.reload.subscribe((res) => this.getRoles());
+   this.unsubscribe.push(subscr);
   }
 
   getRoles() {
     const getRoleSubscr = this._adminRolesService
-      .getRoles().subscribe((res: Response) => {
-        if (res.result) {
-          res.entity.reverse();
+      .getRoles().subscribe((res: any) => {
+          console.log("ROLES", res);
           if (!this.dataSource) {
-            this.dataSource = new MatTableDataSource<Role[]>(res.entity);
+            this.dataSource = new MatTableDataSource<Role[]>(res);
             this.dataSource.paginator = this.paginator;
           } else {
-            this.dataSource.data = res.entity;
+            this.dataSource.data = res;
           }
-          this.reloaded.emit(false);
-        }
       }, err => { throw err; });
     this.unsubscribe.push(getRoleSubscr);
   }
@@ -84,7 +81,7 @@ export class RolesTableComponent implements OnInit {
     })
     MODAL.componentInstance.role = element;
     MODAL.result.then((data) => {
-      if (data == "success") {}
+      if (data == "success") { this.getRoles() }
     });
   }
 
@@ -113,8 +110,8 @@ export class RolesTableComponent implements OnInit {
       centered: true
     })
     MODAL.componentInstance.item = {
-      type: "rol", method: "deleteRole", service: "_adminRolesService",
-      payload: { IdRole: element.id, UserModified: this.currentUser.idUser }
+      type: "rol", method: "editRole", service: "_adminRolesService",
+      payload: { id: element.id, status: false }
     }
     MODAL.result.then((data) => {
       if (data == "success") {

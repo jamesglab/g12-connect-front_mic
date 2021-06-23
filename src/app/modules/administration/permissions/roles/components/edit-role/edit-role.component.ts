@@ -35,11 +35,10 @@ export class EditRoleComponent implements OnInit {
 
   buildForm() {
     this.editRoleForm = this.fb.group({
-      IdRole: [this.role.id, Validators.required],
-      Name: [this.role.name, [Validators.required, Validators.pattern(/^[a-zA-Z+óÓííéÉáÁ0-9 ]+$/)]],
-      Description: [this.role.description, [Validators.pattern(/^[a-zA-Z+óÓííéÉáÁ0-9 ]+$/)]],
-      Available: [this.role.disposable.toString()],
-      UserModified: [null]
+      id: [this.role.id, Validators.required],
+      name: [this.role.name, [Validators.required, Validators.pattern(/^[a-zA-Z+óÓííéÉáÁ0-9 ]+$/)]],
+      description: [this.role.description, [Validators.pattern(/^[a-zA-Z+óÓííéÉáÁ0-9 ]+$/)]],
+      status: [this.role.status.toString()]
     });
   }
 
@@ -53,23 +52,14 @@ export class EditRoleComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    this.form.UserModified.setValue(this.currentUser.idUser);
-    this.form.Available.setValue((this.form.Available.value) == "true");
+    this.form.status.setValue((this.form.status.value) == "true");
 
     const editRoleSubscr = this._adminRolesService
       .editRole(this.editRoleForm.getRawValue()).subscribe((res: Response) => {
         this.isLoading = false;
-        if (res) {
-          if (res.result) {
-            this.showMessage(1, "¡El rol ha sido modificado con exito!");
-            this.modal.close('success');
-          } else {
-            this.showMessage(2, res.message[0]);
-          }
-        } else {
-          this.showMessage(3)
-        }
-      }, err => { this.isLoading = false; this.showMessage(3); throw err; });
+        this.showMessage(1, "¡El rol ha sido modificado con exito!");
+        this.modal.close('success');
+      }, err => { this.isLoading = false; this.showMessage(3, err.error.message); throw err; });
     this.unsubscribe.push(editRoleSubscr);
   }
 

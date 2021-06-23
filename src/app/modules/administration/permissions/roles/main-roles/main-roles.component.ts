@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddRoleComponent } from '../components/add-role/add-role.component';
+import { AdminRolesService } from '../../../_services/admin-roles.service';
 
 @Component({
   selector: 'app-main-roles',
@@ -9,8 +10,8 @@ import { AddRoleComponent } from '../components/add-role/add-role.component';
 })
 export class MainRolesComponent implements OnInit {
 
-  public reload: boolean = false;
-  constructor(private modalService: NgbModal, private cdr: ChangeDetectorRef) { }
+  constructor(private modalService: NgbModal, private adminRolesService: AdminRolesService, 
+    private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
   }
@@ -27,7 +28,7 @@ export class MainRolesComponent implements OnInit {
     // MODAL.componentInstance.leaderItem = element;
     MODAL.result.then((data) => {
       if(data == 'success'){
-        this.reload = true;
+        this.adminRolesService.handleReload();
         this.cdr.detectChanges();
       }
     }, (reason) => {
