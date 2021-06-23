@@ -17,6 +17,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [],
@@ -39,6 +40,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatTooltipModule,
     MatPaginatorModule,
     MatRadioModule,
+    MatSlideToggleModule
   ],
   exports:[
     MatIconModule,
@@ -58,6 +60,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatTooltipModule,
     MatPaginatorModule,
     MatRadioModule,
+    MatSlideToggleModule
   ],
   providers:[
     MatIconRegistry

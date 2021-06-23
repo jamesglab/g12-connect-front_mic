@@ -22,9 +22,13 @@ export class AddEventComponent implements OnInit {
   private unsubscribe: Subscription[] = [];
   public select_cut = new FormControl(false);
   cuts = new FormArray([]);
+  public minDate: Date;
+  public maxDate: Date;
   categories = [];
   constructor(private fb: FormBuilder, private snackBar: MatSnackBar,
-    private eventsService: G12eventsService, private router: Router) { }
+    private eventsService: G12eventsService, private router: Router) {
+    this.minDate = new Date();
+  }
 
   ngOnInit(): void {
     this.buildForm();
@@ -39,8 +43,8 @@ export class AddEventComponent implements OnInit {
       image: [null],
       category: [[]],
       categorieAdd: [''],
-      initDate: [],
-      finishDate: [],
+      init_date: [],
+      finish_date: [],
       // hour: ['', [Validators.required, hourValidation.bind(this)]],
       prices: this.fb.group({
         cop: [''],
@@ -61,6 +65,7 @@ export class AddEventComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.addEventForm)
     if (this.addEventForm.invalid) {
       return;
     }
@@ -71,8 +76,8 @@ export class AddEventComponent implements OnInit {
     if (cont_quantity < parseInt(this.addEventForm.value.limit)) {
       let cuts = this.cutsToSend();
       if (cuts) {
-        this.addEventForm.get('initDate').setValue(moment(this.addEventForm.get('initDate').value));
-        this.addEventForm.get('finishDate').setValue(moment(this.addEventForm.get('finishDate').value));
+        this.addEventForm.get('init_date').setValue(moment(this.addEventForm.get('init_date').value));
+        this.addEventForm.get('finish_date').setValue(moment(this.addEventForm.get('finish_date').value));
         const updateEventSubscr = this.eventsService.create({ transaction_info: this.addEventForm.getRawValue(), cuts })
           .subscribe((res: any) => {
             console.log("REGISTEREDDD", res);
@@ -116,8 +121,8 @@ export class AddEventComponent implements OnInit {
     let error = false;
     if (this.cuts.value.length > 0) {
       this.cuts.value.map(cut => {
-        if (cut.name != '' && cut.cop != '' && cut.quantity != '' && cut.initDate != '' && cut.finishDate) {
-          newCuts.push({ name: cut.name, prices: { cop: cut.cop, usd: (cut.usd != '') ? cut.usd : null }, quantity: cut.quantity, initDate: moment(cut.initDate), finishDate: moment(cut.finishDate) })
+        if (cut.name != '' && cut.cop != '' && cut.quantity != '' && cut.date_init != '' && cut.date_finish) {
+          newCuts.push({ name: cut.name, prices: { cop: cut.cop, usd: (cut.usd != '') ? cut.usd : null }, quantity: cut.quantity, date_init: moment(cut.date_init), date_finish: moment(cut.date_finish) })
         } else {
           error = true
         }
@@ -127,8 +132,8 @@ export class AddEventComponent implements OnInit {
         name: this.addEventForm.value.name,
         prices: { cop: this.addEventForm.value.cop, usd: (this.addEventForm.value.usd != '') ? this.addEventForm.value.usd : null },
         quantity: this.addEventForm.value.quantity,
-        initDate: moment(this.addEventForm.value.initDate),
-        finishDate: moment(this.addEventForm.value.finishDate)
+        date_init: moment(this.addEventForm.value.init_date),
+        date_finish: moment(this.addEventForm.value.finish_date)
       });
     }
     if (error) {
@@ -144,8 +149,8 @@ export class AddEventComponent implements OnInit {
         cop: new FormControl(''),
         usd: new FormControl(''),
         quantity: new FormControl(''),
-        initDate: new FormControl(''),
-        finishDate: new FormControl(''),
+        date_init: new FormControl(''),
+        date_finish: new FormControl(''),
       })
     );
   }

@@ -17,7 +17,10 @@ export class ShowCutCountsComponent implements OnInit {
   ngOnChanges() {
     this.cuts_show = [];
     if (this.cuts) {
-      Object.keys(this.cuts).map(async (element) => {
+      Object.keys(this.cuts).map(async (element, i) => {
+        if (!this.selected_cut && i == 0) {
+          this.sendtable(element);
+        }
         this.cuts_show.push(element);
       });
     }

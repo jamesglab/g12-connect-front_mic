@@ -38,13 +38,11 @@ export const MY_FORMATS = {
 
 
 export class EventReportsComponent implements OnInit {
-  date = new FormControl(moment());
-  campaignOne: FormGroup;
-  campaignTwo: FormGroup;
-  range = new FormGroup({
-    init_date: new FormControl(),
-    finish_date: new FormControl()
-  });
+  public date = new FormControl(moment());
+  public maxDate: Date;
+  public campaignOne: FormGroup;
+  public campaignTwo: FormGroup;
+  public range = new FormGroup({ init_date: new FormControl(), finish_date: new FormControl() });
   public events: [] = [];
   public cutTransactions: any = [];
   public event_selected = new FormControl(0, []);
@@ -60,7 +58,7 @@ export class EventReportsComponent implements OnInit {
   public info_users_count: any;
   public info_to_export: any = [];
   constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef, private exportService: ExportService, private snackBar: MatSnackBar,) {
-
+    this.maxDate = new Date();
   }
 
   ngOnInit(): void {
