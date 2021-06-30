@@ -73,7 +73,7 @@ export class AddEventComponent implements OnInit {
     this.cuts.value.map(cute => {
       cont_quantity = cont_quantity + parseInt(cute.quantity);
     });
-    if (cont_quantity < parseInt(this.addEventForm.value.limit)) {
+    if (cont_quantity <= parseInt(this.addEventForm.value.limit)) {
       let cuts = this.cutsToSend();
       if (cuts) {
         this.addEventForm.get('init_date').setValue(moment(this.addEventForm.get('init_date').value));
