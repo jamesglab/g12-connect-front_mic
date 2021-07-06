@@ -47,6 +47,14 @@
                 </mat-chip>
               </mat-chip-list>
 
+              <mat-form-field class="example-full-width mt-5" appearance="fill">
+                <mat-label>Visibilidad</mat-label>
+                <mat-select formControlName="visibility">
+                  <mat-option value="bogota"> Bogotá </mat-option>
+                  <mat-option value="international">Internacional</mat-option>
+                </mat-select>
+              </mat-form-field>
+
               <div formGroupName="prices">
                 <h6>Precio</h6>
                 <mat-form-field class="example-full-width" appearance="fill">

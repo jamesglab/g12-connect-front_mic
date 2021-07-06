@@ -58,7 +58,7 @@ export class EditEventComponent implements OnInit {
         cop: [this.event.prices.cop],
         usd: [this.event.prices.usd]
       }),
-      visibility: [this.event.visibility],
+      visibility: [this.event.visibility[0]],
       limit: [this.event.limit],
       location: [],
       status: [this.event.status.toString()]
@@ -117,6 +117,8 @@ export class EditEventComponent implements OnInit {
       cont_quantity = cont_quantity + parseInt(cute.quantity);
     });
     delete this.editEventForm.getRawValue().categorieAdd;
+    const { visibility } = this.editEventForm.getRawValue();
+    this.form.visibility.setValue([visibility]);
 
     if (cont_quantity < parseInt(this.editEventForm.value.limit)) {
     }
