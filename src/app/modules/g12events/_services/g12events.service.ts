@@ -137,7 +137,7 @@ export class G12eventsService {
   /// query Mongo
   getTransactionsReports(params) {
     return this.http.get<any>(
-      `${'https://23ad155ad7f1.ngrok.io/api/v2/'}reports/reports/reportsMongo`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect}reports/reports/reportsMongo`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
