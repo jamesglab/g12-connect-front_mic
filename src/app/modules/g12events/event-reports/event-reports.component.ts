@@ -88,7 +88,7 @@ export class EventReportsComponent implements OnInit {
     this._g12Events.getTransactionsReports({
       date_init: `${moment(this.date.value).format('YYYY')}-01-01T00:00:00.000`,
       date_finish: `${moment(this.date.value).format('YYYY')}-12-31T23:59:00.000`,
-      platform: "G12_EVENT",
+      platform: "EVENTOSG12",
       event_id: (this.event_selected.value != 0) ? this.event_selected.value.id : '',
       transaction_status: (this.status.value != 0) ? this.status.value : '',
       pastor: (this.pastor_selected.value != 0) ? this.pastor_selected.value.user_code : ''
