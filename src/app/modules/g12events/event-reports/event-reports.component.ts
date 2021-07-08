@@ -127,7 +127,9 @@ export class EventReportsComponent implements OnInit {
         identification: element.user.identification,
         name: element.user.name,
         last_name: element.user.last_name,
-        email: element.user.email
+        email: element.user.email,
+        sede  : element.church.name,
+        pastor : element.pastor.name,
       }
       newReports.push(newReport);
     });
