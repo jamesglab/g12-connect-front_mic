@@ -13,7 +13,7 @@ export class TableReportsComponent implements OnInit {
   @Input() dataSource: any;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   public search = new FormControl('', []);
-  public displayedColumns: string[] = ['created_at', 'event', 'payment_method', 'status', 'identification', 'name', 'last_name', 'email'];
+  public displayedColumns: string[] = ['pastor', 'sede', 'event', 'status', 'identification', 'name', 'last_name', 'email'];
   constructor() { }
 
   ngOnInit(): void {

@@ -92,9 +92,12 @@ export class EventReportsComponent implements OnInit {
       event_id: (this.event_selected.value != 0) ? this.event_selected.value.id : '',
       transaction_status: (this.status.value != 0) ? this.status.value : '',
       pastor: (this.pastor_selected.value != 0) ? this.pastor_selected.value.user_code : ''
-    }).subscribe((res: any,) => {
+    }).subscribe((res: any) => {
+      
       this.countUsers(res);
       res.map((item, i) => {
+      console.log('datos',item)
+
         res[i].transaction.status = this.validateStatus(item.transaction.status); res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
       })
 
@@ -124,7 +127,9 @@ export class EventReportsComponent implements OnInit {
         identification: element.user.identification,
         name: element.user.name,
         last_name: element.user.last_name,
-        email: element.user.email
+        email: element.user.email,
+        sede  : element.church.name,
+        pastor : element.pastor.name,
       }
       newReports.push(newReport);
     });
@@ -192,7 +197,7 @@ export class EventReportsComponent implements OnInit {
     let nationals = 0;
     let internationals = 0;
     data.map(item => {
-      if (item.user.country.trim().toLowerCase() == 'colombia') {
+      if (item?.user?.country?.trim().toLowerCase() == 'colombia') {
         nationals = nationals + 1;
       } else {
         internationals = internationals + 1;
@@ -208,23 +213,30 @@ export class EventReportsComponent implements OnInit {
   exportFile() {
     if (this.info_to_export.length > 0) {
       const dataToExport = []
+      console.log('data to export', this.info_to_export)
       this.info_to_export.map(item => {
         const newData = {
-          evento: item.donation.name,
-          fecha: new Date(item.created_at),
-          'methodo de pago': item.transaction.payment_method,
-          estado: item.transaction.status,
-          costo: item.transaction.amount,
-          moneda: item.transaction.currency,
-          identificación: item.user.identification,
-          nombre: item.user.name,
-          apellido: item.user.last_name,
-          email: item.user.email,
-          telefono: item.user.phone,
-          pais: item.user.country,
-          ciudad: item.user.city,
-          departamento: item.user.departament,
-          genero: item.user.gender
+          Nombre: item.user.name ? item.user.name : 'N/A',
+          Apellido: item.user.last_name ? item.user.last_name : 'N/A',
+          'No. Documento': item.user.identification ? item.user.identification : 'N/A',
+          'Fecha Nacimiento': item.user.birth_date ? new Date(item.user.birth_date) : 'N/A',
+          Genero: item.user.gender ? item.user.gender : 'N/A',
+          Telefono: item.user.phone ? item.user.phone : 'N/A',
+          "E-mail": item.user.email ? item.user.email : 'N/A',
+          Pais: item.user.country ? item.user.country : 'N/A',
+          Departamento: item.user.departament ? item.user.departament : 'N/A',
+          Municipio: item.user.city ? item.user.city : 'N/A',
+          Sede: item.church.name ? item.church.name : 'N/A',
+          Pastor: item.pastor.name ? item.pastor.name : 'N/A',
+          'Lider Doce': item.leader.name ? item.leader.name : 'N/A',
+          'Fecha de Donación': new Date(item.created_at),
+          'Referencia Transaccion': item.transaction.payment_method ? item.transaction.payment_method : '',
+          'Nombre evento': item.donation.name ? item.donation.name : 'N/A',
+          'Nombre corte': item.cut.name ? item.cut.name : 'N/A',
+          Estado: item.transaction.status ? item.transaction.status : 'N/A',
+          Costo: item.transaction.amount ? item.transaction.amount : 'N/A',
+          Moneda: item.transaction.currency ? item.transaction.currency : 'N/A',
+
         }
         dataToExport.push(newData)
       });
