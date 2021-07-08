@@ -208,23 +208,25 @@ export class EventReportsComponent implements OnInit {
   exportFile() {
     if (this.info_to_export.length > 0) {
       const dataToExport = []
+      console.log('data to export', this.info_to_export)
       this.info_to_export.map(item => {
         const newData = {
-          evento: item.donation.name,
+          evento: item.donation.name ? item.donation.name :'N/A',
           fecha: new Date(item.created_at),
-          'methodo de pago': item.transaction.payment_method,
-          estado: item.transaction.status,
-          costo: item.transaction.amount,
-          moneda: item.transaction.currency,
-          identificación: item.user.identification,
-          nombre: item.user.name,
-          apellido: item.user.last_name,
-          email: item.user.email,
-          telefono: item.user.phone,
-          pais: item.user.country,
-          ciudad: item.user.city,
-          departamento: item.user.departament,
-          genero: item.user.gender
+          'methodo de pago': item.transaction.payment_method ? item.transaction.payment_method: '',
+          estado: item.transaction.status ? item.transaction.status :'N/A',
+          costo: item.transaction.amount ? item.transaction.amount :'N/A',
+          moneda: item.transaction.currency ? item.transaction.currency : 'N/A',
+          identificación: item.user.identification ? item.user.identification : 'N/A',
+          nombre: item.user.name ? item.user.name : 'N/A',
+          apellido: item.user.last_name ? item.user.last_name :'N/A',
+          email: item.user.email ? item.user.email : 'N/A',
+          telefono: item.user.phone ? item.user.phone :'N/A',
+          pais: item.user.country ? item.user.country : 'N/A',
+          ciudad: item.user.city ? item.user.city : 'N/A',
+          departamento: item.user.departament ? item.user.departament : 'N/A',
+          genero: item.user.gender ? item.user.gender : 'N/A',
+          pastor: item.pastor.name ? item.pastor.name : 'N/A'
         }
         dataToExport.push(newData)
       });
