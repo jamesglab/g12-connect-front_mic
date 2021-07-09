@@ -93,10 +93,10 @@ export class EventReportsComponent implements OnInit {
       transaction_status: (this.status.value != 0) ? this.status.value : '',
       pastor: (this.pastor_selected.value != 0) ? this.pastor_selected.value.user_code : ''
     }).subscribe((res: any) => {
-      
+
       this.countUsers(res);
       res.map((item, i) => {
-      console.log('datos',item)
+        console.log('datos', item)
 
         res[i].transaction.status = this.validateStatus(item.transaction.status); res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
       })
@@ -128,8 +128,8 @@ export class EventReportsComponent implements OnInit {
         name: element.user.name,
         last_name: element.user.last_name,
         email: element.user.email,
-        sede  : element.church.name,
-        pastor : element.pastor.name,
+        sede: element.church.name,
+        pastor: element.pastor.name,
       }
       newReports.push(newReport);
     });
@@ -261,11 +261,11 @@ export class EventReportsComponent implements OnInit {
   }
 
   validatePaymentMethod(payment_method) {
-    if (payment_method == 'credit') {
+    if (payment_method.toLowerCase() == 'credit') {
       return 'Tarjeta de credito'
-    } else if (payment_method == 'pse') {
+    } else if (payment_method.toLowerCase() == 'pse') {
       return 'PSE'
-    } else if (payment_method == 'cash') {
+    } else if (payment_method.toLowerCase() == 'cash') {
       return 'Efectivo'
     }
   }
