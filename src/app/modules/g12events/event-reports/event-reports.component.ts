@@ -264,7 +264,7 @@ export class EventReportsComponent implements OnInit {
     if (payment_method == 'credit') {
       return 'Tarjeta de credito'
     } else if (payment_method == 'pse') {
-      return 'Transferenica bancaria'
+      return 'PSE'
     } else if (payment_method == 'cash') {
       return 'Efectivo'
     }
