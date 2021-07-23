@@ -96,8 +96,6 @@ export class EventReportsComponent implements OnInit {
 
       this.countUsers(res);
       res.map((item, i) => {
-        console.log('datos', item)
-
         res[i].transaction.status = this.validateStatus(item.transaction.status); res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
       })
 
@@ -122,14 +120,15 @@ export class EventReportsComponent implements OnInit {
       const newReport = {
         payment_method: element.transaction.payment_method,
         created_at: element.created_at,
-        event_name: element.donation.name,
+        // event_name: element.donation.name,
         status: element.transaction.status,
         identification: element.user.identification,
         name: element.user.name,
         last_name: element.user.last_name,
         email: element.user.email,
-        sede: element.church.name,
-        pastor: element.pastor.name,
+        reference: element.transaction.payment_ref
+        // sede: element.church.name,
+        // pastor: element.pastor.name,
       }
       newReports.push(newReport);
     });
@@ -194,10 +193,11 @@ export class EventReportsComponent implements OnInit {
 
   countUsers(data: any[]) {
 
+
     let nationals = 0;
     let internationals = 0;
     data.map(item => {
-      if (item?.user?.country?.trim().toLowerCase() == 'colombia') {
+      if (item?.transaction?.status?.trim().toLowerCase() == '1') {
         nationals = nationals + 1;
       } else {
         internationals = internationals + 1;
@@ -209,6 +209,25 @@ export class EventReportsComponent implements OnInit {
       internationals
     }
     this.info_users_count = cont_users
+
+
+
+    // SHOW DATA INTERNATIONAL
+    // let nationals = 0;
+    // let internationals = 0;
+    // data.map(item => {
+    //   if (item?.user?.country?.trim().toLowerCase() == 'colombia') {
+    //     nationals = nationals + 1;
+    //   } else {
+    //     internationals = internationals + 1;
+    //   }
+    // });
+    // const cont_users = {
+    //   total: data.length,
+    //   nationals,
+    //   internationals
+    // }
+    // this.info_users_count = cont_users
   }
   exportFile() {
     if (this.info_to_export.length > 0) {
@@ -226,9 +245,9 @@ export class EventReportsComponent implements OnInit {
           Pais: item.user.country ? item.user.country : 'N/A',
           Departamento: item.user.departament ? item.user.departament : 'N/A',
           Municipio: item.user.city ? item.user.city : 'N/A',
-          Sede: item.church.name ? item.church.name : 'N/A',
-          Pastor: item.pastor.name ? item.pastor.name : 'N/A',
-          'Lider Doce': item.leader.name ? item.leader.name : 'N/A',
+          // Sede: item.church.name ? item.church.name : 'N/A',
+          // Pastor: item.pastor.name ? item.pastor.name : 'N/A',
+          // 'Lider Doce': item.leader.name ? item.leader.name : 'N/A',
           'Fecha de Donación': new Date(item.created_at),
           'Referencia Transaccion': item.transaction.payment_ref ? item.transaction.payment_ref : '',
           'Metodo de pago': item.transaction.payment_method ? item.transaction.payment_method : '',
