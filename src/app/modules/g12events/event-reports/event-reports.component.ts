@@ -235,6 +235,10 @@ export class EventReportsComponent implements OnInit {
       console.log('data to export', this.info_to_export)
       this.info_to_export.map(item => {
         const newData = {
+          // 'id user PSQL' : item.user.id,
+          // 'user code' : item.user.user_code? item.user.user_code : 'N/A',
+          // 'leader_id' : item.user.leader_id? item.user.leader_id : 'N/A',
+
           Nombre: item.user.name ? item.user.name : 'N/A',
           Apellido: item.user.last_name ? item.user.last_name : 'N/A',
           'No. Documento': item.user.identification ? item.user.identification : 'N/A',

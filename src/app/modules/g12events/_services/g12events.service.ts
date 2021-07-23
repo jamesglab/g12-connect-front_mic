@@ -137,7 +137,7 @@ export class G12eventsService {
   /// query Mongo
   getTransactionsReports(params) {
     return this.http.get<any>(
-      `${'http://localhost:5000/api/v2/'}reports/reports/reportsMongo`, { params, headers: header }).pipe(
+      `${environment.production ? environment.apiUrlG12Connect : 'http://localhost:5000/api/v2/'}reports/reports/reportsMongo`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
