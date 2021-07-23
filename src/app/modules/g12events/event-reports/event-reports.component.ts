@@ -199,7 +199,7 @@ export class EventReportsComponent implements OnInit {
     data.map(item => {
       if (item?.transaction?.status?.trim().toLowerCase() == '1') {
         nationals = nationals + 1;
-      } else {
+      } else if (item?.transaction?.status?.trim().toLowerCase() == '2') {
         internationals = internationals + 1;
       }
     });
@@ -232,31 +232,31 @@ export class EventReportsComponent implements OnInit {
   exportFile() {
     if (this.info_to_export.length > 0) {
       const dataToExport = []
-      console.log('data to export', this.info_to_export)
       this.info_to_export.map(item => {
         const newData = {
-          // 'id user PSQL' : item.user.id,
-          // 'user code' : item.user.user_code? item.user.user_code : 'N/A',
-          // 'leader_id' : item.user.leader_id? item.user.leader_id : 'N/A',
-
-          Nombre: item.user.name ? item.user.name : 'N/A',
-          Apellido: item.user.last_name ? item.user.last_name : 'N/A',
-          'No. Documento': item.user.identification ? item.user.identification : 'N/A',
-          'Fecha Nacimiento': item.user.birth_date ? new Date(item.user.birth_date) : 'N/A',
-          Genero: item.user.gender ? item.user.gender : 'N/A',
-          Telefono: item.user.phone ? item.user.phone : 'N/A',
-          "E-mail": item.user.email ? item.user.email : 'N/A',
-          Pais: item.user.country ? item.user.country : 'N/A',
-          Departamento: item.user.departament ? item.user.departament : 'N/A',
-          Municipio: item.user.city ? item.user.city : 'N/A',
-          // Sede: item.church.name ? item.church.name : 'N/A',
-          // Pastor: item.pastor.name ? item.pastor.name : 'N/A',
-          // 'Lider Doce': item.leader.name ? item.leader.name : 'N/A',
+          //ONLY TEST NOT FOUND USERS
+          // 'id user PSQL': item.user.id,
+          // 'user code': item.user.user_code ? item.user.user_code : 'N/A',
+          // 'leader_id': item.user.leader_id ? item.user.leader_id : 'N/A',
+          //************************************************************* *
+          Nombre: item.user?.name ? item.user.name : 'N/A',
+          Apellido: item.user?.last_name ? item.user.last_name : 'N/A',
+          'No. Documento': item.user?.identification ? item.user.identification : 'N/A',
+          'Fecha Nacimiento': item.user?.birth_date ? new Date(item.user.birth_date) : 'N/A',
+          Genero: item.user?.gender ? item.user.gender : 'N/A',
+          Telefono: item.user?.phone ? item.user.phone : 'N/A',
+          "E-mail": item.user?.email ? item.user.email : 'N/A',
+          Pais: item.user?.country ? item.user.country : 'N/A',
+          Departamento: item.user?.departament ? item.user.departament : 'N/A',
+          Municipio: item.user?.city ? item.user.city : 'N/A',
+          // Sede: item.church?.name ? item.church.name : 'N/A',
+          // Pastor: item.pastor?.name ? item.pastor.name : 'N/A',
+          // 'Lider Doce': item.leader?.name ? item.leader.name : 'N/A',   
           'Fecha de Donación': new Date(item.created_at),
           'Referencia Transaccion': item.transaction.payment_ref ? item.transaction.payment_ref : '',
           'Metodo de pago': item.transaction.payment_method ? item.transaction.payment_method : '',
-          'Nombre evento': item.donation.name ? item.donation.name : 'N/A',
-          'Nombre corte': item.cut.name ? item.cut.name : 'N/A',
+          'Nombre evento': item.donation?.name ? item.donation?.name : 'N/A',
+          'Nombre corte': item.cut?.name ? item.cut?.name : 'N/A',
           Estado: item.transaction.status ? item.transaction.status : 'N/A',
           Costo: item.transaction.amount ? item.transaction.amount : 'N/A',
           Moneda: item.transaction.currency ? item.transaction.currency : 'N/A',
