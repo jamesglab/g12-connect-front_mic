@@ -126,7 +126,7 @@ export class EventReportsComponent implements OnInit {
         name: element.user.name,
         last_name: element.user.last_name,
         email: element.user.email,
-        reference: element.transaction.payment_ref
+        reference: element.transaction.payment_ref,
         // sede: element.church.name,
         // pastor: element.pastor.name,
       }
@@ -249,9 +249,9 @@ export class EventReportsComponent implements OnInit {
           Pais: item.user?.country ? item.user.country : 'N/A',
           Departamento: item.user?.departament ? item.user.departament : 'N/A',
           Municipio: item.user?.city ? item.user.city : 'N/A',
-          // Sede: item.church?.name ? item.church.name : 'N/A',
-          // Pastor: item.pastor?.name ? item.pastor.name : 'N/A',
-          // 'Lider Doce': item.leader?.name ? item.leader.name : 'N/A',   
+          Sede: item.church?.name ? item.church.name : 'N/A',
+          Pastor: item.pastor?.name ? item.pastor.name : 'N/A',
+          'Lider Doce': item.leader?.name ? item.leader.name : 'N/A',
           'Fecha de Donación': new Date(item.created_at),
           'Referencia Transaccion': item.transaction.payment_ref ? item.transaction.payment_ref : '',
           'Metodo de pago': item.transaction.payment_method ? item.transaction.payment_method : '',
