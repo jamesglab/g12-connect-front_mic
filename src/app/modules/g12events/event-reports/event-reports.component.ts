@@ -262,7 +262,7 @@ export class EventReportsComponent implements OnInit {
           'Nombre evento': item.donation?.name ? item.donation?.name : 'N/A',
           'Nombre corte': item.cut?.name ? item.cut?.name : 'N/A',
           Estado: item.transaction.status ? item.transaction.status : 'N/A',
-          Costo: item.transaction.amount ? item.transaction.amount : 'N/A',
+          Costo: item.transaction.currency == 'cop' ? item.cut.prices.cop : item.cut.prices.usd,
           Moneda: item.transaction.currency ? item.transaction.currency : 'N/A',
 
         }
