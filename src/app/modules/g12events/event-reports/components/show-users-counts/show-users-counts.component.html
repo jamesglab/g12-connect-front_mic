@@ -1,11 +1,11 @@
 <div class="row mt-5">
 
-  <div class="col-xl-4 col-sm-12">
+  <div class="col-xl-3 col-sm-12">
 
     <div class="card card-custom bg-gray-100 card-stretch gutter-b">
       <!-- Header -->
       <div class="card-header border-0 bg-warning py-5">
-        <h3 class="card-title font-weight-bolder text-white">Usuarios Registrados</h3>
+        <h3 class="card-title font-weight-bolder text-white">Total Usuarios</h3>
         <div class="card-toolbar text-white">
 
         </div>
@@ -33,7 +33,7 @@
     </div>
 
   </div>
-  <div class="col-xl-4 col-sm-12">
+  <div class="col-xl-3 col-sm-12">
 
 
     <div class="card card-custom bg-gray-100 card-stretch gutter-b">
@@ -56,7 +56,7 @@
                             d-flex justify-content-center align-items-center p-3 mb-5">
 
               <a class="text-primary font-weight-bold font-size-h6">
-                {{info_users_count?.nationals ? info_users_count?.nationals : 0}}
+                {{info_users_count?.aprobe ? info_users_count?.aprobe : 0}}
               </a>
             </div>
           </div>
@@ -69,7 +69,7 @@
 
   </div>
 
-  <div class="col-xl-4 col-sm-12">
+  <div class="col-xl-3 col-sm-12">
 
     <div class="card card-custom bg-gray-100 card-stretch gutter-b">
       <!-- Header -->
@@ -91,7 +91,7 @@
                             d-flex justify-content-center align-items-center p-3 mb-5">
 
               <a class="text-success font-weight-bold font-size-h6">
-                {{info_users_count?.internationals?info_users_count.internationals:0}}
+                {{info_users_count?.pending?info_users_count.pending:0}}
               </a>
             </div>
           </div>
@@ -103,5 +103,42 @@
     </div>
 
   </div>
+
+
+  <div class="col-xl-3 col-sm-12">
+
+    <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+      <!-- Header -->
+      <div class="card-header border-0 bg-danger py-5">
+        <h3 class="card-title font-weight-bolder text-white">Usuarios Cancelados</h3>
+        <div class="card-toolbar text-white">
+
+        </div>
+      </div>
+
+
+      <!-- Body -->
+      <div class="card-body p-0 position-relative overflow-hidden">
+        <!--begin::Stats-->
+        <div class="card-spacer">
+          <!--begin::Row-->
+          <div class="row m-0">
+            <div class="col-xl-12 col-sm-12 bg-light-danger rounded-xl
+                            d-flex justify-content-center align-items-center p-3 mb-5">
+
+              <a class="text-danger font-weight-bold font-size-h6">
+                {{info_users_count?.cancel ?info_users_count.cancel:0}}
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
 
 </div>

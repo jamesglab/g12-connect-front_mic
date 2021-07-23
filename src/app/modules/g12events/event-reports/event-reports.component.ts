@@ -100,11 +100,11 @@ export class EventReportsComponent implements OnInit {
       })
 
       if (!this.dataSource) {
-        this.dataSource = new MatTableDataSource<any[]>(this.getObjetcsToTable(res));
+        this.dataSource = new MatTableDataSource<any[]>(this.getObjetcsToTable(res.reverse()));
         this.info_to_export = res;
         this.cdr.detectChanges();
       } else {
-        this.dataSource.data = this.getObjetcsToTable(res);
+        this.dataSource.data = this.getObjetcsToTable(res.reverse());
       }
       this.cutTransactions = [];
       this.data_cut_table = [];
@@ -194,21 +194,25 @@ export class EventReportsComponent implements OnInit {
   countUsers(data: any[]) {
 
 
-    let nationals = 0;
-    let internationals = 0;
+    let aprobe = 0;
+    let pending = 0;
+    let cancel = 0;
     data.map(item => {
       if (item?.transaction?.status?.trim().toLowerCase() == '1') {
-        nationals = nationals + 1;
+        aprobe = aprobe + 1;
       } else if (item?.transaction?.status?.trim().toLowerCase() == '2') {
-        internationals = internationals + 1;
+        pending = pending + 1;
+      } else if (item?.transaction?.status?.trim().toLowerCase() == '3') {
+        cancel = cancel + 1;
       }
     });
     const cont_users = {
       total: data.length,
-      nationals,
-      internationals
+      aprobe,
+      pending,
+      cancel
     }
-    this.info_users_count = cont_users
+    this.info_users_count = cont_users;
 
 
 
