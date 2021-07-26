@@ -82,6 +82,22 @@ export const notificationConfig = (type: number, message?: string): MatSnackBarC
     }
 }
 
+export const parseToObjectOtherObject = (array: any[], key: string): Promise<{ [key: string]: any }> => {
+    return new Promise(async (resolve, reject) => {
+        let object = {};
+        const iterateArray = async () => {
+            return Promise.all(
+                array.map((item) => {
+                    object[item[key]] = item;
+                    return Promise.resolve('ok');
+                })
+            );
+        }
+        await iterateArray();
+        resolve(object);
+    });
+}
+
 export const parseMonth = (month: number): string => {
     return SHORT_MONTHS_OBJECT[month];
 }

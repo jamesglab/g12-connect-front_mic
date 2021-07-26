@@ -34,23 +34,13 @@ export class G12eventsService {
       );
   }
 
-  getPastor(params) {
-
-    return this.http.get<any>(
-      `${environment.apiUrlG12Connect}users/user/pastor`, { params, headers: header }).pipe(
-        map((res: Response) => {
-          return res;
-        }),
-        catchError((handleError))
-      );
-  }
   getTransactionsEventsStatus(params?): Observable<any> {
     return this.http.get<any>(
       `${environment.apiUrlG12Connect}reports/transactions/event/status`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
-        catchError((handleError))
+        catchError(handleError)
       );
   }
 
@@ -145,10 +135,51 @@ export class G12eventsService {
       );
   }
 
+
+  ///EDIT USERSSS EVENT
+  getDataByFilter(filter: any) { //IS FOR GET INFO USERS NOT PASTORS
+    return this.http.get<any>(
+      `${environment.apiUrlG12Connect}reports/reports/notPastors`,
+      { params: filter, headers: header }).pipe(
+        map((res: Response) => { return res; }),
+        catchError((handleError)));
+  }
+
+  getPlaces(filter: any): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrlG12Connect}users/church/filter`, { headers: header, params: filter }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  getLeadersOrPastors(params: { userCode: string, church: string }): Observable<any> {
+
+    return this.http.get<any>(
+      `${environment.apiUrlG12Connect}users/user/pastor`, { params, headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  updateUser(user: any): Observable<any> {
+
+    return this.http.put<any>(
+      `${environment.apiUrlG12Connect}reports/reports/updateReportMongoPSQL`, user, { headers: header }).pipe(
+        map((res: Response) => { return res; }),
+        catchError((handleError)));
+  }
+
+  ///EDIT USERSSS EVENT
+
   getTransactionUserNotPastor(params) {
 
     return this.http.get<any>(
-      `${'http://localhost:5000/api/v2/'}reports/reports/notPastors`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect}reports/reports/notPastors`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),

@@ -68,7 +68,7 @@ export class EventReportsComponent implements OnInit {
   }
 
   getPastor() {
-    this._g12Events.getPastor({ userCode: '01', church: '1' }).subscribe(res => {
+    this._g12Events.getLeadersOrPastors({ userCode: '01', church: '1' }).subscribe(res => {
       this.pastores = res;
     });
 

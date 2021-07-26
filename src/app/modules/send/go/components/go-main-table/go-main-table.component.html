@@ -78,30 +78,6 @@
             </mat-cell>
         </ng-container>
 
-        <!-- <ng-container matColumnDef="report">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element" (click)="handleReportGO(element);">
-                <button class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">Reportar Go</button>
-            </mat-cell>
-        </ng-container>
-
-        
-        <ng-container matColumnDef="seeReport">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element" (click)="handleSeeReportGo(element);" class="cursor-pointer" matTooltip="Reporte GO"
-            style="color: var(--primary); display: flex; justify-content: center;">
-               <mat-icon>description</mat-icon>
-            </mat-cell>
-        </ng-container>
-
-
-        <ng-container matColumnDef="close">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element" (click)="handleClose(element);">
-                <button class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5 cursor-pointer">Cerrar</button>
-            </mat-cell>
-        </ng-container> -->
-
         <mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>

@@ -1,76 +1,127 @@
+<div class="row">
+
+  <div class="col-xl-9 col-sm-12">
+    <form [formGroup]="getReportForm" (ngSubmit)="onSubmit();" style="width: 100%;">
+
+      <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
+        <mat-label>Selecciona Evento</mat-label>
+        <mat-select type="select" formControlName="event">
+          <mat-option *ngFor="let event of events" value="{{event.id}}">{{ event.name }}</mat-option>
+        </mat-select>
+        <!-- <mat-error *ngIf="submitted && form.year.errors?.required">Selecciona un año por favor
+          </mat-error> -->
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
+        <mat-label>Selecciona usuarios</mat-label>
+        <mat-select type="select" formControlName="filter">
+          <!-- <mat-option *ngFor="let year of yearsforSelect" value="{{year.id}}">{{ year.name }}</mat-option> -->
+          <mat-option value="1">TODOS</mat-option>
+          <mat-option value="2">SIN PASTOR</mat-option>
+        </mat-select>
+        <!-- <mat-error *ngIf="submitted && form.year.errors?.required">Selecciona un año por favor
+              </mat-error> -->
+      </mat-form-field>
+
+      <button *ngIf="!isLoading" [disabled]="getReportForm.invalid"
+        class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+        Buscar
+      </button>
+        
+      <div *ngIf="isLoading" class="spinner-border text-primary ml-5" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+      <!-- <button *ngIf="!isLoading$" matTooltip="Limpiar Filtro" type="button" (click)="cleanFilter();"
+              class="btn ml-4 cursor-pointer">
+              <mat-icon style="color: #3699FF">360</mat-icon>
+          </button>
+
+          <div *ngIf="isLoading$" class="spinner-border text-primary ml-5" role="status">
+              <span class="sr-only">Loading...</span>
+          </div> -->
+
+    </form>
+  </div>
+
+  <!-- <div class="col-xl-3 col-sm-12 justify-content-end">
+      <button matTooltip="Consolidado Asistentes" (click)="downloadAssistants();"
+          class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+          <mat-icon>accessibility</mat-icon>
+      </button>
+      <button matTooltip="Consolidado Células" (click)="downloadCells();"
+          class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+          <mat-icon>ac_unit</mat-icon>
+      </button>
+      <button *ngIf="permission" matTooltip="Consolidado Nacional" (click)="downloadNational();"
+          class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+          <mat-icon>public</mat-icon>
+      </button>
+  </div> -->
+
+</div>
 <div>
   <mat-form-field class="example-full-width">
     <input matInput placeholder="Buscar..." [formControl]="search" (ngModelChange)="filter()" />
   </mat-form-field>
 </div>
+<div class="example-container mat-elevation-z0">
+  <table #table mat-table [dataSource]="dataSource">
 
-<table #table mat-table [dataSource]="dataSource">
-  <!-- <ng-container matColumnDef="pastor">
-    <th mat-header-cell *matHeaderCellDef>Pastor</th>
-    <td mat-cell *matCellDef="let element"> {{element.pastor?element.pastor:''}}
-    </td>
-  </ng-container> -->
-  <!-- 
-  <ng-container matColumnDef="sede">
-    <th mat-header-cell *matHeaderCellDef>Sede</th>
-    <td mat-cell *matCellDef="let element">
-      {{(element.sede ? element.sede :'')}} </td>
-  </ng-container> -->
+    <ng-container matColumnDef="reference">
+      <th mat-header-cell *matHeaderCellDef>Referencia</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.reference ? element.reference : "" }}
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="reference">
-    <th mat-header-cell *matHeaderCellDef>Referencia</th>
-    <td mat-cell *matCellDef="let element">
-      {{ element.reference ? element.reference : "" }}
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="payment_method">
+      <th mat-header-cell *matHeaderCellDef>Metodo de Pago</th>
+      <td style="max-width: 10rem" mat-cell *matCellDef="let element">
+        {{ element.payment_method ? element.payment_method : "" }}
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="payment_method">
-    <th mat-header-cell *matHeaderCellDef>Metodo de Pago</th>
-    <td style="max-width: 10rem" mat-cell *matCellDef="let element">
-      {{ element.payment_method ? element.payment_method : "" }}
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.status ? element.status : "" }}
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="status">
-    <th mat-header-cell *matHeaderCellDef>Estado</th>
-    <td mat-cell *matCellDef="let element">
-      {{ element.status ? element.status : "" }}
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="identification">
+      <th mat-header-cell *matHeaderCellDef>Identificación</th>
+      <td mat-cell *matCellDef="let element">{{ element.identification }}</td>
+    </ng-container>
 
-  <ng-container matColumnDef="identification">
-    <th mat-header-cell *matHeaderCellDef>Identificación</th>
-    <td mat-cell *matCellDef="let element">{{ element.identification }}</td>
-  </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Nombre</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
 
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>Nombre</th>
-    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-  </ng-container>
+    <ng-container matColumnDef="last_name">
+      <th mat-header-cell *matHeaderCellDef>Apellido</th>
+      <td mat-cell *matCellDef="let element">{{ element.last_name }}</td>
+    </ng-container>
 
-  <ng-container matColumnDef="last_name">
-    <th mat-header-cell *matHeaderCellDef>Apellido</th>
-    <td mat-cell *matCellDef="let element">{{ element.last_name }}</td>
-  </ng-container>
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>Email</th>
+      <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+    </ng-container>
 
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef>Email</th>
-    <td mat-cell *matCellDef="let element">{{ element.email }}</td>
-  </ng-container>
+    <ng-container matColumnDef="options">
+      <th mat-header-cell *matHeaderCellDef>Opciones</th>
+      <td mat-cell *matCellDef="let element">
+        <a>
+          <mat-icon (click)="handleToEdit(element)" style="font-size: xx-large; color: #187de4; cursor: pointer">edit
+          </mat-icon>
+        </a>
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="options">
-    <th mat-header-cell *matHeaderCellDef>Opciones</th>
-    <td mat-cell *matCellDef="let element">
-      <a>
-        <mat-icon (click)="handleToEdit(element)" style="font-size: xx-large; color: #187de4; cursor: pointer">edit
-        </mat-icon>
-      </a>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-</table>
-<mat-paginator class="mat-elevation-z0" #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
-  [showFirstLastButtons]="true">
-</mat-paginator>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  <mat-paginator class="mat-elevation-z0" #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+    [showFirstLastButtons]="true">
+  </mat-paginator>
+</div>
