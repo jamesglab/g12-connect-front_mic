@@ -144,4 +144,15 @@ export class G12eventsService {
         catchError((handleError))
       );
   }
+
+  getTransactionUserNotPastor(params) {
+
+    return this.http.get<any>(
+      `${'http://localhost:5000/api/v2/'}reports/reports/notPastors`, { params, headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError((handleError))
+      );
+  }
 }

@@ -23,7 +23,9 @@ import { TableReportsComponent } from './event-reports/components/table-reports/
 import { TableCutComponent } from './event-reports/components/table-cut/table-cut.component';
 import { ShowUsersCountsComponent } from './event-reports/components/show-users-counts/show-users-counts.component';
 import { ShowCutCountsComponent } from './event-reports/components/show-cut-counts/show-cut-counts.component';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { UsersNotPastorComponent } from './users-not-pastor/users-not-pastor.component';
+import { EditReportNotPastorComponent } from './users-not-pastor/components/edit-report-not-pastor/edit-report-not-pastor.component';
 
 const routes: Routes = [
   {
@@ -33,6 +35,10 @@ const routes: Routes = [
       {
         path: 'home',
         component: MainEventsComponent
+      },
+      {
+        path: 'users-not-pastor',
+        component: UsersNotPastorComponent
       },
       {
         path: 'add',
@@ -54,7 +60,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent,
-    EditEventComponent, EventReportsComponent, TableReportsComponent, TableCutComponent, ShowUsersCountsComponent, ShowCutCountsComponent],
+    EditEventComponent, EventReportsComponent, TableReportsComponent, TableCutComponent, ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent],
   imports: [
     CommonModule,
     SharedModule,
