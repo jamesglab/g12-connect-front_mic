@@ -75,7 +75,7 @@ export class EventReportsComponent implements OnInit {
   }
   getEvents() {
 
-    this._g12Events.getFilter({ type: "G12_EVENT" }).subscribe(res => {
+    this._g12Events.getAll({ type: "G12_EVENT" }).subscribe(res => {
       this.events = res;
     })
   }
