@@ -61,7 +61,7 @@ export class EditReportNotPastorComponent implements OnInit {
         birth_date: [new Date(this.report.user.birth_date)]
       }),
       typeChurch: [],
-      headquarter:[],
+      headquarter: [],
       network: [],
       church: [],
       pastor: [],
@@ -75,8 +75,8 @@ export class EditReportNotPastorComponent implements OnInit {
     return this.editUserForm.controls;
   }
 
-  renderCountry(country){
-    if(country){
+  renderCountry(country) {
+    if (country) {
       return country.toLowerCase();
     }
     return null;
@@ -96,23 +96,23 @@ export class EditReportNotPastorComponent implements OnInit {
     ];
   }
 
-  getPlaces(){
+  getPlaces() {
     var filter = "national";
     const { country } = this.form.user.value;
     // console.log("COUNTRYYYYY", country);
-    if(!country){
+    if (!country) {
       filter = "national";
-    }else{
-      if(country.toLowerCase() != "colombia"){
+    } else {
+      if (country.toLowerCase() != "colombia") {
         filter = "international";
       }
     }
     const getPlacesSubscr = this.eventsService
-    .getPlaces({ type: filter }).subscribe(async (res) => {
-      this.placesObject = await parseToObjectOtherObject(res, 'id');
-      this.places = res || [];
-      this.cdr.detectChanges();
-    }, err => { throw err; });
+      .getPlaces({ type: filter }).subscribe(async (res) => {
+        this.placesObject = await parseToObjectOtherObject(res, 'id');
+        this.places = res || [];
+        this.cdr.detectChanges();
+      }, err => { throw err; });
     this.unsubscribe.push(getPlacesSubscr);
   }
 
@@ -120,7 +120,7 @@ export class EditReportNotPastorComponent implements OnInit {
     this.pastors = [];
     if (this.form.network.value && this.form.headquarter.value) {
       const getCivilSubscr = this.eventsService
-        .getLeadersOrPastors({ userCode: this.form.network.value, church: this.form.headquarter.value }).subscribe(async (res: any) => {
+        .getLeadersOrPastors({ userCode: this.form.network.value, church: this.form.headquarter.value.id }).subscribe(async (res: any) => {
           this.pastorsObject = await parseToObjectOtherObject(res, 'user_code');
           this.pastors = res || [];
           this.form.pastor.enable();
@@ -130,11 +130,11 @@ export class EditReportNotPastorComponent implements OnInit {
     }
   }
 
-  getLeaders(userCode: string) {
+  getLeaders(pastor) {
     this.leaders = [];
     // this.isLoading.leaders = true;
     const getLeadersSubscr = this.eventsService
-      .getLeadersOrPastors({ userCode, church: this.form.headquarter.value }).subscribe(async (res: any) => {
+      .getLeadersOrPastors({ userCode: pastor.user_code, church: this.form.headquarter.value.id }).subscribe(async (res: any) => {
         // console.log("LEADERS OR PASTORS", res);
         this.leadersObject = await parseToObjectOtherObject(res, 'id');
         this.leaders = res || [];
@@ -158,10 +158,11 @@ export class EditReportNotPastorComponent implements OnInit {
 
   updateUser() {
     let pastor, leader, church: any = null;
+
     if (this.form.typeChurch.value == '88') { //IN CASE OF SELECTED MCI CHURCHES
-      pastor = this.pastorsObject[this.form.pastor.value];
-      leader = this.leadersObject[this.form.leader.value];
-      church = this.placesObject[this.form.headquarter.value];
+      pastor = this.form.pastor.value;
+      leader = this.form.leader.value;
+      church = this.form.headquarter.value;
     } else {
       // IN CASE OF SELECTED church g12 and other
       pastor = { name: this.form.pastorName.value }
@@ -169,17 +170,17 @@ export class EditReportNotPastorComponent implements OnInit {
       church = { name: this.form.churchName.value }
     }
     let { country } = this.form.user.value;
-    if(!country) this.form.country.setValue("colombia");
+    if (!country) this.form.country.setValue("colombia");
 
     // console.log("SE fueeee", { ...this.editUserForm.getRawValue(), ...{ pastor, leader, church } });
     const updateUserSubscr = this.eventsService
-    .updateUser({ ...this.editUserForm.getRawValue(), ...{ pastor, leader, church } })
-    .subscribe((res) => {  
-      this.isLoading = false;
-      // console.log("THE USER WAS UPDATED", res);
-      this.closeModal("success");
-     }, err => { this.isLoading = false; throw err; });
-     this.unsubscribe.push(updateUserSubscr);
+      .updateUser({ ...this.editUserForm.getRawValue(), ...{ pastor, leader, church } })
+      .subscribe((res) => {
+        this.isLoading = false;
+        // console.log("THE USER WAS UPDATED", res);
+        this.closeModal("success");
+      }, err => { this.isLoading = false; throw err; });
+    this.unsubscribe.push(updateUserSubscr);
   }
 
   closeModal(status: any) {
