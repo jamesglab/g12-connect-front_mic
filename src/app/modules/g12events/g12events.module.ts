@@ -5,10 +5,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InlineSVGModule } from 'ng-inline-svg';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 
-// import { MatNativeDateModule } from '@angular/material/m';
-import { MatMomentDateModule } from "@angular/material-moment-adapter";
+
 
 import { G12eventsComponent } from './g12events.component';
 import { AddEventComponent } from './add-event/add-event.component';
@@ -26,7 +24,7 @@ import { ShowCutCountsComponent } from './event-reports/components/show-cut-coun
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UsersNotPastorComponent } from './users-not-pastor/users-not-pastor.component';
 import { EditReportNotPastorComponent } from './users-not-pastor/components/edit-report-not-pastor/edit-report-not-pastor.component';
-
+import { AddAssistantComponent } from './users-not-pastor/components/add-assistant/add-assistant.component'
 const routes: Routes = [
   {
     path: '',
@@ -37,7 +35,7 @@ const routes: Routes = [
         component: MainEventsComponent
       },
       {
-        path: 'users-not-pastor',
+        path: 'users',
         component: UsersNotPastorComponent
       },
       {
@@ -60,7 +58,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent,
-    EditEventComponent, EventReportsComponent, TableReportsComponent, TableCutComponent, ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent],
+    EditEventComponent, EventReportsComponent, TableReportsComponent, TableCutComponent, AddAssistantComponent,ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent],
   imports: [
     CommonModule,
     SharedModule,
@@ -71,9 +69,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     MatChipsModule,
     DragDropModule,
-    MatDatepickerModule,
-    MatMomentDateModule,
-    MatCheckboxModule
+    
   ]
 })
 export class G12eventsModule { }

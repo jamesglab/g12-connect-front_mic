@@ -113,6 +113,14 @@ export const DynamicAsideMenuConfig = {
           bullet: 'dot',
           code: "EVT030",
           page: '/g12events/reports'
+        },
+        {
+          title: 'Usuarios',
+          root: true,
+          show: true,
+          bullet: 'dot',
+          code: "EVT030",
+          page: '/g12events/users'
         }
       ]
     },

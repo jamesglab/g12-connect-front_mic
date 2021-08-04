@@ -27,10 +27,14 @@
         class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
         Buscar
       </button>
-        
+
+      <button class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer" (click)="handleAdd()">
+        Crear Usuario
+      </button>
+
       <div *ngIf="isLoading" class="spinner-border text-primary ml-5" role="status">
         <span class="sr-only">Loading...</span>
-    </div>
+      </div>
       <!-- <button *ngIf="!isLoading$" matTooltip="Limpiar Filtro" type="button" (click)="cleanFilter();"
               class="btn ml-4 cursor-pointer">
               <mat-icon style="color: #3699FF">360</mat-icon>

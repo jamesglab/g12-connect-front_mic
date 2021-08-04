@@ -16,7 +16,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { G12eventsService } from '../_services/g12events.service';
 import { ExportService } from '../../_services/export.service';
 import { EditReportNotPastorComponent } from './components/edit-report-not-pastor/edit-report-not-pastor.component';
-
+import { AddAssistantComponent } from './components/add-assistant/add-assistant.component';
+import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-users-not-pastor',
   templateUrl: './users-not-pastor.component.html',
@@ -53,7 +54,7 @@ export class UsersNotPastorComponent implements OnInit {
   private unsubscribe: Subscription[] = [];
 
   constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef, private fb: FormBuilder,
-    private exportService: ExportService, private snackBar: MatSnackBar, private modalService: NgbModal) {
+    private exportService: ExportService, private snackBar: MatSnackBar, private modalService: NgbModal , private MatDialog : MatDialog) {
     this.maxDate = new Date();
   }
 
@@ -91,7 +92,7 @@ export class UsersNotPastorComponent implements OnInit {
   }
 
   onSubmit() {
-    if(this.getReportForm.invalid){
+    if (this.getReportForm.invalid) {
       return;
     }
     //FILTER DATAAAA
@@ -102,29 +103,29 @@ export class UsersNotPastorComponent implements OnInit {
   getDataByFilter() {
     this.isLoading = true;
     this._g12Events.getDataByFilter(this.getReportForm.getRawValue())
-    .subscribe((res: any) => {
-      // LUEGO DEBO DE REFACTORIZAR
-      // this.countUsers(res);
-      this.isLoading = false;
-      res.map((item, i) => {
-        res[i].transaction.status = this.validateStatus(item.transaction.status); 
-        res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
-      });
+      .subscribe((res: any) => {
+        // LUEGO DEBO DE REFACTORIZAR
+        // this.countUsers(res);
+        this.isLoading = false;
+        res.map((item, i) => {
+          res[i].transaction.status = this.validateStatus(item.transaction.status);
+          res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
+        });
 
-      if (!this.dataSource) {
-        this.dataSource = new MatTableDataSource<any[]>(this.getObjetcsToTable(res.reverse()));
+        if (!this.dataSource) {
+          this.dataSource = new MatTableDataSource<any[]>(this.getObjetcsToTable(res.reverse()));
+          // this.info_to_export = res;
+          this.cdr.detectChanges();
+          this.dataSource.paginator = this.paginator;
+        } else {
+          this.dataSource.data = this.getObjetcsToTable(res.reverse());
+        }
+
+        this.cutTransactions = [];
+        this.data_cut_table = [];
         // this.info_to_export = res;
-        this.cdr.detectChanges();
-        this.dataSource.paginator = this.paginator;
-      } else {
-        this.dataSource.data = this.getObjetcsToTable(res.reverse());
-      }
-
-      this.cutTransactions = [];
-      this.data_cut_table = [];
-      // this.info_to_export = res;
-      this.separateCuts(res);
-    }, err => { this.isLoading = false; throw err; })
+        this.separateCuts(res);
+      }, err => { this.isLoading = false; throw err; })
   }
 
   getObjetcsToTable(data) {
@@ -148,6 +149,53 @@ export class UsersNotPastorComponent implements OnInit {
     });
     return newReports
 
+  }
+
+
+  handleToEdit(report) {
+
+    const MODAL = this.modalService.open(EditReportNotPastorComponent, {
+      windowClass: 'fadeIn',
+      size: 'lg',
+      backdrop: true,
+      keyboard: true,
+      centered: true
+    })
+    MODAL.componentInstance.report = report;
+    MODAL.result.then((data) => {
+      if (data == "success") {
+        this.getDataByFilter();
+        // this.getTransactionsMongoNotPastor();
+      }
+    });
+
+  }
+
+  handleAdd() {
+    const MODAL = this.modalService.open(AddAssistantComponent, {
+      windowClass: 'fadeIn',
+      size: 'xl',
+      backdrop: true,
+      keyboard: true,
+      centered: true
+      
+    });
+    MODAL.result.then((data) => {
+      if (data == "success") {
+        // this.getDataByFilter();
+        // this.getTransactionsMongoNotPastor();
+      }
+    });
+    // MODAL.result.then((data) => {
+
+    // })
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result) {
+    //     // result.Leader = (result.Leader) ? result.Leader.code : null;
+    //     // this.assistantsService.addNewAssistant(result);
+    //     this.cdr.detectChanges();
+    //   }
+    // });
   }
 
   async separateCuts(data) {
@@ -204,24 +252,6 @@ export class UsersNotPastorComponent implements OnInit {
   //   })
   // }
 
-  handleToEdit(report) {
-
-    const MODAL = this.modalService.open(EditReportNotPastorComponent, {
-      windowClass: 'fadeIn',
-      size: 'lg',
-      backdrop: true,
-      keyboard: true,
-      centered: true
-    })
-    MODAL.componentInstance.report = report;
-    MODAL.result.then((data) => {
-      if (data == "success") {
-        this.getDataByFilter();
-        // this.getTransactionsMongoNotPastor();
-      }
-    });
-
-  }
 
   // countUsers(data: any[]) {
 

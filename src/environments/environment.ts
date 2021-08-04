@@ -8,7 +8,7 @@ export const environment = {
   USERDATA_KEY: 'authf649fc9a5f55', // METRONIC
   isMockEnabled: false, // METRONIC
   apiUrl: 'http://51.79.78.171:7003/', //.NETAPI
-  apiUrlG12Connect: 'https://dev-api.g12connect.com/api/v2/'
+  apiUrlG12Connect: 'https://api.g12connect.com/api/v2/'
 };
 
 /*
