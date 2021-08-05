@@ -158,7 +158,6 @@ export class AddAssistantComponent implements OnInit {
     }
   }
   setFinancialCuts() {
-    console.log('evento', this.assistantForm.getRawValue().payment_data.event);
 
     this.events.map((event) => {
       if (event.id == this.assistantForm.getRawValue().payment_data.event.id) {
@@ -218,7 +217,6 @@ export class AddAssistantComponent implements OnInit {
   }
 
   getLeaders(userCode: any) {
-    console.log('suer code', userCode);
     this.leaders = [];
     // this.isLoading.leaders = true;
     const getLeadersSubscr = this.mainService
@@ -293,7 +291,6 @@ export class AddAssistantComponent implements OnInit {
     };
 
     this.mainService.createUserWithPaymentAdmin(sendObject).subscribe((res) => {
-      console.log('user', res);
       Swal.fire('Se creo el usuario', res.response, 'success');
       this.modal.close();
     });
