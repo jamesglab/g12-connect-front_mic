@@ -78,3 +78,18 @@ export const toFailedStep = (controls: any): number => {
     return step;
 }
 
+export const parseToObjectOtherObject = (array: any[], key: string): Promise<{ [key: string]: any }> => {
+    return new Promise(async (resolve, reject) => {
+        let object = {};
+        const iterateArray = async () => {
+            return Promise.all(
+                array.map((item) => {
+                    object[item[key]] = item;
+                    return Promise.resolve('ok');
+                })
+            );
+        }
+        await iterateArray();
+        resolve(object);
+    });
+}

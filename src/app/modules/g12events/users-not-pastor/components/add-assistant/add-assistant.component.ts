@@ -30,6 +30,7 @@ import { MainService } from 'src/app/modules/_services/main.service';
 import Swal from 'sweetalert2';
 import { G12eventsService } from '../../../_services/g12events.service';
 import * as moment from 'moment';
+import { parseToObjectOtherObject } from 'src/app/_helpers/tools/validators.tool';
 
 @Component({
   selector: 'app-add-assistant',
@@ -54,6 +55,8 @@ export class AddAssistantComponent implements OnInit {
   public pastors: { [key: string]: string }[] = [];
   public pastorsObject: { [key: string]: string } = null; //FOR OBTAIN PASTORS ID - NOT CODE
   public leaders: { [key: string]: string }[] = [];
+  public placesObject: { [key: string]: any } = null; // FOR OBTAIN PLACES OBJECTS - NOT ID
+
   public leadersObject: { [key: string]: string } = null; //FOR OBTAIN LEADER ID - NOT CODE
   // public filteredOptions: Observable<any[]>;
   public step: number = 0;
@@ -170,7 +173,9 @@ export class AddAssistantComponent implements OnInit {
     const getPlacesSubscr = this.mainService
       .getPlaces({ type: filter[this.form.registerType.value] })
       .subscribe(
-        (res) => {
+        async (res) => {
+          this.placesObject = await parseToObjectOtherObject(res, 'id');
+
           this.places = res;
           this.cdr.detectChanges();
         },
@@ -262,7 +267,10 @@ export class AddAssistantComponent implements OnInit {
       this.setStep(toFailedStep(this.form));
       return;
     }
+
+
     const formAssistant = this.assistantForm.getRawValue();
+
     const sendObject = {
       user: {
         identification: formAssistant.documentNumber,
@@ -290,6 +298,15 @@ export class AddAssistantComponent implements OnInit {
       financial_cut: formAssistant.payment_data.financial_cut,
     };
 
+
+    if (this.form.typeChurch.value == '88') { //IN CASE OF SELECTED MCI CHURCHES
+
+    } else {
+      // IN CASE OF SELECTED church g12 and other
+      sendObject.user.pastor = { name: this.form.pastorName.value }
+      sendObject.user.leader = { name: "NO APLICA, NO IGLESIA MCI" }
+      sendObject.user.church = { name: this.form.churchName.value }
+    }
     this.mainService.createUserWithPaymentAdmin(sendObject).subscribe((res) => {
       Swal.fire('Se creo el usuario', res.response, 'success');
       this.modal.close();
