@@ -340,7 +340,7 @@
         <div class="column m-2">
           <mat-form-field appearance="fill">
             <mat-label>Selecciona un Corte</mat-label>
-            <mat-select type="select" formControlName="financial_cut">
+            <mat-select type="select" formControlName="financial_cut" (selectionChange)="changueCut()">
               <mat-option *ngFor="let financial_cut of financialCuts" [value]="financial_cut">
                 {{ financial_cut.name }}</mat-option>
             </mat-select>
@@ -349,7 +349,7 @@
         <div class="column m-2">
           <mat-form-field appearance="fill">
             <mat-label>Referencia de Pago</mat-label>
-            <input matInput autocomplete="off" formControlName="payment_ref" (keypress)="numberOnly($event);">
+            <input matInput autocomplete="off" formControlName="payment_ref">
           </mat-form-field>
         </div>
         <div class="column m-2">
@@ -377,8 +377,20 @@
           <mat-form-field appearance="fill">
             <mat-label>Moneda</mat-label>
             <mat-select type="select" formControlName="currency">
-              <mat-option value="cop">Pesos Colombianos</mat-option>
-              <mat-option value="usd">Dolares</mat-option>
+              <mat-option value="cop">Pesos Colombianos - {{
+                actualCute?.prices?.cop?
+                actualCute?.prices?.cop : 
+                ''
+              }}
+              </mat-option>
+              <mat-option value="usd">Dolares -
+                {{
+                  actualCute?.prices?.usd?
+                  actualCute?.prices?.usd : 
+                  ''
+                }}
+
+              </mat-option>
             </mat-select>
           </mat-form-field>
         </div>

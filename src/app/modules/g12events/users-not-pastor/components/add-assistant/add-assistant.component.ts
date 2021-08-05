@@ -46,6 +46,7 @@ export class AddAssistantComponent implements OnInit {
   public countries: { [key: string]: any }[] = [];
 
   public assistantForm: FormGroup;
+  public actualCute;
   // public documentTypes: { [key: string]: string }[] = [];
   public churchTypes: { [key: string]: string }[] = [];
   public cities: { [key: string]: string }[] = [];
@@ -123,6 +124,8 @@ export class AddAssistantComponent implements OnInit {
       this.isMobile = false;
     }
   }
+
+
 
   // getDocumentTypes() {
   //   const getDocumentTypesSubscr = this.mainService
@@ -276,7 +279,7 @@ export class AddAssistantComponent implements OnInit {
         church: formAssistant.headquarters,
         city: formAssistant.registerType == '1' ? formAssistant.city : null,
         country:
-          formAssistant.registerType == '2' ? formAssistant.countr : null,
+          formAssistant.registerType == '2' ? formAssistant.country : 'COLOMBIA',
       },
       payment: {
         platform: formAssistant.payment_data.platform,
@@ -291,17 +294,13 @@ export class AddAssistantComponent implements OnInit {
 
     this.mainService.createUserWithPaymentAdmin(sendObject).subscribe((res) => {
       console.log('user', res);
-      Swal.fire('Se creo el usuario',res.response,'success');
+      Swal.fire('Se creo el usuario', res.response, 'success');
       this.modal.close();
     });
-
-    // this.form.pastor.setValue(this.pastorsObject[this.form.Pastor.value]);
-    // this.form.leader.setValue(this.leadersObject[this.form.Leader.value]);
-    // this.dialog.close(this.assistantForm.getRawValue());
   }
 
   getEvents() {
-    this.mainService.getFilter({ type: 'G12_EVENT' }).subscribe(
+    this.mainService.getAll({ type: 'G12_EVENT' }).subscribe(
       (res) => {
         this.events = res || [];
       },
@@ -309,6 +308,12 @@ export class AddAssistantComponent implements OnInit {
         throw err;
       }
     );
+  }
+
+
+  changueCut() {
+    this.actualCute = this.assistantForm.controls.payment_data.get('financial_cut').value;
+    this.cdr.detectChanges();
   }
 
   setStep(index: number, init?) {
