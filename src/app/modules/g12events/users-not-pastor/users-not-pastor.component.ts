@@ -336,6 +336,8 @@ export class UsersNotPastorComponent implements OnInit {
       return 'PSE'
     } else if (payment_method.toLowerCase() == 'cash') {
       return 'Efectivo'
+    }else if (payment_method.toLowerCase() == 'administration') {
+      return 'Administración'
     }
   }
 
