@@ -52,6 +52,7 @@ export class EditReportNotPastorComponent implements OnInit {
   buildForm() {
     this.editUserForm = this.fb.group({
       user: this.fb.group({
+        id:[this.report.user.id],
         identification: [this.report.user.identification],
         name: [this.report.user.name],
         last_name: [this.report.user.last_name],
