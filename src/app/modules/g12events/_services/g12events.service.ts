@@ -23,6 +23,17 @@ export class G12eventsService {
         catchError((handleError))
       );
   }
+
+  sendEmail(data) {
+    return this.http.post<any>(
+      `${environment.apiUrlG12Connect}users/user/send-email`,
+      data, { headers: headerFile }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
   getCities() {
     return this.http.get<any>(
       `${environment.apiUrlG12Connect}users/church/city`, { headers: header }).pipe(

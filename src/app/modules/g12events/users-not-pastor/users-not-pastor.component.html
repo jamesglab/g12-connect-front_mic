@@ -28,7 +28,8 @@
         Buscar
       </button>
 
-      <button class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer" (click)="handleAdd()">
+      <button class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer"
+        (click)="handleAdd()">
         Crear Usuario
       </button>
 
@@ -118,6 +119,9 @@
         <a>
           <mat-icon (click)="handleToEdit(element)" style="font-size: xx-large; color: #187de4; cursor: pointer">edit
           </mat-icon>
+        </a>
+        <a>
+          <mat-icon  (click)="sendEmail(element)" style="font-size: xx-large; color: #30d49f; cursor: pointer; margin-left: 10px;"> email</mat-icon>
         </a>
       </td>
     </ng-container>

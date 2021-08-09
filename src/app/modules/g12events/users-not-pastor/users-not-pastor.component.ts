@@ -18,6 +18,7 @@ import { ExportService } from '../../_services/export.service';
 import { EditReportNotPastorComponent } from './components/edit-report-not-pastor/edit-report-not-pastor.component';
 import { AddAssistantComponent } from './components/add-assistant/add-assistant.component';
 import { MatDialog } from '@angular/material/dialog';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-users-not-pastor',
   templateUrl: './users-not-pastor.component.html',
@@ -145,8 +146,8 @@ export class UsersNotPastorComponent implements OnInit {
         reference: element.transaction.payment_ref,
         user: { ...element.user },
         church: { ...element.church },
-        leader:  {...element.leader},
-        pastor: { ...element.pastor}
+        leader: { ...element.leader },
+        pastor: { ...element.pastor }
       }
       newReports.push(newReport);
     });
@@ -200,7 +201,47 @@ export class UsersNotPastorComponent implements OnInit {
     //   }
     // });
   }
+  sendEmail(user) {
 
+    Swal.fire({
+      title: 'ENVIAR CORREO DE CONFIRMACIÓN',
+      showDenyButton: true,
+      icon: 'warning',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      text: `Enviaras un correo de confirmación a ${user.email} `,
+      confirmButtonText: `Enviar`,
+      denyButtonText: `No Enviar`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        this._g12Events.sendEmail({
+          name: user.name ? user.name : '',
+          fullName: `${user.name ? user.name : ''} ${user.user.last_name ? user.user.last_name : ''}`,
+          last_name: user.user?.last_name ? user.user.last_name : '',
+          identification: user.user?.identification ? user.user.identification : '',
+          sede: user.church?.name ? user.church.name : '',
+          pastor: user.pastor?.name ? `${user.pastor.name} ${user.pastor.last_name ? user.pastor.last_name : ''} ` : '',
+          leader: user.leader?.name ? `${user.leader.name} ${user.leader.last_name ? user.leader.last_name : ''} ` : '',
+          email: user.email ? user.email : ''
+        }).subscribe(res => {
+          Swal.fire('Correo enviado', '', 'success');
+        },err=>{
+          Swal.fire('Correo no enviado', '', 'error');
+
+        })
+      } else if (result.isDenied) {
+
+
+      }
+    })
+
+
+
+
+    console.log('user to send', user)
+
+  }
   async separateCuts(data) {
 
     let cutTransaction = {};
