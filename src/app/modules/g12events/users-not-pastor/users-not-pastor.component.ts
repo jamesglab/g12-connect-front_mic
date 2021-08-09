@@ -54,7 +54,7 @@ export class UsersNotPastorComponent implements OnInit {
   private unsubscribe: Subscription[] = [];
 
   constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef, private fb: FormBuilder,
-    private exportService: ExportService, private snackBar: MatSnackBar, private modalService: NgbModal , private MatDialog : MatDialog) {
+    private exportService: ExportService, private snackBar: MatSnackBar, private modalService: NgbModal, private MatDialog: MatDialog) {
     this.maxDate = new Date();
   }
 
@@ -144,6 +144,9 @@ export class UsersNotPastorComponent implements OnInit {
         email: element.user.email,
         reference: element.transaction.payment_ref,
         user: { ...element.user },
+        church: { ...element.church },
+        leader:  {...element.leader},
+        pastor: { ...element.pastor}
       }
       newReports.push(newReport);
     });
@@ -178,7 +181,7 @@ export class UsersNotPastorComponent implements OnInit {
       backdrop: true,
       keyboard: true,
       centered: true
-      
+
     });
     MODAL.result.then((data) => {
       if (data == "success") {
@@ -336,7 +339,7 @@ export class UsersNotPastorComponent implements OnInit {
       return 'PSE'
     } else if (payment_method.toLowerCase() == 'cash') {
       return 'Efectivo'
-    }else if (payment_method.toLowerCase() == 'administration') {
+    } else if (payment_method.toLowerCase() == 'administration') {
       return 'Administración'
     }
   }

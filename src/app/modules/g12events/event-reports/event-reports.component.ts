@@ -12,6 +12,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
+import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
 
 
 export const MY_FORMATS = {
@@ -20,17 +21,32 @@ export const MY_FORMATS = {
   },
   display: {
     dateInput: 'YYYY',
-    monthYearLabel: 'MMM YYYY',
+    monthYearLabel: 'YYYY',
     dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'MMMM YYYY',
+    monthYearA11yLabel: 'YYYY',
   },
 };
-
+// export const MY_FORMATS = {
+//   parse: {
+//     dateInput: 'MM/YYYY',
+//   },
+//   display: {
+//     dateInput: 'MM/YYYY',
+//     monthYearLabel: 'MMM YYYY',
+//     dateA11yLabel: 'LL',
+//     monthYearA11yLabel: 'MMMM YYYY',
+//   },
+// };
 @Component({
   selector: 'app-event-reports',
   templateUrl: './event-reports.component.html',
   styleUrls: ['./event-reports.component.scss'],
   providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
 
   ]
@@ -302,9 +318,13 @@ export class EventReportsComponent implements OnInit {
   }
 
   chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
-    const ctrlValue = this.date.value;
-    ctrlValue.year(normalizedYear.year());
-    this.date.setValue(ctrlValue);
+    console.log('select year',moment(normalizedYear).year())
     datepicker.close();
+
+    // const ctrlValue = this.date.value;
+    // ctrlValue.year(normalizedYear.year());
+    // this.date.setValue(moment(normalizedYear).year());
+    this.date.setValue(normalizedYear);
+
   }
 }
