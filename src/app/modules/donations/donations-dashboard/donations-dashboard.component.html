@@ -1,1 +1,86 @@
-<p>donations-dashboard works!</p>
+<!-- Grafica de linea de tiempo -->
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title mb-4">LINEA DE TIEMPO</h4>
+        <app-time-line></app-time-line>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Grafica de comparacion de datos -->
+<div class="row mt-5">
+  <div class="col-lg-3">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title mb-4">TOTAL DE TRANSACCIONES</h4>
+        <app-total-transactions></app-total-transactions>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-9">
+    <div class="card">
+      <div class="card-body">
+        <app-compare-years>
+        </app-compare-years>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Grafica dona de valor de transacciones -->
+<div class="row mt-5">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title mb-4">TOTAL VALOR DE TRANSACCIONES</h4>
+        <app-donut-transactions></app-donut-transactions>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grafica por tipos de donacion -->
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title mb-4">TOTALES POR TIPO DE DONACION
+        </h4>
+        <app-donut-donations-types></app-donut-donations-types>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row mt-5">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title mb-4">TOTALES POR TIPO DE DONACION
+        </h4>
+        <app-area-chart></app-area-chart>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row mt-5">
+  <div class="col-lg-6">
+    <div class="card" >
+      <div class="card-body">
+        <h4 class="card-title mb-4">TOTALES POR TIPO DE DONACION
+        </h4>
+        <app-area-chart></app-area-chart>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card" >
+      <div class="card-body">
+        <h4 class="card-title mb-4">ESTADOS POR METODOS DE PAGO
+        </h4>
+        <app-bars-status-payments></app-bars-status-payments>
+      </div>
+    </div>
+  </div>
+</div>
+

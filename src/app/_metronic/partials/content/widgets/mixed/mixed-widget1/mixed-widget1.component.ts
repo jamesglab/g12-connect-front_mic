@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { LayoutService } from '../../../../../core';
-
+import { ChartType } from '../../datasets/apex.model';
+import {
+  linewithDataChart, basicColumChart, columnlabelChart, lineColumAreaChart,
+  basicRadialBarChart, simplePieChart, donutChart, barChart, splineAreaChart, dashedLineChart
+} from '../../datasets/data';
 @Component({
   selector: 'app-mixed-widget1',
   templateUrl: './mixed-widget1.component.html',
@@ -13,6 +17,17 @@ export class MixedWidget1Component implements OnInit {
   colorsGrayGray300 = '';
   colorsThemeBaseDanger = '';
 
+  linewithDataChart: ChartType;
+  basicColumChart: ChartType;
+  columnlabelChart: ChartType;
+  lineColumAreaChart: ChartType;
+  basicRadialBarChart: ChartType;
+  simplePieChart: ChartType;
+  donutChart: ChartType;
+  barChart: ChartType;
+  splineAreaChart: ChartType;
+  dashedLineChart: ChartType;
+
   constructor(private layout: LayoutService) {
     this.fontFamily = this.layout.getProp('js.fontFamily');
     this.colorsGrayGray500 = this.layout.getProp('js.colors.gray.gray500');
@@ -21,12 +36,28 @@ export class MixedWidget1Component implements OnInit {
     this.colorsThemeBaseDanger = this.layout.getProp(
       'js.colors.theme.base.danger'
     );
+
+    this._fetchData();
+
   }
 
   ngOnInit(): void {
     this.chartOptions = this.getChartOptions();
   }
 
+
+  private _fetchData() {
+    this.linewithDataChart = linewithDataChart;
+    this.basicColumChart = basicColumChart;
+    this.columnlabelChart = columnlabelChart;
+    this.lineColumAreaChart = lineColumAreaChart;
+    this.basicRadialBarChart = basicRadialBarChart;
+    this.simplePieChart = simplePieChart;
+    this.donutChart = donutChart;
+    this.barChart = barChart;
+    this.splineAreaChart = splineAreaChart;
+    this.dashedLineChart = dashedLineChart;
+  }
   getChartOptions() {
     const strokeColor = '#D13647';
     return {

@@ -24,9 +24,9 @@
       </div>
     </div>
   </div>
-  <!-- Body -->
+  
   <div class="card-body p-0 position-relative overflow-hidden">
-    <!--begin::Chart-->
+
     <div
       id="kt_mixed_widget_1_chart"
       class="card-rounded-bottom bg-danger"
@@ -48,10 +48,9 @@
         [plotOptions]="chartOptions.plotOptions"
       ></apx-chart>
     </div>
-    <!--end::Chart-->
-    <!--begin::Stats-->
+    
     <div class="card-spacer mt-n25">
-      <!--begin::Row-->
+      
       <div class="row m-0">
         <div class="col bg-light-warning px-6 py-8 rounded-xl mr-7 mb-7">
           <span
@@ -72,8 +71,6 @@
           </a>
         </div>
       </div>
-      <!--end::Row-->
-      <!--begin::Row-->
       <div class="row m-0">
         <div class="col bg-light-danger px-6 py-8 rounded-xl mr-7">
           <span
@@ -96,8 +93,42 @@
           </a>
         </div>
       </div>
-      <!--end::Row-->
+      
     </div>
-    <!--end::Stats-->
+    
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title mb-4">Line with Data Labels</h4>
+        <apx-chart class="apex-charts" dir="ltr" [series]="linewithDataChart.series" [chart]="linewithDataChart.chart"
+          [colors]="linewithDataChart.colors" [stroke]="linewithDataChart.stroke"
+          [dataLabels]="linewithDataChart.dataLabels" [title]="linewithDataChart.title"
+          [responsive]="linewithDataChart.responsive" [legend]="linewithDataChart.legend"
+          [xaxis]="linewithDataChart.xaxis" [yaxis]="linewithDataChart.yaxis" [stroke]="linewithDataChart.stroke"
+          [markers]="linewithDataChart.markers">
+        </apx-chart>
+      </div>
+    </div>
+    <!--end card-->
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title mb-4">Dashed Line</h4>
+        <apx-chart class="apex-charts" dir="ltr" [series]="dashedLineChart.series" [chart]="dashedLineChart.chart"
+          [dataLabels]="dashedLineChart.dataLabels" [stroke]="dashedLineChart.stroke"
+          [colors]="dashedLineChart.colors" [xaxis]="dashedLineChart.xaxis" [grid]="dashedLineChart.grid"
+          [tooltip]="dashedLineChart.tooltip" [plotOptions]="dashedLineChart.plotOptions"
+          [fill]="dashedLineChart.fill" [markers]="dashedLineChart.markers" [legend]="dashedLineChart.legend"
+          [yaxis]="dashedLineChart.yaxis" [tooltip]="dashedLineChart.tooltip"></apx-chart>
+      </div>
+    </div>
+    <!--end card-->
   </div>
 </div>

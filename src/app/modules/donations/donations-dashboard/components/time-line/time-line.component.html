@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="col">
+    <mat-form-field appearance="fill">
+      <mat-label>Filtro</mat-label>
+      <mat-select>
+        <mat-option [value]="''" >Tipo de Donacion </mat-option>
+        <mat-option [value]="''">Tipo de Pago</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="col">
+    <mat-form-field appearance="fill">
+      <mat-label>Filtro</mat-label>
+      <mat-select>
+        <mat-option [value]="''" >Hoy</mat-option>
+        <mat-option [value]="''">Semana</mat-option>
+        <mat-option [value]="''">Mes</mat-option>
+        <mat-option [value]="''">Año</mat-option>
+        <mat-option [value]="''">Total</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
+<div>
+  <apx-chart class="apex-charts" dir="ltr" [series]="linewithDataChart.series" [chart]="linewithDataChart.chart"
+  [colors]="linewithDataChart.colors" [stroke]="linewithDataChart.stroke"
+  [dataLabels]="linewithDataChart.dataLabels" [title]="linewithDataChart.title"
+  [responsive]="linewithDataChart.responsive" [legend]="linewithDataChart.legend"
+  [xaxis]="linewithDataChart.xaxis" [yaxis]="linewithDataChart.yaxis" [stroke]="linewithDataChart.stroke"
+  [markers]="linewithDataChart.markers">
+  </apx-chart>
+</div>
