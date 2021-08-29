@@ -14,10 +14,14 @@ export class DonationsServices {
   constructor(private http: HttpClient) { }
 
 
-  /// query Mongo
   getTransactionsReports(params) {
+    if (!params.finish_date) {
+      delete params.init_date;
+      delete params.finish_date;
+    }
+    
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect}reports/reports/reportsMongo`, { params, headers: header }).pipe(
+      `${'https://d977-201-184-17-202.ngrok.io/api/v2/'}reports/list-reports-status`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
