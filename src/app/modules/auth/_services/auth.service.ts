@@ -49,7 +49,7 @@ export class AuthService implements OnDestroy {
 
     this.isLoadingSubject.next(true);
     return this.http.post<any>(
-      `${environment.apiUrlG12Connect}users/auth`, { email, password, platform: 'conexion12' }, { headers: header }
+      `${environment.apiUrlG12Connect.users}/auth`, { email, password, platform: 'conexion12' }, { headers: header }
       ).pipe(
         map((auth: any) => {
           // auth.entity[0].objectsList = await parseToObject(JSON.parse(auth.entity[0].listObjetos), "Code", "Obj");

@@ -12,7 +12,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
-import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 
 
 export const MY_FORMATS = {
@@ -253,6 +253,8 @@ export class EventReportsComponent implements OnInit {
     if (this.info_to_export.length > 0) {
       const dataToExport = []
       this.info_to_export.map(item => {
+
+        console.log('tenemos el item del report', item)
         const newData = {
           //ONLY TEST NOT FOUND USERS
           // 'id user PSQL': item.user.id,
@@ -269,6 +271,7 @@ export class EventReportsComponent implements OnInit {
           Pais: item.user?.country ? item.user.country : 'N/A',
           Departamento: item.user?.departament ? item.user.departament : 'N/A',
           Municipio: item.user?.city ? item.user.city : 'N/A',
+          'Tipo de Iglesia': item?.user?.type_church ? item?.user?.type_church : 'N/A',
           Sede: item.church?.name ? item.church.name : 'N/A',
           Pastor: item.pastor?.name ? `${item.pastor.name} ${item.pastor.last_name ? item.pastor.last_name : ''}` : 'N/A',
           'Lider Doce': item.leader?.name ? `${item.leader.name} ${item.leader.last_name ? item.leader.last_name : ''}` : 'N/A',
@@ -318,7 +321,7 @@ export class EventReportsComponent implements OnInit {
   }
 
   chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
-    console.log('select year',moment(normalizedYear).year())
+    console.log('select year', moment(normalizedYear).year())
     datepicker.close();
 
     // const ctrlValue = this.date.value;

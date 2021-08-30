@@ -29,7 +29,7 @@ export class AdminRolesService {
 
   getRoles(): Observable<any> {//BURNED
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect}users/role/filter`, { headers: header, params: { platform: 'conexion12' } }).pipe(
+      `${environment.apiUrlG12Connect.users}/role/filter`, { headers: header, params: { platform: 'conexion12' } }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -59,7 +59,7 @@ export class AdminRolesService {
 
   createRoleObjects(payload: RoleObjects) {//BURNED
     return this.http.put<Response>(
-      `${environment.apiUrlG12Connect}users/role/permissions`, payload, 
+      `${environment.apiUrlG12Connect.users}/role/permissions`, payload, 
       { headers: header, params: { id: payload.id.toString() } }).pipe(
         map((res: Response) => {
           return res;
@@ -70,7 +70,7 @@ export class AdminRolesService {
 
   editRole(role: Role): Observable<any> { //BURNED
     return this.http.put<any>(
-      `${environment.apiUrlG12Connect}users/role`, role, { headers: header, params: { id: role.id.toString() } }).pipe(
+      `${environment.apiUrlG12Connect.users}/role`, role, { headers: header, params: { id: role.id.toString() } }).pipe(
         map((res: any) => {
           return res;
         }),

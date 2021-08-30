@@ -18,7 +18,7 @@ export class G12eventsService {
 
   getTransactions(params?): Observable<any> {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect}reports/transactions`, {
+      .get<any>(`${environment.apiUrlG12Connect.reports}/transactions`, {
         params,
         headers: header,
       })
@@ -32,7 +32,7 @@ export class G12eventsService {
 
   sendEmail(data) {
     return this.http
-      .post<any>(`${environment.apiUrlG12Connect}users/user/send-email`, data, {
+      .post<any>(`${environment.apiUrlG12Connect.users}/send-email`, data, {
         headers: headerFile,
       })
       .pipe(
@@ -44,7 +44,7 @@ export class G12eventsService {
   }
   getCities() {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect}users/church/city`, {
+      .get<any>(`${environment.apiUrlG12Connect.users}/church/city`, {
         headers: header,
       })
       .pipe(
@@ -56,7 +56,7 @@ export class G12eventsService {
   }
   getTransactionsEvents(params?): Observable<any> {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect}reports/transactions/event`, {
+      .get<any>(`${environment.apiUrlG12Connect.reports}/transactions/event`, {
         params,
         headers: header,
       })
@@ -71,7 +71,7 @@ export class G12eventsService {
   getTransactionsEventsStatus(params?): Observable<any> {
     return this.http
       .get<any>(
-        `${environment.apiUrlG12Connect}reports/transactions/event/status`,
+        `${environment.apiUrlG12Connect.reports}/transactions/event/status`,
         { params, headers: header }
       )
       .pipe(
@@ -85,7 +85,7 @@ export class G12eventsService {
   createUserWithPaymentAdmin(data) {
     return this.http
       .post<any>(
-        `${environment.apiUrlG12Connect}users/user/create-donation`,
+        `${environment.apiUrlG12Connect.users}/user/create-donation`,
         data,
         { headers: headerFile }
       )
@@ -99,7 +99,7 @@ export class G12eventsService {
 
   getAll(params): Observable<any> {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect}donations`, {
+      .get<any>(`${environment.apiUrlG12Connect.donations}`, {
         headers: header,
         params,
       })
@@ -113,7 +113,7 @@ export class G12eventsService {
 
   getFilter(payload: any) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect}donations/filter`, {
+      .get<any>(`${environment.apiUrlG12Connect.donations}/filter`, {
         headers: header,
         params: payload,
       })
@@ -127,7 +127,7 @@ export class G12eventsService {
 
   getById(params) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect}donations/id`, {
+      .get<any>(`${environment.apiUrlG12Connect.donations}/id`, {
         headers: header,
         params,
       })
@@ -143,9 +143,6 @@ export class G12eventsService {
 
   getFormData(data: sendDonation): FormData {
     const send_data = new FormData();
-    console.log('IMAGEEE', data.transaction_info.image);
-    console.log('CODEEE', data.transaction_info.code);
-    console.log('CODEEE', data.transaction_info.base64);
     if (data.transaction_info.image) {
       send_data.append('image', data.transaction_info.image);
     }
@@ -160,7 +157,7 @@ export class G12eventsService {
 
     return this.http
       .post<any>(
-        `${environment.apiUrlG12Connect}donations`,
+        `${environment.apiUrlG12Connect.donations}`,
         this.getFormData(data),
         { headers: headerFile }
       )
@@ -175,7 +172,7 @@ export class G12eventsService {
   getCategories() {
     return this.http
       .get<any>(
-        `${environment.apiUrlG12Connect}managment/data-dictionary/filter`,
+        `${environment.apiUrlG12Connect.managment}/data-dictionary/filter`,
         { params: { type: 'G12_EVENT' }, headers: header }
       )
       .pipe(
@@ -188,7 +185,7 @@ export class G12eventsService {
   update(data: sendDonation) {
     return this.http
       .put<any>(
-        `${environment.apiUrlG12Connect}donations`,
+        `${environment.apiUrlG12Connect.donations}`,
         this.getFormData(data),
         { headers: headerFile }
       )
@@ -204,7 +201,7 @@ export class G12eventsService {
   /// query Mongo
   getTransactionsReports(params) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect}reports/reports-mongo`, {
+      .get<any>(`${environment.apiUrlG12Connect.reports}/reports-mongo`, {
         params,
         headers: header,
       })
@@ -220,7 +217,7 @@ export class G12eventsService {
   getDataByFilter(filter: any) {
     //IS FOR GET INFO USERS NOT PASTORS
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect}reports/not-pastor`, {
+      .get<any>(`${environment.apiUrlG12Connect.reports}/not-pastor`, {
         params: filter,
         headers: header,
       })
@@ -234,7 +231,7 @@ export class G12eventsService {
 
   getPlaces(filter: any): Observable<any> {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect}users/church/filter`, {
+      .get<any>(`${environment.apiUrlG12Connect.users}/church/filter`, {
         headers: header,
         params: filter,
       })
@@ -294,7 +291,7 @@ export class G12eventsService {
     church: string;
   }): Observable<any> {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect}users/user/pastor`, {
+      .get<any>(`${environment.apiUrlG12Connect.users}/user/pastor`, {
         params,
         headers: header,
       })
@@ -309,7 +306,7 @@ export class G12eventsService {
   updateUser(user: any): Observable<any> {
     return this.http
       .put<any>(
-        `${environment.apiUrlG12Connect}reports/update-report-mongo-pgsql`,
+        `${environment.apiUrlG12Connect.reports}/update-report-mongo-pgsql`,
         user,
         { headers: header }
       )
@@ -325,7 +322,7 @@ export class G12eventsService {
 
   getTransactionUserNotPastor(params) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect}reports/not-pastor`, {
+      .get<any>(`${environment.apiUrlG12Connect.reports}/not-pastor`, {
         params,
         headers: header,
       })
