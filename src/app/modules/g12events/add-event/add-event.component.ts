@@ -20,7 +20,7 @@ export class AddEventComponent implements OnInit {
   public addEventForm: FormGroup = null;
   public isLoading: boolean = false;
   private unsubscribe: Subscription[] = [];
-  public select_cut = new FormControl(false);
+  public select_cut = new FormControl(true);
   cuts = new FormArray([]);
   public minDate: Date;
   public maxDate: Date;
