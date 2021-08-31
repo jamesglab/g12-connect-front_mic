@@ -1,52 +1,56 @@
 <div class="example-container mat-elevation-z0">
-    <mat-table #table [dataSource]="dataSource">
+  <mat-table #table [dataSource]="dataSource">
 
-        <ng-container matColumnDef="image">
-            <mat-header-cell *matHeaderCellDef>Imagen</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="cursor-pointer">
-                <img class="img-rounded" src="{{element.image.url}}" (error)="handleErrorImage($event)">
-            </mat-cell>
-        </ng-container>
+    <ng-container matColumnDef="image">
+      <mat-header-cell *matHeaderCellDef>Imagen</mat-header-cell>
+      <mat-cell *matCellDef="let element" class="cursor-pointer">
+        <img class="img-rounded" src="{{element.image.url}}" (error)="handleErrorImage($event)">
+      </mat-cell>
+    </ng-container>
 
-        <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef>Nombre </mat-header-cell>
-            <mat-cell *matCellDef="let element" class="cursor-pointer"> {{element.name}} </mat-cell>
-        </ng-container>
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef>Nombre </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="cursor-pointer"> {{element.name}} </mat-cell>
+    </ng-container>
 
-        <ng-container matColumnDef="description">
-            <mat-header-cell *matHeaderCellDef>Descripción </mat-header-cell>
-            <mat-cell *matCellDef="let element" class="cursor-pointer">
-                {{ element.description }}
-            </mat-cell>
-        </ng-container>
-        <!--{{ element.date | date:'shortTime'}}-->
+    <ng-container matColumnDef="description">
+      <mat-header-cell *matHeaderCellDef>Descripción </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="cursor-pointer">
+        {{ element.description }}
+      </mat-cell>
+    </ng-container>
+    <!--{{ element.date | date:'shortTime'}}-->
 
-        <ng-container matColumnDef="category">
-            <mat-header-cell *matHeaderCellDef>Categoria</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="cursor-pointer">
-                {{ element.category }} </mat-cell>
-        </ng-container>
+    <ng-container matColumnDef="category">
+      <mat-header-cell *matHeaderCellDef>Categoria</mat-header-cell>
+      <mat-cell *matCellDef="let element" class="cursor-pointer">
+        {{ element.category }} </mat-cell>
+    </ng-container>
 
-        <ng-container matColumnDef="status">
-            <mat-header-cell *matHeaderCellDef>Estatus</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="cursor-pointer">
-                {{ (element.status) ? 'Activo':'Inactivo' }}</mat-cell>
-        </ng-container>
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef>Estatus</mat-header-cell>
+      <mat-cell *matCellDef="let element" class="cursor-pointer">
+        {{ (element.status) ? 'Activo':'Inactivo' }}</mat-cell>
+    </ng-container>
 
-        <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleToEdit(element)">
-                    <span
-                      [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"
-                      class="svg-icon svg-icon-md svg-icon-primary"
-                    ></span>
-                  </a>
-            </mat-cell>
-        </ng-container>
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleToEdit(element)">
+          <span [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"
+            class="svg-icon svg-icon-md svg-icon-primary"></span>
+        </a>
 
-        <!--ICONNN-->
-        <!-- <ng-container matColumnDef="seeReport">
+        <a (click)="handleToCreateCodes(element)">
+          <span class="svg-icon svg-icon-md svg-icon-primary">
+            <mat-icon class="icon-list"> list_alt</mat-icon>
+          </span>
+        </a>
+      </mat-cell>
+    </ng-container>
+
+    <!--ICONNN-->
+    <!-- <ng-container matColumnDef="seeReport">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let element" (click)="handleSeeReportGo(element);" class="cursor-pointer" matTooltip="Reporte GO"
             style="color: var(--primary); display: flex; justify-content: center;">
@@ -54,10 +58,10 @@
             </mat-cell>
         </ng-container> -->
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-    </mat-table>
-    <mat-paginator class="mat-elevation-z0" #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"
-        [showFirstLastButtons]="true">
-    </mat-paginator>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <mat-paginator class="mat-elevation-z0" #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"
+    [showFirstLastButtons]="true">
+  </mat-paginator>
 </div>

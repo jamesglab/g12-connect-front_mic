@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { G12eventsService } from '../../_services/g12events.service';
 import { Donation } from '../../_models/donation.model';
 import { EditEventComponent } from '../edit-event/edit-event.component';
+import { GenerateCodesComponent } from '../generate-codes/generate-codes.component';
 
 @Component({
   selector: 'app-events-table',
@@ -60,7 +61,7 @@ export class EventsTableComponent implements OnInit {
   }
 
   handleToEdit(element: Donation) {
-    
+
     this.eventsService.getById({ id: element.id }).subscribe(res => {
       console.log("HANDLE TO EDIT", res)
       const MODAL = this.modalService.open(EditEventComponent, {
@@ -78,6 +79,24 @@ export class EventsTableComponent implements OnInit {
       });
     })
 
+  }
+
+  handleToCreateCodes(element) {
+    this.eventsService.getById({ id: element.id }).subscribe(res => {
+      const MODAL = this.modalService.open(GenerateCodesComponent, {
+        windowClass: 'fadeIn',
+        size: 'lg',
+        backdrop: true,
+        keyboard: true,
+        centered: true
+      })
+      MODAL.componentInstance.event = res;
+      MODAL.result.then((data) => {
+        if (data == "success") {
+          this.getAllEvents();
+        }
+      });
+    })
   }
 
   ngOnDestroy() {

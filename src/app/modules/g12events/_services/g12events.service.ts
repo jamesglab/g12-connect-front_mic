@@ -333,4 +333,17 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
+
+  createCodesByEvent(data){
+    return this.http
+    .post<any>(`${environment.apiUrlG12Connect.payments}/transaction/generate-codes`, data, {
+      headers: headerFile,
+    })
+    .pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
 }

@@ -24,7 +24,8 @@ import { ShowCutCountsComponent } from './event-reports/components/show-cut-coun
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UsersNotPastorComponent } from './users-not-pastor/users-not-pastor.component';
 import { EditReportNotPastorComponent } from './users-not-pastor/components/edit-report-not-pastor/edit-report-not-pastor.component';
-import { AddAssistantComponent } from './users-not-pastor/components/add-assistant/add-assistant.component'
+import { AddAssistantComponent } from './users-not-pastor/components/add-assistant/add-assistant.component';
+import { GenerateCodesComponent } from './components/generate-codes/generate-codes.component'
 const routes: Routes = [
   {
     path: '',
@@ -58,7 +59,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent,
-    EditEventComponent, EventReportsComponent, TableReportsComponent, TableCutComponent, AddAssistantComponent,ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent],
+    EditEventComponent, EventReportsComponent, TableReportsComponent, TableCutComponent, AddAssistantComponent,ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent, GenerateCodesComponent],
   imports: [
     CommonModule,
     SharedModule,
