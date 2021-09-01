@@ -99,14 +99,15 @@ export class DonationsReportsComponent implements OnInit {
   }
 
   validatePaymentMethod(payment_method) {
+    
     if (payment_method == 'credit') {
       return 'Tarjeta de credito'
     } else if (payment_method == 'pse') {
       return 'Transferenica bancaria'
     } else if (payment_method == 'cash') {
       return 'Efectivo'
-    }else if (payment_method=='code'){
-      return 'Codigo'
+    }else {
+      console.log('metodo de pagho',payment_method)
     }
   }
 

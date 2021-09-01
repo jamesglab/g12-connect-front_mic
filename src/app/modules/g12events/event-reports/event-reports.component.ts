@@ -253,8 +253,6 @@ export class EventReportsComponent implements OnInit {
     if (this.info_to_export.length > 0) {
       const dataToExport = []
       this.info_to_export.map(item => {
-
-        console.log('tenemos el item del report', item)
         const newData = {
           //ONLY TEST NOT FOUND USERS
           // 'id user PSQL': item.user.id,
@@ -316,8 +314,11 @@ export class EventReportsComponent implements OnInit {
       return 'Efectivo'
     } else if (payment_method.toLowerCase() == 'administration') {
       return 'Administración'
-
+    } else if (payment_method.toLowerCase() == 'code') {
+      return 'Codigo'
     }
+    
+    
   }
 
   chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
