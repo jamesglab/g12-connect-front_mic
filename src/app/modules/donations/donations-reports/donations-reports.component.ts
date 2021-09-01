@@ -105,6 +105,8 @@ export class DonationsReportsComponent implements OnInit {
       return 'Transferenica bancaria'
     } else if (payment_method == 'cash') {
       return 'Efectivo'
+    }else if (payment_method=='code'){
+      return 'Codigo'
     }
   }
 
