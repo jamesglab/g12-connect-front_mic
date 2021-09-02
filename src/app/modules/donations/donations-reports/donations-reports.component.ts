@@ -99,16 +99,20 @@ export class DonationsReportsComponent implements OnInit {
   }
 
   validatePaymentMethod(payment_method) {
-    
-    if (payment_method == 'credit') {
+    if (payment_method.toLowerCase() == 'credit') {
       return 'Tarjeta de credito'
-    } else if (payment_method == 'pse') {
-      return 'Transferenica bancaria'
-    } else if (payment_method == 'cash') {
+    } else if (payment_method.toLowerCase() == 'pse') {
+      return 'PSE'
+    } else if (payment_method.toLowerCase() == 'cash') {
       return 'Efectivo'
-    }else {
-      console.log('metodo de pagho',payment_method)
+    } else if (payment_method.toLowerCase() == 'administration') {
+      return 'Administración'
+    } else if (payment_method.toLowerCase() == 'code') {
+      return 'Codigo'
+    } else if (payment_method.toLowerCase() == 'paypal') {
+      return 'Paypal'
     }
+    
   }
 
   exportFile() {

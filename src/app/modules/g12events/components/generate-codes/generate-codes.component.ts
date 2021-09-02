@@ -35,7 +35,9 @@ export class GenerateCodesComponent implements OnInit {
     });
   }
   setAmountForm() {
-    this.codesForm.get('amount').setValue(this.codesForm.value.financial_cut?.prices[this.codesForm.value?.currency]);
+    if (this.codesForm.value.financial_cut && this.codesForm.value?.currency) {
+      this.codesForm.get('amount').setValue(this.codesForm.value.financial_cut?.prices[this.codesForm.value?.currency]);
+    }
   }
 
 
