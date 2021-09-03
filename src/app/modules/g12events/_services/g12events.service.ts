@@ -9,12 +9,13 @@ import {
 } from 'src/app/_helpers/tools/header.tool';
 import { environment } from 'src/environments/environment';
 import { Donation, sendDonation } from '../_models/donation.model';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class G12eventsService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getTransactions(params?): Observable<any> {
     return this.http
@@ -139,14 +140,26 @@ export class G12eventsService {
       );
   }
 
-  getOne() {}
+  getOne() { }
 
-  getFormData(data: sendDonation): FormData {
+  getFormData(data: sendDonation, uploadImage?): FormData {
     const send_data = new FormData();
-    if (data.transaction_info.image) {
+    if (data.transaction_info.image && uploadImage) {
       send_data.append('image', data.transaction_info.image);
     }
+
     delete data.transaction_info.image;
+    delete data.transaction_info.base64;
+    send_data.append('donation', JSON.stringify(data));
+    return send_data;
+  }
+
+  getFormUpdate(data: sendDonation, updoadImage): FormData {
+    const send_data = new FormData();
+    if (updoadImage) {
+      send_data.append('image', data.transaction_info.image);
+    }
+    data.transaction_info.image = data.image;
     delete data.transaction_info.base64;
     send_data.append('donation', JSON.stringify(data));
     return send_data;
@@ -154,11 +167,13 @@ export class G12eventsService {
 
   create(data: sendDonation): Observable<any> {
     //DEFINE THE RESPONSE
-
+    data.transaction_info.init_date = moment(data.transaction_info.init_date);
+    data.transaction_info.finish_date = moment(data.transaction_info.finish_date);
+    data.transaction_info.visibility = [data.transaction_info.visibility]
     return this.http
       .post<any>(
         `${environment.apiUrlG12Connect.donations}`,
-        this.getFormData(data),
+        this.getFormData(data, true),
         { headers: headerFile }
       )
       .pipe(
@@ -182,11 +197,11 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
-  update(data: sendDonation) {
+  update(data: sendDonation, updateImage) {
     return this.http
       .put<any>(
         `${environment.apiUrlG12Connect.donations}`,
-        this.getFormData(data),
+        this.getFormUpdate(data, updateImage),
         { headers: headerFile }
       )
       .pipe(
@@ -196,7 +211,7 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
-  delete() {}
+  delete() { }
 
   /// query Mongo
   getTransactionsReports(params) {
@@ -334,16 +349,16 @@ export class G12eventsService {
       );
   }
 
-  createCodesByEvent(data){
+  createCodesByEvent(data) {
     return this.http
-    .post<any>(`${environment.apiUrlG12Connect.payments}/transaction/generate-codes`, data, {
-      headers: headerFile,
-    })
-    .pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
+      .post<any>(`${environment.apiUrlG12Connect.payments}/transaction/generate-codes`, data, {
+        headers: headerFile,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 }

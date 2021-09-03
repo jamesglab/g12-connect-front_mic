@@ -8,6 +8,7 @@ import { NotificationComponent } from 'src/app/pages/_layout/components/notifica
 import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
 import { G12eventsService } from '../_services/g12events.service';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 //import { Donation } from '../_models/donation.model';
 
 @Component({
@@ -20,7 +21,7 @@ export class AddEventComponent implements OnInit {
   public addEventForm: FormGroup = null;
   public isLoading: boolean = false;
   private unsubscribe: Subscription[] = [];
-  public select_cut = new FormControl(true);
+  public select_cut = new FormControl(false);
   cuts = new FormArray([]);
   public minDate: Date;
   public maxDate: Date;
@@ -65,7 +66,6 @@ export class AddEventComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.addEventForm)
     if (this.addEventForm.invalid) {
       return;
     }
@@ -76,17 +76,14 @@ export class AddEventComponent implements OnInit {
     if (cont_quantity <= parseInt(this.addEventForm.value.limit)) {
       let cuts = this.cutsToSend();
       if (cuts) {
-        this.addEventForm.get('init_date').setValue(moment(this.addEventForm.get('init_date').value));
-        this.addEventForm.get('finish_date').setValue(moment(this.addEventForm.get('finish_date').value));
-        const { visibility } = this.addEventForm.getRawValue();
-        this.form.visibility.setValue([visibility]);
-        
         const updateEventSubscr = this.eventsService.create({ transaction_info: this.addEventForm.getRawValue(), cuts })
           .subscribe((res: any) => {
-            console.log("REGISTEREDDD", res);
             this.showMessage(1, `El evento ${this.form.name.value} ha sido creado correctamente!`);
             this.router.navigate(['g12events']);
-          }, err => { throw err; });
+          }, err => {
+            console.log(err)
+            Swal.fire(err.error.error ? err.error.error: 'Ocurrio un error intenta mas tarde!', '', 'error')
+          });
         this.unsubscribe.push(updateEventSubscr);
       } else {
         this.showMessage(2, 'Hay campos vacios requeridos en los cortes');
@@ -95,22 +92,6 @@ export class AddEventComponent implements OnInit {
       this.showMessage(2, 'Verifica la capacidad de los cortes');
     }
 
-    // const addGoSubscr = this._goService.insertGo(this.addGoForm.getRawValue())
-    //   .subscribe((res: Response) => {
-    //     if (res.result) {
-    //       this.showMessage(1, "!La nueva célula ha sido registrada con exito¡");
-    //       this.router.navigate(['send'])
-    //     } else {
-    //       this.form.creationUser.setValue(this.currentUser.idUser);
-    //       this.form.modificationUser.setValue(this.currentUser.idUser);
-    //       this.showMessage(res.notificationType, res.message[0])
-    //     }
-    //   }, err => {
-    //     this.form.creationUser.setValue(this.currentUser.idUser);
-    //     this.form.modificationUser.setValue(this.currentUser.idUser);
-    //     this.showMessage(3, err.error.message);
-    //   })
-    // this.unsubscribe.push(addGoSubscr);
   }
 
 
@@ -122,7 +103,7 @@ export class AddEventComponent implements OnInit {
   cutsToSend() {
     let newCuts = [];
     let error = false;
-    if (this.cuts.value.length > 0) {
+    if (this.select_cut.value) {
       this.cuts.value.map(cut => {
         if (cut.name != '' && cut.cop != '' && cut.quantity != '' && cut.date_init != '' && cut.date_finish) {
           newCuts.push({ name: cut.name, prices: { cop: cut.cop, usd: (cut.usd != '') ? cut.usd : null }, quantity: cut.quantity, date_init: moment(cut.date_init), date_finish: moment(cut.date_finish) })
@@ -133,8 +114,8 @@ export class AddEventComponent implements OnInit {
     } else {
       newCuts.push({
         name: this.addEventForm.value.name,
-        prices: { cop: this.addEventForm.value.cop, usd: (this.addEventForm.value.usd != '') ? this.addEventForm.value.usd : null },
-        quantity: this.addEventForm.value.quantity,
+        prices: { cop: this.addEventForm.value.prices.cop, usd: this.addEventForm.value.prices.usd},
+        quantity: this.addEventForm.value.limit,
         date_init: moment(this.addEventForm.value.init_date),
         date_finish: moment(this.addEventForm.value.finish_date)
       });

@@ -28,6 +28,7 @@ export class EditEventComponent implements OnInit {
   public categories = [];
   private unsubscribe: Subscription[] = [];
   cuts = new FormArray([]);
+  private uploadImage: boolean;
 
   constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private eventsService: G12eventsService,
     private router: Router, public modal: NgbActiveModal) {
@@ -48,16 +49,10 @@ export class EditEventComponent implements OnInit {
       name: [this.event.name, [Validators.required]],
       description: [this.event.description],
       image: [this.event.image],
-      code: [],
       categorieAdd: [''],
       base64: [],
       init_date: [this.event.init_date],
       finish_date: [this.event.finish_date],
-      // hour: ['', [Validators.required, hourValidation.bind(this)]],
-      prices: this.fb.group({
-        cop: [this.event.prices.cop],
-        usd: [this.event.prices.usd]
-      }),
       visibility: [this.event.visibility[0]],
       limit: [this.event.limit],
       location: [],
@@ -98,9 +93,9 @@ export class EditEventComponent implements OnInit {
   }
 
   async fileChangeEvent(image) {
-    this.form.code.setValue(this.form.image.value.code);
     this.form.image.setValue(image.target.files[0]);
     this.form.base64.setValue(await getBase64(image));
+    this.uploadImage = true;
   }
 
   handleNotFoundSource($event: any) {
@@ -127,7 +122,7 @@ export class EditEventComponent implements OnInit {
     if (cuts) {
       const sendData = this.editEventForm.getRawValue();
       delete sendData.categorieAdd
-      const addEventSubscr = this.eventsService.update({ transaction_info: sendData, cuts })
+      const addEventSubscr = this.eventsService.update({ transaction_info: sendData, cuts, image: this.event.image }, this.uploadImage)
         .subscribe((res: any) => {
           console.log("UPDATEDDDDDD", res);
           this.showMessage(1, `El evento ${this.form.name.value} ha sido actualizado correctamente!`);
