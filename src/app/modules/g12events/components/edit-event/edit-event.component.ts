@@ -13,6 +13,7 @@ import { getBase64 } from 'src/app/_helpers/tools/utils.tool';
 import { G12eventsService } from '../../_services/g12events.service';
 import { Donation } from '../../_models/donation.model';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-edit-event',
@@ -50,6 +51,7 @@ export class EditEventComponent implements OnInit {
       description: [this.event.description],
       image: [this.event.image],
       categorieAdd: [''],
+      quantity_register: [this.event.quantity_register],
       base64: [],
       init_date: [this.event.init_date],
       finish_date: [this.event.finish_date],
@@ -128,7 +130,7 @@ export class EditEventComponent implements OnInit {
           this.showMessage(1, `El evento ${this.form.name.value} ha sido actualizado correctamente!`);
           this.modal.close("success");
           this.router.navigate(['g12events']);
-        }, err => { throw err; });
+        }, err => {Swal.fire(err.error.error ? err.error.error : 'error inesperado','','error'); throw err; });
       this.unsubscribe.push(addEventSubscr);
     } else {
       this.showMessage(2, 'Hay campos vacios requeridos en los cortes');

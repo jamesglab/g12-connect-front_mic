@@ -78,8 +78,15 @@
                 <mat-label>Capacidad</mat-label>
                 <input matInput autocomplete="off" formControlName="limit">
               </mat-form-field>
+              
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Maximo de registros por pago</mat-label>
+                <input matInput autocomplete="off" type="number" formControlName="quantity_register" [min]="1" />
+              </mat-form-field>
+
+
               <mat-form-field appearance="fill" class="example-full-width">
-                <mat-label>Selecciona un rango para el corte </mat-label>
+                <mat-label>Selecciona un rango para el evento </mat-label>
                 <mat-date-range-input [rangePicker]="picker" [max]="editEventForm.get('finish_date').value"
                   [min]="editEventForm.get('init_date').value">
                   <input matStartDate placeholder="Fecha de inicio" formControlName="init_date">

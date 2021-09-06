@@ -11,9 +11,7 @@
         </div>
         <div class="card-toolbar">
           <div class="example-tools justify-content-center">
-            <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214)"
-              >playlist_add</mat-icon
-            >
+            <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214)">playlist_add</mat-icon>
           </div>
         </div>
       </div>
@@ -27,20 +25,12 @@
               </mat-form-field>
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Descripción</mat-label>
-                <textarea
-                  matInput
-                  style="max-height: 80px"
-                  formControlName="description"
-                ></textarea>
+                <textarea matInput style="max-height: 80px" formControlName="description"></textarea>
               </mat-form-field>
 
               <div class="custom-file mb-5">
-                <input
-                  type="file"
-                  class="custom-file-input"
-                  id="validatedCustomFile"
-                  (change)="fileChangeEvent($event)"
-                />
+                <input type="file" class="custom-file-input" id="validatedCustomFile"
+                  (change)="fileChangeEvent($event)" />
                 <label class="custom-file-label" for="validatedCustomFile">{{
                   addEventForm.get("image")?.value?.name
                     ? addEventForm.get("image").value.name
@@ -51,37 +41,22 @@
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Tipo de evento</mat-label>
                 <mat-select formControlName="categorieAdd">
-                  <mat-option
-                    (click)="pushCategorie()"
-                    *ngFor="let categorie of categories"
-                    [value]="categorie.value"
-                  >
+                  <mat-option (click)="pushCategorie()" *ngFor="let categorie of categories" [value]="categorie.value">
                     <span style="text-transform: capitalize">{{
                       categorie.value
                     }}</span>
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <mat-chip-list
-                class="example-chip"
-                cdkDropList
-                cdkDropListOrientation="horizontal"
-                (cdkDropListDropped)="drop($event)"
-              >
-                <mat-chip
-                  class="example-box mb-5"
-                  cdkDrag
-                  *ngFor="
+              <mat-chip-list class="example-chip" cdkDropList cdkDropListOrientation="horizontal"
+                (cdkDropListDropped)="drop($event)">
+                <mat-chip class="example-box mb-5" cdkDrag *ngFor="
                     let item of addEventForm.get('category').value;
                     let i = index
-                  "
-                >
+                  ">
                   {{ item }}
 
-                  <mat-icon
-                    class="remove-item"
-                    (click)="addEventForm.get('category').value.splice(i, 1)"
-                    >close
+                  <mat-icon class="remove-item" (click)="addEventForm.get('category').value.splice(i, 1)">close
                   </mat-icon>
                 </mat-chip>
               </mat-chip-list>
@@ -96,30 +71,23 @@
 
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Capacidad</mat-label>
-                <input matInput autocomplete="off" 
-                type="number"
-                formControlName="limit" />
+                <input matInput autocomplete="off" type="number" formControlName="limit" />
               </mat-form-field>
 
               <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>Selecciona fecha de inicio y fin</mat-label>
                 <mat-date-range-input [rangePicker]="picker" [min]="minDate">
-                  <input
-                    matStartDate
-                    placeholder="Fecha de inicio"
-                    formControlName="init_date"
-                  />
-                  <input
-                    matEndDate
-                    placeholder="Fecha de fin"
-                    formControlName="finish_date"
-                  />
+                  <input matStartDate placeholder="Fecha de inicio" formControlName="init_date" />
+                  <input matEndDate placeholder="Fecha de fin" formControlName="finish_date" />
                 </mat-date-range-input>
-                <mat-datepicker-toggle
-                  matSuffix
-                  [for]="picker"
-                ></mat-datepicker-toggle>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-date-range-picker #picker></mat-date-range-picker>
+              </mat-form-field>
+
+
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Maximo de registros por pago</mat-label>
+                <input matInput autocomplete="off" type="number" formControlName="quantity_register" [min]="1" />
               </mat-form-field>
 
               <hr />
@@ -127,161 +95,95 @@
               <div formGroupName="prices">
                 <h6>Precio</h6>
                 <div class="mt-5 mb-5">
-                  <mat-checkbox [formControl]="select_cut" 
-                    >Seleccionar cortes</mat-checkbox
-                  >
+                  <mat-checkbox [formControl]="select_cut">Seleccionar cortes</mat-checkbox>
                 </div>
 
                 <div *ngIf="!select_cut.value">
                   <mat-form-field class="example-full-width" appearance="fill">
                     <mat-label>COP*</mat-label>
-                    <input matInput autocomplete="off" formControlName="cop" 
-                    type="number"
-                    />
+                    <input matInput autocomplete="off" formControlName="cop" type="number" />
                   </mat-form-field>
                   <mat-form-field class="example-full-width" appearance="fill">
                     <mat-label>USD</mat-label>
-                    <input matInput autocomplete="off" formControlName="usd" 
-                    
-                    type="number"
-                    />
+                    <input matInput autocomplete="off" formControlName="usd" type="number" />
                   </mat-form-field>
                 </div>
 
                 <div *ngIf="select_cut.value">
-                  <div
-                    class="col"
-                    *ngFor="let cute of cuts.controls; let i = index"
-                  >
+                  <div class="col" *ngFor="let cute of cuts.controls; let i = index">
                     <ng-container [formGroup]="cute">
-                      <div
-                        class="
+                      <div class="
                           card card-custom
                           bg-gray-100
                           card-stretch
                           gutter-b
-                        "
-                      >
+                        ">
                         <div class="card-header border-0 btn-sm">
                           <div class="card-toolbar d-flex" style="width: 100%">
                             <div style="width: 90%">
                               <p class="h2">Corte {{ i + 1 }}</p>
                             </div>
                             <div style="width: 10%">
-                              <div
-                                class="
+                              <div class="
                                   btn btn-sm btn-light-danger
                                   font-weight-bolder
                                   py-2
                                   px-5
                                   cursor-pointer
-                                "
-                                (click)="deleteCute(i)"
-                              >
+                                " (click)="deleteCute(i)">
                                 <mat-icon>close</mat-icon>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div
-                          class="
+                        <div class="
                             card-body
                             p-0
                             position-relative
                             overflow-hidden
-                          "
-                        >
+                          ">
                           <div class="p-5">
                             <div class="m-0">
                               <h6>Nombre</h6>
 
-                              <mat-form-field
-                                class="example-full-width"
-                                appearance="fill"
-                              >
+                              <mat-form-field class="example-full-width" appearance="fill">
                                 <mat-label>Nombre*</mat-label>
-                                <input
-                                  matInput
-                                  autocomplete="off"
-                                  formControlName="name"
-                                />
+                                <input matInput autocomplete="off" formControlName="name" />
                               </mat-form-field>
                               <h6>Precio</h6>
 
                               <div class="mt-8">
-                                <mat-form-field
-                                  class="example-full-width"
-                                  appearance="fill"
-                                >
+                                <mat-form-field class="example-full-width" appearance="fill">
                                   <mat-label>COP*</mat-label>
-                                  <input
-                                    matInput
-                                    type="number"
-                                    autocomplete="off"
-                                    formControlName="cop"
-                                  />
+                                  <input matInput type="number" autocomplete="off" formControlName="cop" />
                                 </mat-form-field>
-                                <mat-form-field
-                                  class="example-full-width"
-                                  appearance="fill"
-                                >
+                                <mat-form-field class="example-full-width" appearance="fill">
                                   <mat-label>USD</mat-label>
-                                  <input
-                                    matInput
-                                    type="number"
-                                    autocomplete="off"
-                                    formControlName="usd"
-                                  />
+                                  <input matInput type="number" autocomplete="off" formControlName="usd" />
                                 </mat-form-field>
                               </div>
 
                               <h6>Capacidad</h6>
                               <div class="mt-8">
-                                <mat-form-field
-                                  class="example-full-width"
-                                  appearance="fill"
-                                >
+                                <mat-form-field class="example-full-width" appearance="fill">
                                   <mat-label>Capacidad</mat-label>
-                                  <input
-                                    matInput
-                                    autocomplete="off"
-                                    formControlName="quantity"
-                                  />
+                                  <input matInput autocomplete="off" formControlName="quantity" />
                                 </mat-form-field>
                               </div>
 
                               <h6>Disponibilidad</h6>
 
-                              <mat-form-field
-                                appearance="fill"
-                                class="example-full-width"
-                              >
-                                <mat-label
-                                  >Selecciona un rango para el corte
+                              <mat-form-field appearance="fill" class="example-full-width">
+                                <mat-label>Selecciona un rango para el corte
                                 </mat-label>
-                                <mat-date-range-input
-                                  [rangePicker]="picker"
+                                <mat-date-range-input [rangePicker]="picker"
                                   [max]="addEventForm.get('finish_date').value"
-                                  [min]="addEventForm.get('init_date').value"
-                                >
-                                  <input
-                                    matStartDate
-                                    placeholder="Fecha de inicio"
-                                    formControlName="date_init"
-                                  />
-                                  <input
-                                    matEndDate
-                                    placeholder="Fecga de fin"
-                                    formControlName="date_finish"
-                                  />
+                                  [min]="addEventForm.get('init_date').value">
+                                  <input matStartDate placeholder="Fecha de inicio" formControlName="date_init" />
+                                  <input matEndDate placeholder="Fecga de fin" formControlName="date_finish" />
                                 </mat-date-range-input>
-                                <mat-datepicker-toggle
-                                  matSuffix
-                                  [for]="picker"
-                                ></mat-datepicker-toggle>
-                                <mat-date-range-picker
-                                  #picker
-                                ></mat-date-range-picker>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-date-range-picker #picker></mat-date-range-picker>
                               </mat-form-field>
                             </div>
                           </div>
@@ -290,17 +192,14 @@
                     </ng-container>
                   </div>
                   <div class="d-flex justify-content-center align-self-center">
-                    <div
-                      (click)="addCute()"
-                      class="
+                    <div (click)="addCute()" class="
                         more-cut
                         btn btn-sm btn-light-primary
                         font-weight-bolder
                         py-2
                         px-5
                         cursor-pointer
-                      "
-                    >
+                      ">
                       <mat-icon>add</mat-icon>
                     </div>
                   </div>
@@ -309,15 +208,13 @@
               <hr />
               <div class="row">
                 <div class="col-xl-12 col-sm-12 mt-5">
-                  <button
-                    class="
+                  <button class="
                       btn btn-sm btn-light-primary
                       font-weight-bolder
                       py-2
                       px-5
                       cursor-pointer
-                    "
-                  >
+                    ">
                     Agregar
                   </button>
                 </div>

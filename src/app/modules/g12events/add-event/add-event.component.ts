@@ -46,6 +46,7 @@ export class AddEventComponent implements OnInit {
       categorieAdd: [''],
       init_date: [],
       finish_date: [],
+      quantity_register:[1],
       // hour: ['', [Validators.required, hourValidation.bind(this)]],
       prices: this.fb.group({
         cop: [''],
@@ -81,7 +82,6 @@ export class AddEventComponent implements OnInit {
             this.showMessage(1, `El evento ${this.form.name.value} ha sido creado correctamente!`);
             this.router.navigate(['g12events']);
           }, err => {
-            console.log(err)
             Swal.fire(err.error.error ? err.error.error: 'Ocurrio un error intenta mas tarde!', '', 'error')
           });
         this.unsubscribe.push(updateEventSubscr);
