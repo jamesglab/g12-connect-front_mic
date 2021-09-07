@@ -52,7 +52,7 @@ export class EditEventComponent implements OnInit {
       image: [this.event.image],
       categorieAdd: [''],
       quantity_register_max: [this.event.quantity_register_max],
-      quantity_register_min:[this.event.quantity_register_max],
+      quantity_register_min:[this.event.quantity_register_min],
       base64: [],
       init_date: [this.event.init_date],
       finish_date: [this.event.finish_date],
