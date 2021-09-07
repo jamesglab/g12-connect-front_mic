@@ -87,9 +87,13 @@
 
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Maximo de registros por pago</mat-label>
-                <input matInput autocomplete="off" type="number" formControlName="quantity_register" [min]="1" />
+                <input matInput autocomplete="off" type="number" formControlName="quantity_register_max" [min]="1" />
               </mat-form-field>
 
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Minimo de registros por pago</mat-label>
+                <input matInput autocomplete="off" type="number" formControlName="quantity_register_min" [min]="1" />
+              </mat-form-field>
               <hr />
 
               <div formGroupName="prices">

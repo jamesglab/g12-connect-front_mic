@@ -46,7 +46,9 @@ export class AddEventComponent implements OnInit {
       categorieAdd: [''],
       init_date: [],
       finish_date: [],
-      quantity_register:[1],
+      quantity_register_max:[1],
+      quantity_register_min:[1],
+      
       // hour: ['', [Validators.required, hourValidation.bind(this)]],
       prices: this.fb.group({
         cop: [''],
