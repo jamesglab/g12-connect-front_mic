@@ -85,22 +85,14 @@
               </mat-form-field>
 
 
-              <mat-form-field class="example-full-width" appearance="fill">
-                <mat-label>Maximo de registros por pago</mat-label>
-                <input matInput autocomplete="off" type="number" formControlName="quantity_register_max" [min]="1" />
-              </mat-form-field>
 
-              <mat-form-field class="example-full-width" appearance="fill">
-                <mat-label>Minimo de registros por pago</mat-label>
-                <input matInput autocomplete="off" type="number" formControlName="quantity_register_min" [min]="1" />
-              </mat-form-field>
               <hr />
 
               <div formGroupName="prices">
-                <h6>Precio</h6>
-                <div class="mt-5 mb-5">
+                <h6>Cortes</h6>
+                <!-- <div class="mt-5 mb-5">
                   <mat-checkbox [formControl]="select_cut">Seleccionar cortes</mat-checkbox>
-                </div>
+                </div> -->
 
                 <div *ngIf="!select_cut.value">
                   <mat-form-field class="example-full-width" appearance="fill">
@@ -148,15 +140,46 @@
                           ">
                           <div class="p-5">
                             <div class="m-0">
-                              <h6>Nombre</h6>
+                              <h6>Información</h6>
 
                               <mat-form-field class="example-full-width" appearance="fill">
                                 <mat-label>Nombre*</mat-label>
                                 <input matInput autocomplete="off" formControlName="name" />
                               </mat-form-field>
-                              <h6>Precio</h6>
 
-                              <div class="mt-8">
+
+                              <mat-form-field class="example-full-width" appearance="fill">
+                                <mat-label>Descripción</mat-label>
+                                <textarea matInput style="max-height: 80px" formControlName="description"></textarea>
+                              </mat-form-field>
+
+
+                              <mat-form-field class="example-full-width" appearance="fill">
+                                <mat-label>Capacidad</mat-label>
+                                <input matInput autocomplete="off" formControlName="quantity" />
+                              </mat-form-field>
+
+
+
+                              <mat-slide-toggle formControlName="price_group_selected">
+                                <h6>Precio Grupal</h6>
+                              </mat-slide-toggle>
+
+
+                              <div class="mt-8 mb-8" *ngIf="cuts.value[i].price_group_selected">
+                                <mat-form-field class="example-full-width" appearance="fill">
+                                  <mat-label>PRECIO GRUPAL COP*</mat-label>
+                                  <input matInput type="number" autocomplete="off" formControlName="price_group_cop" />
+                                </mat-form-field>
+                                <mat-form-field class="example-full-width" appearance="fill">
+                                  <mat-label>PRECIO GRUPAL USD</mat-label>
+                                  <input matInput type="number" autocomplete="off" formControlName="price_group_usd" />
+                                </mat-form-field>
+                              </div>
+
+                              <h6 class="mt-8">Precio</h6>
+
+                              <div>
                                 <mat-form-field class="example-full-width" appearance="fill">
                                   <mat-label>COP*</mat-label>
                                   <input matInput type="number" autocomplete="off" formControlName="cop" />
@@ -167,13 +190,17 @@
                                 </mat-form-field>
                               </div>
 
-                              <h6>Capacidad</h6>
-                              <div class="mt-8">
-                                <mat-form-field class="example-full-width" appearance="fill">
-                                  <mat-label>Capacidad</mat-label>
-                                  <input matInput autocomplete="off" formControlName="quantity" />
-                                </mat-form-field>
-                              </div>
+                              <h6>Registros</h6>
+                              <mat-form-field class="example-full-width" appearance="fill">
+                                <mat-label>Maximo de registros por pago</mat-label>
+                                <input matInput autocomplete="off" type="number" formControlName="quantity_register_max"
+                                  [min]="1" />
+                              </mat-form-field>
+                              <mat-form-field class="example-full-width" appearance="fill">
+                                <mat-label>Minimo de registros por pago</mat-label>
+                                <input matInput autocomplete="off" type="number" formControlName="quantity_register_min"
+                                  [min]="1" />
+                              </mat-form-field>
 
                               <h6>Disponibilidad</h6>
 

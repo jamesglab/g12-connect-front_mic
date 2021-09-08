@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -18,10 +24,9 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-edit-event',
   templateUrl: './edit-event.component.html',
-  styleUrls: ['./edit-event.component.scss']
+  styleUrls: ['./edit-event.component.scss'],
 })
 export class EditEventComponent implements OnInit {
-
   public editEventForm: FormGroup = null;
   public event = null;
   public isLoading: boolean = false;
@@ -31,12 +36,16 @@ export class EditEventComponent implements OnInit {
   cuts = new FormArray([]);
   private uploadImage: boolean;
 
-  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private eventsService: G12eventsService,
-    private router: Router, public modal: NgbActiveModal) {
-  }
+  constructor(
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar,
+    private eventsService: G12eventsService,
+    private router: Router,
+    public modal: NgbActiveModal
+  ) {}
 
   ngOnInit(): void {
-    console.log('edit event', this.event)
+    console.log('edit event', this.event);
     this.getCategories();
     this.buildForm();
     this.setCuts();
@@ -51,31 +60,31 @@ export class EditEventComponent implements OnInit {
       description: [this.event.description],
       image: [this.event.image],
       categorieAdd: [''],
-      quantity_register_max: [this.event.quantity_register_max],
-      quantity_register_min:[this.event.quantity_register_min],
       base64: [],
       init_date: [this.event.init_date],
       finish_date: [this.event.finish_date],
       visibility: [this.event.visibility[0]],
       limit: [this.event.limit],
       location: [],
-      status: [this.event.status.toString()]
-    })
-    if (this.event.image.url != "" && this.event.image.url) {
-      this.form.base64.setValue(this.event.image.url)
+      status: [this.event.status.toString()],
+    });
+    if (this.event.image.url != '' && this.event.image.url) {
+      this.form.base64.setValue(this.event.image.url);
     } else {
-      this.form.base64.setValue("https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj")
+      this.form.base64.setValue(
+        'https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj'
+      );
     }
     this.minDate = new Date(this.event.init_date);
   }
   getCategories() {
     this.eventsService.getCategories().subscribe((res: any) => {
       this.categories = res;
-    })
+    });
   }
 
   setCuts() {
-    this.event.financialCut.map(cut => {
+    this.event.financialCut.map((cut) => {
       this.cuts.push(
         new FormGroup({
           id: new FormControl(cut.id ? cut.id : null),
@@ -85,7 +94,13 @@ export class EditEventComponent implements OnInit {
           quantity: new FormControl(cut.quantity),
           date_init: new FormControl(cut.date_init),
           date_finish: new FormControl(cut.date_finish),
-          is_active: new FormControl(cut.is_active ? true : false)
+          is_active: new FormControl(cut.is_active ? true : false),
+          price_group_selected: new FormControl(cut.is_group),
+          price_group_usd: new FormControl(cut.price_group?.usd),
+          price_group_cop: new FormControl(cut.price_group?.cop),
+          quantity_register_max: new FormControl(cut.quantity_register_max),
+          quantity_register_min: new FormControl(cut.quantity_register_min),
+          description: new FormControl(cut.description),
         })
       );
     });
@@ -102,7 +117,8 @@ export class EditEventComponent implements OnInit {
   }
 
   handleNotFoundSource($event: any) {
-    $event.target.src = "https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj";
+    $event.target.src =
+      'https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj';
   }
 
   onSubmit() {
@@ -111,7 +127,7 @@ export class EditEventComponent implements OnInit {
     }
 
     let cont_quantity = 0;
-    this.cuts.value.map(cute => {
+    this.cuts.value.map((cute) => {
       cont_quantity = cont_quantity + parseInt(cute.quantity);
     });
     delete this.editEventForm.getRawValue().categorieAdd;
@@ -124,19 +140,35 @@ export class EditEventComponent implements OnInit {
     let cuts = this.cutsToSend();
     if (cuts) {
       const sendData = this.editEventForm.getRawValue();
-      delete sendData.categorieAdd
-      const addEventSubscr = this.eventsService.update({ transaction_info: sendData, cuts, image: this.event.image }, this.uploadImage)
-        .subscribe((res: any) => {
-          console.log("UPDATEDDDDDD", res);
-          this.showMessage(1, `El evento ${this.form.name.value} ha sido actualizado correctamente!`);
-          this.modal.close("success");
-          this.router.navigate(['g12events']);
-        }, err => {Swal.fire(err.error.error ? err.error.error : 'error inesperado','','error'); throw err; });
+      delete sendData.categorieAdd;
+      const addEventSubscr = this.eventsService
+        .update(
+          { transaction_info: sendData, cuts, image: this.event.image },
+          this.uploadImage
+        )
+        .subscribe(
+          (res: any) => {
+            console.log('UPDATEDDDDDD', res);
+            this.showMessage(
+              1,
+              `El evento ${this.form.name.value} ha sido actualizado correctamente!`
+            );
+            this.modal.close('success');
+            this.router.navigate(['g12events']);
+          },
+          (err) => {
+            Swal.fire(
+              err.error.error ? err.error.error : 'error inesperado',
+              '',
+              'error'
+            );
+            throw err;
+          }
+        );
       this.unsubscribe.push(addEventSubscr);
     } else {
       this.showMessage(2, 'Hay campos vacios requeridos en los cortes');
     }
-
 
     // const addGoSubscr = this._goService.insertGo(this.addGoForm.getRawValue())
     //   .subscribe((res: Response) => {
@@ -158,27 +190,76 @@ export class EditEventComponent implements OnInit {
   cutsToSend() {
     let newCuts = [];
     let error = false;
-    if (this.cuts.value.length > 0) {
-      this.cuts.value.map(cut => {
-        if (cut.name != '' && cut.cop != '' && cut.quantity != '' && cut.date_init != '' && cut.date_finish) {
-          newCuts.push({ is_active: cut.is_active, id: cut.id, name: cut.name, prices: { cop: cut.cop, usd: (cut.usd != '') ? cut.usd : null }, quantity: cut.quantity, date_init: moment(cut.date_init), date_finish: moment(cut.date_finish) })
+    
+    this.cuts.value.map((cut) => {
+      if (cut.price_group_selected) {
+        if (
+          cut.name != '' &&
+          cut.cop != '' &&
+          cut.quantity != '' &&
+          cut.date_init != '' &&
+          cut.date_finish &&
+          cut.price_group_cop != '' &&
+          cut.price_group_usd != '' &&
+          cut.quantity_register_max != '' &&
+          cut.quantity_register_min != '' &&
+          cut.description != ''
+        ) {
+          newCuts.push({
+            id: cut.id,
+            is_active: cut.is_active,
+            name: cut.name,
+            prices: { cop: cut.cop, usd: cut.usd != '' ? cut.usd : null },
+            quantity: cut.quantity,
+            date_init: moment(cut.date_init),
+            date_finish: moment(cut.date_finish),
+            price_group: {
+              cop: cut.price_group_cop, usd: cut.price_group_usd != '' ? cut.price_group_usd : null
+            },
+            quantity_register_max: cut.quantity_register_max,
+            quantity_register_min: cut.quantity_register_min,
+            is_group: cut.price_group_selected,
+            description :cut.description
+
+          });
         } else {
-          error = true
+          error = true;
         }
-      });
-    } else {
-      newCuts.push({
-        name: this.editEventForm.value.name,
-        prices: { cop: this.editEventForm.value.cop, usd: (this.editEventForm.value.usd != '') ? this.editEventForm.value.usd : null },
-        quantity: this.editEventForm.value.quantity,
-        date_init: moment(this.editEventForm.value.date_init),
-        date_finish: moment(this.editEventForm.value.date_finish)
-      });
-    }
+      } else {
+        if (
+          cut.name != '' &&
+          cut.cop != '' &&
+          cut.quantity != '' &&
+          cut.date_init != '' &&
+          cut.date_finish &&
+          cut.quantity_register_max != '' &&
+          cut.quantity_register_min != '' &&
+          cut.description != ''
+
+        ) {
+          newCuts.push({
+            id: cut.id,
+            is_active: cut.is_active,
+            name: cut.name,
+            prices: { cop: cut.cop, usd: cut.usd != '' ? cut.usd : null },
+            quantity: cut.quantity,
+            date_init: moment(cut.date_init),
+            date_finish: moment(cut.date_finish),
+            quantity_register_max: cut.quantity_register_max,
+            quantity_register_min: cut.quantity_register_min,
+            is_group: cut.price_group_selected,
+            description :cut.description
+          });
+        } else {
+          error = true;
+        }
+      }
+    });
+
     if (error) {
-      return false
+      return false;
     } else {
-      return newCuts
+      return newCuts;
     }
   }
 
@@ -193,16 +274,25 @@ export class EditEventComponent implements OnInit {
         quantity: new FormControl(''),
         date_init: new FormControl(''),
         date_finish: new FormControl(''),
+        price_group_selected: new FormControl(false),
+        price_group_usd: new FormControl(''),
+        price_group_cop: new FormControl(''),
+        quantity_register_max: new FormControl(1),
+        quantity_register_min: new FormControl(1),
+        description: new FormControl(''),
       })
     );
   }
   deleteCute(i) {
-    console.log(this.cuts.controls[i])
+    console.log(this.cuts.controls[i]);
 
     // this.cuts.removeAt(i);
   }
   showMessage(type: number, message?: string) {
-    this.snackBar.openFromComponent(NotificationComponent, notificationConfig(type, message));
+    this.snackBar.openFromComponent(
+      NotificationComponent,
+      notificationConfig(type, message)
+    );
   }
 
   ngOnDestroy() {
@@ -210,15 +300,23 @@ export class EditEventComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<[]>) {
-    moveItemInArray(this.editEventForm.get('category').value, event.previousIndex, event.currentIndex);
+    moveItemInArray(
+      this.editEventForm.get('category').value,
+      event.previousIndex,
+      event.currentIndex
+    );
   }
   pushCategorie() {
     let found = false;
-    this.editEventForm.get('category').value.map(item => {
-      if (item == this.editEventForm.get('categorieAdd').value) { found = true }
+    this.editEventForm.get('category').value.map((item) => {
+      if (item == this.editEventForm.get('categorieAdd').value) {
+        found = true;
+      }
     });
     if (!found) {
-      this.editEventForm.get('category').value.push(this.editEventForm.get('categorieAdd').value);
+      this.editEventForm
+        .get('category')
+        .value.push(this.editEventForm.get('categorieAdd').value);
       this.editEventForm.get('categorieAdd').setValue('');
     }
   }

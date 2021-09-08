@@ -19,9 +19,9 @@ export class DonationsServices {
       delete params.init_date;
       delete params.finish_date;
     }
-    
+
     return this.http.get<any>(
-      `${'https://d977-201-184-17-202.ngrok.io/api/v2/'}reports/list-reports-status`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect.reports}/list-reports-status`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -31,7 +31,7 @@ export class DonationsServices {
 
   getTotalTransactions() {
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect}reports/total-transactions`, { headers: header }).pipe(
+      `${environment.apiUrlG12Connect.reports}/total-transactions`, { headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -39,9 +39,19 @@ export class DonationsServices {
       );
   }
 
+  getTimeLineTotals(params) {
+    return this.http.get<any>(
+      `${environment.apiUrlG12Connect.reports}/time-line-year`, { headers: header, params }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError((handleError))
+      );
+
+  }
   getTotalValueTransactions(params) {
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect}reports/total-value-transactions`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect.reports}/total-value-transactions`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -51,7 +61,7 @@ export class DonationsServices {
 
   getTotalTransactionsTypes(params) {
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect}reports/total-transactions-type-donation`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect.reports}/total-transactions-type-donation`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -61,7 +71,7 @@ export class DonationsServices {
 
   getTotalTransactionsGraph(params) {
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect}reports/total-value-donations-graph`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect.reports}/total-value-donations-graph`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -71,7 +81,7 @@ export class DonationsServices {
 
   getTotalQuantityGraph(params) {
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect}reports/total-quantity-donations-graph`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect.reports}/total-quantity-donations-graph`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -81,7 +91,7 @@ export class DonationsServices {
 
   getTransactionMethodPayment(params) {
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect}reports/total-transaction-method-payment`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect.reports}/total-transaction-method-payment`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -91,7 +101,7 @@ export class DonationsServices {
 
   getTotalValuesOrQuantity(filter) {
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect}reports/total-value-or-quantity-donations`, { params: { filter }, headers: header }).pipe(
+      `${environment.apiUrlG12Connect.reports}/total-value-or-quantity-donations`, { params: { filter }, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),

@@ -317,3 +317,75 @@ export const validateChartValues = (allSeries) => {
     return false;
   }
 }
+
+export const timeLineChart = (series,categories) => {
+  return {
+    chart: {
+      height: 380,
+      type: 'line',
+      zoom: {
+        enabled: false
+      },
+      toolbar: {
+        show: false
+      }
+    },
+    colors: ['#556ee6', '#34c38f'],
+    dataLabels: {
+      enabled: true,
+    },
+    stroke: {
+      width: [3, 3],
+      curve: 'straight'
+    },
+    series,
+    title: {
+      text: '',
+      align: ''
+    },
+    grid: {
+      row: {
+        colors: ['transparent', 'transparent'], // takes an array which will be repeated on columns
+        opacity: 0.2
+      },
+      borderColor: '#f1f1f1'
+    },
+    markers: {
+      style: 'inverted',
+      size: 6
+    },
+    xaxis: {
+      categories,
+      title: {
+        text: 'Horas'
+      }
+    },
+    yaxis: {
+      title: {
+        text: ''
+      },
+      min: 5,
+      max: 40
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'right',
+      floating: true,
+      offsetY: -25,
+      offsetX: -5
+    },
+    responsive: [{
+      breakpoint: 600,
+      options: {
+        chart: {
+          toolbar: {
+            show: false
+          }
+        },
+        legend: {
+          show: false
+        },
+      }
+    }]
+  };
+}

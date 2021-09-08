@@ -21,8 +21,7 @@
     </mat-form-field>
   </div>
 </div>
-
-<div>
+<div *ngIf="showChart">
   <apx-chart class="apex-charts" dir="ltr" [series]="linewithDataChart.series" [chart]="linewithDataChart.chart"
   [colors]="linewithDataChart.colors" [stroke]="linewithDataChart.stroke"
   [dataLabels]="linewithDataChart.dataLabels" [title]="linewithDataChart.title"
@@ -30,4 +29,8 @@
   [xaxis]="linewithDataChart.xaxis" [yaxis]="linewithDataChart.yaxis" [stroke]="linewithDataChart.stroke"
   [markers]="linewithDataChart.markers">
   </apx-chart>
+</div>
+
+<div *ngIf="!showChart">
+  <app-not-found-chart></app-not-found-chart>
 </div>
