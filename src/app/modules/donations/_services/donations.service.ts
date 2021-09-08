@@ -108,6 +108,25 @@ export class DonationsServices {
         catchError((handleError))
       );
   }
+  getTransacciondDonations(params) {
+    return this.http.get<any>(
+      `${environment.apiUrlG12Connect.reports}/list-reports-status`, { params, headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError((handleError))
+      );
+  }
 
+  downloadReportDonations(params) {
+    return this.http.get<any>(
+      `${environment.apiUrlG12Connect.reports}/list-reports-status-download`, { params, headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError((handleError))
+      );
+
+  }
 
 }

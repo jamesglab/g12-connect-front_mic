@@ -24,29 +24,42 @@ export class DonationsReportsComponent implements OnInit {
   public status = new FormControl(1, []);
   public payment_method = new FormControl(0, []);
   public info_to_export = [];
+  public count = 0;
+  public paginator = {
+    pageSize: 10,
+    pageIndex: 0
+  };
   constructor(public readonly _donations: DonationsServices, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef, private exportService: ExportService,) {
     this.maxDate = new Date();
   }
 
   ngOnInit(): void {
+    this.getTransactions(this.paginator);
+
   }
 
 
-  getTransactionsMongo() {
+  getTransactions(event?) {
 
-    this._donations.getTransactionsReports({
+    this.paginator = event;
+    this._donations.getTransacciondDonations({
       init_date: this.range.get('start').value ? new Date(moment(this.range.get('start').value).format()).getTime() : null,
       finish_date: this.range.get('end').value ? new Date(`${moment(this.range.get('end').value).format("YYYY-MM-DD")}T23:59:00.000`).getTime() : null,
       status: (this.status.value != 0) ? this.status.value : '',
+      quantity_page: event.pageSize ? event.pageSize : 10,
+      page: event.pageIndex ? event.pageIndex + 1 : 1
     }).subscribe((res: any,) => {
-      res.map((item, i) => { res[i].transaction.status = this.validateStatus(item.transaction.status); res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method) })
+      this.count = res.count;
+      res.transactions.map((item, i) => {
+        res.transactions[i].transaction.status = this.validateStatus(item.transaction.status);
+        res.transactions[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
+      })
       if (!this.dataSource) {
-        this.dataSource = new MatTableDataSource<any[]>(this.getObjetcsToTable(res));
-        this.info_to_export = res;
+        this.dataSource = new MatTableDataSource<any[]>(this.getObjetcsToTable(res.transactions));
         this.cdr.detectChanges();
       } else {
-        this.dataSource.data = this.getObjetcsToTable(res);
-        this.info_to_export = res;
+        this.dataSource.data = this.getObjetcsToTable(res.transactions);
+        this.info_to_export = res.transactions;
       }
     });
   }
@@ -57,7 +70,7 @@ export class DonationsReportsComponent implements OnInit {
     data.map(element => {
       const newReport = {
 
-        'reference': element.transaction.reference ? element.transaction.reference : '',
+        'reference': element.transaction.payment_ref ? element.transaction.payment_ref : '',
         'name': element.user.name ? element.user.name : '',
         'last_name': element.user.last_name ? element.user.last_name : '',
         'document': element.user.identification ? element.user.identification : '',
@@ -70,14 +83,6 @@ export class DonationsReportsComponent implements OnInit {
         'petition': element.donation.petition ? element.donation.petition : '',
         'country': element.user.country ? element.user.country : ''
 
-        // payment_method: element.transaction.payment_method,
-        // created_at: element.created_at,
-        // status: element.transaction.status,
-        // identification: element.user.identification,
-        // name: element.user.name,
-        // last_name: element.user.last_name,
-        // email: element.user.email,
-        // amount: element.transaction.amount
       }
       newReports.push(newReport);
     });
@@ -112,35 +117,53 @@ export class DonationsReportsComponent implements OnInit {
     } else if (payment_method.toLowerCase() == 'paypal') {
       return 'Paypal'
     }
-    
+
   }
 
   exportFile() {
-    if (this.info_to_export.length > 0) {
-      const dataToExport = [];
-      this.info_to_export.map(item => {
-        const newData = {
-          fecha: new Date(item.created_at),
-          'methodo de pago': item.transaction.payment_method,
-          estado: item.transaction.status,
-          costo: item.transaction.amount,
-          moneda: item.transaction.currency,
-          identificación: item.user.identification,
-          nombre: item.user.name,
-          apellido: item.user.last_name,
-          email: item.user.email,
-          telefono: item.user.phone,
-          pais: item.user.country,
-          ciudad: item.user.city,
-          departamento: item.user.departament,
-          genero: item.user.gender
-        }
-        dataToExport.push(newData)
+    this._donations.downloadReportDonations(
+      {
+        init_date: this.range.get('start').value ? new Date(moment(this.range.get('start').value).format()).getTime() : null,
+        finish_date: this.range.get('end').value ? new Date(`${moment(this.range.get('end').value).format("YYYY-MM-DD")}T23:59:00.000`).getTime() : null,
+        status: (this.status.value != 0) ? this.status.value : '',
+      }
+
+    ).subscribe((res: any) => {
+      console.log('tenemos la respuesta', res)
+
+      res.map((item, i) => {
+        res[i].transaction.status = this.validateStatus(item.transaction.status);
+        res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
       });
-      this.exportService.exportAsExcelFile(dataToExport, 'DONACIONES_MCI');
-    } else {
-      this.showMessage(2, 'No hay datos por exportar');
-    }
+
+      this.info_to_export = res;
+      if (this.info_to_export.length > 0) {
+        const dataToExport = [];
+        this.info_to_export.map(item => {
+          const newData = {
+            fecha: new Date(item.created_at),
+            'methodo de pago': item.transaction.payment_method,
+            estado: item.transaction.status,
+            costo: item.transaction.amount,
+            moneda: item.transaction.currency,
+            identificación: item.user.identification,
+            nombre: item.user.name,
+            apellido: item.user.last_name,
+            email: item.user.email,
+            telefono: item.user.phone,
+            pais: item.user.country,
+            ciudad: item.user.city,
+            departamento: item.user.departament,
+            genero: item.user.gender
+          }
+          dataToExport.push(newData)
+        });
+        this.exportService.exportAsExcelFile(dataToExport, 'DONACIONES_MCI');
+      } else {
+        this.showMessage(2, 'No hay datos por exportar');
+      }
+
+    });
 
   }
 }
