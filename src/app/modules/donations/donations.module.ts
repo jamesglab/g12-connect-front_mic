@@ -22,6 +22,7 @@ import { TotalTransactionsComponent } from './donations-dashboard/components/tot
 
 import { BarsStatusPaymentsComponent } from './donations-dashboard/components/bars-status-payments/bars-status-payments.component';
 import { NotFoundChartComponent } from './donations-dashboard/components/not-found-chart/not-found-chart.component';
+import { ModaleTransactionComponent } from './donations-reports/components/modale-transaction/modale-transaction.component';
 
 // import { ApexComponent } from './donations-dashboard/components/apex/apex.component';
 
@@ -69,6 +70,7 @@ const routes: Routes = [
     TotalTransactionsComponent,
     BarsStatusPaymentsComponent,
     NotFoundChartComponent,
+    ModaleTransactionComponent,
   ],
   imports: [
     CommonModule,

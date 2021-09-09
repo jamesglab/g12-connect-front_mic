@@ -13,7 +13,7 @@ export class ReportsTableComponent implements OnInit {
   @Input() dataSource: any;
   @Input() count: any;
 
-  
+
   @Output() emitPage = new EventEmitter<any>()
   public search = new FormControl('', []);
   public displayedColumns: string[] = [
@@ -25,11 +25,16 @@ export class ReportsTableComponent implements OnInit {
     'offering_type',
     'payment',
     'created_at',
-    'country'
+    'country',
+    // 'actions'
   ];
   constructor() { }
 
   ngOnInit(): void {
+    setTimeout(() => {
+      console.log('dat source ', this.dataSource.data)
+
+    }, 1000);
   }
   filter() {
     // this.dataSource.filter = this.search.value.trim().toLowerCase();
@@ -39,5 +44,10 @@ export class ReportsTableComponent implements OnInit {
 
   emitPageData(paginator) {
     this.emitPage.emit(paginator)
+  }
+
+  openModaleCheck(element) {
+    console.log('element')
+
   }
 }

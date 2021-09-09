@@ -195,12 +195,11 @@ export class EditEventComponent implements OnInit {
       if (cut.price_group_selected) {
         if (
           cut.name != '' &&
-          cut.cop != '' &&
           cut.quantity != '' &&
           cut.date_init != '' &&
           cut.date_finish &&
-          cut.price_group_cop != '' &&
-          cut.price_group_usd != '' &&
+          cut.price_group_cop !=''&&
+          cut.price_group_usd   !=''&&
           cut.quantity_register_max != '' &&
           cut.quantity_register_min != '' &&
           cut.description != ''
@@ -209,12 +208,12 @@ export class EditEventComponent implements OnInit {
             id: cut.id,
             is_active: cut.is_active,
             name: cut.name,
-            prices: { cop: cut.cop, usd: cut.usd != '' ? cut.usd : null },
+            prices: { cop: cut.cop, usd: cut.usd != '' ? cut.usd : 0 },
             quantity: cut.quantity,
             date_init: moment(cut.date_init),
             date_finish: moment(cut.date_finish),
             price_group: {
-              cop: cut.price_group_cop, usd: cut.price_group_usd != '' ? cut.price_group_usd : null
+              cop: cut.price_group_cop, usd: cut.price_group_usd != '' ? cut.price_group_usd : 0
             },
             quantity_register_max: cut.quantity_register_max,
             quantity_register_min: cut.quantity_register_min,
@@ -228,7 +227,6 @@ export class EditEventComponent implements OnInit {
       } else {
         if (
           cut.name != '' &&
-          cut.cop != '' &&
           cut.quantity != '' &&
           cut.date_init != '' &&
           cut.date_finish &&
@@ -241,7 +239,7 @@ export class EditEventComponent implements OnInit {
             id: cut.id,
             is_active: cut.is_active,
             name: cut.name,
-            prices: { cop: cut.cop, usd: cut.usd != '' ? cut.usd : null },
+            prices: { cop: cut.cop, usd: cut.usd != '' ? cut.usd : 0 },
             quantity: cut.quantity,
             date_init: moment(cut.date_init),
             date_finish: moment(cut.date_finish),
@@ -251,6 +249,7 @@ export class EditEventComponent implements OnInit {
             description :cut.description
           });
         } else {
+          console.log('cut ',cut)
           error = true;
         }
       }

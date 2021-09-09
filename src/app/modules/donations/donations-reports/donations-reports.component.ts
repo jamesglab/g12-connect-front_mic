@@ -19,13 +19,32 @@ export class DonationsReportsComponent implements OnInit {
     start: new FormControl(),
     end: new FormControl()
   });
+
+
+  public rangeHours = new FormGroup({
+    start: new FormControl(),
+    end: new FormControl()
+  });
   public maxDate: Date;
   public dataSource: any;
+
+  public dataSourceHours: any;
+
+  public countHours: any;
+
   public status = new FormControl(1, []);
+  public statusHours = new FormControl(1, []);
+
+
   public payment_method = new FormControl(0, []);
   public info_to_export = [];
   public count = 0;
   public paginator = {
+    pageSize: 10,
+    pageIndex: 0
+  };
+
+  public paginatorHours = {
     pageSize: 10,
     pageIndex: 0
   };
@@ -35,6 +54,7 @@ export class DonationsReportsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTransactions(this.paginator);
+    this.getTransactionsByHours(this.paginator);
 
   }
 
@@ -42,7 +62,7 @@ export class DonationsReportsComponent implements OnInit {
   getTransactions(event?) {
 
     this.paginator = event;
-    this._donations.getTransacciondDonations({
+    this._donations.getTransaccionsDonations({
       init_date: this.range.get('start').value ? new Date(moment(this.range.get('start').value).format()).getTime() : null,
       finish_date: this.range.get('end').value ? new Date(`${moment(this.range.get('end').value).format("YYYY-MM-DD")}T23:59:00.000`).getTime() : null,
       status: (this.status.value != 0) ? this.status.value : '',
@@ -64,6 +84,36 @@ export class DonationsReportsComponent implements OnInit {
     });
   }
 
+
+  getTransactionsByHours(paginator) {
+    this.paginatorHours = paginator;
+    
+    this._donations.getTransaccionsDonations({
+      init_date: this.rangeHours.get('start').value ? new Date(moment(this.rangeHours.get('start').value).format()).getTime() : null,
+      finish_date: this.rangeHours.get('end').value ? new Date(`${moment(this.rangeHours.get('end').value).format("YYYY-MM-DD")}T23:59:00.000`).getTime() : null,
+      status: (this.statusHours.value != 0) ? this.statusHours.value : '',
+      quantity_page: paginator.pageSize ? paginator.pageSize : 10,
+      page: paginator.pageIndex ? paginator.pageIndex + 1 : 1
+    }).subscribe((res: any) => {
+      console.log('tenemos la respuesta', res);
+      this.countHours = res.count;
+      res.transactions.map((item, i) => {
+        res.transactions[i].transaction.status = this.validateStatus(item.transaction.status);
+        res.transactions[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
+      });
+      if (!this.dataSourceHours) {
+        this.dataSourceHours = new MatTableDataSource<any[]>(this.getObjetcsToTable(res.transactions));
+        this.cdr.detectChanges();
+      } else {
+        this.dataSourceHours.data = this.getObjetcsToTable(res.transactions);
+      }
+    })
+  }
+
+
+  exportFileHours() {
+
+  }
   getObjetcsToTable(data) {
 
     let newReports = [];
@@ -81,7 +131,8 @@ export class DonationsReportsComponent implements OnInit {
         'payment': element.transaction.payment_method,
         'created_at': element.created_at,
         'petition': element.donation.petition ? element.donation.petition : '',
-        'country': element.user.country ? element.user.country : ''
+        'country': element.user.country ? element.user.country : '',
+        'transaction':element
 
       }
       newReports.push(newReport);

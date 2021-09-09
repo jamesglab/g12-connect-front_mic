@@ -108,9 +108,19 @@ export class DonationsServices {
         catchError((handleError))
       );
   }
-  getTransacciondDonations(params) {
+  getTransaccionsDonations(params) {
     return this.http.get<any>(
       `${environment.apiUrlG12Connect.reports}/list-reports-status`, { params, headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError((handleError))
+      );
+  }
+
+  getTransactionsByHours(params){
+    return this.http.get<any>(
+      `${'https://15b0-201-184-17-202.ngrok.io/reports'}/list-reports-dates`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
