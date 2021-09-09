@@ -6,10 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./modale-transaction.component.scss']
 })
 export class ModaleTransactionComponent implements OnInit {
-
+  transaction: any;
   constructor() { }
 
   ngOnInit(): void {
+    console.log('tenemos la transaccion', this.transaction)
   }
 
 }

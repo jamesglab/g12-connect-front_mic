@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModaleTransactionComponent } from '../modale-transaction/modale-transaction.component';
 
 @Component({
   selector: 'app-reports-table',
@@ -26,14 +27,16 @@ export class ReportsTableComponent implements OnInit {
     'payment',
     'created_at',
     'country',
-    // 'actions'
+    'actions'
   ];
-  constructor() { }
+  constructor(
+    private modalService: NgbModal
+
+  ) { }
 
   ngOnInit(): void {
     setTimeout(() => {
       console.log('dat source ', this.dataSource.data)
-
     }, 1000);
   }
   filter() {
@@ -46,8 +49,17 @@ export class ReportsTableComponent implements OnInit {
     this.emitPage.emit(paginator)
   }
 
+
   openModaleCheck(element) {
-    console.log('element')
+    
+    const MODAL = this.modalService.open(ModaleTransactionComponent, {
+      windowClass: 'fadeIn',
+      size: 'lg',
+      backdrop: true,
+      keyboard: true,
+      centered: true
+    })
+    MODAL.componentInstance.transaction = element.transaction;
 
   }
 }

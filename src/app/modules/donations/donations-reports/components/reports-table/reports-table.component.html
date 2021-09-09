@@ -59,19 +59,20 @@
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+  <ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let element">
+
+      <a (click)="openModaleCheck(element)">
+        <span class="svg-icon svg-icon-md svg-icon-primary">
+          <mat-icon class="icon-list"> launch</mat-icon>
+        </span>
+      </a>
+    </mat-cell>
+  </ng-container>
 </table>
 
-<!-- <ng-container matColumnDef="actions">
-  <mat-header-cell *matHeaderCellDef></mat-header-cell>
-  <mat-cell *matCellDef="let element">
-
-    <a (click)="openModaleCheck(element)">
-      <span class="svg-icon svg-icon-md svg-icon-primary">
-        <mat-icon class="icon-list"> launch</mat-icon>
-      </span>
-    </a>
-  </mat-cell>
-</ng-container> -->
 
 
 <mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" (page)="emitPageData($event) "
