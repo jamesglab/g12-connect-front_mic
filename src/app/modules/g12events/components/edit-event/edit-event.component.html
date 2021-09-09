@@ -120,275 +120,7 @@
                 ></mat-datepicker-toggle>
                 <mat-date-range-picker #picker></mat-date-range-picker>
               </mat-form-field>
-              <div>
-                <div  class="card-group">
-                  <div
-                    class="col"
-                    *ngFor="let cute of cuts.controls; let i = index"
-                  >
-                    <ng-container [formGroup]="cute">
-                      <div
-                        class="
-                          card card-custom
-                          bg-gray-100
-                          card-stretch
-                          gutter-b
-                        "
-                        style="max-width: 27rem"
-                      >
-                        <div class="card-header border-0 btn-sm">
-                          <div class="card-toolbar d-flex" style="width: 100%">
-                            <div style="width: 90%">
-                              <p class="h2">Corte {{ i + 1 }}</p>
-                            </div>
-                            <div style="width: 10%">
-                              <mat-slide-toggle formControlName="is_active">
-                                <h6></h6>
-                              </mat-slide-toggle>
-                              <!-- <div class="
-                                  btn btn-sm btn-light-danger
-                                  font-weight-bolder
-                                  py-2
-                                  px-5
-                                  cursor-pointer
-                                " (click)="deleteCute(i)">
-                                <mat-icon>close</mat-icon>
-                              </div> -->
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          class="
-                            card-body
-                            p-0
-                            position-relative
-                            overflow-hidden
-                          "
-                        >
-                          <div class="p-5">
-                            <div class="m-0">
-                              <h6>Información</h6>
-
-                              <mat-form-field
-                                class="example-full-width"
-                                appearance="fill"
-                              >
-                                <mat-label>Nombre*</mat-label>
-                                <input
-                                  matInput
-                                  autocomplete="off"
-                                  formControlName="name"
-                                />
-                              </mat-form-field>
-
-                              <mat-form-field
-                                class="example-full-width"
-                                appearance="fill"
-                              >
-                                <mat-label>Descripción</mat-label>
-                                <textarea
-                                  matInput
-                                  style="max-height: 80px"
-                                  formControlName="description"
-                                ></textarea>
-                              </mat-form-field>
-
-                              <mat-form-field
-                                class="example-full-width"
-                                appearance="fill"
-                              >
-                                <mat-label>Capacidad</mat-label>
-                                <input
-                                  matInput
-                                  autocomplete="off"
-                                  formControlName="quantity"
-                                />
-                              </mat-form-field>
-
-                              <mat-slide-toggle
-                                formControlName="price_group_selected"
-                              >
-                                <h6>Precio Grupal</h6>
-                              </mat-slide-toggle>
-
-                              <div
-                                class="mt-8 mb-8"
-                                *ngIf="cuts.value[i].price_group_selected"
-                              >
-                                <mat-form-field
-                                  class="example-full-width"
-                                  appearance="fill"
-                                >
-                                  <mat-label>PRECIO GRUPAL COP*</mat-label>
-                                  <input
-                                    matInput
-                                    type="number"
-                                    autocomplete="off"
-                                    formControlName="price_group_cop"
-                                  />
-                                </mat-form-field>
-                                <mat-form-field
-                                  class="example-full-width"
-                                  appearance="fill"
-                                >
-                                  <mat-label>PRECIO GRUPAL USD</mat-label>
-                                  <input
-                                    matInput
-                                    type="number"
-                                    autocomplete="off"
-                                    formControlName="price_group_usd"
-                                  />
-                                </mat-form-field>
-                              </div>
-
-                              <h6 class="mt-8">Precio</h6>
-
-                              <div>
-                                <mat-form-field
-                                  class="example-full-width"
-                                  appearance="fill"
-                                >
-                                  <mat-label>COP*</mat-label>
-                                  <input
-                                    matInput
-                                    type="number"
-                                    autocomplete="off"
-                                    formControlName="cop"
-                                  />
-                                </mat-form-field>
-                                <mat-form-field
-                                  class="example-full-width"
-                                  appearance="fill"
-                                >
-                                  <mat-label>USD</mat-label>
-                                  <input
-                                    matInput
-                                    type="number"
-                                    autocomplete="off"
-                                    formControlName="usd"
-                                  />
-                                </mat-form-field>
-                              </div>
-
-                              <h6>Registros</h6>
-                              <mat-form-field
-                                class="example-full-width"
-                                appearance="fill"
-                              >
-                                <mat-label
-                                  >Maximo de registros por pago</mat-label
-                                >
-                                <input
-                                  matInput
-                                  autocomplete="off"
-                                  type="number"
-                                  formControlName="quantity_register_max"
-                                  [min]="1"
-                                />
-                              </mat-form-field>
-                              <mat-form-field
-                                class="example-full-width"
-                                appearance="fill"
-                              >
-                                <mat-label
-                                  >Minimo de registros por pago</mat-label
-                                >
-                                <input
-                                  matInput
-                                  autocomplete="off"
-                                  type="number"
-                                  formControlName="quantity_register_min"
-                                  [min]="1"
-                                />
-                              </mat-form-field>
-
-                              <h6>Disponibilidad</h6>
-
-                              <mat-form-field
-                                appearance="fill"
-                                class="example-full-width"
-                              >
-                                <mat-label
-                                  >Selecciona un rango para el corte
-                                </mat-label>
-                                <mat-date-range-input
-                                  [rangePicker]="picker"
-                                  [max]="editEventForm.get('finish_date').value"
-                                  [min]="editEventForm.get('init_date').value"
-                                >
-                                  <input
-                                    matStartDate
-                                    placeholder="Fecha de inicio"
-                                    formControlName="date_init"
-                                  />
-                                  <input
-                                    matEndDate
-                                    placeholder="Fecga de fin"
-                                    formControlName="date_finish"
-                                  />
-                                </mat-date-range-input>
-                                <mat-datepicker-toggle
-                                  matSuffix
-                                  [for]="picker"
-                                ></mat-datepicker-toggle>
-                                <mat-date-range-picker
-                                  #picker
-                                ></mat-date-range-picker>
-                              </mat-form-field>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </ng-container>
-                  </div>
-                </div>
-              </div>
-              <div class="d-flex justify-content-center align-self-center">
-                <div
-                  (click)="addCute()"
-                  class="
-                    more-cut
-                    btn btn-sm btn-light-primary
-                    font-weight-bolder
-                    py-2
-                    px-5
-                    cursor-pointer
-                  "
-                >
-                  <mat-icon>add</mat-icon>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-xl-6 col-sm-12 mt-5">
-                  <button
-                    ngbAutofocus
-                    class="
-                      btn btn-sm btn-light-primary
-                      font-weight-bolder
-                      py-2
-                      px-5
-                      cursor-pointer
-                    "
-                  >
-                    Guardar
-                  </button>
-                </div>
-                <div class="col-xl-6 col-sm-12 mt-5">
-                  <button
-                    type="button"
-                    (click)="modal.close()"
-                    class="
-                      btn btn-sm btn-light-danger
-                      font-weight-bolder
-                      py-2
-                      px-5
-                      cursor-pointer
-                    "
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </div>
+           
             </div>
             <div class="col-xl-6 col-sm-12">
               <div class="avatar-upload">
@@ -412,6 +144,277 @@
               />
             </div>
           </div>
+          <div>
+            <div  class="card-group">
+              <div
+                class="col"
+                *ngFor="let cute of cuts.controls; let i = index"
+              >
+                <ng-container [formGroup]="cute">
+                  <div
+                    class="
+                      card card-custom
+                      bg-gray-100
+                      card-stretch
+                      gutter-b
+                    "
+                    style="max-width: 27rem"
+                  >
+                    <div class="card-header border-0 btn-sm">
+                      <div class="card-toolbar d-flex" style="width: 100%">
+                        <div style="width: 90%">
+                          <p class="h2">Corte {{ i + 1 }}</p>
+                        </div>
+                        <div style="width: 10%">
+                          <mat-slide-toggle formControlName="is_active">
+                            <h6></h6>
+                          </mat-slide-toggle>
+                          <!-- <div class="
+                              btn btn-sm btn-light-danger
+                              font-weight-bolder
+                              py-2
+                              px-5
+                              cursor-pointer
+                            " (click)="deleteCute(i)">
+                            <mat-icon>close</mat-icon>
+                          </div> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="
+                        card-body
+                        p-0
+                        position-relative
+                        overflow-hidden
+                      "
+                    >
+                      <div class="p-5">
+                        <div class="m-0">
+                          <h6>Información</h6>
+
+                          <mat-form-field
+                            class="example-full-width"
+                            appearance="fill"
+                          >
+                            <mat-label>Nombre*</mat-label>
+                            <input
+                              matInput
+                              autocomplete="off"
+                              formControlName="name"
+                            />
+                          </mat-form-field>
+
+                          <mat-form-field
+                            class="example-full-width"
+                            appearance="fill"
+                          >
+                            <mat-label>Descripción</mat-label>
+                            <textarea
+                              matInput
+                              style="max-height: 80px"
+                              formControlName="description"
+                            ></textarea>
+                          </mat-form-field>
+
+                          <mat-form-field
+                            class="example-full-width"
+                            appearance="fill"
+                          >
+                            <mat-label>Capacidad</mat-label>
+                            <input
+                              matInput
+                              autocomplete="off"
+                              formControlName="quantity"
+                            />
+                          </mat-form-field>
+
+                          <mat-slide-toggle
+                            formControlName="price_group_selected"
+                          >
+                            <h6>Precio Grupal</h6>
+                          </mat-slide-toggle>
+
+                          <div
+                            class="mt-8 mb-8"
+                            *ngIf="cuts.value[i].price_group_selected"
+                          >
+                            <mat-form-field
+                              class="example-full-width"
+                              appearance="fill"
+                            >
+                              <mat-label>PRECIO GRUPAL COP*</mat-label>
+                              <input
+                                matInput
+                                type="number"
+                                autocomplete="off"
+                                formControlName="price_group_cop"
+                              />
+                            </mat-form-field>
+                            <mat-form-field
+                              class="example-full-width"
+                              appearance="fill"
+                            >
+                              <mat-label>PRECIO GRUPAL USD</mat-label>
+                              <input
+                                matInput
+                                type="number"
+                                autocomplete="off"
+                                formControlName="price_group_usd"
+                              />
+                            </mat-form-field>
+                          </div>
+
+                          <h6 class="mt-8">Precio</h6>
+
+                          <div>
+                            <mat-form-field
+                              class="example-full-width"
+                              appearance="fill"
+                            >
+                              <mat-label>COP*</mat-label>
+                              <input
+                                matInput
+                                type="number"
+                                autocomplete="off"
+                                formControlName="cop"
+                              />
+                            </mat-form-field>
+                            <mat-form-field
+                              class="example-full-width"
+                              appearance="fill"
+                            >
+                              <mat-label>USD</mat-label>
+                              <input
+                                matInput
+                                type="number"
+                                autocomplete="off"
+                                formControlName="usd"
+                              />
+                            </mat-form-field>
+                          </div>
+
+                          <h6>Registros</h6>
+                          <mat-form-field
+                            class="example-full-width"
+                            appearance="fill"
+                          >
+                            <mat-label
+                              >Maximo de registros por pago</mat-label
+                            >
+                            <input
+                              matInput
+                              autocomplete="off"
+                              type="number"
+                              formControlName="quantity_register_max"
+                              [min]="1"
+                            />
+                          </mat-form-field>
+                          <mat-form-field
+                            class="example-full-width"
+                            appearance="fill"
+                          >
+                            <mat-label
+                              >Minimo de registros por pago</mat-label
+                            >
+                            <input
+                              matInput
+                              autocomplete="off"
+                              type="number"
+                              formControlName="quantity_register_min"
+                              [min]="1"
+                            />
+                          </mat-form-field>
+
+                          <h6>Disponibilidad</h6>
+
+                          <mat-form-field
+                            appearance="fill"
+                            class="example-full-width"
+                          >
+                            <mat-label
+                              >Selecciona un rango para el corte
+                            </mat-label>
+                            <mat-date-range-input
+                              [rangePicker]="picker"
+                              [max]="editEventForm.get('finish_date').value"
+                              [min]="editEventForm.get('init_date').value"
+                            >
+                              <input
+                                matStartDate
+                                placeholder="Fecha de inicio"
+                                formControlName="date_init"
+                              />
+                              <input
+                                matEndDate
+                                placeholder="Fecga de fin"
+                                formControlName="date_finish"
+                              />
+                            </mat-date-range-input>
+                            <mat-datepicker-toggle
+                              matSuffix
+                              [for]="picker"
+                            ></mat-datepicker-toggle>
+                            <mat-date-range-picker
+                              #picker
+                            ></mat-date-range-picker>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center align-self-center">
+            <div
+              (click)="addCute()"
+              class="
+                more-cut
+                btn btn-sm btn-light-primary
+                font-weight-bolder
+                py-2
+                px-5
+                cursor-pointer
+              "
+            >
+              <mat-icon>add</mat-icon>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-6 col-sm-12 mt-5">
+              <button
+                ngbAutofocus
+                class="
+                  btn btn-sm btn-light-primary
+                  font-weight-bolder
+                  py-2
+                  px-5
+                  cursor-pointer
+                "
+              >
+                Guardar
+              </button>
+            </div>
+            <div class="col-xl-6 col-sm-12 mt-5">
+              <button
+                type="button"
+                (click)="modal.close()"
+                class="
+                  btn btn-sm btn-light-danger
+                  font-weight-bolder
+                  py-2
+                  px-5
+                  cursor-pointer
+                "
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+
+
         </form>
       </div>
     </div>
