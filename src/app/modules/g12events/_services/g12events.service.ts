@@ -33,7 +33,7 @@ export class G12eventsService {
 
   sendEmail(data) {
     return this.http
-      .post<any>(`${environment.apiUrlG12Connect.users}/send-email`, data, {
+      .post<any>(`${environment.apiUrlG12Connect.users}/user/send-email`, data, {
         headers: headerFile,
       })
       .pipe(
