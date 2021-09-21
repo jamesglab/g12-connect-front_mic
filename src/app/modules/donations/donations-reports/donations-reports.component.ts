@@ -180,11 +180,6 @@ export class DonationsReportsComponent implements OnInit {
       }
 
     ).subscribe((res: any) => {
-
-      res.map((item, i) => {
-        res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
-      });
-
       this.info_to_export = res;
       if (this.info_to_export.length > 0) {
         const dataToExport = [];
