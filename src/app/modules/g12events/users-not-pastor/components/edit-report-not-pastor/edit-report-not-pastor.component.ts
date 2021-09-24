@@ -36,6 +36,7 @@ export class EditReportNotPastorComponent implements OnInit {
   public isLoading: boolean = false;
 
   private unsubscribe: Subscription[] = [];
+  public documentTypes = ['CC', 'TI', 'CE'];
 
   constructor(public modal: NgbActiveModal, private fb: FormBuilder,
     private eventsService: G12eventsService, private cdr: ChangeDetectorRef) {
@@ -45,14 +46,16 @@ export class EditReportNotPastorComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log('report not pastor to edit', this.report)
-    this.buildForm();
     this.getChurchTypes();
+
+    this.buildForm();
   }
 
-  buildForm() {
+  buildForm() { 
     this.editUserForm = this.fb.group({
       user: this.fb.group({
-        id:[this.report.user.id],
+        id: [this.report.user.id],
+        documentType:[this.report.user.document_type],
         identification: [this.report.user.identification],
         name: [this.report.user.name],
         last_name: [this.report.user.last_name],
@@ -61,15 +64,18 @@ export class EditReportNotPastorComponent implements OnInit {
         country: [this.renderCountry(this.report.user.country)],
         birth_date: [new Date(this.report.user.birth_date)]
       }),
-      typeChurch: [],
+      typeChurch: [(this.churchTypes.find(tCh => tCh.code.toUpperCase() == this.report?.user?.type_church?.toUpperCase()))?.idDetailMaster],
       headquarter: [],
-      network: [],
+      network: [this.report?.pastor?.gender ? (this.report?.pastor?.gender?.toUpperCase() == 'M' ? '01' : '02') : null],
       church: [],
       pastor: [],
-      pastorName: [],
-      churchName: [],
+      pastorName: [(this.report?.user?.type_church?.toUpperCase() != 'MCI') ? this.report.pastor.name : null],
+      churchName: [(this.report?.user?.type_church?.toUpperCase() != 'MCI') ? this.report.church.name : null],
       leader: []
-    })
+    });
+    if (this.report?.user?.type_church?.toUpperCase() == 'MCI') {
+      this.getPlaces(true);
+    }
   }
 
   get form() {
@@ -97,7 +103,7 @@ export class EditReportNotPastorComponent implements OnInit {
     ];
   }
 
-  getPlaces() {
+  getPlaces(setvalue?) {
     var filter = "national";
     const { country } = this.form.user.value;
     // console.log("COUNTRYYYYY", country);
@@ -112,18 +118,29 @@ export class EditReportNotPastorComponent implements OnInit {
       .getPlaces({ type: filter }).subscribe(async (res) => {
         this.placesObject = await parseToObjectOtherObject(res, 'id');
         this.places = res || [];
+        // VALIDAMOS EL USUARIO SELECCIONADO Y PUSHEAMOS LA SEDE SELECCIONADA 
+        if (setvalue) {
+          this.editUserForm.get('headquarter').setValue(res.find(ch => ch.id == this.report.church.id));
+          this.getPastors(true);
+        }
         this.cdr.detectChanges();
       }, err => { throw err; });
     this.unsubscribe.push(getPlacesSubscr);
   }
 
-  getPastors() {
+  getPastors(valid?) {
     this.pastors = [];
     if (this.form.network.value && this.form.headquarter.value) {
       const getCivilSubscr = this.eventsService
         .getLeadersOrPastors({ userCode: this.form.network.value, church: this.form.headquarter.value.id }).subscribe(async (res: any) => {
           this.pastorsObject = await parseToObjectOtherObject(res, 'user_code');
           this.pastors = res || [];
+
+          if (valid) {
+            this.editUserForm.get('pastor').setValue(res.find(pastor => pastor.id == this.report.pastor.id));
+            this.getLeaders(res.find(pastor => pastor.id == this.report.pastor.id), true);
+          }
+
           this.form.pastor.enable();
           this.cdr.detectChanges();
         });
@@ -131,7 +148,7 @@ export class EditReportNotPastorComponent implements OnInit {
     }
   }
 
-  getLeaders(pastor) {
+  getLeaders(pastor, valid?) {
     this.leaders = [];
     // this.isLoading.leaders = true;
     const getLeadersSubscr = this.eventsService
@@ -139,6 +156,10 @@ export class EditReportNotPastorComponent implements OnInit {
         // console.log("LEADERS OR PASTORS", res);
         this.leadersObject = await parseToObjectOtherObject(res, 'id');
         this.leaders = res || [];
+        if (valid) {
+          this.editUserForm.get('leader').setValue(res.find(leader => leader.id == this.report.leader.id));
+
+        }
         // this.isLoading.leaders = false;
         this.form.leader.enable();
         this.cdr.detectChanges();
@@ -174,8 +195,10 @@ export class EditReportNotPastorComponent implements OnInit {
     if (!country) this.form.country.setValue("colombia");
 
     // console.log("SE fueeee", { ...this.editUserForm.getRawValue(), ...{ pastor, leader, church } });
+    const typeChurch = this.churchTypes.find(ch => ch.idDetailMaster == this.editUserForm.getRawValue().typeChurch);
+    console.log(typeChurch)
     const updateUserSubscr = this.eventsService
-      .updateUser({ ...this.editUserForm.getRawValue(), ...{ pastor, leader, church } })
+      .updateUser({ ...this.editUserForm.getRawValue(), ...{ pastor, leader, church }, typeChurch: typeChurch })
       .subscribe((res) => {
         this.isLoading = false;
         // console.log("THE USER WAS UPDATED", res);
