@@ -92,4 +92,6 @@ export const parseToObjectOtherObject = (array: any[], key: string): Promise<{ [
         await iterateArray();
         resolve(object);
     });
+
+
 }

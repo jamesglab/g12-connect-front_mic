@@ -35,7 +35,7 @@ export class UpdatePasswordComponent implements OnInit {
 
   buildForm() {
     this.changePasswordForm = this.fb.group({
-      idUser: [this.currentUser.idUser, Validators.required],
+      idUser: [this.currentUser?.idUser, Validators.required],
       oldPassword: ['', Validators.required],
       newPassword: ['', Validators.required],
       confirmNewPassword: ['', Validators.required],
