@@ -33,6 +33,7 @@ export class UsersNotPastorComponent implements OnInit {
   public event_selected = new FormControl(0, []);
   public status = new FormControl(0, []);
 
+
   // public pastores: { [key:string]: any }[] = [];
 
   public pastor_selected = new FormControl(0, []);
@@ -42,6 +43,7 @@ export class UsersNotPastorComponent implements OnInit {
   public search = new FormControl('', []);
   public data_cut_table: any;
   public info_users_count: any;
+  public validate_type_filter: any;
   // public info_to_export: any = [];
 
   //CRIS
@@ -50,6 +52,7 @@ export class UsersNotPastorComponent implements OnInit {
   public events: { [key: string]: any }[] = [];
   public dataSource: any;
   public count;
+
   public displayedColumns: string[] = ['event', 'payment_method', 'reference', 'status', 'identification', 'name', 'last_name', 'email', 'options'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -93,8 +96,6 @@ export class UsersNotPastorComponent implements OnInit {
       page: pagination ? pagination.pageIndex + 1 : 1, per_page: pagination ? pagination.pageSize : 10
 
     }).subscribe((res: any) => {
-      console.log('tengo la res', res)
-
       this.isLoading = false;
       this.count = res.count;
       res.transactions.map((item, i) => {
@@ -120,12 +121,21 @@ export class UsersNotPastorComponent implements OnInit {
       Swal.fire('Campos Incompletos', '', 'warning')
       return;
     }
-    if (paginator) {
-      this.paginator = paginator;
+    if (!paginator) {
+      this.paginator.pageIndex = 0;
     }
     if (this.search.value != '') {
+      if (!this.validate_type_filter) {
+        this.validate_type_filter = true;
+        this.paginator.pageIndex = 0;
+      }
       this.filter(this.paginator);
+
     } else {
+      if (this.validate_type_filter) {
+        this.validate_type_filter = false;
+        this.paginator.pageIndex = 0;
+      }
       this.getDataByFilter(this.paginator);
     }
   }
