@@ -14,8 +14,9 @@ export const environment = {
     managment: 'https://dev-api.g12connect.com/api/v2/managment',
     users: 'https://dev-api.g12connect.com/api/v2/users',
     payments: 'https://dev-api.g12connect.com/api/v2/payments',
-    reports : 'https://dev-api.g12connect.com/api/v2/reports'
+    reports: 'https://dev-api.g12connect.com/api/v2/reports'
   },
+
 };
 
 /*
@@ -26,4 +27,3 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
- 

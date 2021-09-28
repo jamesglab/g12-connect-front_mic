@@ -87,7 +87,7 @@ export class DonationsReportsComponent implements OnInit {
 
   getTransactionsByHours(paginator) {
     this.paginatorHours = paginator;
-    
+
     this._donations.getTransaccionsDonations({
       init_date: this.rangeHours.get('start').value ? new Date(moment(this.rangeHours.get('start').value).format()).getTime() : null,
       finish_date: this.rangeHours.get('end').value ? new Date(`${moment(this.rangeHours.get('end').value).format("YYYY-MM-DD")}T23:59:00.000`).getTime() : null,
@@ -129,10 +129,10 @@ export class DonationsReportsComponent implements OnInit {
         'offering_value': element.transaction.amount ? element.transaction.amount : '',
         'offering_type': element.donation.name ? element.donation.name : '',
         'payment': element.transaction.payment_method,
-        'created_at': element.created_at,
+        'created_at': moment(element.transaction.created_at).format('DD/MM/YYYY hh:MM a'),
         'petition': element.donation.petition ? element.donation.petition : '',
         'country': element.user.country ? element.user.country : '',
-        'transaction':element
+        'transaction': element
 
       }
       newReports.push(newReport);
@@ -196,7 +196,7 @@ export class DonationsReportsComponent implements OnInit {
             Modena: item.transaction.currency.toUpperCase(),
             'Metodo de pago': item.transaction.payment_method.toUpperCase(),
             'Pasarela de pago': item.transaction.payment_gateway.toUpperCase(),
-            Fecha: new Date(item.created_at),
+            Fecha: moment(item.transaction.created_at).format('DD/MM/YYYY hh:MM a'),
             Estado: this.validateStatus(item.transaction.status),
             Peticion: item.transaction.petition,
             Pais: item.user.country,
