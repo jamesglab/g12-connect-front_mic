@@ -204,7 +204,7 @@ export class UsersNotPastorComponent implements OnInit {
     MODAL.componentInstance.report = report;
     MODAL.result.then((data) => {
       if (data == "success") {
-        this.getDataByFilter();
+        this.onSubmit()
       }
     });
 

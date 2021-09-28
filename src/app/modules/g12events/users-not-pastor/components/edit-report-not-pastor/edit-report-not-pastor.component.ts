@@ -9,6 +9,7 @@ import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
 import { G12eventsService } from '../../../_services/g12events.service';
 
 import { Subscription } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-edit-report-not-pastor',
@@ -133,10 +134,11 @@ export class EditReportNotPastorComponent implements OnInit {
     if (this.form.network.value && this.form.headquarter.value) {
       const getCivilSubscr = this.eventsService
         .getLeadersOrPastors({ userCode: this.form.network.value, church: this.form.headquarter.value.id }).subscribe(async (res: any) => {
-          this.pastorsObject = await parseToObjectOtherObject(res, 'user_code');
+          // this.pastorsObject = await parseToObjectOtherObject(res, 'user_code');
           this.pastors = res || [];
 
           if (valid) {
+            console.log('tenemos el pastor ',res.find(pastor => pastor.id == this.report.pastor.id))
             this.editUserForm.get('pastor').setValue(res.find(pastor => pastor.id == this.report.pastor.id));
             this.getLeaders(res.find(pastor => pastor.id == this.report.pastor.id), true);
           }
@@ -201,6 +203,7 @@ export class EditReportNotPastorComponent implements OnInit {
       .updateUser({ ...this.editUserForm.getRawValue(), ...{ pastor, leader, church }, typeChurch: typeChurch })
       .subscribe((res) => {
         this.isLoading = false;
+        Swal.fire('Usuario Actualizado','','success')
         // console.log("THE USER WAS UPDATED", res);
         this.closeModal("success");
       }, err => { this.isLoading = false; throw err; });
