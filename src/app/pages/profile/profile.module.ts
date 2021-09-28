@@ -11,6 +11,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { ProfileComponent } from './profile.component';
 import { UpdatePasswordComponent } from './components/update-password/update-password.component';
+import { CoreModule } from 'src/app/_metronic/core';
+import { SharedModule } from 'src/app/modules/shared/shared.module';
 
 
 @NgModule({
@@ -27,6 +29,8 @@ import { UpdatePasswordComponent } from './components/update-password/update-pas
     MatSelectModule,
     MatIconModule,
     MatSnackBarModule,
+    CoreModule,
+    SharedModule,
     RouterModule.forChild([
       {
         path: '',

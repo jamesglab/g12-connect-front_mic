@@ -22,6 +22,15 @@
           <div class="row">
             <div class="col">
               <div formGroupName="user">
+                <mat-form-field appearance="fill" class="w-100" >
+                  <mat-label>Tipo de documento *</mat-label>
+                  <mat-select type="select" formControlName="documentType">
+                    <mat-option *ngFor="let type of documentTypes" [value]="type">
+                      {{ type }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+    
                 <mat-form-field appearance="fill" style="width: 100%">
                   <mat-label>Identificación</mat-label>
                   <input matInput placeholder="Ingrese la identificación..." formControlName="identification"
@@ -77,7 +86,7 @@
               <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Iglesia *</mat-label>
                 <mat-select type="select" formControlName="typeChurch" (selectionChange)="getPlaces();">
-                  <mat-option *ngFor="let type of churchTypes" value="{{type.idDetailMaster}}">
+                  <mat-option *ngFor="let type of churchTypes" [value]="type.idDetailMaster">
                     {{ type.description }}
                   </mat-option>
                 </mat-select>

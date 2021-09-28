@@ -180,32 +180,26 @@ export class DonationsReportsComponent implements OnInit {
       }
 
     ).subscribe((res: any) => {
-      console.log('tenemos la respuesta', res)
-
-      res.map((item, i) => {
-        res[i].transaction.status = this.validateStatus(item.transaction.status);
-        res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
-      });
-
       this.info_to_export = res;
       if (this.info_to_export.length > 0) {
         const dataToExport = [];
         this.info_to_export.map(item => {
           const newData = {
-            fecha: new Date(item.created_at),
-            'methodo de pago': item.transaction.payment_method,
-            estado: item.transaction.status,
-            costo: item.transaction.amount,
-            moneda: item.transaction.currency,
-            identificación: item.user.identification,
-            nombre: item.user.name,
-            apellido: item.user.last_name,
-            email: item.user.email,
-            telefono: item.user.phone,
-            pais: item.user.country,
-            ciudad: item.user.city,
-            departamento: item.user.departament,
-            genero: item.user.gender
+            Referencia: item.transaction.payment_ref,
+            Nombre: item.user.name.toUpperCase(),
+            Apellido: item.user.last_name.toUpperCase(),
+            Identificación: item.user.identification,
+            Telefono: item.user.phone,
+            Email: item.user.email.toLowerCase(),
+            'Tipo de donacion': item.donation.name.toUpperCase(),
+            Total: item.transaction.amount,
+            Modena: item.transaction.currency.toUpperCase(),
+            'Metodo de pago': item.transaction.payment_method.toUpperCase(),
+            'Pasarela de pago': item.transaction.payment_gateway.toUpperCase(),
+            Fecha: new Date(item.created_at),
+            Estado: this.validateStatus(item.transaction.status),
+            Peticion: item.transaction.petition,
+            Pais: item.user.country,
           }
           dataToExport.push(newData)
         });

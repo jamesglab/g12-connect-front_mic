@@ -244,6 +244,23 @@ export class G12eventsService {
       );
   }
 
+
+  getDataByFilterValue(filter: any) {
+    //IS FOR GET INFO USERS NOT PASTORS
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.reports}/filter-not-pastor`, {
+        params: filter,
+        headers: header,
+      })
+      .pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+  
+
   getPlaces(filter: any): Observable<any> {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.users}/church/filter`, {
