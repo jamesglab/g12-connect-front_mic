@@ -48,6 +48,14 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="fill" class="w-100">
+                  <mat-label>Genero</mat-label>
+                  <mat-select type="select" formControlName="gender" >
+                    <mat-option value="M">Hombres</mat-option>
+                    <mat-option value="F">Mujeres</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="w-100">
                   <mat-label>Fecha de nacimiento*</mat-label>
                   <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="bornDate"
                     formControlName="birth_date" disabled>
@@ -65,6 +73,8 @@
                   <mat-label>email</mat-label>
                   <input matInput placeholder="Email" formControlName="email">
                 </mat-form-field>
+
+                
 
                 <mat-form-field appearance="fill" class="w-100">
                   <mat-label>País *</mat-label>

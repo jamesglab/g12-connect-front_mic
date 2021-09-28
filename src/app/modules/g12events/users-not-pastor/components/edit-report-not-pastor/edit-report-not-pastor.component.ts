@@ -62,12 +62,13 @@ export class EditReportNotPastorComponent implements OnInit {
         last_name: [this.report.user.last_name],
         phone: [this.report.user.phone],
         email: [this.report.user.email],
+        gender: [this.report.user.gender],
         country: [this.renderCountry(this.report.user.country)],
         birth_date: [new Date(this.report.user.birth_date)]
       }),
       typeChurch: [(this.churchTypes.find(tCh => tCh.code.toUpperCase() == this.report?.user?.type_church?.toUpperCase()))?.idDetailMaster],
       headquarter: [],
-      network: [this.report?.pastor?.gender ? (this.report?.user?.gender?.toUpperCase() == 'M' ? '01' : '02') : null],
+      network: [this.report?.pastor?.gender ? (this.report?.pastor?.user_code.substring(0, 2)) : null],
       church: [],
       pastor: [],
       pastorName: [(this.report?.user?.type_church?.toUpperCase() != 'MCI') ? this.report.pastor.name : null],
@@ -202,7 +203,6 @@ export class EditReportNotPastorComponent implements OnInit {
     const updateUserSubscr = this.eventsService
       .updateUser({
         ...this.editUserForm.getRawValue(),
-        user: { ...this.editUserForm.getRawValue().user, gender: (this.editUserForm.getRawValue().network == '01') ? 'M' : 'F' },//SE NECESITA ENVIAR LA INFORMACION DEL USUARIO Y ACTUALIZAR EL GENERO PARA VISUALIZAR LOS PASTORES CORRESPONDIENTES
         ...{ pastor, leader, church }, typeChurch: typeChurch
       })
       .subscribe((res) => {
