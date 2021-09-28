@@ -52,11 +52,11 @@ export class EditReportNotPastorComponent implements OnInit {
     this.buildForm();
   }
 
-  buildForm() { 
+  buildForm() {
     this.editUserForm = this.fb.group({
       user: this.fb.group({
         id: [this.report.user.id],
-        documentType:[this.report.user.document_type],
+        documentType: [this.report.user.document_type],
         identification: [this.report.user.identification],
         name: [this.report.user.name],
         last_name: [this.report.user.last_name],
@@ -67,7 +67,7 @@ export class EditReportNotPastorComponent implements OnInit {
       }),
       typeChurch: [(this.churchTypes.find(tCh => tCh.code.toUpperCase() == this.report?.user?.type_church?.toUpperCase()))?.idDetailMaster],
       headquarter: [],
-      network: [this.report?.pastor?.gender ? (this.report?.pastor?.gender?.toUpperCase() == 'M' ? '01' : '02') : null],
+      network: [this.report?.pastor?.gender ? (this.report?.user?.gender?.toUpperCase() == 'M' ? '01' : '02') : null],
       church: [],
       pastor: [],
       pastorName: [(this.report?.user?.type_church?.toUpperCase() != 'MCI') ? this.report.pastor.name : null],
@@ -138,7 +138,7 @@ export class EditReportNotPastorComponent implements OnInit {
           this.pastors = res || [];
 
           if (valid) {
-            console.log('tenemos el pastor ',res.find(pastor => pastor.id == this.report.pastor.id))
+            console.log('tenemos el pastor ', res.find(pastor => pastor.id == this.report.pastor.id))
             this.editUserForm.get('pastor').setValue(res.find(pastor => pastor.id == this.report.pastor.id));
             this.getLeaders(res.find(pastor => pastor.id == this.report.pastor.id), true);
           }
@@ -200,10 +200,14 @@ export class EditReportNotPastorComponent implements OnInit {
     const typeChurch = this.churchTypes.find(ch => ch.idDetailMaster == this.editUserForm.getRawValue().typeChurch);
     console.log(typeChurch)
     const updateUserSubscr = this.eventsService
-      .updateUser({ ...this.editUserForm.getRawValue(), ...{ pastor, leader, church }, typeChurch: typeChurch })
+      .updateUser({
+        ...this.editUserForm.getRawValue(),
+        user: { ...this.editUserForm.getRawValue().user, gender: (this.editUserForm.getRawValue().network == '01') ? 'M' : 'F' },//SE NECESITA ENVIAR LA INFORMACION DEL USUARIO Y ACTUALIZAR EL GENERO PARA VISUALIZAR LOS PASTORES CORRESPONDIENTES
+        ...{ pastor, leader, church }, typeChurch: typeChurch
+      })
       .subscribe((res) => {
         this.isLoading = false;
-        Swal.fire('Usuario Actualizado','','success')
+        Swal.fire('Usuario Actualizado', '', 'success')
         // console.log("THE USER WAS UPDATED", res);
         this.closeModal("success");
       }, err => { this.isLoading = false; throw err; });
