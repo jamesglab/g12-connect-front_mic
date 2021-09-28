@@ -178,7 +178,6 @@ export class DonationsReportsComponent implements OnInit {
         finish_date: this.range.get('end').value ? new Date(`${moment(this.range.get('end').value).format("YYYY-MM-DD")}T23:59:00.000`).getTime() : null,
         status: (this.status.value != 0) ? this.status.value : '',
       }
-
     ).subscribe((res: any) => {
       this.info_to_export = res;
       if (this.info_to_export.length > 0) {
