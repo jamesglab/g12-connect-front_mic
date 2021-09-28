@@ -3,19 +3,36 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
+  // production: false,
+  // appVersion: 'v710demo1', //METRONIC
+  // USERDATA_KEY: 'authf649fc9a5f55', // METRONIC
+  // isMockEnabled: false, // METRONIC
+  // apiUrl: 'http://51.79.78.171:7003/', //.NETAPI
+  // // apiUrlG12Connect: 'https://dev-api.g12connect.com/api/v2/',
+  // apiUrlG12Connect: {
+  //   donations: 'https://dev-api.g12connect.com/api/v2/donations',
+  //   managment: 'https://dev-api.g12connect.com/api/v2/managment',
+  //   users: 'https://dev-api.g12connect.com/api/v2/users',
+  //   payments: 'https://dev-api.g12connect.com/api/v2/payments',
+  //   reports : 'https://dev-api.g12connect.com/api/v2/reports'
+  // },
+
+
+  production: true,
   appVersion: 'v710demo1', //METRONIC
   USERDATA_KEY: 'authf649fc9a5f55', // METRONIC
   isMockEnabled: false, // METRONIC
   apiUrl: 'http://51.79.78.171:7003/', //.NETAPI
   // apiUrlG12Connect: 'https://dev-api.g12connect.com/api/v2/',
   apiUrlG12Connect: {
-    donations: 'https://dev-api.g12connect.com/api/v2/donations',
-    managment: 'https://dev-api.g12connect.com/api/v2/managment',
-    users: 'https://dev-api.g12connect.com/api/v2/users',
-    payments: 'https://dev-api.g12connect.com/api/v2/payments',
-    reports : 'https://dev-api.g12connect.com/api/v2/reports'
+    donations: 'http://api.g12connect.com/api/v2/donations',
+    managment: 'https://api.g12connect.com/api/v2/managment',
+    users: 'https://api.g12connect.com/api/v2/users',
+    payments: 'https://api.g12connect.com/api/v2/payments',
+    reports : 'https://api.g12connect.com/api/v2/reports'
   },
+
+
 };
 
 /*
