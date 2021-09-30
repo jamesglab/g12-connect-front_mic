@@ -13,6 +13,8 @@ import { ProfileComponent } from './profile.component';
 import { UpdatePasswordComponent } from './components/update-password/update-password.component';
 import { CoreModule } from 'src/app/_metronic/core';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { Interceptor } from '../../modules/_services/interceptors/interceptor.service';
 
 
 @NgModule({
@@ -38,6 +40,12 @@ import { SharedModule } from 'src/app/modules/shared/shared.module';
       },
     ]),
   ],
-  providers:[MatIconRegistry]
+  providers: [MatIconRegistry,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: Interceptor,
+      multi: true
+    },
+   ]
 })
 export class ProfileModule { }

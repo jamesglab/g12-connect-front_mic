@@ -6,7 +6,7 @@
   </a>
 
   <!--end::Logo-->
-
+ 
   <ng-container *ngIf="asideSelfMinimizeToggle">
     <button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
       <span [inlineSVG]="
@@ -14,8 +14,11 @@
         class="svg-icon svg-icon-xl"></span>
     </button>
   </ng-container>
+
+  
 </div>
 <!--end::Brand-->
+
 
 <!--begin::Aside Menu-->
 <div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
@@ -27,10 +30,18 @@
     <!--end::Header Logo-->
   </ng-container>
   <!--begin::Menu Container-->
+  <!-- <ng-container  (click)="refreshPermissions()">
+    <div class="cont-refresh">
+      <button class="brand-toggle btn">
+        <mat-icon style="color: #3699ff;">refresh</mat-icon>
+      </button>
+    </div>
+  </ng-container> -->
   <ng-container *ngIf="menuConfig && menuConfig.items">
     <div id="kt_aside_menu" class="aside-menu scroll my-4 ps ps--active-y" [ngClass]="asideMenuCSSClasses"
       data-menu-vertical="1" data-menu-scroll="1" [attr.data-menu-scroll]="asideMenuScroll"
       data-menu-dropdown-timeout="500">
+      
       <!-- begin::Menu Nav -->
       <ul class="menu-nav" [ngClass]="ulCSSClasses">
         <ng-container *ngFor="let item of menuConfig.items">

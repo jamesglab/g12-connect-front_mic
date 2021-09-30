@@ -15,24 +15,24 @@ const routes: Routes = [
       },
       {
         path: 'admin',
-        canActivate:[AdminGuard],
+        canActivate: [AdminGuard],
         loadChildren: () =>
           import('../modules/administration/administration.module').then((m) => m.AdministrationModule)
       },
       {
         path: 'donations',
         loadChildren: () =>
-        import('../modules/donations/donations.module').then((m) => m.DonationsModule)
+          import('../modules/donations/donations.module').then((m) => m.DonationsModule)
       },
       {
         path: 'g12events',
         loadChildren: () =>
-        import('../modules/g12events/g12events.module').then((m) => m.G12eventsModule)
+          import('../modules/g12events/g12events.module').then((m) => m.G12eventsModule)
       },
       {
         path: 'profile',
         loadChildren: () =>
-        import('./profile/profile.module').then((m) => m.ProfileModule)
+          import('./profile/profile.module').then((m) => m.ProfileModule)
       },
       {
         path: 'send',
@@ -42,7 +42,7 @@ const routes: Routes = [
       {
         path: 'to-win',
         loadChildren: () =>
-        import('../modules/to-win/to-win.module').then((m) => m.ToWinModule)
+          import('../modules/to-win/to-win.module').then((m) => m.ToWinModule)
       },
       {
         path: '',
@@ -62,4 +62,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PagesRoutingModule {}
+export class PagesRoutingModule { }

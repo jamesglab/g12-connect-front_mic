@@ -14,15 +14,15 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getUserInfo(data: { idUser: number }): Observable<Response> {
-    return this.http.post<Response>(
-      `${environment.apiUrl}User/Get`, JSON.stringify(data), { headers: header }).pipe(
-        map((res: Response) => {
-          return res;
-        }),
-        catchError((err) => { console.error('err', err); return of(undefined); })
-      );
-  }
+  // getUserInfo(data: { idUser: number }): Observable<Response> {
+  //   return this.http.post<Response>(
+  //     `${environment.apiUrl}User/Get`, JSON.stringify(data), { headers: header }).pipe(
+  //       map((res: Response) => {
+  //         return res;
+  //       }),
+  //       catchError((err) => { console.error('err', err); return of(undefined); })
+  //     );
+  // }
 
   changePassword(data: { idUser: number, oldPassword: string, newPassword: string }): Observable<Response> {
     return this.http.post<Response>(
@@ -51,12 +51,34 @@ export class UserService {
       );
   }
 
+  getProfile() {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.users}/detail`, {
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  updateProfile(body) {
+    return this.http.put<Response>(
+      `${environment.apiUrlG12Connect.users}`, body, { headers: header,  }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        
+      );
+  }
+
   getLeadersOrPastors(params: {
     userCode: string;
     church: string;
   }): Observable<any> {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.users}/user/pastor`, {
+      .get<any>(`${environment.apiUrlG12Connect.users}/pastor`, {
         params,
         headers: header,
       })

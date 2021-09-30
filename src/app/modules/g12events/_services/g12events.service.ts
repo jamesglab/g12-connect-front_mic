@@ -33,7 +33,7 @@ export class G12eventsService {
 
   sendEmail(data) {
     return this.http
-      .post<any>(`${environment.apiUrlG12Connect.users}/user/send-email`, data, {
+      .post<any>(`${environment.apiUrlG12Connect.users}/send-email`, data, {
         headers: headerFile,
       })
       .pipe(
@@ -86,7 +86,7 @@ export class G12eventsService {
   createUserWithPaymentAdmin(data) {
     return this.http
       .post<any>(
-        `${environment.apiUrlG12Connect.users}/user/create-donation`,
+        `${environment.apiUrlG12Connect.users}/create-donation`,
         data,
         { headers: headerFile }
       )
@@ -323,7 +323,7 @@ export class G12eventsService {
     church: string;
   }): Observable<any> {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.users}/user/pastor`, {
+      .get<any>(`${environment.apiUrlG12Connect.users}/pastor`, {
         params,
         headers: header,
       })

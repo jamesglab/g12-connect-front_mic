@@ -23,7 +23,7 @@ import { SubheaderModule } from '../_metronic/partials/layout/subheader/subheade
 import { AsideDynamicComponent } from './_layout/components/aside-dynamic/aside-dynamic.component';
 import { HeaderMenuDynamicComponent } from './_layout/components/header/header-menu-dynamic/header-menu-dynamic.component';
 import { NotificationComponent } from './_layout/components/notification/notification.component';
-
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -50,6 +50,8 @@ import { NotificationComponent } from './_layout/components/notification/notific
     NgbModule,
     CoreModule,
     SubheaderModule,
+    MatIconModule
   ],
+
 })
 export class LayoutModule { }

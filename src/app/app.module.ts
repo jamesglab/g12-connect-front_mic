@@ -1,7 +1,7 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 
 
@@ -22,6 +22,7 @@ import json from 'highlight.js/lib/languages/json';
 import scss from 'highlight.js/lib/languages/scss';
 import typescript from 'highlight.js/lib/languages/typescript';
 import { SplashScreenModule } from './_metronic/partials/layout/splash-screen/splash-screen.module';
+import { Interceptor } from './modules/_services/interceptors/interceptor.service';
 
 function appInitializer(authService: AuthService) {
   return () => {
@@ -65,12 +66,13 @@ export function getHighlightLanguages() {
     NgbModule,
   ],
   providers: [
-    // {
-    //   provide: APP_INITIALIZER,
-    //   useFactory: appInitializer,
-    //   multi: true,
-    //   deps: [AuthService],
-    // },
+    // CREAMOS UN INTERCEPTOR EL CUAL VA A VALIDAR TODAS LAS SOLICITUDES HTTP QUE SE EJECUTEN
+    // ADICIONALMENTE DESDE AQUI SE EJECUTA EL INTERCEPTOR PARA CREAR EL BEARER TOKEN CUANDO EXISTA EN EL STORAGE O TENGAMOS UN USUARIO CONECTADO
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: Interceptor,
+      multi: true
+    },
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: {
