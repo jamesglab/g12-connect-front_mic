@@ -14,6 +14,7 @@ export const headerFile = new HttpHeaders({
   'Access-Control-Allow-Headers': '*',
 });
 export const handleError = (error: HttpErrorResponse) => {
+  console.log('error handle',error)
   if (error.error instanceof ErrorEvent) {
     throw error.error.message;
   } else {

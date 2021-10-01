@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
+import { map } from 'rxjs/operators';
+// import { encryptDataConection, decrypt } from 'src/app/_helpers/tools/encrypt.tool';
+// import { environment } from 'src/environments/environment';
+
 @Injectable()
 export class Interceptor implements HttpInterceptor {
   constructor(private _storageSetvice: StorageService) { }
@@ -14,11 +18,29 @@ export class Interceptor implements HttpInterceptor {
       return next.handle(req);
     }
     // CLONAMOS LA SOLICITUD PARA CREAR UNA NUEVA 
-    const headers = req.clone({
+    const reqClone = req.clone({
       // ANEXAMOS EL BEARER TOKEN
-      headers: req.headers.set('Authorization', `Bearer ${token}`)
-    });
+      headers: req.headers.set('Authorization', `Bearer ${token}`),
+    }
+
+    );
     // RETORNAMOS LA NUEVA SOLCITUD
-    return next.handle(headers);
+    return next.handle(reqClone)
+      // RECORREMOS LA RESPUESTA DEL BACK PARA CREAR UNA NUEVA RESPUESTA CON EL BODY INTERCEPTADO
+      .pipe(
+        map((res) => {
+          console.log('tenemos respuesta del back intercedido', res)
+          return res;
+        }),
+      );
   }
-} 
+
+  // METODO PARA DESENCRIPTAR LA RESPUESTA DEL USUARIO
+  // private desencriptData(event: HttpEvent<any>) {
+  //   if (event instanceof HttpResponse && event.body) {
+  //     return event.clone({ body: decrypt(event.body, environment.SECRETENCRYPT) });
+  //   } else {
+  //     return event;
+  //   }
+  // }
+}
