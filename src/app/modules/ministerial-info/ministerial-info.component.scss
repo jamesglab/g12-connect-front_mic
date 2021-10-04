@@ -7,3 +7,24 @@
   justify-content: center;
   align-items: center;
 }
+
+.cont-count {
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 9px;
+  min-width: 100%;
+}
+
+
+.cont-img {
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: none;
+  width: 150px;
+  justify-content: center;
+  align-items: center;
+  font-size: 65px;
+  background-color: #C9F7F5;
+  color: #1BC5BD;
+}
