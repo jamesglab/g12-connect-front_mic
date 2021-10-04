@@ -38,7 +38,8 @@ export class DynamicAsideMenuService {
       // console.log('res',decrypt(res.permissions,environment.SECRETENCRYPT));
       const DynamicAsideMenuConfig = DynamicAsideMenuConfigOriginal;
       // ASIGNAMOS LOS VALORES DEL OBJETO EN UN ARRAY
-      let permissionsArray = Object.keys(res.permissions);
+
+      let permissionsArray = Object.keys(res);
       // RECORREMOS LOS MODULOS PRINCIPALES
       DynamicAsideMenuConfig.items.map((item: any) => {
         // VALIDAMOS QUE EL PERMISO PARA ACCEDER AL MODULO SE ENCUENTRE 
