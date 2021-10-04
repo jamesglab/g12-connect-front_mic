@@ -62,6 +62,7 @@ export class AsideDynamicComponent implements OnInit, OnDestroy {
     // menu load
     const menuSubscr = this.menu.menuConfig$.subscribe(res => {
       this.menuConfig = res;
+      this.cdr.detectChanges();
     });
     this.subscriptions.push(menuSubscr);
   }
@@ -92,5 +93,9 @@ export class AsideDynamicComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach(sb => sb.unsubscribe());
+  }
+
+  refreshPermissions(){
+    this.menu.loadMenu();
   }
 }
