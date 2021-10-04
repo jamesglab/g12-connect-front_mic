@@ -25,6 +25,8 @@ export const environment = {
     payments: 'https://api.g12connect.com/api/v2/payments',
     reports : 'https://api.g12connect.com/api/v2/reports'
   },
+  SECRETENCRYPT:"G12jk5FQg6bu8zWSECURITY#wB9jPyURESPONSE"
+
 };
 
 /*

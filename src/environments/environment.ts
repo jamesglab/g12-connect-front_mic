@@ -12,7 +12,7 @@ export const environment = {
   apiUrlG12Connect: {
     donations: 'https://dev-api.g12connect.com/api/v2/donations',
     managment: 'https://dev-api.g12connect.com/api/v2/managment',
-    users: 'https://ad93-200-122-253-43.ngrok.io/api/v2/users',
+    users: 'https://dev-api.g12connect.com/api/v2/users',
     payments: 'https://dev-api.g12connect.com/api/v2/payments',
     reports: 'https://dev-api.g12connect.com/api/v2/reports'
   },

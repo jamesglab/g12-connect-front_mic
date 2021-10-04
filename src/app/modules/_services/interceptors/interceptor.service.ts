@@ -29,7 +29,7 @@ export class Interceptor implements HttpInterceptor {
       // RECORREMOS LA RESPUESTA DEL BACK PARA CREAR UNA NUEVA RESPUESTA CON EL BODY INTERCEPTADO
       .pipe(
         map((res) => {
-          console.log('tenemos respuesta del back intercedido', res)
+          // console.log('tenemos respuesta del back intercedido', res)
           return res;
         }),
       );
