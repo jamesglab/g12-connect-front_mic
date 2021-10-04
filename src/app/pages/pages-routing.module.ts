@@ -45,6 +45,11 @@ const routes: Routes = [
           import('../modules/to-win/to-win.module').then((m) => m.ToWinModule)
       },
       {
+        path: 'ministerial-info',
+        loadChildren: () =>
+          import('../modules/ministerial-info/ministerial-info.module').then((m) => m.MinisterialInfoModule)
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

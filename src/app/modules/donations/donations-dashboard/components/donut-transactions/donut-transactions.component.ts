@@ -60,7 +60,7 @@ export class DonutTransactionsComponent implements OnInit {
     const finish_date = new Date(this.range.get('end').value).getTime();
     const currency = this.currency.value;
     // Validamos si se ejecuta el metodo cuando se selecciona una fecha final mayor a la inicial
-    if (finish_date > init_date) {
+    if (finish_date >= init_date) {
       // el endPoint nos filtra por rango de fechas y moneda cuando el filtro esta en 6
       this._donationsServices.getTotalValueTransactions({ filter: 6, init_date, finish_date, currency }).subscribe(res => {
         // se renderizan las series y los labels que necesita la chart para mostrarse
