@@ -273,7 +273,7 @@ export class EventReportsComponent implements OnInit {
           Sede: item.church?.name ? item.church.name : 'N/A',
           Pastor: item.pastor?.name ? `${item.pastor.name} ${item.pastor.last_name ? item.pastor.last_name : ''}` : 'N/A',
           'Lider Doce': item.leader?.name ? `${item.leader.name} ${item.leader.last_name ? item.leader.last_name : ''}` : 'N/A',
-          'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
+          // 'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
           'Fecha de Donación': new Date(item.created_at),
           'Referencia Transaccion': item.transaction.payment_ref ? item.transaction.payment_ref : '',
           'Metodo de pago': item.transaction.payment_method ? item.transaction.payment_method : '',
