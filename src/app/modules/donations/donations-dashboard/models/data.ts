@@ -357,15 +357,13 @@ export const timeLineChart = (series,categories) => {
     xaxis: {
       categories,
       title: {
-        text: 'Horas'
+        text: 'Meses'
       }
     },
     yaxis: {
       title: {
         text: ''
       },
-      min: 5,
-      max: 40
     },
     legend: {
       position: 'top',

@@ -118,7 +118,7 @@ export class DonationsServices {
       );
   }
 
-  getTransactionsByHours(params){
+  getTransactionsByHours(params) {
     return this.http.get<any>(
       `${'https://15b0-201-184-17-202.ngrok.io/reports'}/list-reports-dates`, { params, headers: header }).pipe(
         map((res: Response) => {
@@ -136,7 +136,15 @@ export class DonationsServices {
         }),
         catchError((handleError))
       );
-
+  }
+  getDonationsMCI() {
+    return this.http.get<any>(
+      `${environment.apiUrlG12Connect.donations}`, { params: { type: 'DONATION_MCI' }, headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError((handleError))
+      );
   }
 
 }

@@ -18,7 +18,9 @@
       <mat-select [formControl]="payment_mehtod" (ngModelChange)="getTransactionsFilter()">
         <mat-option [value]="'cash'">EFECTIVO</mat-option>
         <mat-option [value]="'pse'">PSE</mat-option>
+        <mat-option [value]="'paypal'">PAYPAL</mat-option>
         <mat-option [value]="'credit_epayco'">TARJETA DE CREDITO EPAYCO</mat-option>
+        <mat-option [value]="'credit_stripe'">TARJETA DE CREDITO STRIPE</mat-option>
       </mat-select>
     </mat-form-field>
   </div>

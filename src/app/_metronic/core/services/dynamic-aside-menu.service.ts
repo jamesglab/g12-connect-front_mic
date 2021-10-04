@@ -37,10 +37,10 @@ export class DynamicAsideMenuService {
 
 
 
-    this.getPermissionsUser().subscribe(res=>{
-      console.log('tenemos respuesta')
-      console.log('ress',res)
-    },err=>{console.log('err',err)})
+    // this.getPermissionsUser().subscribe(res=>{
+    //   // console.log('tenemos respuesta')
+    //   // console.log('ress',res)
+    // },err=>{console.log('err',err)})
 
       DynamicAsideMenuConfig.items.map((item: any) => {
         let validate = validatePermission(permissions, item.code);
@@ -74,17 +74,17 @@ export class DynamicAsideMenuService {
   }
 
 
-  getPermissionsUser(): Observable<any> {
-    return this.http
-      .get<any>(`${environment.apiUrlG12Connect.users}/permissions`)
-      .pipe(
-        map((res) => {
-          console.log('respuesta pipe',res)
-          return res;
-        }),
-        catchError(handleError)
-      );
-  }
+  // getPermissionsUser(): Observable<any> {
+  //   return this.http
+  //     .get<any>(`${environment.apiUrlG12Connect.users}/permissions`)
+  //     .pipe(
+  //       map((res) => {
+  //         console.log('respuesta pipe',res)
+  //         return res;
+  //       }),
+  //       catchError(handleError)
+  //     );
+  // }
 
   private setMenu(menuConfig) {
     this.menuConfigSubject.next(menuConfig);
