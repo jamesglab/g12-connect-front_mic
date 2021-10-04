@@ -30,13 +30,13 @@
     <!--end::Header Logo-->
   </ng-container>
   <!--begin::Menu Container-->
-  <!-- <ng-container  (click)="refreshPermissions()">
+  <ng-container  >
     <div class="cont-refresh">
-      <button class="brand-toggle btn">
+      <button class="brand-toggle btn" (click)="refreshPermissions()">
         <mat-icon style="color: #3699ff;">refresh</mat-icon>
       </button>
     </div>
-  </ng-container> -->
+  </ng-container>
   <ng-container *ngIf="menuConfig && menuConfig.items">
     <div id="kt_aside_menu" class="aside-menu scroll my-4 ps ps--active-y" [ngClass]="asideMenuCSSClasses"
       data-menu-vertical="1" data-menu-scroll="1" [attr.data-menu-scroll]="asideMenuScroll"
