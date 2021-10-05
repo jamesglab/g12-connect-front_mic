@@ -3,7 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { StorageService } from '../../../../../modules/auth/_services/storage.service';
-import { LayoutService, DynamicHeaderMenuService } from '../../../../../_metronic/core';
+import { LayoutService, DynamicAsideMenuService,DynamicHeaderMenuService } from '../../../../../_metronic/core';
 
 @Component({
   selector: 'app-header-menu-dynamic',
@@ -25,7 +25,7 @@ export class HeaderMenuDynamicComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     private layout: LayoutService,
     private router: Router,
-    private menu: DynamicHeaderMenuService,
+    private menu: DynamicAsideMenuService,//SE CAMBIO EL SERVICIO PARA CONSUMIR UN SOLO ENDPOINT    ESTABA DynamicHeaderMenuService 
     private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
@@ -48,6 +48,8 @@ export class HeaderMenuDynamicComponent implements OnInit, OnDestroy {
     // menu load
     const menuSubscr = this.menu.menuConfig$.subscribe(res => {
       this.menuConfig = res;
+      this.cdr.detectChanges();
+
     });
     this.subscriptions.push(menuSubscr);
   }
