@@ -1,10 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-const ELEMENT_DATA = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
- 
-];
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EditUserMinistryComponent } from '../edit-user-ministry/edit-user-ministry.component';
+
 @Component({
   selector: 'app-ministry',
   templateUrl: './ministry.component.html',
@@ -12,11 +9,38 @@ const ELEMENT_DATA = [
 })
 
 export class MinistryComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = ELEMENT_DATA;
-  constructor() { }
+  displayedColumns: string[] = ['index', 'name', 'last_name', 'phone', 'options'];
+
+  @Input() user: any;
+  @Input() ministry;
+  @Input() count;
+  @Output() paginator = new EventEmitter<any>();
+
+  constructor(private modalService: NgbModal) { }
 
   ngOnInit(): void {
+  }
+
+
+  openUser() {
+    const MODAL = this.modalService.open(EditUserMinistryComponent, {
+      windowClass: 'fadeIn',
+      size: 'xl',
+      backdrop: true,
+      keyboard: true,
+      centered: true
+    })
+    MODAL.componentInstance.user = this.user;
+    // MODAL.result.then((data) => {
+    //   if (data == "success") {
+    //     this.getAllEvents();
+    //   }
+    // });
+
+  }
+
+  paginationOut(event) {
+    this.paginator.emit(event);
   }
 
 }

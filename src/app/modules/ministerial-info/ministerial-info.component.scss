@@ -9,9 +9,18 @@
 }
 
 .cont-count {
-  border: 1px solid black;
+  background: #e1f0ff;
   border-radius: 10px;
   margin: 9px;
+  color: #419fff;
+  min-width: 100%
+}
+
+.cont-count-celula{
+  background: #fff4de;
+  margin: 9px;
+  color: #ffa800;
+  border-radius: 10px;
   min-width: 100%;
 }
 

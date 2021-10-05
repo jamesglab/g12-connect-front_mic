@@ -1,0 +1,258 @@
+<ng-container *ngIf="editUserForm">
+  <form [formGroup]="editUserForm">
+    <div class="row">
+      <div class="col-xl-3 col-sm-12">
+        <div class="card card-custom card-stretch gutter-b">
+          <div class="card-header border-0 mt-4 d-flex justify-content-center">
+            <div class="symbol symbol-100">
+              <div class="cont-img symbol-light-success">
+                <div>
+                  {{ user.name | firstLetter | uppercase }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Body -->
+          <div class="card-body pt-8">
+            <div class="d-flex justify-content-center">
+              <a class="
+                  btn btn-sm btn-light-success
+                  font-weight-bolder
+                  py-2
+                  px-5
+                  cursor-pointer
+                " (click)="onChangePassword()">{{ "Cambiar contraseña" | uppercase }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-9 col-sm-12">
+        <div class="card card-custom example example-compact gutter-b">
+          <div class="card-header">
+            <div class="card-title">
+              <h3 class="card-label">Información personal</h3>
+            </div>
+            <div class="card-toolbar">
+              <div class="example-tools justify-content-center">
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214)">person</mat-icon>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div formGroupName="user">
+              <div class="row">
+                <div class="col-xl-6 col-sm-12">
+                  <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Tipo de documento *</mat-label>
+                    <mat-select type="select" formControlName="document_type">
+                      <mat-option *ngFor="let type of document_types" [value]="type">
+                        {{ type }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Nombre</mat-label>
+                    <input matInput autocomplete="off" formControlName="name" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Genero</mat-label>
+                    <mat-select type="select" formControlName="gender" (selectionChange)="getPastors()">
+                      <mat-option value="M">Hombre</mat-option>
+                      <mat-option value="F">Mujer</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-sm-12">
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Número de documento</mat-label>
+                    <input matInput autocomplete="off" formControlName="identification" />
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Apellido</mat-label>
+                    <input matInput autocomplete="off" formControlName="last_name" />
+                  </mat-form-field>
+                  <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Fecha de nacimiento</mat-label>
+                    <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="bornDate"
+                      formControlName="birth_date" />
+                    <mat-datepicker-toggle matSuffix [for]="bornDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #bornDate disabled="false"></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xl-6 col-sm-6">
+        <div class="card card-custom example example-compact gutter-b">
+          <div class="card-header">
+            <div class="card-title">
+              <h3 class="card-label">Información de contacto</h3>
+            </div>
+            <div class="card-toolbar">
+              <div class="example-tools justify-content-center">
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214)">person</mat-icon>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div formGroupName="contact_information">
+              <div class="row">
+                <div class="col-xl-12 col-sm-12">
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Correo</mat-label>
+                    <input matInput autocomplete="off" formControlName="email" />
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xl-6 col-sm-12">
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Direccion</mat-label>
+                    <input matInput autocomplete="off" formControlName="address" />
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-sm-12">
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput autocomplete="off" formControlName="phone" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6 col-sm-6">
+        <div class="card card-custom example example-compact gutter-b">
+          <div class="card-header">
+            <div class="card-title">
+              <h3 class="card-label">Información ministerial</h3>
+            </div>
+            <div class="card-toolbar">
+              <div class="example-tools justify-content-center">
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214)">person</mat-icon>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" formGroupName="ministerialInfo">
+            <div>
+              <div class="row">
+                <div class="col-xl-6 col-sm-12">
+                  <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>País *</mat-label>
+                    <mat-select type="select" formControlName="country" (selectionChange)="getPlaces()">
+                      <mat-option [value]="null" disabled>SELECCIONA PAIS</mat-option>
+                      <mat-option *ngFor="let country of countries" value="{{ country.name.toLowerCase() }}">
+                        {{ country.name }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-sm-12">
+                  <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Iglesia *</mat-label>
+                    <mat-select type="select" formControlName="type_church" (selectionChange)="getPlaces()">
+                      <mat-option *ngFor="let type of churchTypes" [value]="type.idDetailMaster">
+                        {{ type.description }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- INFORMACION MINISTERIAL DE IGLESIAS MCI -->
+              <ng-container *ngIf="ministerialInfo.type_church == '88'">
+                <div class="row">
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field appearance="fill" class="w-100">
+                      <mat-label>Sede *</mat-label>
+                      <mat-select type="select" formControlName="headquarter" (selectionChange)="getPastors()">
+                        <mat-option *ngFor="let place of places" [value]="place">
+                          {{ place.name }} | {{ place.city }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field appearance="fill" class="w-100">
+                      <mat-label>Red *</mat-label>
+                      <mat-select type="select" formControlName="network" (selectionChange)="getPastors()">
+                        <mat-option value="01">Hombres</mat-option>
+                        <mat-option value="02">Mujeres</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field appearance="fill" class="w-100">
+                      <mat-label>Pastor/Lider principal *</mat-label>
+                      <mat-select type="select" formControlName="pastor" (selectionChange)="getLeaders($event.value)">
+                        <mat-option *ngFor="let pastor of pastors; let i = index" [value]="pastor">{{ pastor.name }}
+                          {{ pastor.last_name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field appearance="fill" class="w-100">
+                      <mat-label>Lider *</mat-label>
+                      <mat-select type="select" formControlName="leader">
+                        <mat-option *ngFor="let leader of leaders" [value]="leader">{{ leader.name }}
+                          {{ leader.last_name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="
+                  ministerialInfo.type_church != '88' &&
+                  ministerialInfo.type_church
+                ">
+                <div class="row">
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field class="w-100" appearance="fill">
+                      <mat-label>Nombre de la iglesia *</mat-label>
+                      <input matInput autocomplete="off" formControlName="name_church" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field class="w-100" appearance="fill">
+                      <mat-label>Nombre del pastor principal *</mat-label>
+                      <input matInput autocomplete="off" formControlName="name_pastor" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </ng-container>
+              <div class="row">
+                <div class="col-xl-12 col-sm-12">
+                  <button class="btn btn-primary
+                  font-weight-bolder
+                  py-2
+                  px-5
+                  cursor-pointer" type="button" [disabled]="isLoading" (click)="updateUser()">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                      *ngIf="isLoading"></span>
+                    {{isLoading ? 'Actualizando...' : 'Actualizar'}}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-container>

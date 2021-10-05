@@ -65,14 +65,37 @@ export class UserService {
 
   updateProfile(body) {
     return this.http.put<Response>(
-      `${environment.apiUrlG12Connect.users}`, body, { headers: header,  }).pipe(
+      `${environment.apiUrlG12Connect.users}`, body, { headers: header, }).pipe(
         map((res: Response) => {
           return res;
         }),
-        
       );
   }
 
+  getMinisterialTeamG12() {
+    return this.http
+    .get<any>(`${environment.apiUrlG12Connect.users}/g12-team`, {
+    })
+    .pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
+
+  getMinistry(params){
+    return this.http
+    .get<any>(`${environment.apiUrlG12Connect.users}/ministry`, {params}
+    )
+    .pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
   getLeadersOrPastors(params: {
     userCode: string;
     church: string;

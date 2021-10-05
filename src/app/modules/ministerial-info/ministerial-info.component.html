@@ -1,14 +1,13 @@
-<div class="card">
-
+<div class="card" *ngIf="user">
   <div class="row p-4">
-    <div class="col-sm-3 px-5">
+    <div class="col-sm-4 px-5">
       <div class="row">
         <div class="col-12 center">
           <div class="card-header border-0 mt-4 d-flex justify-content-center">
             <div class="symbol symbol-100">
               <div class="cont-img symbol-light-success">
                 <div>
-                  {{ 'alejadnra' | firstLetter | uppercase }}
+                  {{ user?.name| firstLetter | uppercase }}
                 </div>
               </div>
             </div>
@@ -17,23 +16,24 @@
       </div>
       <div class="row">
         <div class="col-12 center mt-5">
-          <h6>Nombre Completo</h6>
+          <h6 class="px-4">{{user?.name + ' ' +  user?.last_name |titlecase}}</h6>
         </div>
         <div class="col-12 center mt-3">
-          <h6>Email</h6>
+          <h6 class="px-4">{{user?.email}}</h6>
         </div>
         <div class="col-12 center mt-3">
-          <h6>Telefono</h6>
+          <h6 class="px-4">{{user?.phone}}</h6>
         </div>
 
         <div class="card-body p-0 position-relative overflow-hidden mt-3 mx-2">
           <div class="m-x2 mt-2">
             <div class="row m-0">
               <div class="col-xl-12 col-sm-12 bg-light-success rounded-xl
-                          d-flex justify-content-center align-items-center p-3 ">
+                            d-flex justify-content-center align-items-center p-3 ">
 
                 <a class="text-success font-weight-bold font-size-h6">
-                  Pastor / Cesar Castellanos
+                  Pastor /
+                  {{user?.pastor?.name ? user?.pastor?.name :''  + ' ' +user?.pastor?.last_name ? user?.pastor?.last_name :''  |titlecase}}
                 </a>
               </div>
             </div>
@@ -43,11 +43,13 @@
         <div class="card-body p-0 position-relative overflow-hidden mt-3 mx-3">
           <div class="m-x2 mt-2">
             <div class="row m-0">
-              <div class="col-xl-12 col-sm-12 bg-light-warning rounded-xl
-                          d-flex justify-content-center align-items-center p-3 ">
+              <div class="col-xl-12 col-sm-12 bg-light-success rounded-xl
+                            d-flex justify-content-center align-items-center p-3 ">
 
-                <a class="text-warning font-weight-bold font-size-h6">
-                  Lider / Cesar Castellanos
+                <a class="text-success font-weight-bold font-size-h6">
+                  Lider /
+                  {{user?.leader?.name ? user?.leader?.name :''  + ' ' +user?.leader?.last_name ? user?.leader?.last_name :''  |titlecase}}
+
                 </a>
               </div>
             </div>
@@ -60,18 +62,18 @@
         </div>
 
         <div class="col-12  center pt-2">
-          <div class="cont-count p-3">
+          <div class="cont-count-celula p-3">
             <h5 class="center">Ganar</h5>
           </div>
         </div>
 
         <div class="col-12  center pt-2">
-          <div class="cont-count p-3">
+          <div class="cont-count-celula p-3">
             <h5 class="center">U de la vida</h5>
           </div>
         </div>
         <div class="col-12  center pt-2">
-          <div class="cont-count p-3">
+          <div class="cont-count-celula p-3">
             <h5 class="center">Enviar</h5>
           </div>
         </div>
@@ -79,10 +81,14 @@
       </div>
     </div>
 
-    <div class="col-sm-9 col-12 mt-3">
+    <div class="col-sm-8 col-12 mt-3">
       <div class="row">
         <div class="col-sm-12">
-          <h4 class="h4">Nombre Sede / Nombre pastor</h4>
+          <h4 class="h4">{{user?.church?.name | titlecase}} /
+
+            {{user?.pastor?.name? user?.pastor?.name :'' + ' ' + user?.pastor?.last_name ? user?.pastor?.last_name :' '  |titlecase}}
+
+          </h4>
         </div>
       </div>
 
@@ -95,25 +101,24 @@
         </div>
         <div class="col-sm-4 col-12  center pt-2">
           <div class="cont-count p-3">
-            <h5 class="center">Usuarios</h5>
+            <h5 class="center">Lideres</h5>
             <h3 class="center">1546</h3>
           </div>
         </div>
         <div class="col-sm-4 col-12  center pt-2">
           <div class="cont-count p-3">
-            <h5 class="center">Usuarios</h5>
+            <h5 class="center">Celulas</h5>
             <h3 class="center">1546</h3>
           </div>
         </div>
       </div>
 
-      <div class="mt-5">
-        <app-ministry></app-ministry>
+      <div class="mt-10">
+        <app-ministry [user]="user" [ministry]="ministry" [count]="count_ministry" (paginator)="getMinistry($event)">
+        </app-ministry>
       </div>
-
-
-      <div class="mt-6">
-        <app-main-network></app-main-network>
+      <div class="mt-13">
+        <app-main-network [leaders]='leaders'></app-main-network>
       </div>
     </div>
   </div>

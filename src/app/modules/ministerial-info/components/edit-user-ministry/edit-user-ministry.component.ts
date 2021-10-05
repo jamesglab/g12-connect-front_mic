@@ -1,23 +1,23 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UserService } from '../../modules/_services/user.service';
-import { StorageService } from '../../modules/auth/_services/storage.service';
-import { UpdatePasswordComponent } from './components/update-password/update-password.component';
-import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
+import { StorageService } from 'src/app/modules/auth/_services/storage.service';
+import { UserService } from 'src/app/modules/_services/user.service';
+import { UpdatePasswordComponent } from 'src/app/pages/profile/components/update-password/update-password.component';
+import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss'],
+  selector: 'app-edit-user-ministry',
+  templateUrl: './edit-user-ministry.component.html',
+  styleUrls: ['./edit-user-ministry.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class EditUserMinistryComponent implements OnInit {
   public user;
   public isLoading = false;
   private unsubscribe: Subscription[] = [];
-  public editUserForm: FormGroup = null;
+  public editUserForm: FormGroup ;
   public document_types = ['CC', 'TI', 'CE'];
   public churchTypes = [
     {
@@ -56,24 +56,26 @@ export class ProfileComponent implements OnInit {
     private userService: UserService,
     private modalService: NgbModal,
     private cdr: ChangeDetectorRef,
-    private fb: FormBuilder
+    public  fb: FormBuilder
   ) { }
 
   ngOnInit(): void {
-    this.getProfileUser();
+    console.log('hey ther',this.user)
+    // this.getProfileUser();
+    this.buildForm(this.user);
   }
 
   // CONSULTAMOS LA INFORMACION DEL USUARIO
   getProfileUser() {
-    this.userService.getProfile().subscribe((res) => {
-      this.user = res;
-      this.buildForm(res);
-      
-    });
+    // this.userService.getProfile().subscribe((res) => {
+    //   this.user = res;
+    //   this.buildForm(res);
+    // });
   }
 
   // RENDERIZMOS LA INFORMACION DEL USUARIO
   buildForm(user) {
+    console.log('usuario a editar',this.user)
     this.editUserForm = this.fb.group({
       // RENDERIZAMOS LA INFORMACION PERSONAL PARA ACCEDER POR EL FORMGROUPNAME EN EL FORMULARIO REACTIVO
       user: this.fb.group({

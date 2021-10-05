@@ -35,15 +35,8 @@ export class DynamicAsideMenuService {
   public loadMenu() {
 
     this.getPermissionsUser().subscribe(res => {
-      console.log('res', res)
-      const encrypto =  encrypt('123456$#@$^@1ERF', JSON.stringify(res.permissions))
-      console.log('encript', encrypto);
-
-
-      console.log('desencrypt',JSON.parse( decrypt('123456$#@$^@1ERF', encrypto)));
       const DynamicAsideMenuConfig = DynamicAsideMenuConfigOriginal;
       // ASIGNAMOS LOS VALORES DEL OBJETO EN UN ARRAY
-
       let permissionsArray = Object.keys(res);
       // RECORREMOS LOS MODULOS PRINCIPALES
       DynamicAsideMenuConfig.items.map((item: any) => {
