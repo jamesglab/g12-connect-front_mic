@@ -13,7 +13,7 @@ import { map, catchError } from 'rxjs/operators';
 
 import { handleError, header } from 'src/app/_helpers/tools/header.tool';
 import { environment } from 'src/environments/environment';
-import { decrypt } from 'src/app/_helpers/tools/encrypt.tool';
+import { decrypt, encrypt } from 'src/app/_helpers/tools/encrypt.tool';
 
 const emptyMenuConfig = {
   items: []
@@ -35,7 +35,12 @@ export class DynamicAsideMenuService {
   public loadMenu() {
 
     this.getPermissionsUser().subscribe(res => {
-      // console.log('res',decrypt(res.permissions,environment.SECRETENCRYPT));
+      console.log('res', res)
+      const encrypto =  encrypt('123456$#@$^@1ERF', JSON.stringify(res.permissions))
+      console.log('encript', encrypto);
+
+
+      console.log('desencrypt',JSON.parse( decrypt('123456$#@$^@1ERF', encrypto)));
       const DynamicAsideMenuConfig = DynamicAsideMenuConfigOriginal;
       // ASIGNAMOS LOS VALORES DEL OBJETO EN UN ARRAY
 

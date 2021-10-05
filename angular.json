@@ -41,7 +41,8 @@
             ],
             "scripts": [
               "node_modules/apexcharts/dist/apexcharts.min.js",
-              "node_modules/clipboard/dist/clipboard.js"
+              "node_modules/clipboard/dist/clipboard.js",
+              "node_modules/crypto-js/crypto-js.js"
             ]
           },
           "configurations": {
