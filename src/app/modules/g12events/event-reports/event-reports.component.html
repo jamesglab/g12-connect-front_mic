@@ -19,7 +19,7 @@
             <div class="col">
               <mat-form-field appearance="fill">
                 <mat-label>Seleccione un año</mat-label>
-                <input matInput [matDatepicker]="dp" [formControl]="date"  [max]="maxDate">
+                <input matInput [matDatepicker]="dp" [formControl]="date" [max]="maxDate">
                 <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
                 <mat-datepicker #dp startView="multi-year" (yearSelected)="chosenYearHandler($event, dp)"
                   panelClass="example-month-picker">
@@ -56,14 +56,18 @@
               </mat-form-field>
             </div> -->
             <div class="ml-6">
-              <button type="button" class="btn exportExcel btn-search" matTooltip="descargar" (click)="exportFile()">
-                <mat-icon style="font-size: 25px;">cloud_download</mat-icon>
+              <button type="button" class="btn exportExcel btn-search" matTooltip="descargar" (click)="exportFile()" [disabled]="isLoading">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isLoading"></span>
+                <mat-icon style="font-size: 25px;"*ngIf="!isLoading">cloud_download</mat-icon>
               </button>
             </div>
-            <div class="ml-5">
-              <button type="button" class="btn btn-primary btn-search" matTooltip="Buscar" [disabled]="false"
+            <div class="ml-5 d-flex justify-content-center aling-items-center">
+              <button type="button" class="btn btn-primary btn-search" matTooltip="Buscar" [disabled]="isLoading"
                 (click)="getTransactionsMongo()">
-                <mat-icon style="font-size: 25px;">search</mat-icon>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isLoading"></span>
+                <mat-icon style="font-size: 25px;" *ngIf="!isLoading">
+                  search
+                </mat-icon>
               </button>
             </div>
           </div>

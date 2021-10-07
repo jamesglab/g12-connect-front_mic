@@ -33,7 +33,6 @@ export class MinisterialInfoComponent implements OnInit {
   }
 
   getLeaders() {
-    this.leaders = [];
     const getLeadersSubscr = this._userService
       .getMinisterialTeamG12()
       .subscribe((res) => {
@@ -44,7 +43,6 @@ export class MinisterialInfoComponent implements OnInit {
   }
 
   getMinistry(paginator?) {
-    this.ministry = [];
     const getLeadersSubscr = this._userService
       .getMinistry({
         page: paginator ? paginator.pageIndex + 1 : 1,

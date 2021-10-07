@@ -19,16 +19,13 @@ import { DonutDonationsTypesComponent } from './donations-dashboard/components/d
 import { CompareYearsComponent } from './donations-dashboard/components/compare-years/compare-years.component';
 import { AreaChartComponent } from './donations-dashboard/components/area-chart/area-chart.component';
 import { TotalTransactionsComponent } from './donations-dashboard/components/total-transactions/total-transactions.component';
-
 import { BarsStatusPaymentsComponent } from './donations-dashboard/components/bars-status-payments/bars-status-payments.component';
 import { NotFoundChartComponent } from './donations-dashboard/components/not-found-chart/not-found-chart.component';
 import { ModaleTransactionComponent } from './donations-reports/components/modale-transaction/modale-transaction.component';
 
 // import { ApexComponent } from './donations-dashboard/components/apex/apex.component';
-
 // import { NgxChartistModule } from 'ngx-chartist';
 // import { NgxEchartsModule } from 'ngx-echarts';
-
 // import { ChartsModule } from 'ng2-charts';
 // import { NgxChartistModule } from 'ngx-chartist';
 // import { NgxEchartsModule } from 'ngx-echarts';

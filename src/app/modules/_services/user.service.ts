@@ -74,28 +74,29 @@ export class UserService {
 
   getMinisterialTeamG12() {
     return this.http
-    .get<any>(`${environment.apiUrlG12Connect.users}/g12-team`, {
-    })
-    .pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
+      .get<any>(`${environment.apiUrlG12Connect.users}/g12-team`, {
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
 
-  getMinistry(params){
+  getMinistry(params) {
     return this.http
-    .get<any>(`${environment.apiUrlG12Connect.users}/ministry`, {params}
-    )
-    .pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
+      .get<any>(`${environment.apiUrlG12Connect.users}/ministry`, { params }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
+
   getLeadersOrPastors(params: {
     userCode: string;
     church: string;
@@ -103,6 +104,33 @@ export class UserService {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.users}/pastor`, {
         params,
+        headers: header,
+      })
+      .pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  finOne(params): Observable<any> {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.users}/find-one`, {
+        params,
+        headers: header,
+      })
+      .pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  updateUserByPastor(user) {
+    return this.http
+      .put<any>(`${environment.apiUrlG12Connect.users}/update`, user, {
         headers: header,
       })
       .pipe(

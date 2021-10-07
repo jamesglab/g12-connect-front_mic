@@ -13,6 +13,7 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import Swal from 'sweetalert2';
 
 
 export const MY_FORMATS = {
@@ -54,6 +55,7 @@ export const MY_FORMATS = {
 
 
 export class EventReportsComponent implements OnInit {
+  public isLoading: boolean = false;
   public date = new FormControl(moment());
   public maxDate: Date;
   public campaignOne: FormGroup;
@@ -101,6 +103,7 @@ export class EventReportsComponent implements OnInit {
 
   getTransactionsMongo() {
 
+    this.isLoading = true;
     this._g12Events.getTransactionsReports({
       date_init: `${moment(this.date.value).format('YYYY')}-01-01T00:00:00.000`,
       date_finish: `${moment(this.date.value).format('YYYY')}-12-31T23:59:00.000`,
@@ -109,6 +112,8 @@ export class EventReportsComponent implements OnInit {
       transaction_status: (this.status.value != 0) ? this.status.value : '',
       pastor: (this.pastor_selected.value != 0) ? this.pastor_selected.value.user_code : ''
     }).subscribe((res: any) => {
+      console.log('res report mongo', res);
+      this.isLoading = false;
 
       this.countUsers(res);
       res.map((item, i) => {
@@ -120,12 +125,16 @@ export class EventReportsComponent implements OnInit {
         this.info_to_export = res;
         this.cdr.detectChanges();
       } else {
+
         this.dataSource.data = this.getObjetcsToTable(res.reverse());
       }
       this.cutTransactions = [];
       this.data_cut_table = [];
       this.info_to_export = res;
       this.separateCuts(res);
+    }, err => {
+      this.isLoading = false;
+      Swal.fire('Error', 'no pudimos cargar los reportes vuelve a intenterlo mas tarde', 'error')
     })
   }
 
@@ -196,6 +205,7 @@ export class EventReportsComponent implements OnInit {
         }) : null
       }
     ).subscribe(res => {
+      console.log('res', res)
       res.map((item, i) => { res[i].status = this.validateStatus(item.status); res[i].payment_method = this.validatePaymentMethod(item.payment_method) })
       if (!this.dataSource) {
         this.dataSource = new MatTableDataSource<any[]>(res);
@@ -251,6 +261,7 @@ export class EventReportsComponent implements OnInit {
   }
   exportFile() {
     if (this.info_to_export.length > 0) {
+      
       const dataToExport = []
       this.info_to_export.map(item => {
         const newData = {
@@ -275,8 +286,9 @@ export class EventReportsComponent implements OnInit {
           'Lider Doce': item.leader?.name ? `${item.leader.name} ${item.leader.last_name ? item.leader.last_name : ''}` : 'N/A',
           // 'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
           'Fecha de Donación': new Date(item.created_at),
-          'Referencia Transaccion': item.transaction.payment_ref ? item.transaction.payment_ref : '',
-          'Metodo de pago': item.transaction.payment_method ? item.transaction.payment_method : '',
+          'Referencia Transaccion': item.transaction.payment_ref ? item.transaction.payment_ref : 'N/A',
+          "Codigo": item.transaction.code ? item.transaction.code : 'N/A',
+          'Metodo de pago': item.transaction.payment_method ? item.transaction.payment_method : 'N/A',
           'Nombre evento': item.donation?.name ? item.donation?.name : 'N/A',
           'Nombre corte': item.cut?.name ? item.cut?.name : 'N/A',
           Estado: item.transaction.status ? item.transaction.status : 'N/A',
@@ -317,8 +329,8 @@ export class EventReportsComponent implements OnInit {
     } else if (payment_method.toLowerCase() == 'code') {
       return 'Codigo'
     }
-    
-    
+
+
   }
 
   chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {

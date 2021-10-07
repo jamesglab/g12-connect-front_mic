@@ -147,4 +147,13 @@ export class DonationsServices {
       );
   }
 
+  getDonationBy24Hour(params) {
+    return this.http.get<any>(
+      `${environment.apiUrlG12Connect.reports}/list-hours`, { params, headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError((handleError))
+      );
+  }
 }

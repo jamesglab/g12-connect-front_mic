@@ -225,6 +225,14 @@ export let DynamicAsideMenuConfigOriginal = {
         }
 
       ]
+    },
+    {
+      title: 'Usuarios',
+      root: true,
+      code: "EVT000",
+      alignment: 'left',
+      page: '/ministerial-info',
+      show: false,
     }
   ]
 };

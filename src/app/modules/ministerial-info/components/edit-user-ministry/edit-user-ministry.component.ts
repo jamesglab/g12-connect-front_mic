@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
 import { UserService } from 'src/app/modules/_services/user.service';
@@ -17,7 +17,7 @@ export class EditUserMinistryComponent implements OnInit {
   public user;
   public isLoading = false;
   private unsubscribe: Subscription[] = [];
-  public editUserForm: FormGroup ;
+  public editUserForm: FormGroup;
   public document_types = ['CC', 'TI', 'CE'];
   public churchTypes = [
     {
@@ -54,13 +54,13 @@ export class EditUserMinistryComponent implements OnInit {
   constructor(
     private _storageService: StorageService,
     private userService: UserService,
-    private modalService: NgbModal,
+    public modal: NgbActiveModal,
     private cdr: ChangeDetectorRef,
-    public  fb: FormBuilder
+    public fb: FormBuilder
   ) { }
 
   ngOnInit(): void {
-    console.log('hey ther',this.user)
+    console.log('hey ther', this.user)
     // this.getProfileUser();
     this.buildForm(this.user);
   }
@@ -75,10 +75,12 @@ export class EditUserMinistryComponent implements OnInit {
 
   // RENDERIZMOS LA INFORMACION DEL USUARIO
   buildForm(user) {
-    console.log('usuario a editar',this.user)
+
     this.editUserForm = this.fb.group({
       // RENDERIZAMOS LA INFORMACION PERSONAL PARA ACCEDER POR EL FORMGROUPNAME EN EL FORMULARIO REACTIVO
+
       user: this.fb.group({
+        id: [user.id],
         document_type: [user.document_type],
         identification: [user.identification],
         name: [user.name],
@@ -125,28 +127,6 @@ export class EditUserMinistryComponent implements OnInit {
     } else {
       this.cdr.detectChanges();
     }
-  }
-
-  // ABRIMOS EL MODAL PARA ACTUALIZAR LA CONTRASEÑA DEL USUARIO
-  onChangePassword() {
-    const MODAL = this.modalService.open(UpdatePasswordComponent, {
-      windowClass: 'fadeIn',
-      size: 'sm',
-      backdrop: true,
-      keyboard: true,
-      centered: true,
-    });
-    // MODAL.componentInstance.goItem = element;
-    MODAL.result.then(
-      (data) => {
-        if (data == 'success') {
-          // this.getGoData();
-        }
-      },
-      (reason) => {
-        console.log('Reason', reason);
-      }
-    );
   }
 
   // BUSCAMOS LAS IGLESIAS MCI NACIONALES O INTERNACIONES
@@ -278,7 +258,7 @@ export class EditUserMinistryComponent implements OnInit {
     this.isLoading = true;
     if (this.getMinisterialInfo()) {
       this.userService
-        .updateProfile(
+        .updateUserByPastor(
           {
             ...this.editUserForm.getRawValue().user,
             ...this.editUserForm.getRawValue().contact_information,
@@ -288,6 +268,7 @@ export class EditUserMinistryComponent implements OnInit {
         .subscribe((res) => {
           if (res) {
             Swal.fire('Datos Actualizados', 'usuario actualizado', 'success');
+            this.modal.close(res)
           }
           this.isLoading = false;
           this.cdr.detectChanges()
