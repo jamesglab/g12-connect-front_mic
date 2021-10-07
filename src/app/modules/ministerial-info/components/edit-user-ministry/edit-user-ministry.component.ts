@@ -81,6 +81,7 @@ export class EditUserMinistryComponent implements OnInit {
 
       user: this.fb.group({
         id: [user.id],
+        verify:[user.verify],
         document_type: [user.document_type],
         identification: [user.identification],
         name: [user.name],
