@@ -19,6 +19,7 @@ import { EditReportNotPastorComponent } from './components/edit-report-not-pasto
 import { AddAssistantComponent } from './components/add-assistant/add-assistant.component';
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
+import { ChangueEventUserComponent } from './components/changue-event-user/changue-event-user.component';
 @Component({
   selector: 'app-users-not-pastor',
   templateUrl: './users-not-pastor.component.html',
@@ -83,7 +84,7 @@ export class UsersNotPastorComponent implements OnInit {
   }
 
   getEvents() {
-    this._g12Events.getFilter({ type: "G12_EVENT" }).subscribe((res) => {
+    this._g12Events.getAll({ type: "G12_EVENT" }).subscribe((res) => {
       this.events = res || [];
     }, err => { throw err; });
   }
@@ -143,7 +144,6 @@ export class UsersNotPastorComponent implements OnInit {
   getDataByFilter(pagination?) {
     this.paginator = pagination;
     this.isLoading = true;
-
     this._g12Events.getDataByFilter({ ...this.getReportForm.getRawValue(), page: pagination ? pagination.pageIndex + 1 : 1, per_page: pagination ? pagination.pageSize : 10 })
       .subscribe((res: any) => {
         this.isLoading = false;
@@ -152,14 +152,12 @@ export class UsersNotPastorComponent implements OnInit {
           res.transactions[i].transaction.status = this.validateStatus(item.transaction.status);
           res.transactions[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
         });
-
         if (!this.dataSource) {
           this.dataSource = new MatTableDataSource<any[]>(this.getObjetcsToTable(res.transactions));
           this.cdr.detectChanges();
         } else {
           this.dataSource.data = this.getObjetcsToTable(res.transactions);
         }
-
         this.cutTransactions = [];
         this.data_cut_table = [];
       }, err => { this.isLoading = false; throw err; })
@@ -170,6 +168,9 @@ export class UsersNotPastorComponent implements OnInit {
     let newReports = [];
     data.map(element => {
       const newReport = {
+        donation : element?.donation,
+        cut : element?.cut,
+        transaction : element.transaction,
         payment_method: element?.transaction?.payment_method,
         created_at: element?.created_at,
         _id: element?._id,
@@ -192,6 +193,23 @@ export class UsersNotPastorComponent implements OnInit {
   }
 
 
+  handleToChangueEvent(report){
+    const MODAL = this.modalService.open(ChangueEventUserComponent, {
+      windowClass: 'fadeIn',
+      size: 'md',
+      backdrop: true,
+      keyboard: true,
+      centered: true
+    })
+    MODAL.componentInstance.report = report;
+    MODAL.componentInstance.events = this.events;
+    MODAL.result.then((data) => {
+      if (data){
+        this.onSubmit();
+      }
+    });
+  }
+
   handleToEdit(report) {
 
     const MODAL = this.modalService.open(EditReportNotPastorComponent, {
@@ -202,6 +220,7 @@ export class UsersNotPastorComponent implements OnInit {
       centered: true
     })
     MODAL.componentInstance.report = report;
+
     MODAL.result.then((data) => {
       if (data == "success") {
         this.onSubmit()

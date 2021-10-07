@@ -18,7 +18,7 @@
           <!-- <mat-option *ngFor="let year of yearsforSelect" value="{{year.id}}">{{ year.name }}</mat-option> -->
           <mat-option value="1">TODOS</mat-option>
           <mat-option value="2">SIN PASTOR</mat-option>
-         
+
 
         </mat-select>
         <!-- <mat-error *ngIf="submitted && form.year.errors?.required">Selecciona un año por favor
@@ -55,7 +55,7 @@
 </div>
 <div>
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="Buscar..." [formControl]="search"  />
+    <input matInput placeholder="Buscar..." [formControl]="search" />
   </mat-form-field>
 </div>
 <div class="example-container mat-elevation-z0">
@@ -110,23 +110,27 @@
     <ng-container matColumnDef="options">
       <th mat-header-cell *matHeaderCellDef>Opciones</th>
       <td mat-cell *matCellDef="let element">
-        <a>
-          <mat-icon (click)="handleToEdit(element)" style="font-size: xx-large; color: #187de4; cursor: pointer">edit
-          </mat-icon>
-        </a>
-        <a>
-          <mat-icon  (click)="sendEmail(element)" style="font-size: xx-large; color: #30d49f; cursor: pointer; margin-left: 10px;"> email</mat-icon>
-        </a>
+        <div class="d-flex">
+          <a>
+            <mat-icon (click)="handleToChangueEvent(element)" style="font-size: x-large;  margin-left: 10px; color: #187de4; cursor: pointer">event
+            </mat-icon>
+          </a>
+          <a>
+            <mat-icon (click)="handleToEdit(element)" style="font-size: x-large; color: #187de4; cursor: pointer">edit
+            </mat-icon>
+          </a>
+          <a>
+            <mat-icon (click)="sendEmail(element)"
+              style="font-size: x-large; color: #30d49f; cursor: pointer; margin-left: 10px;"> email</mat-icon>
+          </a>
+        </div>
       </td>
     </ng-container>
-    
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
-  <mat-paginator class="mat-elevation-z0" 
-  [length]="count"
-  [pageSize]="10"
-  [pageSizeOptions]="[5,10,15,20]"
-  (page)="onSubmit($event)">
+  <mat-paginator class="mat-elevation-z0" [length]="count" [pageSize]="10" [pageSizeOptions]="[5,10,15,20]"
+    (page)="onSubmit($event)">
   </mat-paginator>
 </div>
