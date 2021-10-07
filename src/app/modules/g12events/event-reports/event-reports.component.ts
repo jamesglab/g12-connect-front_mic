@@ -62,7 +62,7 @@ export class EventReportsComponent implements OnInit {
   public campaignTwo: FormGroup;
   public range = new FormGroup({ init_date: new FormControl(), finish_date: new FormControl() });
   public events: [] = [];
-  public cutTransactions: any = [];
+  public cutTransactions: any;
   public event_selected = new FormControl(0, []);
   public status = new FormControl(0, []);
   public pastores: any = [];
@@ -112,9 +112,7 @@ export class EventReportsComponent implements OnInit {
       transaction_status: (this.status.value != 0) ? this.status.value : '',
       pastor: (this.pastor_selected.value != 0) ? this.pastor_selected.value.user_code : ''
     }).subscribe((res: any) => {
-      console.log('res report mongo', res);
       this.isLoading = false;
-
       this.countUsers(res);
       res.map((item, i) => {
         res[i].transaction.status = this.validateStatus(item.transaction.status); res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
@@ -128,7 +126,6 @@ export class EventReportsComponent implements OnInit {
 
         this.dataSource.data = this.getObjetcsToTable(res.reverse());
       }
-      this.cutTransactions = [];
       this.data_cut_table = [];
       this.info_to_export = res;
       this.separateCuts(res);
@@ -162,24 +159,27 @@ export class EventReportsComponent implements OnInit {
   }
 
   async separateCuts(data) {
-
-    let cutTransaction = {};
-    let firstItem = false;
-    data.map(transaction => {
-      if (!firstItem) {
-        cutTransaction[transaction.cut.name] = [transaction];
-        firstItem = true;
-      } else {
-        Object.keys(cutTransaction).map(async (element) => {
-          if (element == transaction.cut.name) {
-            cutTransaction[element].push(transaction);
-          } else {
-            cutTransaction[transaction.cut.name] = [transaction]
-          }
-        });
-      }
-    });
-    this.cutTransactions = cutTransaction;
+    //VALIDAMOS EL QUE SE SELECCIONE UN CORTE
+    if (this.event_selected.value) {
+      this.cutTransactions = [];
+      let cutTransaction = {};
+      data.map((transaction, i) => {
+        // VALIDAMOS QUE EXISTA EL CORTE EN EL OBJETO CUTTRANSACTIONS
+        if (cutTransaction[transaction.cut.name.trim().replace(' ', '')]) {
+          // PUSHEAMOS AL ARREGLO
+          cutTransaction[transaction.cut.name.trim().replace(' ', '')].push(transaction);
+        } else {
+          // SI NO EXISTE CREAMOS UN ARRAY EN LA POSICION
+          cutTransaction[`${transaction.cut.name.trim().replace(' ', '')}`] = [transaction];
+        }
+        //VALIDAMOS EL ULTIMO RECORRIDO Y PUSHEAMOS
+        if (i == (data.length - 1)) {
+          this.cutTransactions = cutTransaction;
+        }
+      });
+    } else {
+      this.cutTransactions = null;
+    }
 
   }
 
@@ -261,7 +261,7 @@ export class EventReportsComponent implements OnInit {
   }
   exportFile() {
     if (this.info_to_export.length > 0) {
-      
+
       const dataToExport = []
       this.info_to_export.map(item => {
         const newData = {
