@@ -12,19 +12,13 @@ import { createBarsColumns, validateChartValues } from '../../models/data';
 })
 export class BarsStatusPaymentsComponent implements OnInit {
 
-
-
-
   barsStatusPayment: ChartType;
   public filter = new FormControl(2);
   public payment_mehtod = new FormControl('pse');
   public showChart = false;
-
-
   constructor(private _donationsServices: DonationsServices, private cdr: ChangeDetectorRef) {
 
   }
-
 
   ngOnInit(): void {
     this.getTransactionsFilter();

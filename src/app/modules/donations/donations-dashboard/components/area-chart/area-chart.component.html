@@ -5,5 +5,6 @@
   <mat-datepicker #picker></mat-datepicker>
 </mat-form-field>
 
-<apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
-  [stroke]="chartOptions.stroke" [tooltip]="chartOptions.tooltip" [dataLabels]="chartOptions.dataLabels"></apx-chart>
+<apx-chart *ngIf="showChart" [series]="chartTransactionsHours.series" [chart]="chartTransactionsHours.chart" [xaxis]="chartTransactionsHours.xaxis"
+  [stroke]="chartTransactionsHours.stroke" [tooltip]="chartTransactionsHours.tooltip" [dataLabels]="chartTransactionsHours.dataLabels"></apx-chart>
+<app-not-found-chart *ngIf="!showChart" ></app-not-found-chart>

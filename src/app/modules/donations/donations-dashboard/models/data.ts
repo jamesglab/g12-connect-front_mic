@@ -201,6 +201,7 @@ const barsColumnsStatus: ChartType = {
     }
   }
 };
+
 const simplePieChart: ChartType = {
   chart: {
     height: 320,
@@ -238,7 +239,7 @@ const simplePieChart: ChartType = {
 
 export { totalDonutValues, simplePieChart, barsColumns, barsColumnsStatus };
 
-export const createBarsColumns = (series, labels,) => {
+export const createBarsColumns = (series, labels) => {
   const bars = {
     series: [
       {
@@ -306,6 +307,31 @@ export const createBarsColumns = (series, labels,) => {
   return bars;
 }
 
+export const chartHours = (series: [{}], categories: any ) => {
+  return {
+    series,
+    chart: {
+      height: 350,
+      type: 'area',
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: 'smooth',
+    },
+    xaxis: {
+      type: 'datetime',
+      categories
+    },
+    tooltip: {
+      x: {
+        format: 'dd/MM/yy HH:mm',
+      },
+    },
+  };
+}
+
 export const validateChartValues = (allSeries) => {
   var serie = 0
   allSeries.map(seri => {
@@ -318,7 +344,7 @@ export const validateChartValues = (allSeries) => {
   }
 }
 
-export const timeLineChart = (series,categories) => {
+export const timeLineChart = (series, categories) => {
   return {
     chart: {
       height: 380,
