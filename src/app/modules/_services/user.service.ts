@@ -141,4 +141,16 @@ export class UserService {
       );
   }
 
+  filterMinistry(params){
+    return this.http
+    .get<any>(`${environment.apiUrlG12Connect.users}/filter-ministry`, {
+      params,
+    })
+    .pipe(
+      map((res: Response) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
 }

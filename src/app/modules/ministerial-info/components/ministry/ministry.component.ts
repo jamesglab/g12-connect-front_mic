@@ -11,14 +11,18 @@ import { EditUserMinistryComponent } from '../edit-user-ministry/edit-user-minis
 
 export class MinistryComponent implements OnInit {
   displayedColumns: string[] = ['index', 'name', 'last_name', 'phone', 'options'];
-
+  @Input() public loader: boolean;
   @Input() user: any;
   @Input() ministry;
   @Input() count;
-  actualPaginator
+  public actualPaginator;
+  public filterValue;
   @Output() paginator = new EventEmitter<any>();
+  @Output() filter = new EventEmitter<any>();
 
-  constructor(private modalService: NgbModal, private _userService: UserService ,public cdr : ChangeDetectorRef) { }
+
+  constructor(private modalService: NgbModal, private _userService: UserService,
+    public cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
   }
@@ -35,19 +39,28 @@ export class MinistryComponent implements OnInit {
       })
       MODAL.componentInstance.user = res;
       MODAL.result.then((data) => {
-        if (data){
+        if (data) {
           this.ministry[i] = data;
           this.cdr.detectChanges();
         }
-        
+
       });
-    })
-
-
+    });
   }
 
   paginationOut(event) {
-    this.paginator.emit(event);
+    if (this.filterValue) {
+      this.filter.emit({ filter: this.filterValue, paginator: event })
+    } else {
+      this.paginator.emit(event);
+    }
   }
 
+  filterEmit() {
+    if (this.filterValue) {
+      this.filter.emit({ filter: this.filterValue, paginator: this.actualPaginator })
+    } else {
+      this.filter.emit({ filter: this.filterValue })
+    }
+  }
 }

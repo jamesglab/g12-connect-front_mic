@@ -13,11 +13,13 @@ export class ChangueEventUserComponent implements OnInit {
   public report;
   public events;
   public editEventReport: FormGroup;
-  constructor(private fb: FormBuilder, private _g12Events: G12eventsService, public modal: NgbActiveModal) { }
+  constructor(private fb: FormBuilder, private _g12Events: G12eventsService,
+    public modal: NgbActiveModal) { }
+    
   ngOnInit(): void {
     this.buildForm();
-    console.log('tenemos el reporte', this.report)
   }
+
   buildForm() {
     this.editEventReport = this.fb.group({
       donation: [null, Validators.required],
@@ -35,8 +37,7 @@ export class ChangueEventUserComponent implements OnInit {
         Swal.fire('No se pudo actualizar', '', 'error');
       })
     } else {
-      Swal.fire('Valida los campos', '', 'warning')
+      Swal.fire('Valida los campos', '', 'warning');
     }
-
   }
 }

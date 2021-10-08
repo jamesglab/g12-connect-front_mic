@@ -10,8 +10,8 @@
     <table mat-table [dataSource]="leaders" class="mat-elevation-z0">
 
       <ng-container matColumnDef="index">
-        <th mat-header-cell *matHeaderCellDef>Genero</th>
-        <td mat-cell *matCellDef="let element ; let i = index"> {{(element.gender =='M') ? 'Masculino' : 'Femenino '}} </td>
+        <th mat-header-cell *matHeaderCellDef>Identificacion</th>
+        <td mat-cell *matCellDef="let element ; let i = index"> {{element.identification}} </td>
       </ng-container>
 
       <ng-container matColumnDef="name">
@@ -25,19 +25,17 @@
       </ng-container>
 
       <ng-container matColumnDef="phone">
-        <th mat-header-cell *matHeaderCellDef> Telefono </th>
-        <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
       </ng-container>
 
       <ng-container matColumnDef="options">
         <th mat-header-cell *matHeaderCellDef> Opciones </th>
         <td mat-cell *matCellDef="let element ;let  i = index">
-  
           <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="openUser(element,i)">
             <span [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"
               class="svg-icon svg-icon-md svg-icon-primary"></span>
           </a>
-  
         </td>
       </ng-container>
 
