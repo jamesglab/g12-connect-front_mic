@@ -196,7 +196,7 @@ export class UsersNotPastorComponent implements OnInit {
   handleToChangueEvent(report){
     const MODAL = this.modalService.open(ChangueEventUserComponent, {
       windowClass: 'fadeIn',
-      size: 'md',
+      size: 'lg',
       backdrop: true,
       keyboard: true,
       centered: true

@@ -6,7 +6,8 @@
           <div class="card-title d-block pb-2">
             <h3 class="card-label pt-4 pb-4">Cambiar evento en el reporte</h3>
             <h6 style="font-size: small; color: rgb(163, 163, 163);">
-              En esta sección podrás editar la información del evento de un reporte
+              En esta sección podrás editar la información del evento de un reporte.Ten en cuenta que no puedes cambiar
+              el corte si el precio es diferente al que pago.
             </h6>
           </div>
         </div>
@@ -17,7 +18,40 @@
         </div>
       </div>
       <div class="card-body">
-        <form [formGroup]="editEventReport">
+        <div class="row">
+          <div class="col-6">
+            <div>
+              <h5>Evento</h5>
+            </div>
+            <p>{{report?.donation?.name}}</p>
+          </div>
+          <div class="col-3">
+            <div>
+              <h5>
+                Corte
+              </h5>
+              <p> {{report?.cut?.name}}</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div>
+              <h5>
+                Precio
+              </h5>
+            </div>
+            <p>{{report?.transaction?.amount}}</p>
+          </div>
+
+          <div class="col-3">
+            <div>
+              <h5>
+                Fecha
+              </h5>
+            </div>
+            <p>{{report?.transaction?.created_at | date }}</p>
+          </div>
+        </div>
+        <form [formGroup]="editEventReport" class="mt-5">
           <div class="row">
             <div class="col">
               <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
@@ -32,7 +66,8 @@
                 <mat-label>Selecciona el Corte</mat-label>
                 <mat-select type="select" formControlName="financial_cut">
                   <mat-option *ngFor="let cut of editEventReport?.value?.donation?.financialCut" [value]="cut">
-                    {{ cut.name }}</mat-option>
+                    {{ cut.name + ' | ' + (report.transaction.currency | uppercase) + '  ' + cut?.prices[report.transaction.currency] }}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
@@ -48,10 +83,17 @@
 
         </form>
       </div>
+
       <div class="card-footer">
-        <button class="button btn btn-primary" (click)="onSubmit()">Actualizar</button>
-        <button class="button btn btn-danger" (click)="modal.close()">Cancelar</button>
-        
+        <button class="button btn btn-primary" (click)="onSubmit()" [disabled]="loader">
+          <div class="spinner-border" role="status" *ngIf="loader">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <div *ngIf="!loader">
+            Actualizar
+          </div>
+        </button>
+        <button class="button btn btn-danger mx-2" (click)="modal.close()" [disabled]="loader">Cancelar</button>
       </div>
     </div>
   </div>

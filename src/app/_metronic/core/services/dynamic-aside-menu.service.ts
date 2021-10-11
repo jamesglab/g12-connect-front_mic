@@ -61,7 +61,11 @@ export class DynamicAsideMenuService {
       });
       this.setMenu(DynamicAsideMenuConfig);
 
-    }, err => { console.log('err', err) });
+    }, err => {
+      if (err.status == 401){
+        console.log('aqui hacemos el refresh token')
+      }
+     });
 
 
   }

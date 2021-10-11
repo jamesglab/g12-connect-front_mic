@@ -13,9 +13,10 @@ export class ChangueEventUserComponent implements OnInit {
   public report;
   public events;
   public editEventReport: FormGroup;
+  public loader: boolean;
   constructor(private fb: FormBuilder, private _g12Events: G12eventsService,
     public modal: NgbActiveModal) { }
-    
+
   ngOnInit(): void {
     this.buildForm();
   }
@@ -30,12 +31,21 @@ export class ChangueEventUserComponent implements OnInit {
   }
   onSubmit() {
     if (this.editEventReport.valid) {
-      this._g12Events.changueReport(this.editEventReport.getRawValue()).subscribe(res => {
-        this.modal.close(true);
-        Swal.fire('Reporte Actualizado', '', 'success');
-      }, err => {
-        Swal.fire('No se pudo actualizar', '', 'error');
-      })
+      this.loader = true;
+      if (parseInt(this.report?.transaction?.amount)
+        == parseInt(this.editEventReport.getRawValue().financial_cut.prices)[this.report?.transaction?.currency?.toLowerCase()]) {
+        this._g12Events.changueReport(this.editEventReport.getRawValue()).subscribe(res => {
+          this.loader = false;
+          this.modal.close(true);
+          Swal.fire('Reporte Actualizado', '', 'success');
+        }, err => {
+          this.loader = false;
+          Swal.fire('No se pudo actualizar', err, 'error');
+        });
+      } else {
+        this.loader = false;
+        Swal.fire('No se pudo actualizar', 'El precio de la transaccion y el precio del corte no coinciden', 'info');
+      }
     } else {
       Swal.fire('Valida los campos', '', 'warning');
     }

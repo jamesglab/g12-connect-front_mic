@@ -41,7 +41,7 @@ export class ForgotPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.getDocumentTypes();
+    
   }
 
   // convenience getter for easy access to form fields
@@ -51,17 +51,6 @@ export class ForgotPasswordComponent implements OnInit {
 
   initForm() {
     this.forgotPasswordForm = this.fb.group({
-      documentType: [null,
-        Validators.compose([
-          Validators.required
-        ])
-      ],
-      documentNumber: [null,
-        Validators.compose([
-          Validators.required,
-          Validators.minLength(6)
-        ])
-      ],
       email: [
         '',
         Validators.compose([
@@ -83,16 +72,6 @@ export class ForgotPasswordComponent implements OnInit {
     return numberOnly(event);
   }
 
-  getDocumentTypes() {
-    this._mainService
-      .getDocumentTypes().subscribe((res: Response) => {
-        if (res.result) {
-          this.documentTypes = res.entity;
-          this.cdr.detectChanges();
-        } else {
-        }
-      });
-  }
 
   submit() {
     this.errorState = ErrorStates.NotSubmitted;

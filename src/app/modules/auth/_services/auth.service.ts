@@ -50,17 +50,17 @@ export class AuthService implements OnDestroy {
     this.isLoadingSubject.next(true);
     return this.http.post<any>(
       `${environment.apiUrlG12Connect.users}/auth`, { email, password, platform: 'conexion12' }, { headers: header }
-      ).pipe(
-        map((auth: any) => {
-          // auth.entity[0].objectsList = await parseToObject(JSON.parse(auth.entity[0].listObjetos), "Code", "Obj");
-          if (auth.user.verify){
-            this.setAuthOnLocalStorage(auth);
-            this.isLoadingSubject.next(false);
-          }
-          return auth;
-        }),
-        catchError(handleError)
-      );
+    ).pipe(
+      map((auth: any) => {
+        // auth.entity[0].objectsList = await parseToObject(JSON.parse(auth.entity[0].listObjetos), "Code", "Obj");
+        if (auth.user.verify) {
+          this.setAuthOnLocalStorage(auth);
+          this.isLoadingSubject.next(false);
+        }
+        return auth;
+      }),
+      catchError(handleError)
+    );
   }
 
   logout() {
@@ -70,26 +70,35 @@ export class AuthService implements OnDestroy {
     });
   }
 
+  refreshToken() {
+    return this.http.post<any>(
+      `${environment.apiUrlG12Connect.users}/auth/refresh-token`,{token:this._storageService.getItem('auth').token}
+    ).pipe(
+      map((auth: any) => {
+        return auth;
+      }),
+      catchError(handleError)
+    );
+  }
   getUserByToken(): Observable<any> {
     const { user } = this.getAuthFromLocalStorage() || { user: null };
     if (!user) {
       return of(undefined);
     }
     this.currentUserSubject = new BehaviorSubject<any>(user);
-    return new Observable((e) => { e.next(user)});
+    return new Observable((e) => { e.next(user) });
   }
 
-  forgotPassword(data: { documentType: number, documentNumber: string, email: string }): Observable<Response> {
-    this.isLoadingSubject.next(true);
+  forgotPassword(data: { email: string }): Observable<Response> {
     return this.http.post<Response>(
       `${environment.apiUrl}User/RecoverPassword`, JSON.stringify(data), { headers: header }
-      ).pipe(
-        map((auth: Response) => {
-          this.isLoadingSubject.next(false);
-          return auth;
-        }),catchError((err) => {console.error('err', err); return of(err.error);}),
-        finalize(() => this.isLoadingSubject.next(false))
-      );
+    ).pipe(
+      map((auth: Response) => {
+        this.isLoadingSubject.next(false);
+        return auth;
+      }), catchError((err) => { console.error('err', err); return of(err.error); }),
+      finalize(() => this.isLoadingSubject.next(false))
+    );
   }
 
 
