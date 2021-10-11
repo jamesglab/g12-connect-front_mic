@@ -18,7 +18,6 @@
       </div>
       <div class="card-body">
         <form class="w-form" [formGroup]="editUserForm" (ngSubmit)="onSubmit();">
-
           <div class="row">
             <div class="col">
               <div formGroupName="user">
@@ -30,7 +29,6 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-    
                 <mat-form-field appearance="fill" style="width: 100%">
                   <mat-label>Identificación</mat-label>
                   <input matInput placeholder="Ingrese la identificación..." formControlName="identification"

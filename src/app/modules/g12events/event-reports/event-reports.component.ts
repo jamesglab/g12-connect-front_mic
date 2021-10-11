@@ -294,7 +294,7 @@ export class EventReportsComponent implements OnInit {
           Estado: item.transaction.status ? item.transaction.status : 'N/A',
           Costo: item.transaction.currency == 'cop' ? item.cut.prices.cop : item.cut.prices.usd,
           Moneda: item.transaction.currency ? item.transaction.currency : 'N/A',
-
+          'Descripcion de Cambio': item.description_of_change ? item.description_of_change :'N/A'
         }
         dataToExport.push(newData)
       });

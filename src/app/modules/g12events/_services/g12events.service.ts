@@ -259,7 +259,7 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
-  
+
 
   getPlaces(filter: any): Observable<any> {
     return this.http
@@ -373,6 +373,21 @@ export class G12eventsService {
       })
       .pipe(
         map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  changueReport(report) {
+    return this.http
+      .put<any>(
+        `${environment.apiUrlG12Connect.reports}/change-event`,
+        report,
+        { headers: header }
+      )
+      .pipe(
+        map((res: Response) => {
           return res;
         }),
         catchError(handleError)

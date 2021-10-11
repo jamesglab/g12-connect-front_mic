@@ -53,8 +53,10 @@ export class AuthService implements OnDestroy {
       ).pipe(
         map((auth: any) => {
           // auth.entity[0].objectsList = await parseToObject(JSON.parse(auth.entity[0].listObjetos), "Code", "Obj");
-          this.setAuthOnLocalStorage(auth);
-          this.isLoadingSubject.next(false);
+          if (auth.user.verify){
+            this.setAuthOnLocalStorage(auth);
+            this.isLoadingSubject.next(false);
+          }
           return auth;
         }),
         catchError(handleError)
