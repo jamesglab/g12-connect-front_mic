@@ -72,7 +72,7 @@ export class AuthService implements OnDestroy {
 
   refreshToken() {
     return this.http.post<any>(
-      `${environment.apiUrlG12Connect.users}/auth/refresh-token`,{token:this._storageService.getItem('auth').token}
+      `${environment.apiUrlG12Connect.users}/auth/refresh-token`, { token: this._storageService.getItem('auth').token }
     ).pipe(
       map((auth: any) => {
         return auth;
@@ -90,8 +90,9 @@ export class AuthService implements OnDestroy {
   }
 
   forgotPassword(data: { email: string }): Observable<Response> {
+    this.isLoadingSubject.next(true);
     return this.http.post<Response>(
-      `${environment.apiUrl}User/RecoverPassword`, JSON.stringify(data), { headers: header }
+      `${environment.apiUrlG12Connect.users}/auth/send-recovery`, JSON.stringify(data), { headers: header }
     ).pipe(
       map((auth: Response) => {
         this.isLoadingSubject.next(false);
@@ -120,6 +121,16 @@ export class AuthService implements OnDestroy {
     }
   }
 
+  changuePassword(payload) {
+    return this.http.post<any>(
+      `${environment.apiUrlG12Connect.users}/auth/reset-password`, payload, { headers: header }
+    ).pipe(
+      map((auth: any) => {
+        this.isLoadingSubject.next(false);
+        return auth;
+      }), catchError(handleError),
+    );
+  }
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
