@@ -1,10 +1,27 @@
-<mat-form-field appearance="fill">
+<div>
+  <!-- tabs de cambio de estado -->
+  <div class="row">
+    <div class="col-9">
+      <nav class="nav nav-pills flex-column flex-sm-row">
+        <a class="flex-sm-fill text-sm-center nav-link " [ngClass]="{'active':type_graph == 'total' }"
+          (click)="getFilterDateChart('total');">
+          Total de Valores</a>
+        <a class="flex-sm-fill text-sm-center nav-link" [ngClass]="{'active':type_graph == 'count' }"
+          (click)="getFilterDateChart('count')">
+          Total de Transacciones</a>
+      </nav>
+    </div>
+  </div>
+
+</div>
+<mat-form-field appearance="fill" class="mt-5">
   <mat-label>Seleccióna una Fecha</mat-label>
   <input matInput [matDatepicker]="picker" [formControl]="dateRange" (ngModelChange)="getFilterDateChart()">
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
 </mat-form-field>
 
-<apx-chart *ngIf="showChart" [series]="chartTransactionsHours.series" [chart]="chartTransactionsHours.chart" [xaxis]="chartTransactionsHours.xaxis"
-  [stroke]="chartTransactionsHours.stroke" [tooltip]="chartTransactionsHours.tooltip" [dataLabels]="chartTransactionsHours.dataLabels"></apx-chart>
-<app-not-found-chart *ngIf="!showChart" ></app-not-found-chart>
+<apx-chart *ngIf="showChart" [series]="chartTransactionsHours.series" [chart]="chartTransactionsHours.chart"
+  [xaxis]="chartTransactionsHours.xaxis" [stroke]="chartTransactionsHours.stroke"
+  [tooltip]="chartTransactionsHours.tooltip" [dataLabels]="chartTransactionsHours.dataLabels"></apx-chart>
+<app-not-found-chart *ngIf="!showChart"></app-not-found-chart>
