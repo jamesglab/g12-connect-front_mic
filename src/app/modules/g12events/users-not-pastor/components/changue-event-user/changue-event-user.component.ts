@@ -33,7 +33,7 @@ export class ChangueEventUserComponent implements OnInit {
     if (this.editEventReport.valid) {
       this.loader = true;
       if (parseInt(this.report?.transaction?.amount)
-        == parseInt(this.editEventReport.getRawValue().financial_cut.prices)[this.report?.transaction?.currency?.toLowerCase()]) {
+        == parseInt(this.editEventReport.getRawValue().financial_cut.prices[this.report?.transaction?.currency?.toLowerCase()])) {
         this._g12Events.changueReport(this.editEventReport.getRawValue()).subscribe(res => {
           this.loader = false;
           this.modal.close(true);
