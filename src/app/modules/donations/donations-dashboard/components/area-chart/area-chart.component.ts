@@ -1,9 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ChartComponent } from 'ng-apexcharts';
 import { ChartType } from '../../models/apex.model';
 import { DonationsServices } from '../../../_services/donations.service';
-import { chartHours, validateChartValues } from '../../models/data';
+import {  chartWithDataTime, validateChartValues } from '../../models/data';
 import * as moment from 'moment';
 
 @Component({
@@ -40,10 +39,6 @@ export class AreaChartComponent implements OnInit {
       // CREAMOS LA CHART CON LAS SERIES Y LAS CATEGORIAS
       // RES.SERIES VALORES Y 
       // RES.CATEGORIES VALORES X (FECHAS FIORMATO ISO 8601)
-      this.chartTransactionsHours = chartHours(res.series,
-        res.categories,
-        this.type_graph == 'stripe_paypal' ? this.currency.value : 'COP',
-      );
       // CREAMOS VARIABLE DE VALIDADOR
       let validateAllData = [];
       // RECORREMOS LOS DATOS DE LAS SERIES
@@ -55,6 +50,10 @@ export class AreaChartComponent implements OnInit {
           validateAllData = arrayData;
           // VALIDAMOS QUE EXISTAN AL MENOS UN DATO EN LA CHART
           this.showChart = validateChartValues(validateAllData);
+          if (this.showChart) {
+            this.createChartHours(res.series, res.categories, this.type_graph == 'stripe_paypal' ? this.currency.value : 'COP',
+            )
+          }
           // DETECTAMOS LOS CAMBIOS
           this.cdr.detectChanges();
         } else {
@@ -67,6 +66,38 @@ export class AreaChartComponent implements OnInit {
     })
   }
 
+  createChartHours(series, categories, currency) {
+    this.chartTransactionsHours = chartWithDataTime(
+      series,
+      {
+        height: 350,
+        type: 'area',
+      },
+      {
+        enabled: false,
+      },
+      {
+        curve: 'smooth',
+      },
+      {
+        type: 'datetime',
+        categories,
+      },
+
+      {
+        x: {
+          format: 'dd/MM/yy HH:mm',
+        },
+        y: {
+          formatter: function (value) {
+            return new Intl.NumberFormat('jp-JP', { style: 'currency', currency, minimumFractionDigits: 2 }).format(value);
+
+          }
+        }
+      },
+
+    )
+  }
   //***CREAMOS LOS FILTROS DE LA CONSULTA***///
   //filter_date_init CREAMOS LA FECHA INCIAL DESDE LA HORA 0 MINUTO 0 SEGUNDO 0 
   //filter_date_finish CREAMOS LA FECHA FINAL DESDE LA HORA 23 MINUTO 29 SEGUNDO 29
