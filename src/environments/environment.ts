@@ -14,10 +14,24 @@ export const environment = {
     managment: 'https://dev-api.g12connect.com/api/v2/managment',
     users: 'https://dev-api.g12connect.com/api/v2/users',
     payments: 'https://dev-api.g12connect.com/api/v2/payments',
-    reports: 'https://dev-api.g12connect.com/api/v2/reports'
+    reports: 'https://3706-200-122-253-43.ngrok.io/api/v2/reports'
   },
 
   SECRETENCRYPT:"G12jk5FQg6bu8zWSECURITY#wB9jPyURESPONSE"
+  // production: true,
+  // appVersion: 'v710demo1', //METRONIC
+  // USERDATA_KEY: 'authf649fc9a5f55', // METRONIC
+  // isMockEnabled: false, // METRONIC
+  // apiUrl: 'http://51.79.78.171:7003/', //.NETAPI
+  // // apiUrlG12Connect: 'https://dev-api.g12connect.com/api/v2/',
+  // apiUrlG12Connect: {
+  //   donations: 'https://api.g12connect.com/api/v2/donations',
+  //   managment: 'https://api.g12connect.com/api/v2/managment',
+  //   users: 'https://api.g12connect.com/api/v2/users',
+  //   payments: 'https://api.g12connect.com/api/v2/payments',
+  //   reports : 'https://3e07-200-122-253-43.ngrok.io/api/v2/reports'
+  // },
+  // SECRETENCRYPT:"G12jk5FQg6bu8zWSECURITY#wB9jPyURESPONSE"
 };
 
 /*

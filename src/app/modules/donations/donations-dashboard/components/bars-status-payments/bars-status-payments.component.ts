@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupName } from '@angular/forms';
 import { DonationsServices } from '../../../_services/donations.service';
 import { ChartType } from '../../models/apex.model';
-import { createBarsColumns, validateChartValues } from '../../models/data';
+import { paymnetMethosStatus, validateChartValues } from '../../models/data';
 
 
 @Component({
@@ -15,6 +15,8 @@ export class BarsStatusPaymentsComponent implements OnInit {
   barsStatusPayment: ChartType;
   public filter = new FormControl(2);
   public payment_mehtod = new FormControl('pse');
+  // public currency = new FormControl('COP', []);
+
   public showChart = false;
   constructor(private _donationsServices: DonationsServices, private cdr: ChangeDetectorRef) {
 
@@ -26,8 +28,9 @@ export class BarsStatusPaymentsComponent implements OnInit {
   getTransactionsFilter() {
     const filter_date = this.filter.value;
     const method_payment = this.payment_mehtod.value;
-    this._donationsServices.getTransactionMethodPayment({ filter_date, method_payment }).subscribe(res => {
-      this.barsStatusPayment = createBarsColumns(res['series'], res['labels']);
+    
+    this._donationsServices.getTransactionMethodPayment({ filter_date, method_payment}).subscribe(res => {
+      this.barsStatusPayment = paymnetMethosStatus(res['series'], res['labels'] );
       this.showChart = validateChartValues(res['series']);
       this.cdr.detectChanges();
     });

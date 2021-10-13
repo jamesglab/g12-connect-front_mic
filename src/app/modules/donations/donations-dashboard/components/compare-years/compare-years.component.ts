@@ -24,14 +24,18 @@ export class CompareYearsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getFilterType(1)
+    this.getFilterType(1);
+    this.getTransactionsFilter();
   }
 
   getFilterType(type?) {
-    this._donationsServices.getTotalValuesOrQuantity(type).subscribe(res => {
+    const currency = this.currency.value;
+
+    this._donationsServices.getTotalValuesOrQuantity({ filter: type, currency }).subscribe(res => {
       this.totalsValues = res;
       this.page = type;
-      this.getTransactionsFilter();
+      this.cdr.detectChanges();
+      
     });
 
   }
@@ -41,14 +45,14 @@ export class CompareYearsComponent implements OnInit {
     if (this.page == 1) {
       this._donationsServices.getTotalTransactionsGraph({ filter_date, currency }).subscribe(res => {
         this.showChart = validateChartValues(res['series']);
-        this.barsColumns = createBarsColumns(res['series'], res['labels']);
-        this.cdr.detectChanges();
+        this.barsColumns = createBarsColumns(res['series'], res['labels'],currency);
+        this.getFilterType(this.page);
       });
     } else {
       this._donationsServices.getTotalQuantityGraph({ filter_date, currency }).subscribe(res => {
         this.showChart = validateChartValues(res['series']);
-        this.barsColumns = createBarsColumns(res['series'], res['labels'])
-        this.cdr.detectChanges();
+        this.getFilterType(this.page);
+        this.barsColumns = createBarsColumns(res['series'], res['labels'],currency)
       });
     }
   }

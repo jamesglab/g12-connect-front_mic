@@ -15,6 +15,8 @@ export class AreaChartComponent implements OnInit {
 
   chartTransactionsHours: ChartType;//CREAMOS LA CHART DE TIPO CHARTTYPE;
   type_graph = 'count';
+  public currency = new FormControl('USD', []);
+
   public showChart: boolean; // VALIDAREMOS EL COMPONENTE DE NO HAY DATOS POR MOSTRAR
   public dateRange = new FormControl(moment());//CREAMOS LA FECHA ACTUAL
   constructor(private _donationsServices: DonationsServices, private cdr: ChangeDetectorRef) { }
@@ -26,16 +28,21 @@ export class AreaChartComponent implements OnInit {
 
   // METODO PARA CONSULTAR LA GRAFICA
   getFilterDateChart(type_graph?: string) {
-    if (type_graph){
+    if (type_graph) {
       this.type_graph = type_graph;
     }
     // PASAMOS LOS FILTROS DE FECHAS 
-    this._donationsServices.getDonationBy24Hour({ ...this.createFilterRanges(), type_graph: this.type_graph }).subscribe((res: any) => {
+    this._donationsServices.getDonationBy24Hour({
+      ...this.createFilterRanges(),
+      type_graph: this.type_graph,
+      currency: this.type_graph == 'stripe_paypal' ? this.currency.value : 'COP'
+    }).subscribe((res: any) => {
       // CREAMOS LA CHART CON LAS SERIES Y LAS CATEGORIAS
       // RES.SERIES VALORES Y 
       // RES.CATEGORIES VALORES X (FECHAS FIORMATO ISO 8601)
       this.chartTransactionsHours = chartHours(res.series,
-        res.categories
+        res.categories,
+        this.type_graph == 'stripe_paypal' ? this.currency.value : 'COP',
       );
       // CREAMOS VARIABLE DE VALIDADOR
       let validateAllData = [];

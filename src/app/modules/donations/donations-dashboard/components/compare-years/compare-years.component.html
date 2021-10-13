@@ -19,7 +19,7 @@
       </h3>
       <div>
         <h4 class="h4">
-          $ {{totalsValues?.total}}
+          {{totalsValues?.total | currency: currency.value : 'symbol':'1.0-0'}}
         </h4>
       </div>
 
@@ -30,7 +30,7 @@
       </h3>
       <div class="center">
         <h4 class="h4">
-          $ {{totalsValues?.total_year}}
+          {{totalsValues?.total_year | currency: currency.value : 'symbol':'1.0-0'}}
         </h4>
       </div>
 
@@ -41,7 +41,7 @@
       </h3>
       <div class="center">
         <h4 class="h4">
-          $ {{totalsValues?.total_month}}
+          {{totalsValues?.total_month | currency: currency.value : 'symbol':'1.0-0'}}
         </h4>
       </div>
 
@@ -52,7 +52,7 @@
       </h3>
       <div class="center">
         <h4 class="h4">
-          $ {{totalsValues?.total_week}}
+          {{totalsValues?.total_week | currency: currency.value : 'symbol':'1.0-0'}}
         </h4>
       </div>
 
@@ -63,7 +63,7 @@
       </h3>
       <div class="center">
         <h4 class="h4">
-          $ {{totalsValues?.total_year}}
+          {{totalsValues?.total_yesterday | currency: currency.value : 'symbol':'1.0-0'}}
         </h4>
       </div>
 
@@ -74,7 +74,7 @@
       </h3>
       <div class="center">
         <h4 class="h4">
-          $ {{totalsValues?.total_now}}
+          {{totalsValues?.total_now | currency: currency.value : 'symbol':'1.0-0'}}
         </h4>
       </div>
 
@@ -91,6 +91,7 @@
           <mat-select [formControl]="currency" (ngModelChange)="getTransactionsFilter()">
             <mat-option [value]="'COP'">COP</mat-option>
             <mat-option [value]="'USD'">USD</mat-option>
+            <mat-option [value]="'MXN'">MXN</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
