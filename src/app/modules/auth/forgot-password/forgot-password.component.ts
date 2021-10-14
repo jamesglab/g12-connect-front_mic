@@ -8,6 +8,7 @@ import { MainService } from '../../_services/main.service';
 import { AuthService } from '../_services/auth.service';
 
 import { Response } from '../_models/auth.model';
+import Swal from 'sweetalert2';
 
 enum ErrorStates {
   NotSubmitted,
@@ -41,7 +42,7 @@ export class ForgotPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.getDocumentTypes();
+
   }
 
   // convenience getter for easy access to form fields
@@ -51,17 +52,6 @@ export class ForgotPasswordComponent implements OnInit {
 
   initForm() {
     this.forgotPasswordForm = this.fb.group({
-      documentType: [null,
-        Validators.compose([
-          Validators.required
-        ])
-      ],
-      documentNumber: [null,
-        Validators.compose([
-          Validators.required,
-          Validators.minLength(6)
-        ])
-      ],
       email: [
         '',
         Validators.compose([
@@ -75,7 +65,7 @@ export class ForgotPasswordComponent implements OnInit {
     });
   }
 
-  get form(){
+  get form() {
     return this.forgotPasswordForm.controls;
   }
 
@@ -83,48 +73,32 @@ export class ForgotPasswordComponent implements OnInit {
     return numberOnly(event);
   }
 
-  getDocumentTypes() {
-    this._mainService
-      .getDocumentTypes().subscribe((res: Response) => {
-        if (res.result) {
-          this.documentTypes = res.entity;
-          this.cdr.detectChanges();
-        } else {
-        }
-      });
-  }
 
   submit() {
-    this.errorState = ErrorStates.NotSubmitted;
-    if(this.forgotPasswordForm.invalid){
+    // this.errorState = ErrorStates.NotSubmitted;
+    if (this.forgotPasswordForm.invalid) {
       return;
     }
-    this.parseAttrToInsert();
     //this.errorState = result ? ErrorStates.NoError : ErrorStates.HasError;
     const forgotPassSubscr = this.authService.forgotPassword(this.forgotPasswordForm.getRawValue())
-    .subscribe((res: any) => {
-      if (res) {
-        // console.log("THE RESPONSE", res)
-        if (res.result) {
-          // this.errorState = ErrorStates.NoError;
-          this.errorState = ErrorStates.NoError;
-          // console.log("SUCCESS",res.message[0])
-          // this.showMessage(1, "!Tu contraseña ha sido actualizada con exito¡");
+      .subscribe((res: any) => {
+        if (res) {
+
+          Swal.fire('Correo Enviado', "Solicitud enviada el correo", 'success');
         } else {
           this.errorState = ErrorStates.HasError;
-          this.errorMessage = res.message[0];
-          // this.showMessage(res.notificationType, res.message[0])
+          this.errorMessage = "Hemos tenido problemas en nuestro servidor, intentalo nuevamente."
+          // this.showMessage(3);
         }
-      } else {
-        this.errorState = ErrorStates.HasError;
-        this.errorMessage = "Hemos tenido problemas en nuestro servidor, intentalo nuevamente."
-        // this.showMessage(3);
-      }
-    })
-  this.unsubscribe.push(forgotPassSubscr);
+      },err=>{
+        console.log('trenemos error',err)
+        Swal.fire('Correo Enviado', "Solicitud enviada el correo", 'success');
+
+      })
+    this.unsubscribe.push(forgotPassSubscr);
   }
 
-  parseAttrToInsert(){
+  parseAttrToInsert() {
     this.form.documentType.setValue(parseInt(this.form.documentType.value));
   }
 

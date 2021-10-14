@@ -99,9 +99,9 @@ export class DonationsServices {
       );
   }
 
-  getTotalValuesOrQuantity(filter) {
+  getTotalValuesOrQuantity(params) {
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect.reports}/total-value-or-quantity-donations`, { params: { filter }, headers: header }).pipe(
+      `${environment.apiUrlG12Connect.reports}/total-value-or-quantity-donations`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),

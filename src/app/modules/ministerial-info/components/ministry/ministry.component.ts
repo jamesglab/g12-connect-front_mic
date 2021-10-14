@@ -16,7 +16,7 @@ export class MinistryComponent implements OnInit {
   @Input() ministry;
   @Input() count;
   public actualPaginator;
-  public filterValue;
+  public filterValue = '';
   @Output() paginator = new EventEmitter<any>();
   @Output() filter = new EventEmitter<any>();
 
@@ -49,7 +49,7 @@ export class MinistryComponent implements OnInit {
   }
 
   paginationOut(event) {
-    if (this.filterValue) {
+    if (this.filterValue && this.filterValue != '') {
       this.filter.emit({ filter: this.filterValue, paginator: event })
     } else {
       this.paginator.emit(event);
@@ -57,10 +57,13 @@ export class MinistryComponent implements OnInit {
   }
 
   filterEmit() {
-    if (this.filterValue) {
-      this.filter.emit({ filter: this.filterValue, paginator: this.actualPaginator })
-    } else {
+    // VALIDAMOS QUE EXISTA FILTRO
+    if (this.filterValue != '') {
+      // ENVIAMOS FILTRO
       this.filter.emit({ filter: this.filterValue })
+      // SI NO EXISTE FILTRO ENVIAMOS EL PAGINADOR
+    } else if (this.filterValue == '') {
+      this.paginator.emit(null);
     }
   }
 }

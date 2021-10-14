@@ -2,7 +2,8 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ChartType } from '../../models/apex.model';
 import { DonationsServices } from '../../../_services/donations.service';
-import { totalDonutValues, validateChartValues } from '../../models/data';
+import { validateChartValues, donutChart } from '../../models/data';
+
 
 @Component({
   selector: 'app-donut-transactions',
@@ -22,7 +23,6 @@ export class DonutTransactionsComponent implements OnInit {
   });
   constructor(private _donationsServices: DonationsServices, private cdr: ChangeDetectorRef) {
     //construimos la estructura de la chart
-    this.totalDonutValues = totalDonutValues;
 
   }
 
@@ -46,13 +46,15 @@ export class DonutTransactionsComponent implements OnInit {
       this._donationsServices.getTotalValueTransactions({ filter, currency }).subscribe(res => {
         // se renderizan las series y los labels que necesita la chart para mostrarse
         this.showChart = validateChartValues(res['series']);
-        this.totalDonutValues.series = res['series'];
-        this.totalDonutValues.labels = res['labels'];
+        if (this.showChart) {
+          // CREAMOS LA DONA
+          this.createDonut(res['series'], res['labels'], currency)
+        }
         // se hace un detectChangues para cambiar la grafica por cada consulta
-        this.cdr.detectChanges();
       });
     }
   }
+
 
   //metodo para traer las transacciones por rango de fechas
   getDateRage() {
@@ -67,13 +69,46 @@ export class DonutTransactionsComponent implements OnInit {
         // el endPoint nos filtra por rango de fechas y moneda cuando el filtro esta en 6
         this._donationsServices.getTotalValueTransactions({ filter: 6, init_date, finish_date, currency }).subscribe(res => {
           // se renderizan las series y los labels que necesita la chart para mostrarse
-          this.totalDonutValues.series = res['series'];
           this.showChart = validateChartValues(res['series']);
-          this.totalDonutValues.labels = res['labels'];
+          if (this.showChart) {
+            // CREAMOS LA DONA
+            this.createDonut(res['series'], res['labels'], currency)
+          }
           // se hace un detectChangues para cambiar la grafica por cada consulta
           this.cdr.detectChanges();
         });
       }
     }
+  }
+
+  createDonut(series, labels, currency) {
+    this.totalDonutValues = donutChart(
+      series,//ENVIAMOS LAS SERIES
+      labels,//ENVIAMOS LOS LABEL
+      {  //CREAMOS EL TIPO DE DONA QUE SE VA A MOSTRAR ACCEDIENTO AL CHART Y ENVIANDO LOS DATOS NECESARIOS
+        height: 350,//ENCIAMOS EL TAMAÑO QUE TENDRA LA CHART
+        type: 'pie',//INDICAMOS EL TIPO PIE DE LA DONA QUE NOS PROPORCIONA LA LIBRERIA
+      },
+      { //ENVIAMOS EL LENG PARA MOSTRAR LAS CATEGORIAS QUE PROPORCIONA LA LIBRERIA (LABELS)
+        show: true,//MOSTRAMOS LAS CATEGORIAS
+        position: 'bottom',//LAS POSICIONAMOS AL FINAL
+        horizontalAlign: 'center',//ALINIAMOS AL CENTRO LA GRAFICA
+        floating: false,//PASAMOS EL VALOR DE FLOTAR EN FALSE
+        fontSize: '14px',//MANDAMOS EL TAMAÑO DE LAS LETRAS
+        formatter: function (val, opts) {//PASAMOS EL FORMATO DEL VALOR ACCEDEMOS A LA SERIE Y FORMATEAMOS EL VALOR
+          return val + " - " + new Intl.NumberFormat('jp-JP', { style: 'currency', currency, minimumFractionDigits: 2 }).format(opts.w.globals.series[opts.seriesIndex]);;
+        },
+        offsetY: -10,//PONEMOS UN MARGIN 
+      },
+      {//PASAMOS EL RESULTADO RESPONSIVE
+        breakpoint: 600,
+        options: {
+          chart: {
+            height: 240,//TAMAÑO CUANDO EA RESPONSIVE
+          },
+        },
+      },
+    );
+    this.cdr.detectChanges();
   }
 }

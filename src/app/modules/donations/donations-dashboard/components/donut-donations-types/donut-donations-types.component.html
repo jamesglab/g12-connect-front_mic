@@ -18,6 +18,8 @@
       <mat-select [formControl]="currency" (ngModelChange)="getTransactionsFilter()">
         <mat-option [value]="'COP'">COP</mat-option>
         <mat-option [value]="'USD'">USD</mat-option>
+        <mat-option [value]="'MXN'">MXN</mat-option>
+
       </mat-select>
     </mat-form-field>
   </div>
@@ -37,7 +39,7 @@
 <div *ngIf="showChart">
   <apx-chart class="apex-charts" dir="ltr" [series]="simplePieChart.series" [chart]="simplePieChart.chart"
     [labels]="simplePieChart.labels" [legend]="simplePieChart.legend" [colors]="simplePieChart.colors"
-    [responsive]="simplePieChart.responsive">
+    [responsive]="simplePieChart.responsive"> 
   </apx-chart>
 </div>
 
