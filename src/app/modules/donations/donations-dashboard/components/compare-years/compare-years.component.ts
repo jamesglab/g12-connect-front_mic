@@ -59,6 +59,7 @@ export class CompareYearsComponent implements OnInit {
       });
     }
   }
+  
 
   createBarsChart(series, labels, currency) {
     this.barsColumns = createBars(
