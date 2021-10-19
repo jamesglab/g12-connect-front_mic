@@ -54,7 +54,7 @@ export class UsersNotPastorComponent implements OnInit {
   public dataSource: any;
   public count;
 
-  public displayedColumns: string[] = ['event', 'payment_method', 'reference', 'status', 'identification', 'name', 'last_name', 'email', 'options'];
+  public displayedColumns: string[] = ['event', 'payment_method', 'reference', 'status', 'identification', 'name', 'last_name',  'email', 'assistant', 'options'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   private unsubscribe: Subscription[] = [];
@@ -170,6 +170,7 @@ export class UsersNotPastorComponent implements OnInit {
       const newReport = {
         donation : element?.donation,
         cut : element?.cut,
+        isAssistant :element.isAssistant,
         transaction : element.transaction,
         payment_method: element?.transaction?.payment_method,
         created_at: element?.created_at,

@@ -105,6 +105,10 @@
       <td mat-cell *matCellDef="let element">{{ element.event }}</td>
     </ng-container>
 
+    <ng-container matColumnDef="assistant">
+      <th mat-header-cell *matHeaderCellDef>Asistente / Pago </th>
+      <td mat-cell *matCellDef="let element">{{ element.isAssistant ? 'Asistente': 'Pago'}}</td>
+    </ng-container>
     <ng-container matColumnDef="options">
       <th mat-header-cell *matHeaderCellDef>Opciones</th>
       <td mat-cell *matCellDef="let element">
