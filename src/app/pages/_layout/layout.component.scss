@@ -6,6 +6,9 @@ app-layout {
     height: 100%;
   }
 }
+.container{
+  max-width: 90% !important;
+}
 
 .page-loaded {
   app-layout {
