@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChangueEventUserComponent } from './changue-event-user.component';
+import { changeEventUserComponent } from './change-event-user.component';
 
-describe('ChangueEventUserComponent', () => {
-  let component: ChangueEventUserComponent;
-  let fixture: ComponentFixture<ChangueEventUserComponent>;
+describe('changeEventUserComponent', () => {
+  let component: changeEventUserComponent;
+  let fixture: ComponentFixture<changeEventUserComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChangueEventUserComponent ]
+      declarations: [ changeEventUserComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ChangueEventUserComponent);
+    fixture = TestBed.createComponent(changeEventUserComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

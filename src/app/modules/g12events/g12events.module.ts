@@ -26,7 +26,7 @@ import { UsersNotPastorComponent } from './users-not-pastor/users-not-pastor.com
 import { EditReportNotPastorComponent } from './users-not-pastor/components/edit-report-not-pastor/edit-report-not-pastor.component';
 import { AddAssistantComponent } from './users-not-pastor/components/add-assistant/add-assistant.component';
 import { GenerateCodesComponent } from './components/generate-codes/generate-codes.component';
-import { ChangueEventUserComponent } from './users-not-pastor/components/changue-event-user/changue-event-user.component'
+import { changeEventUserComponent } from './users-not-pastor/components/change-event-user/change-event-user.component'
 const routes: Routes = [
   {
     path: '',
@@ -60,7 +60,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent,
-    EditEventComponent, EventReportsComponent, TableReportsComponent, TableCutComponent, AddAssistantComponent,ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent, GenerateCodesComponent, ChangueEventUserComponent],
+    EditEventComponent, EventReportsComponent, TableReportsComponent, TableCutComponent, AddAssistantComponent,ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent, GenerateCodesComponent, changeEventUserComponent],
   imports: [
     CommonModule,
     SharedModule,

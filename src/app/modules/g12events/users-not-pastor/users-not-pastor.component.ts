@@ -19,7 +19,7 @@ import { EditReportNotPastorComponent } from './components/edit-report-not-pasto
 import { AddAssistantComponent } from './components/add-assistant/add-assistant.component';
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
-import { ChangueEventUserComponent } from './components/changue-event-user/changue-event-user.component';
+import { changeEventUserComponent } from './components/change-event-user/change-event-user.component';
 @Component({
   selector: 'app-users-not-pastor',
   templateUrl: './users-not-pastor.component.html',
@@ -194,8 +194,8 @@ export class UsersNotPastorComponent implements OnInit {
   }
 
 
-  handleToChangueEvent(report){
-    const MODAL = this.modalService.open(ChangueEventUserComponent, {
+  handleTochangeEvent(report){
+    const MODAL = this.modalService.open(changeEventUserComponent, {
       windowClass: 'fadeIn',
       size: 'lg',
       backdrop: true,

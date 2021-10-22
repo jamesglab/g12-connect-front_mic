@@ -5,11 +5,11 @@ import Swal from 'sweetalert2';
 import { G12eventsService } from '../../../_services/g12events.service';
 
 @Component({
-  selector: 'app-changue-event-user',
-  templateUrl: './changue-event-user.component.html',
-  styleUrls: ['./changue-event-user.component.scss']
+  selector: 'app-change-event-user',
+  templateUrl: './change-event-user.component.html',
+  styleUrls: ['./change-event-user.component.scss']
 })
-export class ChangueEventUserComponent implements OnInit {
+export class changeEventUserComponent implements OnInit {
   public report;
   public events;
   public editEventReport: FormGroup;
@@ -34,7 +34,7 @@ export class ChangueEventUserComponent implements OnInit {
       this.loader = true;
       if (parseInt(this.report?.transaction?.amount)
         == parseInt(this.editEventReport.getRawValue().financial_cut.prices[this.report?.transaction?.currency?.toLowerCase()])) {
-        this._g12Events.changueReport(this.editEventReport.getRawValue()).subscribe(res => {
+        this._g12Events.changeReport(this.editEventReport.getRawValue()).subscribe(res => {
           this.loader = false;
           this.modal.close(true);
           Swal.fire('Reporte Actualizado', '', 'success');

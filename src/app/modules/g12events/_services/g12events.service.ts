@@ -379,7 +379,7 @@ export class G12eventsService {
       );
   }
 
-  changueReport(report) {
+  changeReport(report) {
     return this.http
       .put<any>(
         `${environment.apiUrlG12Connect.reports}/change-event`,

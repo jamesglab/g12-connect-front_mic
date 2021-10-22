@@ -121,7 +121,7 @@ export class AuthService implements OnDestroy {
     }
   }
 
-  changuePassword(payload) {
+  changePassword(payload) {
     return this.http.post<any>(
       `${environment.apiUrlG12Connect.users}/auth/reset-password`, payload, { headers: header }
     ).pipe(

@@ -325,7 +325,7 @@ export class AddAssistantComponent implements OnInit {
   }
 
 
-  changueCut() {
+  changeCut() {
     this.actualCute = this.assistantForm.controls.payment_data.get('financial_cut').value;
     this.cdr.detectChanges();
   }

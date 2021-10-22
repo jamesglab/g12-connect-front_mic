@@ -50,7 +50,7 @@ export class DonutTransactionsComponent implements OnInit {
           // CREAMOS LA DONA
           this.createDonut(res['series'], res['labels'], currency)
         }
-        // se hace un detectChangues para cambiar la grafica por cada consulta
+        // se hace un detectChanges para cambiar la grafica por cada consulta
       });
     }
   }
@@ -74,7 +74,7 @@ export class DonutTransactionsComponent implements OnInit {
             // CREAMOS LA DONA
             this.createDonut(res['series'], res['labels'], currency)
           }
-          // se hace un detectChangues para cambiar la grafica por cada consulta
+          // se hace un detectChanges para cambiar la grafica por cada consulta
           this.cdr.detectChanges();
         });
       }

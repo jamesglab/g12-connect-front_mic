@@ -340,7 +340,7 @@
         <div class="column m-2">
           <mat-form-field appearance="fill">
             <mat-label>Selecciona un Corte</mat-label>
-            <mat-select type="select" formControlName="financial_cut" (selectionChange)="changueCut()">
+            <mat-select type="select" formControlName="financial_cut" (selectionChange)="changeCut()">
               <mat-option *ngFor="let financial_cut of financialCuts" [value]="financial_cut">
                 {{ financial_cut.name }}</mat-option>
             </mat-select>

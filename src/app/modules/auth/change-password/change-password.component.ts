@@ -18,7 +18,7 @@ import { AuthService } from '../_services/auth.service';
 })
 export class ChangePasswordComponent implements OnInit {
 
-  public changuePasswordForm: FormGroup;
+  public changePasswordForm: FormGroup;
   public errorMessage: String = "";
   public isLoading$: Observable<boolean>;
 
@@ -42,12 +42,12 @@ export class ChangePasswordComponent implements OnInit {
 
   // convenience getter for easy access to form fields
   get f() {
-    return this.changuePasswordForm.controls;
+    return this.changePasswordForm.controls;
   }
 
   initForm() {
     if (this.activeRoute.snapshot.queryParams?.url) {
-      this.changuePasswordForm = this.fb.group({
+      this.changePasswordForm = this.fb.group({
         password: [
           '',
           Validators.compose([
@@ -65,7 +65,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   get form() {
-    return this.changuePasswordForm.controls;
+    return this.changePasswordForm.controls;
   }
 
   numberOnly(event): boolean {
@@ -73,9 +73,9 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   submit() {
-    const { password, confirm_password, encrypt } = this.changuePasswordForm.getRawValue();
+    const { password, confirm_password, encrypt } = this.changePasswordForm.getRawValue();
     if (password == confirm_password) {
-      this.authService.changuePassword({encrypt,password}).subscribe(res => {
+      this.authService.changePassword({encrypt,password}).subscribe(res => {
         Swal.fire('Contraseña actualizada', res.message, 'success').then(r => {
           this.routing.navigate(['auth'])
         })
