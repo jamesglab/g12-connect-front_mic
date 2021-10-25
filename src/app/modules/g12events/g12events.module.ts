@@ -18,7 +18,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { EventReportsComponent } from './event-reports/event-reports.component';
 import { TableReportsComponent } from './event-reports/components/table-reports/table-reports.component';
-import { TableCutComponent } from './event-reports/components/table-cut/table-cut.component';
 import { ShowUsersCountsComponent } from './event-reports/components/show-users-counts/show-users-counts.component';
 import { ShowCutCountsComponent } from './event-reports/components/show-cut-counts/show-cut-counts.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -60,7 +59,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent,
-    EditEventComponent, EventReportsComponent, TableReportsComponent, TableCutComponent, AddAssistantComponent,ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent, GenerateCodesComponent, changeEventUserComponent],
+    EditEventComponent, EventReportsComponent, TableReportsComponent, AddAssistantComponent,ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent, GenerateCodesComponent, changeEventUserComponent],
   imports: [
     CommonModule,
     SharedModule,

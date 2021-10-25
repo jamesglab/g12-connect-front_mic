@@ -56,15 +56,18 @@
               </mat-form-field>
             </div> -->
             <div class="ml-6">
-              <button type="button" class="btn exportExcel btn-search" matTooltip="descargar" (click)="exportFile()" [disabled]="isLoading">
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isLoading"></span>
-                <mat-icon style="font-size: 25px;"*ngIf="!isLoading">cloud_download</mat-icon>
+              <button type="button" class="btn exportExcel btn-search" matTooltip="descargar" (click)="exportFile()"
+                [disabled]="isLoading">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  *ngIf="isLoading"></span>
+                <mat-icon style="font-size: 25px;" *ngIf="!isLoading">cloud_download</mat-icon>
               </button>
             </div>
             <div class="ml-5 d-flex justify-content-center aling-items-center">
               <button type="button" class="btn btn-primary btn-search" matTooltip="Buscar" [disabled]="isLoading"
-                (click)="getTransactionsMongo()">
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isLoading"></span>
+                (click)="getTransactionsPaginate()">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  *ngIf="isLoading"></span>
                 <mat-icon style="font-size: 25px;" *ngIf="!isLoading">
                   search
                 </mat-icon>
@@ -74,7 +77,15 @@
           <app-show-users-counts [info_users_count]='info_users_count'></app-show-users-counts>
         </div>
         <div class="">
-          <app-table-reports [dataSource]='dataSource'></app-table-reports>
+
+          <div class="d-flex justify-content-center" *ngIf="isLoading">
+            <div class="spinner-grow" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+
+          <app-table-reports *ngIf="!isLoading" [dataSource]='dataSource' (paginator)="getTransactionsPaginate($event)" [count]="count">
+          </app-table-reports>
         </div>
       </div>
     </div>
@@ -97,10 +108,18 @@
       </div>
       <div class="card-body">
         <div class="container mt-5">
-          <app-show-cut-counts [cuts]="cutTransactions" (send_data)="data_cut_table = this.getObjetcsToTable($event) ">
+          <app-show-cut-counts [cuts]="cutTransactions" (send_data)="filterCut($event)">
           </app-show-cut-counts>
           <div class="">
-            <app-table-cut [dataSource]="data_cut_table"></app-table-cut>
+            <div class="d-flex justify-content-center" *ngIf="!data_cut_table">
+              <div class="spinner-grow" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            <app-table-reports *ngIf="data_cut_table" [dataSource]='data_cut_table'
+              (paginator)="filterCut(cutSelected,$event)" [count]="countsCutTable">
+            </app-table-reports>
+            <!-- <app-table-cut [dataSource]="data_cut_table" [reports]></app-table-cut> -->
           </div>
         </div>
       </div>

@@ -15,7 +15,7 @@ import { NotificationComponent } from 'src/app/pages/_layout/components/notifica
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import Swal from 'sweetalert2';
 
-
+// FORMATO DE LAS FECHAS QUE SSE VERAN EN EL ANGULAR MATERIAL
 export const MY_FORMATS = {
   parse: {
     dateInput: 'YYYY',
@@ -27,22 +27,12 @@ export const MY_FORMATS = {
     monthYearA11yLabel: 'YYYY',
   },
 };
-// export const MY_FORMATS = {
-//   parse: {
-//     dateInput: 'MM/YYYY',
-//   },
-//   display: {
-//     dateInput: 'MM/YYYY',
-//     monthYearLabel: 'MMM YYYY',
-//     dateA11yLabel: 'LL',
-//     monthYearA11yLabel: 'MMMM YYYY',
-//   },
-// };
+
 @Component({
   selector: 'app-event-reports',
   templateUrl: './event-reports.component.html',
   styleUrls: ['./event-reports.component.scss'],
-  providers: [
+  providers: [//CREAMOS EL FORMATO DE LOS PIQUERS
     {
       provide: DateAdapter,
       useClass: MomentDateAdapter,
@@ -63,9 +53,12 @@ export class EventReportsComponent implements OnInit {
   public range = new FormGroup({ init_date: new FormControl(), finish_date: new FormControl() });
   public events: [] = [];
   public cutTransactions: any;
+  public cutSelected : any;
   public event_selected = new FormControl(0, []);
   public status = new FormControl(0, []);
+  public count: any = 0
   public pastores: any = [];
+  public countsCutTable: number = 0;
   public pastor_selected = new FormControl(0, []);
   public payments_method = new FormControl(0, []);
   public displayedColumns: string[] = ['created_at', 'event', 'status', 'identification', 'name', 'last_name', 'email'];
@@ -74,7 +67,6 @@ export class EventReportsComponent implements OnInit {
   public search = new FormControl('', []);
   public data_cut_table: any;
   public info_users_count: any;
-  public info_to_export: any = [];
   constructor(private _g12Events: G12eventsService, private cdr: ChangeDetectorRef, private exportService: ExportService, private snackBar: MatSnackBar,) {
     this.maxDate = new Date();
   }
@@ -82,223 +74,152 @@ export class EventReportsComponent implements OnInit {
   ngOnInit(): void {
 
     this.getEvents();
-    this.getPastor();
+    // this.getPastor();
   }
 
-  getPastor() {
-    this._g12Events.getLeadersOrPastors({ userCode: '01', church: '1' }).subscribe(res => {
-      this.pastores = res;
-    });
+  // PARA FILTROS POR PASTOR 
+  // getPastor() {
+  //   this._g12Events.getLeadersOrPastors({ userCode: '01', church: '1' }).subscribe(res => {
+  //     this.pastores = res;
+  //   });
+  // }
 
-  }
+  //CONSULTAMOS LOSO EVENTOS Y FILTRAMOS POR G12_EVENT 
   getEvents() {
-
     this._g12Events.getAll({ type: "G12_EVENT" }).subscribe(res => {
       this.events = res;
     })
   }
+
+  // FILTRAREMOS LOS DATOS QUE EL USUARIO SELECCIONE
   filter() {
-    this.dataSource.filter = this.search.value.trim().toLowerCase();
+    // this.dataSource.filter = this.search.value.trim().toLowerCase();
   }
 
-  getTransactionsMongo() {
 
-    this.isLoading = true;
-    this._g12Events.getTransactionsReports({
-      date_init: `${moment(this.date.value).format('YYYY')}-01-01T00:00:00.000`,
-      date_finish: `${moment(this.date.value).format('YYYY')}-12-31T23:59:00.000`,
-      platform: "EVENTOSG12",
-      event_id: (this.event_selected.value != 0) ? this.event_selected.value.id : '',
-      transaction_status: (this.status.value != 0) ? this.status.value : '',
-      pastor: (this.pastor_selected.value != 0) ? this.pastor_selected.value.user_code : ''
-    }).subscribe((res: any) => {
-      this.isLoading = false;
-      this.countUsers(res);
-      res.map((item, i) => {
-        res[i].transaction.status = this.validateStatus(item.transaction.status); res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
-      })
+  // CONSULTAREMOS LOS DATOS PARA PAGNARLOS
+  getTransactionsPaginate(paginator?) {
 
+    // VALIDAMOS SI EL METODO ESTA SIENDO PAGINADO O SI NO MANDAMOS LOS VALORES POR DEFECTO DEL PAGINADOR 
+    const paginate = {
+      page: paginator ? paginator.pageIndex + 1 : 1,
+      per_page: paginator ? paginator.pageSize : 5,
+    }
+    if (!paginator) {
+      this.info_users_count = {};
+      // CONSULTAMOS LOS CONTADORES DEL EVENTO
+      this.getTransactionsMongo('counts').then(counts => {
+        this.info_users_count = counts;
+      });
+      // CONSULTAMOS LOS CORTES DEL EVENTO 
+      this.getTransactionsMongo('cuts').then(cuts => {
+        this.cutTransactions = cuts;
+      });
+    }
+    // CONSULTAMOS LAS TRANSACCIONES Y PASAMOS EL TYPE EN PAGINATE
+    this.getTransactionsMongo('paginate', paginate).then((res: { count: number, reports: [any] }) => {
+      this.count = res.count;
+      //VALIDAREMOS EL ESTADO Y EL METODO DE PAGO DE LA TRANSACCION
+      res.reports.map((item, i) => {
+        res.reports[i].transaction.status = this.validateStatus(item.transaction.status);
+        res.reports[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method)
+      });
+      // CREAMOS LA TABLA DE ANGULAR MATERIAL 
       if (!this.dataSource) {
-        this.dataSource = new MatTableDataSource<any[]>(this.getObjetcsToTable(res.reverse()));
-        this.info_to_export = res;
+        this.dataSource = new MatTableDataSource<any[]>(res.reports);
         this.cdr.detectChanges();
       } else {
-
-        this.dataSource.data = this.getObjetcsToTable(res.reverse());
+        this.dataSource.data = res.reports;
       }
-      this.data_cut_table = [];
-      this.info_to_export = res;
-      this.separateCuts(res);
-    }, err => {
-      this.isLoading = false;
-      Swal.fire('Error', 'no pudimos cargar los reportes vuelve a intenterlo mas tarde', 'error')
-    })
-  }
-
-  getObjetcsToTable(data) {
-
-    let newReports = [];
-    data.map(element => {
-      const newReport = {
-        payment_method: element.transaction.payment_method,
-        created_at: element.created_at,
-        // event_name: element.donation.name,
-        status: element.transaction.status,
-        identification: element.user.identification,
-        name: element.user.name,
-        last_name: element.user.last_name,
-        email: element.user.email,
-        reference: element.transaction.payment_ref,
-        // sede: element.church.name,
-        // pastor: element.pastor.name,
-      }
-      newReports.push(newReport);
     });
-    return newReports
 
+    //VALIDAMOS QUE SE ESTE CAMBIANDO DE EVENTO
+    
   }
 
-  async separateCuts(data) {
-    //VALIDAMOS EL QUE SE SELECCIONE UN CORTE
-    if (this.event_selected.value) {
-      this.cutTransactions = [];
-      let cutTransaction = {};
-      data.map((transaction, i) => {
-        // VALIDAMOS QUE EXISTA EL CORTE EN EL OBJETO CUTTRANSACTIONS
-        if (cutTransaction[transaction.cut.name.trim().replace(' ', '')]) {
-          // PUSHEAMOS AL ARREGLO
-          cutTransaction[transaction.cut.name.trim().replace(' ', '')].push(transaction);
-        } else {
-          // SI NO EXISTE CREAMOS UN ARRAY EN LA POSICION
-          cutTransaction[`${transaction.cut.name.trim().replace(' ', '')}`] = [transaction];
-        }
-        //VALIDAMOS EL ULTIMO RECORRIDO Y PUSHEAMOS
-        if (i == (data.length - 1)) {
-          this.cutTransactions = cutTransaction;
-        }
-      });
-    } else {
-      this.cutTransactions = null;
-    }
-
-  }
-
-  getTransactions() {
-    if (this.pastor_selected.value.toString() != 0) {
-      this.downloadPastor = true;
-    } else {
-      this.downloadPastor = false;
-    }
-    this._g12Events.getTransactionsEvents(
-      {
-        filterDates: this.range.getRawValue().finish_date ? JSON.stringify({
-          init_date: this.range.getRawValue().init_date.format(),
-          finish_date: this.range.getRawValue().finish_date.format(),
-        }) : '',
+  // CONSULTAMOS LOS REPORTES POR TIPO
+  getTransactionsMongo(type: any, filters?) {
+    var promise = new Promise((resolve, reject) => {
+      this.isLoading = true;
+      this._g12Events.getTransactionsReports({
+        date_init: `${moment(this.date.value).format('YYYY')}-01-01T00:00:00.000`,
+        ...filters,
+        date_finish: `${moment(this.date.value).format('YYYY')}-12-31T23:59:00.000`,
         platform: "EVENTOSG12",
-        event_id: this.event_selected.value.id ? this.event_selected.value.id : null,
-        status: (this.status.value.toString() != 0) ? this.status.value.toString() : null,
-        payment_method: this.payments_method.value,
-        pastor: (this.pastor_selected.value.toString() != 0) ? JSON.stringify({
-          user_code: this.pastor_selected.value.user_code,
-          church_id: this.pastor_selected.value.church_id
-        }) : null
-      }
-    ).subscribe(res => {
-      console.log('res', res)
-      res.map((item, i) => { res[i].status = this.validateStatus(item.status); res[i].payment_method = this.validatePaymentMethod(item.payment_method) })
-      if (!this.dataSource) {
-        this.dataSource = new MatTableDataSource<any[]>(res);
+        event_id: (this.event_selected.value != 0) ? this.event_selected.value.id : '',
+        type
+      }).subscribe((res: any) => {
+        resolve(res)
+        this.isLoading = false;
+      }, err => {
+        this.isLoading = false;
+        reject(err);
+        Swal.fire('Error', 'no pudimos cargar los reportes vuelve a intenterlo mas tarde', 'error')
+      })
+    });
+    return promise;
+  }
+
+  // FILTRAMOS LOS CORTES CON PAGINADOR
+  filterCut(cut, paginator?) {
+    // VALIDAMOS UN CAMBIO DE CORTES PARA MOSTRAR EL LOADER
+    if (!paginator){
+      this.data_cut_table = undefined; 
+    }
+    this.cutSelected = cut;
+    this._g12Events.getTransactionsForCut({
+      cut_id: cut._id,
+      page: paginator ? paginator.pageIndex + 1 : 1,
+      per_page: paginator ? paginator.pageSize : 5,
+    }).subscribe((res: any) => {
+      this.countsCutTable = res.count;
+      if (!this.data_cut_table) {
+        this.data_cut_table = new MatTableDataSource<any[]>(res.reports);
         this.cdr.detectChanges();
       } else {
-        this.dataSource.data = res;
-      }
-
-    })
-  }
-
-  countUsers(data: any[]) {
-
-
-    let aprobe = 0;
-    let pending = 0;
-    let cancel = 0;
-    data.map(item => {
-      if (item?.transaction?.status?.trim().toLowerCase() == '1') {
-        aprobe = aprobe + 1;
-      } else if (item?.transaction?.status?.trim().toLowerCase() == '2') {
-        pending = pending + 1;
-      } else if (item?.transaction?.status?.trim().toLowerCase() == '3') {
-        cancel = cancel + 1;
+        this.data_cut_table.data = res.reports;
       }
     });
-    const cont_users = {
-      total: data.length,
-      aprobe,
-      pending,
-      cancel
-    }
-    this.info_users_count = cont_users;
-
-
-
-    // SHOW DATA INTERNATIONAL
-    // let nationals = 0;
-    // let internationals = 0;
-    // data.map(item => {
-    //   if (item?.user?.country?.trim().toLowerCase() == 'colombia') {
-    //     nationals = nationals + 1;
-    //   } else {
-    //     internationals = internationals + 1;
-    //   }
-    // });
-    // const cont_users = {
-    //   total: data.length,
-    //   nationals,
-    //   internationals
-    // }
-    // this.info_users_count = cont_users
   }
-  exportFile() {
-    if (this.info_to_export.length > 0) {
 
-      const dataToExport = []
-      this.info_to_export.map(item => {
-        const newData = {
-          //ONLY TEST NOT FOUND USERS
-          // 'id user PSQL': item.user.id,
-          // 'user code': item.user.user_code ? item.user.user_code : 'N/A',
-          // 'leader_id': item.user.leader_id ? item.user.leader_id : 'N/A',
-          //************************************************************* *
-          Nombre: item.user?.name ? item.user.name : 'N/A',
-          Apellido: item.user?.last_name ? item.user.last_name : 'N/A',
-          'No. Documento': item.user?.identification ? item.user.identification : 'N/A',
-          'Fecha Nacimiento': item.user?.birth_date ? new Date(item.user.birth_date) : 'N/A',
-          Genero: item.user?.gender ? item.user.gender : 'N/A',
-          Telefono: item.user?.phone ? item.user.phone : 'N/A',
-          "E-mail": item.user?.email ? item.user.email : 'N/A',
-          Pais: item.user?.country ? item.user.country : 'N/A',
-          Departamento: item.user?.departament ? item.user.departament : 'N/A',
-          Municipio: item.user?.city ? item.user.city : 'N/A',
-          'Tipo de Iglesia': item?.user?.type_church ? item?.user?.type_church : 'N/A',
-          Sede: item.church?.name ? item.church.name : 'N/A',
-          Pastor: item.pastor?.name ? `${item.pastor.name} ${item.pastor.last_name ? item.pastor.last_name : ''}` : 'N/A',
-          'Lider Doce': item.leader?.name ? `${item.leader.name} ${item.leader.last_name ? item.leader.last_name : ''}` : 'N/A',
-          // 'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
-          'Fecha de Donación': new Date(item.created_at),
-          'Referencia Transaccion': item.transaction.payment_ref ? item.transaction.payment_ref : 'N/A',
-          "Codigo": item.transaction.code ? item.transaction.code : 'N/A',
-          'Metodo de pago': item.transaction.payment_method ? item.transaction.payment_method : 'N/A',
-          'Nombre evento': item.donation?.name ? item.donation?.name : 'N/A',
-          'Nombre corte': item.cut?.name ? item.cut?.name : 'N/A',
-          Estado: item.transaction.status ? item.transaction.status : 'N/A',
-          Costo: item.transaction.currency == 'cop' ? item.cut.prices.cop : item.cut.prices.usd,
-          Moneda: item.transaction.currency ? item.transaction.currency : 'N/A',
-          'Descripcion de Cambio': item.description_of_change ? item.description_of_change :'N/A'
-        }
-        dataToExport.push(newData)
+  // EXPORTAMOS LOS DATOS
+  exportFile() {
+    //VALIDAREMOS LOS DATOS EXPORTADOS
+    if (this.dataSource?.data.length > 0) {
+      this.getTransactionsMongo('download').then((res: [any]) => {
+        const dataToExport = []
+        res.map(item => {
+          const newData = {
+            Nombre: item.user?.name ? item.user.name : 'N/A',
+            Apellido: item.user?.last_name ? item.user.last_name : 'N/A',
+            'No. Documento': item.user?.identification ? item.user.identification : 'N/A',
+            'Fecha Nacimiento': item.user?.birth_date ? new Date(item.user.birth_date) : 'N/A',
+            Genero: item.user?.gender ? item.user.gender : 'N/A',
+            Telefono: item.user?.phone ? item.user.phone : 'N/A',
+            "E-mail": item.user?.email ? item.user.email : 'N/A',
+            Pais: item.user?.country ? item.user.country : 'N/A',
+            Departamento: item.user?.departament ? item.user.departament : 'N/A',
+            Municipio: item.user?.city ? item.user.city : 'N/A',
+            'Tipo de Iglesia': item?.user?.type_church ? item?.user?.type_church : 'N/A',
+            Sede: item.church?.name ? item.church.name : 'N/A',
+            Pastor: item.pastor?.name ? `${item.pastor.name} ${item.pastor.last_name ? item.pastor.last_name : ''}` : 'N/A',
+            'Lider Doce': item.leader?.name ? `${item.leader.name} ${item.leader.last_name ? item.leader.last_name : ''}` : 'N/A',
+            // 'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
+            'Fecha de Donación': new Date(item.created_at),
+            'Referencia Transaccion': item.transaction.payment_ref ? item.transaction.payment_ref : 'N/A',
+            "Codigo": item.transaction.code ? item.transaction.code : 'N/A',
+            'Metodo de pago': item.transaction.payment_method ? item.transaction.payment_method : 'N/A',
+            'Nombre evento': item.donation?.name ? item.donation?.name : 'N/A',
+            'Nombre corte': item.cut?.name ? item.cut?.name : 'N/A',
+            Estado: item.transaction.status ? item.transaction.status : 'N/A',
+            Costo: item.transaction.currency == 'cop' ? item.cut.prices.cop : item.cut.prices.usd,
+            Moneda: item.transaction.currency ? item.transaction.currency : 'N/A',
+            'Descripcion de Cambio': item.description_of_change ? item.description_of_change : 'N/A'
+          }
+          dataToExport.push(newData)
+        });
+        this.exportService.exportAsExcelFile(dataToExport, !this.downloadPastor ? 'EVENTOSG12' : `${this.pastor_selected.value.name}_EVENTOSG12`);
       });
-      this.exportService.exportAsExcelFile(dataToExport, !this.downloadPastor ? 'EVENTOSG12' : `${this.pastor_selected.value.name}_EVENTOSG12`);
     } else {
       this.showMessage(2, 'No hay datos por exportar');
     }
@@ -307,6 +228,7 @@ export class EventReportsComponent implements OnInit {
   showMessage(type: number, message?: string) {
     this.snackBar.openFromComponent(NotificationComponent, notificationConfig(type, message));
   }
+
   validateStatus(status) {
     if (parseInt(status) == 1) {
       return 'Aprobado'
@@ -329,18 +251,10 @@ export class EventReportsComponent implements OnInit {
     } else if (payment_method.toLowerCase() == 'code') {
       return 'Codigo'
     }
-
-
   }
 
   chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
-    console.log('select year', moment(normalizedYear).year())
     datepicker.close();
-
-    // const ctrlValue = this.date.value;
-    // ctrlValue.year(normalizedYear.year());
-    // this.date.setValue(moment(normalizedYear).year());
     this.date.setValue(normalizedYear);
-
   }
 }

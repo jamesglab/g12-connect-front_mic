@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 
@@ -11,7 +11,9 @@ export class TableReportsComponent implements OnInit {
 
 
   @Input() dataSource: any;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @Output() paginator = new EventEmitter<any>();
+  // @ViewChild(MatPaginator) paginator: MatPaginator;
+  @Input() count = 0;
   public search = new FormControl('', []);
   public displayedColumns: string[] = ['payment_method', 'reference', 'status', 'identification', 'name', 'last_name', 'email'];
   constructor() { }
@@ -19,14 +21,17 @@ export class TableReportsComponent implements OnInit {
   ngOnInit(): void {
   }
   ngOnChanges() {
-    if (this.dataSource) {
-      this.dataSource.paginator = this.paginator;
-    }
+    // if (this.dataSource) {
+    //   this.dataSource.paginator = this.paginator;
+    // }
   }
-  filter() {
-    this.dataSource.filter = this.search.value.trim().toLowerCase();
-  }
-  pageChanged(event) {
-    console.log('page event', event)
+
+  // filter() {
+  //   this.dataSource.filter = this.search.value.trim().toLowerCase();
+  // }
+
+  emitPage(event) {
+    this.paginator.emit(event);
+
   }
 }

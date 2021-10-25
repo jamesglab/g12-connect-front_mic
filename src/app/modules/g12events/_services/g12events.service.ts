@@ -228,6 +228,21 @@ export class G12eventsService {
       );
   }
 
+  getTransactionsForCut(params){
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.reports}/reports-for-cuts`, {
+        params,
+        headers: header,
+      })
+      .pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+    
+  }
+
   ///EDIT USERSSS EVENT
   getDataByFilter(filter: any) {
     //IS FOR GET INFO USERS NOT PASTORS
