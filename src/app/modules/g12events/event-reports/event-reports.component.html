@@ -84,6 +84,12 @@
             </div>
           </div>
 
+          <div>
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Buscar..." [formControl]="search" />
+            </mat-form-field>
+          </div>
+
           <app-table-reports *ngIf="!isLoading" [dataSource]='dataSource' (paginator)="getTransactionsPaginate($event)" [count]="count">
           </app-table-reports>
         </div>
@@ -110,12 +116,13 @@
         <div class="container mt-5">
           <app-show-cut-counts [cuts]="cutTransactions" (send_data)="filterCut($event)">
           </app-show-cut-counts>
-          <div class="">
+          <div class="mt-5">
             <div class="d-flex justify-content-center" *ngIf="!data_cut_table">
               <div class="spinner-grow" role="status">
                 <span class="sr-only">Loading...</span>
               </div>
             </div>
+            
             <app-table-reports *ngIf="data_cut_table" [dataSource]='data_cut_table'
               (paginator)="filterCut(cutSelected,$event)" [count]="countsCutTable">
             </app-table-reports>

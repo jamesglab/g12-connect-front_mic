@@ -34,7 +34,6 @@ export class EventsTableComponent implements OnInit {
     const goDataSubscr = this.eventsService
       .getAll({ type: 'G12_EVENT' }).subscribe((res: any) => {
         res.reverse();
-        console.log("ALL DATAAA", res);
         if (!this.dataSource) {
           this.dataSource = new MatTableDataSource<Donation[]>(res);
           this.dataSource.paginator = this.paginator;

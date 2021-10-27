@@ -53,7 +53,7 @@ export class EventReportsComponent implements OnInit {
   public range = new FormGroup({ init_date: new FormControl(), finish_date: new FormControl() });
   public events: [] = [];
   public cutTransactions: any;
-  public cutSelected : any;
+  public cutSelected: any;
   public event_selected = new FormControl(0, []);
   public status = new FormControl(0, []);
   public count: any = 0
@@ -74,6 +74,7 @@ export class EventReportsComponent implements OnInit {
   ngOnInit(): void {
 
     this.getEvents();
+    this.search.disable();
     // this.getPastor();
   }
 
@@ -101,7 +102,7 @@ export class EventReportsComponent implements OnInit {
   getTransactionsPaginate(paginator?) {
 
     // VALIDAMOS SI EL METODO ESTA SIENDO PAGINADO O SI NO MANDAMOS LOS VALORES POR DEFECTO DEL PAGINADOR 
-    const paginate = {
+    const filtered = {
       page: paginator ? paginator.pageIndex + 1 : 1,
       per_page: paginator ? paginator.pageSize : 5,
     }
@@ -116,9 +117,16 @@ export class EventReportsComponent implements OnInit {
         this.cutTransactions = cuts;
       });
     }
+    if (this.search.value) {
+      filtered['filter'] = `${this.search.value}`
+    }
     // CONSULTAMOS LAS TRANSACCIONES Y PASAMOS EL TYPE EN PAGINATE
-    this.getTransactionsMongo('paginate', paginate).then((res: { count: number, reports: [any] }) => {
+    this.search.disable();
+
+    this.getTransactionsMongo(this.search.value ? 'filter' : 'paginate', filtered).then((res: { count: number, reports: [any] }) => {
       this.count = res.count;
+      this.search.enable();
+
       //VALIDAREMOS EL ESTADO Y EL METODO DE PAGO DE LA TRANSACCION
       res.reports.map((item, i) => {
         res.reports[i].transaction.status = this.validateStatus(item.transaction.status);
@@ -132,9 +140,7 @@ export class EventReportsComponent implements OnInit {
         this.dataSource.data = res.reports;
       }
     });
-
     //VALIDAMOS QUE SE ESTE CAMBIANDO DE EVENTO
-    
   }
 
   // CONSULTAMOS LOS REPORTES POR TIPO
@@ -163,8 +169,8 @@ export class EventReportsComponent implements OnInit {
   // FILTRAMOS LOS CORTES CON PAGINADOR
   filterCut(cut, paginator?) {
     // VALIDAMOS UN CAMBIO DE CORTES PARA MOSTRAR EL LOADER
-    if (!paginator){
-      this.data_cut_table = undefined; 
+    if (!paginator) {
+      this.data_cut_table = undefined;
     }
     this.cutSelected = cut;
     this._g12Events.getTransactionsForCut({

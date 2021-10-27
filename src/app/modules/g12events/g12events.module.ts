@@ -26,7 +26,8 @@ import { EditReportNotPastorComponent } from './users-not-pastor/components/edit
 import { AddAssistantComponent } from './users-not-pastor/components/add-assistant/add-assistant.component';
 import { GenerateCodesComponent } from './components/generate-codes/generate-codes.component';
 import { changeEventUserComponent } from './users-not-pastor/components/change-event-user/change-event-user.component';
-import { CuponsReportsComponent } from './cupons-reports/cupons-reports.component'
+import { CuponsReportsComponent } from './cupons-reports/cupons-reports.component';
+import { CuponsTableComponent } from './cupons-reports/components/cupons-table/cupons-table.component'
 const routes: Routes = [
   {
     path: '',
@@ -64,7 +65,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent,
-    EditEventComponent, EventReportsComponent, TableReportsComponent, AddAssistantComponent, ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent, GenerateCodesComponent, changeEventUserComponent, CuponsReportsComponent],
+    EditEventComponent, EventReportsComponent, TableReportsComponent, AddAssistantComponent, ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent, GenerateCodesComponent, changeEventUserComponent, CuponsReportsComponent, CuponsTableComponent],
   imports: [
     CommonModule,
     SharedModule,

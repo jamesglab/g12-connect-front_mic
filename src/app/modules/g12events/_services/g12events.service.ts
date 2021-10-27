@@ -408,4 +408,18 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
+
+  cuponsReports(params){
+    return this.http
+    .get<any>(`${environment.apiUrlG12Connect.reports}/codes`, {
+      params,
+      headers: header,
+    })
+    .pipe(
+      map((res: Response) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
 }
