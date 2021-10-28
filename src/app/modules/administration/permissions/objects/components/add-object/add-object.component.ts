@@ -9,7 +9,7 @@ import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
 
 import { Response } from 'src/app/modules/auth/_models/auth.model';
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
-import { AdminObjectsService } from '../../../../_services/admin-objects.service';
+import { AdminRolesService } from 'src/app/modules/administration/_services/admin-roles.service';
 
 @Component({
   selector: 'app-add-object',
@@ -18,7 +18,6 @@ import { AdminObjectsService } from '../../../../_services/admin-objects.service
 })
 export class AddObjectComponent implements OnInit {
 
-  private currentUser: any = this._storageService.getItem("user");
   
   public createObjectForm: FormGroup;
   // public objectTypes: any[] = [];
@@ -28,17 +27,15 @@ export class AddObjectComponent implements OnInit {
 
   constructor(public modal: NgbActiveModal, private snackBar: MatSnackBar,
     public fb: FormBuilder, private cdr: ChangeDetectorRef,
-    private _adminObjectsService: AdminObjectsService, private _storageService: StorageService) { }
+    private _adminObjectsService: AdminRolesService, private _storageService: StorageService) { }
 
   ngOnInit(): void {
     this.buildForm();
-    // this.getObjectTypes();
   }
 
   buildForm() {
     this.createObjectForm = this.fb.group({
       value: [null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9+óÓííéÉáÁ ]+$/)]],
-      type: [null],
       description: [null, [Validators.pattern(/^[a-zA-Z0-9+óÓííéÉáÁ ]+$/)]],
       status: [true]
     });
@@ -48,16 +45,6 @@ export class AddObjectComponent implements OnInit {
     return this.createObjectForm.controls;
   }
 
-  // getObjectTypes() {
-  //   const getUserTypesSubscr = this._adminObjectsService
-  //     .getObjectTypes().subscribe((res: Response) => {
-  //       if (res.result) {
-  //         this.objectTypes = res.entity;
-  //         this.cdr.detectChanges();
-  //       }
-  //     }, err => { throw err; });
-  //   this.unsubscribe.push(getUserTypesSubscr);
-  // }
 
   onSubmit() {
 
@@ -65,10 +52,8 @@ export class AddObjectComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    this.form.type.setValue('objectRoles');
-
     const createRoleSubscr = this._adminObjectsService
-      .createObject(this.createObjectForm.getRawValue()).subscribe((res: Response) => {
+      .ceratePermission(this.createObjectForm.getRawValue()).subscribe((res: Response) => {
         this.isLoading = false;
         this.showMessage(1,"¡El nuevo objeto ha sido creado con exito!");
         this.modal.close('success');

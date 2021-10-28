@@ -19,9 +19,8 @@ import { AdminObjectsService } from '../../../../_services/admin-objects.service
 })
 export class RolesObjectsComponent implements OnInit {
 
-  private currentUser: any = this._storageService.getItem("user");
   public role: any = null;
-  private allObjectsItems: any = {};
+  public allPermissions: any = [];
   public asignObjectsForm: FormGroup;
 
   public isLoading: boolean = false;
@@ -29,105 +28,44 @@ export class RolesObjectsComponent implements OnInit {
 
   constructor(public modal: NgbActiveModal, private snackBar: MatSnackBar,
     public fb: FormBuilder, private cdr: ChangeDetectorRef, private _storageService: StorageService,
-    private _adminRolesService: AdminRolesService, private _adminObjectsService: AdminObjectsService) { }
+    private _adminRolesService: AdminRolesService, private _RolesService: AdminRolesService, private _adminObjectsService: AdminObjectsService) { }
 
   ngOnInit(): void {
-    this.buildForm();
-    this.getAllObjects();
+    this.deletePermissionsInRole();
+
+
   }
 
-  buildForm() {
-    this.asignObjectsForm = this.fb.group({
-      id: [this.role.id],
-      allObjects: [[]],
-      allObjectsSearch: [[]],
-      listObjectsRole: [[]],
-      listObjectsRoleSearch: [[]]
+  //VALIDAREMOS LOS PERMISOS EN EL ROL
+  deletePermissionsInRole() {
+    //MAPEAMOS LOS PERMISOS DEL ROL
+    this.role.permission.map(role_permission => {
+      //MAPEAMOS LOS PERMISSOS PARA BUSCAR EL PERMISO DEL ROL EN TODOS LOS PERMISOS
+      this.allPermissions.map((permission, i) => {
+        //SI ENCONTRAMOS EL PERMISO VALIDAMOS
+        if (permission.value == role_permission.value) {
+          //ELIMINAMOS EL PERMISO EN EL ARRAY DE allPermissions
+          this.allPermissions.splice(i, 1);
+        }
+      })
     });
   }
 
-  get form() {
-    return this.asignObjectsForm.controls;
-  }
-
-  addObject(nameFormControl: string, object: any) {
-    this.form[nameFormControl].setValue([object, ...this.form[nameFormControl].value])
-  }
-
-  removeObject(nameFormControl: string, i) {
-
-    let object = this.form[nameFormControl].value[i];
-    this.form[nameFormControl].value.splice(i, 1); //PRIMERO ELIMINAR DEL SEARCH
-
-    let array = this.form[nameFormControl.replace("Search", "")].value;
-    array.map((_object, _i) => {
-      if (object.id == _object.id) {
-        array.splice(_i, 1);
-      }
+  //REMMOVEMOS EL OBJETO
+  removeObject(permission, i) {
+    this._adminRolesService.removeRolePermission({ id_role: this.role.id, id_permission: permission.id }).subscribe(res => {
+      this.role.permission.splice(i, 1);
+      this.allPermissions.push(permission)
+      this.showMessage(1, 'Permiso removido');
     })
-
-    if (nameFormControl === "allObjectsSearch") {
-      this.addObject('listObjectsRole', object);
-      this.addObject('listObjectsRoleSearch', object);
-    } else {
-      this.addObject('allObjects', object);
-      this.addObject('allObjectsSearch', object);
-    }
   }
 
-  getAllObjects() {
-    this.isLoading = true;
-    const getObjectsSubscr = this._adminObjectsService
-      .getObjects({ type: 'objectRoles', status: true }).subscribe((res: any) => {
-        res = res.reverse();
-        for (let i = 0; i < res.length; i++) {
-
-          if (!this.allObjectsItems[res[i].value]) {
-            this.allObjectsItems[res[i].value] = res[i];
-          }
-          const { id, value, description } = res[i];
-          this.addObject('allObjects', { id, value, description });
-          this.addObject('allObjectsSearch', { id, value, description });
-
-        }
-        this.getRoleObjects();
-      }, err => { this.isLoading = false; throw err; });
-    this.unsubscribe.push(getObjectsSubscr);
-  }
-
-  getRoleObjects() {
-    // const getUserObjectsSubscr = this._adminRolesService
-    //   .getRoleObjects(this.role.id).subscribe((res: Response) => {
-    // console.log("RESPONSEEE", res.entity)
-    // console.log("COPITASSS", this.role.permissions)
-
-    for (let i = 0; i < this.role.permissions.length; i++) {
-      this.addObject('listObjectsRole', this.allObjectsItems[this.role.permissions[i]]);
-      this.addObject('listObjectsRoleSearch', this.allObjectsItems[this.role.permissions[i]])
-    }
-
-    // console.log("OBJETOS DEL ROLE", this.form.listObjectsRole.value);
-    // console.log("TODOS LOS OBJETOS", this.form.allObjects.value);
-
-    this.form.listObjectsRole.value.map((item, _i) => {
-
-      const index = this.form.allObjects.value
-        .findIndex((element) => element.id === item.id);
-      // console.log("INDEX ENCONTRADO EN ALL OBJECTS", index);
-
-      this.form.allObjects.value.splice(index, 1);
-      this.form.allObjectsSearch.value.splice(index, 1);
+  addRole(permission, i) {
+    this._adminRolesService.addRolePermission({ id_role: this.role.id, id_permission: permission.id }).subscribe(res => {
+      this.allPermissions.splice(i, 1);
+      this.role.permission.push(permission)
+      this.showMessage(1, 'Permiso agregado');
     })
-    this.isLoading = false;
-
-    //   }, err => { this.isLoading = false; throw err; });
-    // this.unsubscribe.push(getUserObjectsSubscr);
-  }
-
-  onSearch(arrayType: string, value: string) {
-    value = value.toLowerCase();
-    let filtered = this.form[arrayType].value.filter(object => object.value.toLowerCase().includes(value));
-    this.form[arrayType + "Search"].setValue(filtered);
   }
 
   onSubmit() {
@@ -146,8 +84,8 @@ export class RolesObjectsComponent implements OnInit {
 
     const createRoleObjectSubscr = this._adminRolesService
       .createRoleObjects({ id, permissions }).subscribe((res: Response) => {
-            this.showMessage(1, "¡Los objetos han sido modificados correctamente!");
-            this.modal.close('success');
+        this.showMessage(1, "¡Los objetos han sido modificados correctamente!");
+        this.modal.close('success');
       }, err => { this.showMessage(3, err.error.message); throw err; });
     this.unsubscribe.push(createRoleObjectSubscr);
   }

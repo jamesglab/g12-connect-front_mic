@@ -32,7 +32,7 @@ export let DynamicAsideMenuConfigOriginal = {
               show:false,
               bullet: 'dot',
               code: "ADM011",
-              page: '/admin/permisses/users'
+              page: '/admin/permisses/users',
             },
             {
               title: 'Roles',

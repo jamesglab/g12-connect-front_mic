@@ -28,45 +28,12 @@
             
             </mat-cell>
         </ng-container>
-
-        <!-- <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element">
-
-                <button mat-button [matMenuTriggerFor]="menu" class="btn btn-sm btn-light-primary font-weight-bolder cursor-pointer">
-                    <mat-icon>more_vert</mat-icon>
-                </button>
-
-                <mat-menu #menu="matMenu">
-                    <div mat-menu-item class="d-flex justify-content-center ">
-                        <button class="btn">
-                            <mat-icon (click)="handleEdit(element);" style="color: var(--primary);"
-                            matTooltip="Editar objeto">edit</mat-icon>
-                        </button>
-                    </div>
-                    <div mat-menu-item class="d-flex justify-content-center cursor-pointer primary">
-                        <button class="btn">
-                            <mat-icon (click)="handleClose(element);" style="color: var(--danger);"
-                            matTooltip="Inhabilitar">delete</mat-icon>
-                        </button>
-                    </div>
-                </mat-menu>
-
-            </mat-cell>
-        </ng-container> -->
         <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleEdit(element)">
                     <span
                       [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"
-                      class="svg-icon svg-icon-md svg-icon-primary"
-                    ></span>
-                  </a>
-
-                  <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleClose(element)">
-                    <span
-                      [inlineSVG]="'./assets/media/svg/icons/General/Trash.svg'"
                       class="svg-icon svg-icon-md svg-icon-primary"
                     ></span>
                   </a>

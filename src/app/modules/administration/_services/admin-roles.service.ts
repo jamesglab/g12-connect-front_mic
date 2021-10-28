@@ -16,7 +16,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AdminRolesService {
 
-  @Output() public reload: EventEmitter<boolean> = new EventEmitter(); 
+  @Output() public reload: EventEmitter<boolean> = new EventEmitter();
 
   constructor(private http: HttpClient, private _storageService: StorageService) { }
 
@@ -25,11 +25,11 @@ export class AdminRolesService {
   //   let _header: HttpHeaders = header.append("Authorization", `Bearer ${token}`);
   //   return _header;
   // }
-  handleReload(){ this.reload.emit(true); }
+  handleReload() { this.reload.emit(true); }
 
   getRoles(): Observable<any> {//BURNED
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect.users}/role/filter`, { headers: header, params: { platform: 'conexion12' } }).pipe(
+      `${environment.apiUrlG12Connect.users}/role`, { headers: header, params: {/* platform: 'conexion12'*/ } }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -49,7 +49,7 @@ export class AdminRolesService {
 
   createRole(role: Role): Observable<Response> {
     return this.http.post<Response>(
-      `${environment.apiUrl}Sso/CreateRole`, JSON.stringify(role), { headers: header }).pipe(
+      `${environment.apiUrlG12Connect.users}/role`, role, { headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -59,7 +59,7 @@ export class AdminRolesService {
 
   createRoleObjects(payload: RoleObjects) {//BURNED
     return this.http.put<Response>(
-      `${environment.apiUrlG12Connect.users}/role/permissions`, payload, 
+      `${environment.apiUrlG12Connect.users}/role/permissions`, payload,
       { headers: header, params: { id: payload.id.toString() } }).pipe(
         map((res: Response) => {
           return res;
@@ -70,7 +70,7 @@ export class AdminRolesService {
 
   editRole(role: Role): Observable<any> { //BURNED
     return this.http.put<any>(
-      `${environment.apiUrlG12Connect.users}/role`, role, { headers: header, params: { id: role.id.toString() } }).pipe(
+      `${environment.apiUrlG12Connect.users}/role`, role, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -78,4 +78,78 @@ export class AdminRolesService {
       );
   }
 
+
+  getPermissions() {
+    return this.http.get<Response>(
+      `${environment.apiUrlG12Connect.users}/permission`, { headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  ceratePermission(permission) {
+    return this.http.post<Response>(
+      `${environment.apiUrlG12Connect.users}/permission`, permission, { headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  updatePermission(payload) {
+    return this.http.put<Response>(
+      `${environment.apiUrlG12Connect.users}/permission`, payload,
+      { headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  getPermissionsByRole(params) {
+    return this.http.get<Response>(
+      `${environment.apiUrlG12Connect.users}/role/permissions`, { headers: header, params }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+
+  getPermissionsActive(){
+    return this.http.get<Response>(
+      `${environment.apiUrlG12Connect.users}/permission/active`, { headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  addRolePermission(payload){
+    return this.http.put<Response>(
+      `${environment.apiUrlG12Connect.users}/role/add-permission`, payload,
+      { headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+  
+  removeRolePermission(payload){
+    return this.http.put<Response>(
+      `${environment.apiUrlG12Connect.users}/role/delete-permission`, payload,
+      { headers: header }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }

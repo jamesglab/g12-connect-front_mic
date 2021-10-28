@@ -5,11 +5,11 @@ import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
-import { AdminObjectsService } from '../../../../_services/admin-objects.service';
 import { ListObject } from '../../../../_models/object.model';
 
 import { EditObjectComponent } from '../edit-object/edit-object.component';
 import { DeleteItemComponent } from '../../../delete-item/delete-item.component';
+import { AdminRolesService } from 'src/app/modules/administration/_services/admin-roles.service';
 
 @Component({
   selector: 'app-objects-table',
@@ -18,7 +18,6 @@ import { DeleteItemComponent } from '../../../delete-item/delete-item.component'
 })
 export class ObjectsTableComponent implements OnInit {
 
-  private currentUser: any = this._storageService.getItem("user");
 
   @Input() public search: String = "";
   @Input() public reload: boolean = null;
@@ -32,8 +31,7 @@ export class ObjectsTableComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private modalService: NgbModal, private _adminObjectsService: AdminObjectsService,
-    private _storageService: StorageService) { }
+  constructor(private modalService: NgbModal, private _rolesService: AdminRolesService) { }
 
   ngOnInit(): void {
     this.getObjects();
@@ -53,9 +51,8 @@ export class ObjectsTableComponent implements OnInit {
   }
 
   getObjects() {
-    const getObjectsSubscr = this._adminObjectsService
-      .getObjects({ type: 'objectRoles' }).subscribe((res: any) => {
-          res.reverse();
+    const getObjectsSubscr = this._rolesService
+      .getPermissions().subscribe((res: any) => {
           if (!this.dataSource) {
             this.dataSource = new MatTableDataSource<ListObject[]>(res);
             this.dataSource.paginator = this.paginator;
@@ -89,27 +86,7 @@ export class ObjectsTableComponent implements OnInit {
       }
     });
   }
-
-  handleClose(element: ListObject) {
-    const MODAL = this.modalService.open(DeleteItemComponent, {
-      windowClass: 'fadeIn',
-      size: 'sm',
-      backdrop: true,
-      keyboard: true,
-      centered: true
-    })
-    MODAL.componentInstance.item = {
-      type: "objeto", method: "deleteObject", service: "_adminObjectsService",
-      payload: { key: element.value, platform: 'conexion12' }
-    }
-    MODAL.result.then((data) => {
-      if (data == "success") {
-        this.getObjects();
-      }
-    }, err => { });
-  }
-
-  ngOnDestroy() {
+ ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 

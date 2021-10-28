@@ -34,11 +34,12 @@ export class EditRoleComponent implements OnInit {
   }
 
   buildForm() {
+    console.log('tenemos rol',this.role)
     this.editRoleForm = this.fb.group({
       id: [this.role.id, Validators.required],
       name: [this.role.name, [Validators.required, Validators.pattern(/^[a-zA-Z+óÓííéÉáÁ0-9 ]+$/)]],
       description: [this.role.description, [Validators.pattern(/^[a-zA-Z+óÓííéÉáÁ0-9 ]+$/)]],
-      status: [this.role.status.toString()]
+      status: [this.role.status]
     });
   }
 
@@ -52,8 +53,6 @@ export class EditRoleComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    this.form.status.setValue((this.form.status.value) == "true");
-
     const editRoleSubscr = this._adminRolesService
       .editRole(this.editRoleForm.getRawValue()).subscribe((res: Response) => {
         this.isLoading = false;

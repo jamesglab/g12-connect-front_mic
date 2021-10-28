@@ -9,7 +9,7 @@ import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
 
 import { Response } from 'src/app/modules/auth/_models/auth.model';
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
-import { AdminObjectsService } from '../../../../_services/admin-objects.service';
+import { AdminRolesService } from 'src/app/modules/administration/_services/admin-roles.service';
 
 @Component({
   selector: 'app-edit-object',
@@ -18,7 +18,6 @@ import { AdminObjectsService } from '../../../../_services/admin-objects.service
 })
 export class EditObjectComponent implements OnInit {
 
-  private currentUser: any = this._storageService.getItem("user");
   public object: any = null;
   public editObjectForm: FormGroup;
   public objectTypes: any[] = [];
@@ -28,11 +27,10 @@ export class EditObjectComponent implements OnInit {
 
   constructor(public modal: NgbActiveModal, private snackBar: MatSnackBar,
     public fb: FormBuilder, private cdr: ChangeDetectorRef,
-    private _adminObjectsService: AdminObjectsService, private _storageService: StorageService) { }
+    private _adminObjectsService: AdminRolesService, private _storageService: StorageService) { }
 
   ngOnInit(): void {
     this.buildForm();
-    this.getObjectTypes();
   }
 
   buildForm() {
@@ -40,7 +38,7 @@ export class EditObjectComponent implements OnInit {
       id: [this.object.id, Validators.required],
       value: [{ value: this.object.value, disabled: true }, [Validators.required]],
       type: [this.object.type],
-      status: [this.object.status.toString()],
+      status: [this.object.status],
       description: [this.object.description, [Validators.pattern(/^[a-zA-Z0-9+,.óÓííéÉáÁúÚ ]+$/)]]
     });
   }
@@ -49,16 +47,6 @@ export class EditObjectComponent implements OnInit {
     return this.editObjectForm.controls;
   }
 
-  getObjectTypes() {
-    // const getUserTypesSubscr = this._adminObjectsService
-    //   .getObjectTypes().subscribe((res: Response) => {
-    //     if (res.result) {
-    //       this.objectTypes = res.entity;
-    //       this.cdr.detectChanges();
-    //     }
-    //   }, err => { throw err; });
-    // this.unsubscribe.push(getUserTypesSubscr);
-  }
 
   onSubmit() {
 
@@ -66,10 +54,8 @@ export class EditObjectComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    this.form.status.setValue((this.form.status.value) == "true");
-
     const createRoleSubscr = this._adminObjectsService
-      .editObject(this.editObjectForm.getRawValue()).subscribe((res: Response) => {
+      .updatePermission(this.editObjectForm.getRawValue()).subscribe((res: Response) => {
         this.isLoading = false;
         this.showMessage(1, "¡El objeto ha sido modificado con exito!");
         this.modal.close('success');

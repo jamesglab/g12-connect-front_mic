@@ -21,56 +21,13 @@ export class AdminUsersService {
 
   constructor(private http: HttpClient, private _storageService: StorageService) { }
 
-  // getHeader(): HttpHeaders {
-  //   let token: string = this._storageService.getItem("user").token;
-  //   let _header: HttpHeaders = header.append("Authorization", `Bearer ${token}`);
-  //   return _header;
-  // }
+
   handleReload(){ this.reload.emit(true); }
 
-  // getUserTypes(): Observable<Response> {
-  //   return this.http.get<Response>(
-  //     `${environment.apiUrl}Sso/ListTypeUser`, { headers: header }).pipe(
-  //       map((res: Response) => {
-  //         return res;
-  //       }),
-  //       catchError(handleError)
-  //     );
-  // }
-
-  // createUserType(type: UserType): Observable<Response> {
-  //   return this.http.post<Response>(
-  //     `${environment.apiUrl}Sso/CreateTypeUser`, JSON.stringify(type), { headers: header }).pipe(
-  //       map((res: Response) => {
-  //         return res;
-  //       }),
-  //       catchError(handleError)
-  //     );
-  // }
-
-  // editUserType(type: UserType): Observable<Response> {
-  //   return this.http.post<Response>(
-  //     `${environment.apiUrl}Sso/EditTypeUser`, JSON.stringify(type), { headers: header }).pipe(
-  //       map((res: Response) => {
-  //         return res;
-  //       }),
-  //       catchError(handleError)
-  //     );
-  // }
-
-  // deleteUserType(type: { IdTypeUser: number, UserModified: number }): Observable<Response> {
-  //   return this.http.post<Response>(
-  //     `${environment.apiUrl}Sso/DeleteTypeUser`, JSON.stringify(type), { headers: header }).pipe(
-  //       map((res: Response) => {
-  //         return res;
-  //       }),
-  //       catchError(handleError)
-  //     );
-  // }
 
   getUsers(): Observable<any> { //BURNED
     return this.http.get<any>(
-      `${environment.apiUrlG12Connect}users/user/filter`, { headers: header, 
+      `${environment.apiUrlG12Connect.users}/filter`, { headers: header, 
       params: this.filter }).pipe(
         map((res: any) => {
           return res;
@@ -79,19 +36,10 @@ export class AdminUsersService {
       );
   }
 
-  // getUserObjects(userId: number): Observable<Response> {
-  //   return this.http.get<Response>(
-  //     `${environment.apiUrl}Sso/ListUserObject/${userId}`, { headers: header }).pipe(
-  //       map((res: Response) => {
-  //         return res;
-  //       }),
-  //       catchError(handleError)
-  //     );
-  // }
 
   getUserRoles(userId: number): Observable<Response> {
     return this.http.get<Response>(
-      `${environment.apiUrlG12Connect}users/user/roles`, 
+      `${environment.apiUrlG12Connect.users}/roles`, 
       { headers: header, params: { id: userId.toString() } }).pipe(
         map((res: Response) => {
           return res;
@@ -122,7 +70,7 @@ export class AdminUsersService {
 
   createUserRole(payload: { user: number, role: number }){//BURNED
     return this.http.put<Response>(
-      `${environment.apiUrlG12Connect}users/user/add-role`, payload, { headers: header }).pipe(
+      `${environment.apiUrlG12Connect.users}/add-role`, payload, { headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),
@@ -139,20 +87,10 @@ export class AdminUsersService {
         catchError(handleError)
       );
   }
-
-  // deleteUser(user: { IdUser: number, UserModified: number }): Observable<Response> {
-  //   return this.http.post<Response>(
-  //     `${environment.apiUrl}Sso/DeleteUser`, JSON.stringify(user), { headers: header }).pipe(
-  //       map((res: Response) => {
-  //         return res;
-  //       }),
-  //       catchError(handleError)
-  //     );
-  // }
-
+  
   deleteUserRole(payload: { user: number, role: number }) { //BURNED
     return this.http.put<any>(
-      `${environment.apiUrlG12Connect}users/user/delete-role`, payload, { headers: header }).pipe(
+      `${environment.apiUrlG12Connect.users}/delete-role`, payload, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),

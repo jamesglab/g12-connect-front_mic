@@ -17,6 +17,7 @@ import { EditUserComponent } from '../edit-user/edit-user.component';
 import { UserObjectsComponent } from '../user-objects/user-objects.component';
 import { UserRolesComponent } from '../user-roles/user-roles.component';
 import { DeleteItemComponent } from '../../../delete-item/delete-item.component';
+import { AdminRolesService } from 'src/app/modules/administration/_services/admin-roles.service';
 
 @Component({
   selector: 'app-users-table',
@@ -32,18 +33,20 @@ export class UsersTableComponent implements OnInit {
 
   // public isLoading: boolean;
   private unsubscribe: Subscription[] = [];
+  private roles: [] = [];
 
   public displayedColumns: String[] = ['idUser', 'name', 'email', 'country', 'status', 'actions'];
   public dataSource: MatTableDataSource<any[]>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private modalService: NgbModal, private snackBar: MatSnackBar, 
-    private _adminUsersService: AdminUsersService, private _storageService: StorageService) { }
+  constructor(private modalService: NgbModal, private snackBar: MatSnackBar,
+    private _adminUsersService: AdminUsersService, private _roleService: AdminRolesService, private _storageService: StorageService) { }
 
   ngOnInit(): void {
     // this.getUsers();
     this.subscribeToChanges();
+    this.getRoles();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -70,7 +73,7 @@ export class UsersTableComponent implements OnInit {
           } else {
             this.dataSource.data = res;
           }
-        }else{
+        } else {
           this.showMessage(3, "Lo sentimos, no hemos encontrado usuarios.")
         }
         this.endLoading.emit(false);
@@ -78,24 +81,15 @@ export class UsersTableComponent implements OnInit {
     this.unsubscribe.push(getUserTypesSubscr);
   }
 
+  getRoles() {
+    this._roleService.getRoles().subscribe(res => {
+      this.roles = res;
+    })
+  }
   applyFilter() {
     this.dataSource.filter = this.search.trim().toLowerCase();
     if (this.dataSource.paginator) { this.dataSource.paginator.firstPage(); }
   }
-
-  // handleAddObjects(element: ListUser) {
-  //   const MODAL = this.modalService.open(UserObjectsComponent, {
-  //     windowClass: 'fadeIn',
-  //     size: 'lg',
-  //     backdrop: true,
-  //     keyboard: true,
-  //     centered: true
-  //   })
-  //   MODAL.componentInstance.user = element;
-  //   MODAL.result.then((data) => {
-  //     if (data == "success") {}
-  //   });
-  // }
 
   handleAddRole(element: ListUser) {
     const MODAL = this.modalService.open(UserRolesComponent, {
@@ -106,6 +100,7 @@ export class UsersTableComponent implements OnInit {
       centered: true
     })
     MODAL.componentInstance.user = element;
+    MODAL.componentInstance.roles = this.roles;
     MODAL.result.then((data) => {
       if (data == "success") { }
     });
