@@ -66,7 +66,7 @@ export class EditEventComponent implements OnInit {
       visibility: [this.event.visibility[0]],
       limit: [this.event.limit],
       location: [],
-      status: [this.event.status.toString()],
+      status: [this.event.status],
     });
     if (this.event.image.url != '' && this.event.image.url) {
       this.form.base64.setValue(this.event.image.url);
@@ -141,8 +141,7 @@ export class EditEventComponent implements OnInit {
     if (cuts) {
       const sendData = this.editEventForm.getRawValue();
       delete sendData.categorieAdd;
-      const addEventSubscr = this.eventsService
-        .update(
+      const addEventSubscr = this.eventsService.update(
           { transaction_info: sendData, cuts, image: this.event.image },
           this.uploadImage
         )

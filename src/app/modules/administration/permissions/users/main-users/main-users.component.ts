@@ -17,53 +17,40 @@ export class MainUsersComponent implements OnInit {
   public submitted = false;
   public isLoading = false;
 
-  constructor(private modalService: NgbModal, private fb: FormBuilder, 
+  constructor(private modalService: NgbModal, private fb: FormBuilder,
     private adminUsersService: AdminUsersService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.buildForm();
+
   }
 
+  // CREAMOS EL FOMULARIO REACTIVO CON LOS CAMPOS QUE NECESITAMOS 
   buildForm(): void {
     this.filterForm = this.fb.group({
-      filter: [null, Validators.required],
-      identification: [null],
-      email: [null],
-      status: [null]
+      filter: [null, Validators.required], //TIPO DE FILTRO QUE VAMOS A VALIDAR  *'0' = 'IDENTIFICACION' *'1' =EMAIL
+      identification: [null],//FILTRO DE IDENTIFICACION
+      email: [null],//FUILTRO DE EMAIL
     })
     this.cdr.detectChanges();
   }
 
-  get form() {
-    return this.filterForm.controls;
-  }
-
-  numberOnly(event): boolean {
-    return numberOnly(event);
-  }
-
+  //LIMPIAMOS LOS FILTROS PARA REINICIAR LOS VALORES
   cleanFilter() {
     this.form.identification.setValue(null);
     this.form.identification.setErrors(null);
     this.form.email.setValue(null);
     this.form.email.setErrors(null);
-    this.form.status.setValue(null);
-    this.form.status.setErrors(null);
   }
 
+  // VALIDAMOS LOS CAMPOS DE CADA FILTRO
   validateFields() {
-    switch(this.form.filter.value){
+    switch (this.form.filter.value) {
       case '0':
-        if(!this.form.identification.value)
-        this.form.identification.setErrors({ required: true });
+          this.form.identification.setValidators([Validators.required]);///VALIDAMOS QUE LA IDENTIFICACION SEA REQUERIDA
         break;
       case '1':
-        if(!this.form.email.value)
-        this.form.email.setErrors({ required: true });
-        break;
-      case '2':
-        if(this.form.status.value === null)
-        this.form.status.setErrors({ required: true });
+        this.form.email.setValidators([Validators.required])//VALIDAMOS QUE EL EMAIL SEA REQUERIDO
         break;
     }
   }
@@ -76,8 +63,8 @@ export class MainUsersComponent implements OnInit {
     }
     this.isLoading = true;
     let filter = {};
-    for(let i in this.filterForm.getRawValue()){
-      if(this.filterForm.getRawValue()[i] && i != "filter"){
+    for (let i in this.filterForm.getRawValue()) {
+      if (this.filterForm.getRawValue()[i] && i != "filter") {
         filter[i] = this.filterForm.getRawValue()[i];
       }
     }
@@ -85,9 +72,9 @@ export class MainUsersComponent implements OnInit {
     this.adminUsersService.handleReload(); //TO MAKE QUERY THROW TABLE COMPONENT
   }
 
-  handleCreate(event: any){
+  handleCreate(event: any) {
     event.preventDefault();
-    const MODAL = this.modalService.open(AddUserComponent,{
+    const MODAL = this.modalService.open(AddUserComponent, {
       windowClass: 'fadeIn',
       size: 'xl',
       backdrop: true,
@@ -96,13 +83,20 @@ export class MainUsersComponent implements OnInit {
     })
     // MODAL.componentInstance.leaderItem = element;
     MODAL.result.then((data) => {
-      if(data == 'success'){
+      if (data == 'success') {
         this.adminUsersService.handleReload();
       }
     }, (reason) => {
-      console.log("Reason", reason)
-      // on dismiss
     });
   }
 
+  //RETORNAMOS LOS CONTROLES DEL FORMULARIO
+  get form() {
+    return this.filterForm.controls;
+  }
+
+  //METODO PARA VALIDAR QUE SOLO SE INGRESEN NUMEROS EN UN INPUT
+  numberOnly(event): boolean {
+    return numberOnly(event);
+  }
 }

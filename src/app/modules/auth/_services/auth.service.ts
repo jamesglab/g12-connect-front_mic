@@ -97,7 +97,7 @@ export class AuthService implements OnDestroy {
       map((auth: Response) => {
         this.isLoadingSubject.next(false);
         return auth;
-      }), catchError((err) => { console.error('err', err); return of(err.error); }),
+      }), catchError(handleError),
       finalize(() => this.isLoadingSubject.next(false))
     );
   }

@@ -14,7 +14,7 @@ export let DynamicAsideMenuConfigOriginal = {
       title: 'Administración',
       root: true,
       show:false,
-      code: "ADM000",
+      code: "ADM1000",
       icon: 'flaticon2-architecture-and-city',
       svg: './assets/media/svg/icons/General/Settings-2.svg',
       bullet: 'dot',
@@ -24,14 +24,14 @@ export let DynamicAsideMenuConfigOriginal = {
           title: 'Gestión Permisos',
           bullet: 'dot',
           show:false,
-          code: "ADM010",
+          code: "ADM1100",
           submenu: [
             {
               title: 'Usuarios',
               root: true,
               show:false,
               bullet: 'dot',
-              code: "ADM011",
+              code: "ADM1110",
               page: '/admin/permisses/users',
             },
             {
@@ -39,7 +39,7 @@ export let DynamicAsideMenuConfigOriginal = {
               root: true,
               show:false,
               bullet: 'dot',
-              code: "ADM012",
+              code: "ADM1120",
               page: '/admin/permisses/roles'
             },
             {
@@ -47,7 +47,7 @@ export let DynamicAsideMenuConfigOriginal = {
               root: true,
               show:false,
               bullet: 'dot',
-              code: "ADM013",
+              code: "ADM1130",
               page: '/admin/permisses/objects'
             }
           ]
@@ -57,7 +57,7 @@ export let DynamicAsideMenuConfigOriginal = {
     {
       title: 'Donaciones MCI',
       root: true,
-      code: "DO000",
+      code: "DO1000",
       alignment: 'left',
       svg: './assets/media/svg/icons/Shopping/Dollar.svg',
       page: '/donations',
@@ -68,7 +68,7 @@ export let DynamicAsideMenuConfigOriginal = {
           root: true,
           show:false,
           bullet: 'dot',
-          code: "DO010",
+          code: "DO1100",
           page: '/donations/dashboard'
         },
         {
@@ -76,7 +76,7 @@ export let DynamicAsideMenuConfigOriginal = {
           root: true,
           show:false,
           bullet: 'dot',
-          code: "DO020",
+          code: "DO1200",
           page: '/donations/reports'
         }
       ]
@@ -84,7 +84,7 @@ export let DynamicAsideMenuConfigOriginal = {
     {
       title: 'Eventos G12',
       root: true,
-      code: "EVT000",
+      code: "EVT1000",
       alignment: 'left',
       svg: './assets/media/svg/icons/Shopping/Ticket.svg',
       page: '/g12events',
@@ -95,7 +95,7 @@ export let DynamicAsideMenuConfigOriginal = {
           root: true,
           show:false,
           bullet: 'dot',
-          code: "EVT010",
+          code: "EVT1100",
           page: '/g12events/home'
         },
         {
@@ -103,7 +103,7 @@ export let DynamicAsideMenuConfigOriginal = {
           root: true,
           show:false,
           bullet: 'dot',
-          code: "EVT020",
+          code: "EVT1200",
           page: '/g12events/add'
         },
         {
@@ -111,7 +111,7 @@ export let DynamicAsideMenuConfigOriginal = {
           root: true,
           show:false,
           bullet: 'dot',
-          code: "EVT030",
+          code: "EVT1300",
           page: '/g12events/reports'
         },
         {
@@ -119,7 +119,7 @@ export let DynamicAsideMenuConfigOriginal = {
           root: true,
           show:false,
           bullet: 'dot',
-          code: "EVT030",
+          code: "EVT1400",
           page: '/g12events/users'
         }
       ]

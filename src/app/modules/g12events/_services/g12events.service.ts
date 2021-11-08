@@ -155,6 +155,7 @@ export class G12eventsService {
   }
 
   getFormUpdate(data: sendDonation, updoadImage): FormData {
+    console.log('llego data')
     const send_data = new FormData();
     if (updoadImage) {
       send_data.append('image', data.transaction_info.image);
@@ -197,7 +198,9 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
+
   update(data: sendDonation, updateImage) {
+    console.log('ejecutamos data',data)
     return this.http
       .put<any>(
         `${environment.apiUrlG12Connect.donations}`,

@@ -1,19 +1,12 @@
 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { DynamicAsideMenuConfigOriginal } from '../../configs/dynamic-aside-menu.config';
-import { validatePermission } from 'src/app/_helpers/tools/permission.tool';
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { map, catchError } from 'rxjs/operators';
-
-
-
 import { handleError, header } from 'src/app/_helpers/tools/header.tool';
 import { environment } from 'src/environments/environment';
-import { decrypt, encrypt } from 'src/app/_helpers/tools/encrypt.tool';
 
 const emptyMenuConfig = {
   items: []
@@ -35,9 +28,12 @@ export class DynamicAsideMenuService {
   public loadMenu() {
 
     this.getPermissionsUser().subscribe(res => {
+
       const DynamicAsideMenuConfig = DynamicAsideMenuConfigOriginal;
       // ASIGNAMOS LOS VALORES DEL OBJETO EN UN ARRAY
       let permissionsArray = Object.keys(res);
+      console.log(permissionsArray)
+
       // RECORREMOS LOS MODULOS PRINCIPALES
       DynamicAsideMenuConfig.items.map((item: any) => {
         // VALIDAMOS QUE EL PERMISO PARA ACCEDER AL MODULO SE ENCUENTRE 
@@ -59,6 +55,8 @@ export class DynamicAsideMenuService {
           });
         }
       });
+
+      
       this.setMenu(DynamicAsideMenuConfig);
 
     }, err => {
@@ -76,7 +74,7 @@ export class DynamicAsideMenuService {
       .get<any>(`${environment.apiUrlG12Connect.users}/permissions`)
       .pipe(
         map((res) => {
-          // console.log('respuesta pipe',res)
+          console.log('respuesta pipe',res)
           return res;
         }),
         catchError(handleError)

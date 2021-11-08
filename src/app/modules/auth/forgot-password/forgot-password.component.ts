@@ -92,7 +92,7 @@ export class ForgotPasswordComponent implements OnInit {
         }
       },err=>{
         console.log('trenemos error',err)
-        Swal.fire('Correo Enviado', "Solicitud enviada el correo", 'success');
+        Swal.fire('Error', "No pudimos enviar el correo", 'error');
 
       })
     this.unsubscribe.push(forgotPassSubscr);
