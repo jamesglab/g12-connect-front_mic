@@ -1,15 +1,12 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
 import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
 import { numberOnly } from 'src/app/_helpers/tools/validators.tool';
-
 import { Response } from 'src/app/modules/auth/_models/auth.model';
-import { StorageService } from 'src/app/modules/auth/_services/storage.service';
 import { AdminUsersService } from '../../../../_services/admin-users.service';
 
 @Component({
@@ -28,15 +25,13 @@ export class EditUserComponent implements OnInit {
   private unsubscribe: Subscription[] = [];
 
   constructor(public modal: NgbActiveModal, private snackBar: MatSnackBar,
-    public fb: FormBuilder, private cdr: ChangeDetectorRef, private _storageService: StorageService,
-    private _adminUserService: AdminUsersService) { }
+    public fb: FormBuilder,private _adminUserService: AdminUsersService) { }
 
   ngOnInit(): void {
-    console.log("QUÉ PASA TIO", this.user);
     this.buildForm();
-    this.getUserTypes();
   }
 
+  //CREAMOS EL FORMULARIO Y PASAMOS LOS VALORES DEL USUARIO A EDITAR
   buildForm() {
     this.editUserForm = this.fb.group({
       id: [this.user.id],
@@ -44,11 +39,12 @@ export class EditUserComponent implements OnInit {
       name: [{ value: this.user.name, disabled: true }], //FOR RENDER
       last_name: [{ value: this.user.last_name, disabled: true }], // FOR RENDER
       email: [this.user.email, [Validators.required, Validators.email]],
-      phone: [this.user.phone,[Validators.required, Validators.maxLength(10)]],
+      phone: [this.user.phone, [Validators.required, Validators.maxLength(10)]],
       status: [this.user.status.toString()]
     });
   }
 
+  //ACCEDEMOS A LOS CONTROLES DEL FORMULARIO
   get form() {
     return this.editUserForm.controls;
   }
@@ -57,46 +53,30 @@ export class EditUserComponent implements OnInit {
     return numberOnly(event);
   }
 
-  getUserTypes() {
-    // const getUserTypesSubscr = this._adminUserService
-    //   .getUserTypes().subscribe((res: Response) => {
-    //     if (res.result) {
-    //       this.userTypes = res.entity;
-    //       this.setUserType();
-    //       this.cdr.detectChanges();
-    //     }
-    //   }, err => { throw err; });
-    // this.unsubscribe.push(getUserTypesSubscr);
-  }
-
-  setUserType(){
-    // this.userTypes.map(type => {
-    //   if(parseInt(this.form.TypeUser.value) == type.idType){
-    //     this.form.Type.setValue(type.name);
-    //   }
-    // })
-  }
-
+  //EDITAMOS EL USUARIO
   onSubmit() {
-
+    //VALIDAMOS QUE EL FORMULARIO TENGA ERRORES Y RETORNAMOS SI EXISTE ALGUN ERROR
     if (this.editUserForm.invalid) {
       return
     }
 
+    //VALIDOS EL ESTADO DEL USUARIO
     this.form.status.setValue((this.form.status.value) == "true");
-
+    //ENVIAMOS LOS DATOS QUE NECESITAMOS ACTUALIZAR
     const editUserSubscr = this._adminUserService
       .editUser(this.editUserForm.getRawValue()).subscribe((res: Response) => {
-            this.showMessage(1,"¡El usuario ha sido modificado correctamente!");
-            this.modal.close('success');
-      }, err => { this.showMessage(3, err.error.message); throw err;});
+        this.showMessage(1, "¡El usuario ha sido modificado correctamente!");
+        this.modal.close('success');
+      }, err => { this.showMessage(3, err.error.message); throw err; });
     this.unsubscribe.push(editUserSubscr);
   }
 
+  //MOSTRAMOS UN MENSAJE DE ERROR
   showMessage(type: number, message?: string) {
     this.snackBar.openFromComponent(NotificationComponent, notificationConfig(type, message));
   }
 
+  //ELIMINAMOS LAS SUBSCRIPCIONES
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }

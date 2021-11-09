@@ -15,13 +15,12 @@ export class MainObjectsComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  //METODO PARA ABRIR MODAL DE CREACION DE PERMISO 
   handleCreate(event: any){
     event.preventDefault();
+    //CREAMOS EL MODAL Y ABRIMOS EL COMPONENTE DE AddObjectComponent 
     const MODAL = this.modalService.open(AddObjectComponent,{
-      windowClass: 'fadeIn',
       size: 'sm',
-      backdrop: true,
-      keyboard: true,
       centered: true
     })
     // MODAL.componentInstance.leaderItem = element;

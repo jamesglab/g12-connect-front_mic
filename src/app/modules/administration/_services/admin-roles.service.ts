@@ -20,12 +20,9 @@ export class AdminRolesService {
 
   constructor(private http: HttpClient, private _storageService: StorageService) { }
 
-  // getHeader(): HttpHeaders {
-  //   let token: string = this._storageService.getItem("user").token;
-  //   let _header: HttpHeaders = header.append("Authorization", `Bearer ${token}`);
-  //   return _header;
-  // }
-  handleReload() { this.reload.emit(true); }
+  handleReload() {
+    this.reload.emit(true);
+  }
 
   getRoles(): Observable<any> {//BURNED
     return this.http.get<any>(
@@ -121,7 +118,7 @@ export class AdminRolesService {
   }
 
 
-  getPermissionsActive(){
+  getPermissionsActive() {
     return this.http.get<Response>(
       `${environment.apiUrlG12Connect.users}/permission/active`, { headers: header }).pipe(
         map((res: Response) => {
@@ -131,7 +128,7 @@ export class AdminRolesService {
       );
   }
 
-  addRolePermission(payload){
+  addRolePermission(payload) {
     return this.http.put<Response>(
       `${environment.apiUrlG12Connect.users}/role/add-permission`, payload,
       { headers: header }).pipe(
@@ -141,8 +138,8 @@ export class AdminRolesService {
         catchError(handleError)
       );
   }
-  
-  removeRolePermission(payload){
+
+  removeRolePermission(payload) {
     return this.http.put<Response>(
       `${environment.apiUrlG12Connect.users}/role/delete-permission`, payload,
       { headers: header }).pipe(

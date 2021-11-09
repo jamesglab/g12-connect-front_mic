@@ -33,25 +33,7 @@ export class RolesTableComponent implements OnInit {
     this.getAllPermissions();
   }
 
-  getAllPermissions() {
-    this._adminRolesService.getPermissionsActive().subscribe((res: any) => {
-      this.allPermissions = res
-    })
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.search) {
-      if (!changes.search.firstChange) {
-        this.applyFilter();
-      }
-    }
-  }
-
-  subscribeToChanges() {
-    const subscr = this._adminRolesService.reload.subscribe((res) => this.getRoles());
-    this.unsubscribe.push(subscr);
-  }
-
+  // CONSULTAMOS LOS ROLES
   getRoles() {
     const getRoleSubscr = this._adminRolesService
       .getRoles().subscribe((res: any) => {
@@ -65,39 +47,62 @@ export class RolesTableComponent implements OnInit {
     this.unsubscribe.push(getRoleSubscr);
   }
 
+  // CONSULTAMOS TODOS LOS PERMISOS DE LA PLATAFORMA
+  getAllPermissions() {
+    //CONSUMIMOS EL ENDPOINT PARA OBTENER TODOS LOS PERMISOS DE LA PLATAFORMA
+    this._adminRolesService.getPermissionsActive().subscribe((res: any) => {
+      //AGREGAMOS LA RESPUESTA DE TODOS LOS PERMISOS DE LA PLATAFORMA
+      this.allPermissions = res
+    })
+  }
+
+  // VALIDAMOS LOS CAMBIOS
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.search) {
+      //SI CAMBIARON LOS FILTROS APLICAMOS EL FILTRO
+      if (!changes.search.firstChange) {
+        //APLICAMOS LOS FILTROS
+        this.applyFilter();
+      }
+    }
+  }
+
+  //NOS SUBSCRIBIMOS A LOS CAMBIOS DEL OUTUPT DEL SERVICIO DEL RELOAD
+  subscribeToChanges() {
+    const subscr = this._adminRolesService.reload.subscribe((res) => this.getRoles());
+    this.unsubscribe.push(subscr);
+  }
+
+  //BUSCAMOS EN LA TABLA LOS LOS VALORES A BBUSCAR
   applyFilter() {
     this.dataSource.filter = this.search.trim().toLowerCase();
     if (this.dataSource.paginator) { this.dataSource.paginator.firstPage(); }
   }
 
+  // CONSULTAMOS LOS PERMISOS DE LA PLATAFORMA
   getPermissions(element: Role) {
+    //CONSUMIMOS EL ENDPOINT QUE NOS RETORNA LOS PERMISOS QUE TIENE UN ROL
     this._adminRolesService.getPermissionsByRole({ id: element.id }).subscribe(res => {
       const MODAL = this.modalService.open(RolesObjectsComponent, {
-        windowClass: 'fadeIn',
-        size: 'lg',
-        backdrop: true,
-        keyboard: true,
-        centered: true
+        size: 'lg',//TAMAÑO DEL MODAL
+        centered: true//CENTRAR EL MODAL
       })
-      MODAL.componentInstance.role = res;
-      MODAL.componentInstance.allPermissions = this.allPermissions;
-
+      MODAL.componentInstance.role = res;//AGRREGAMOS EL ROL A LA RESPUESTA
+      MODAL.componentInstance.allPermissions = this.allPermissions; //ANEXAMOS TODOS LOS PERMISOS DE LA PLATAFORMA 
       MODAL.result.then((data) => {
         if (data == "success") { this.getRoles() }
       });
     })
-
   }
 
+  // EDITAREMOS UN ROL
   handleEdit(element: Role) {
+    //CREAMOS MODAL Y ABRIMOS EL COMPONENTE DE EDITAR UN ROL
     const MODAL = this.modalService.open(EditRoleComponent, {
-      windowClass: 'fadeIn',
-      size: 'sm',
-      backdrop: true,
-      keyboard: true,
-      centered: true
+      size: 'sm',//TAMAÑO DEL MODAL
+      centered: true//MODAL CENTRADO
     })
-    MODAL.componentInstance.role = element;
+    MODAL.componentInstance.role = element;//AGREGAMOS A LA VARIABLE 'rol' EL ROL A EDITAR
     MODAL.result.then((data) => {
       if (data == "success") {
         this.getRoles();
@@ -105,6 +110,7 @@ export class RolesTableComponent implements OnInit {
     });
   }
 
+  //ELIMINAMOS LAS SUBSCRIPCIONES
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }

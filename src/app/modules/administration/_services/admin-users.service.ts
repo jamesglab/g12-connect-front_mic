@@ -21,7 +21,7 @@ export class AdminUsersService {
 
   constructor(private http: HttpClient, private _storageService: StorageService) { }
 
-
+//ENVIAMOS EL VALOR DE RECARGAR EN LOS DIFERENTES COMPONENTES QUE USEN EL OUTPUT DE RELOAD
   handleReload(){ this.reload.emit(true); }
 
 
@@ -80,7 +80,7 @@ export class AdminUsersService {
 
   editUser(user: User): Observable<Response> {
     return this.http.put<Response>(
-      `${environment.apiUrlG12Connect}users/user/`, user, { headers: header }).pipe(
+      `${environment.apiUrlG12Connect.users}`, user, { headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),

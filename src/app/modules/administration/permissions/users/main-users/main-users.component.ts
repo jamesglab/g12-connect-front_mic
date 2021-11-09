@@ -1,9 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { numberOnly } from 'src/app/_helpers/tools/validators.tool';
-
-import { AddUserComponent } from '../components/add-user/add-user.component';
 import { AdminUsersService } from '../../../_services/admin-users.service';
 
 @Component({
@@ -17,12 +14,11 @@ export class MainUsersComponent implements OnInit {
   public submitted = false;
   public isLoading = false;
 
-  constructor(private modalService: NgbModal, private fb: FormBuilder,
+  constructor(private fb: FormBuilder,
     private adminUsersService: AdminUsersService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.buildForm();
-
   }
 
   // CREAMOS EL FOMULARIO REACTIVO CON LOS CAMPOS QUE NECESITAMOS 
@@ -31,7 +27,8 @@ export class MainUsersComponent implements OnInit {
       filter: [null, Validators.required], //TIPO DE FILTRO QUE VAMOS A VALIDAR  *'0' = 'IDENTIFICACION' *'1' =EMAIL
       identification: [null],//FILTRO DE IDENTIFICACION
       email: [null],//FUILTRO DE EMAIL
-    })
+    });
+    //DETECTAMO9S LOS CAMBIOS PARA RENDERIZARLOS EN EL HTML
     this.cdr.detectChanges();
   }
 
@@ -56,38 +53,27 @@ export class MainUsersComponent implements OnInit {
   }
 
   onSubmit(): void {
+    // MOSTRAMOS EL SUBMITTED PARA VISUALIZAR LOS ERRORES
     this.submitted = true;
+    // CREAMOS LOS VALIDADORES DEL FORMULARIO PARA CADA TIPO DE FILTRO
     this.validateFields();
     if (this.filterForm.invalid) {
+      //NO CREAMOS CONSULTA SI EXISTEN ERRORES EN EL FORMULARIO
       return;
     }
+    //PONEMOS LOADER EN TRUE
     this.isLoading = true;
+    //CREAMOS LOS FILTROS 
     let filter = {};
     for (let i in this.filterForm.getRawValue()) {
       if (this.filterForm.getRawValue()[i] && i != "filter") {
+        //CREAMOS LOS FILTROS DE MANERA DINAMICA
         filter[i] = this.filterForm.getRawValue()[i];
       }
     }
+    //CREAMOS EL FILTRO EN EL SERVICIO DE AdminUsersService PARA QUE FILTRE EN LA TABLA
     this.adminUsersService.filter = filter;
     this.adminUsersService.handleReload(); //TO MAKE QUERY THROW TABLE COMPONENT
-  }
-
-  handleCreate(event: any) {
-    event.preventDefault();
-    const MODAL = this.modalService.open(AddUserComponent, {
-      windowClass: 'fadeIn',
-      size: 'xl',
-      backdrop: true,
-      keyboard: true,
-      centered: true
-    })
-    // MODAL.componentInstance.leaderItem = element;
-    MODAL.result.then((data) => {
-      if (data == 'success') {
-        this.adminUsersService.handleReload();
-      }
-    }, (reason) => {
-    });
   }
 
   //RETORNAMOS LOS CONTROLES DEL FORMULARIO
