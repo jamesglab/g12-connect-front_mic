@@ -121,6 +121,22 @@ export let DynamicAsideMenuConfigOriginal = {
           bullet: 'dot',
           code: "EVT1400",
           page: '/g12events/users'
+        },
+        {
+          title: 'Masivos',
+          root: true,
+          show:false,
+          bullet: 'dot',
+          code: "EVT1500",
+          page: '/g12events/massive'
+        },
+        {
+          title: 'Crear Masivo',
+          root: true,
+          show:false,
+          bullet: 'dot',
+          code: "EVT1600",
+          page: '/g12events/create-massive'
         }
       ]
     },

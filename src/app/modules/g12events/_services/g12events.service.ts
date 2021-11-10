@@ -200,7 +200,7 @@ export class G12eventsService {
   }
 
   update(data: sendDonation, updateImage) {
-    console.log('ejecutamos data',data)
+    console.log('ejecutamos data', data)
     return this.http
       .put<any>(
         `${environment.apiUrlG12Connect.donations}`,
@@ -231,7 +231,7 @@ export class G12eventsService {
       );
   }
 
-  getTransactionsForCut(params){
+  getTransactionsForCut(params) {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.reports}/reports-for-cuts`, {
         params,
@@ -243,7 +243,7 @@ export class G12eventsService {
         }),
         catchError(handleError)
       );
-    
+
   }
 
   ///EDIT USERSSS EVENT
@@ -412,17 +412,30 @@ export class G12eventsService {
       );
   }
 
-  cuponsReports(params){
+  cuponsReports(params) {
     return this.http
-    .get<any>(`${environment.apiUrlG12Connect.reports}/codes`, {
-      params,
-      headers: header,
-    })
-    .pipe(
-      map((res: Response) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
+      .get<any>(`${environment.apiUrlG12Connect.reports}/codes`, {
+        params,
+        headers: header,
+      })
+      .pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  getPseBanks() : Observable<any> {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.payments}/transaction/epayco/banks`, {
+        headers: header,
+      })
+      .pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 }

@@ -6,8 +6,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InlineSVGModule } from 'ng-inline-svg';
 
-
-
 import { G12eventsComponent } from './g12events.component';
 import { AddEventComponent } from './add-event/add-event.component';
 import { MainEventsComponent } from './main-events/main-events.component';
@@ -27,7 +25,11 @@ import { AddAssistantComponent } from './users-not-pastor/components/add-assista
 import { GenerateCodesComponent } from './components/generate-codes/generate-codes.component';
 import { changeEventUserComponent } from './users-not-pastor/components/change-event-user/change-event-user.component';
 import { CuponsReportsComponent } from './cupons-reports/cupons-reports.component';
-import { CuponsTableComponent } from './cupons-reports/components/cupons-table/cupons-table.component'
+import { CuponsTableComponent } from './cupons-reports/components/cupons-table/cupons-table.component';
+import { MassiveTableComponent } from './massive-table/massive-table.component';
+import { CreateMassiveComponent } from './create-massive/create-massive.component';
+import { EditMassiveComponent } from './edit-massive/edit-massive.component';
+import { AddUserMassiveComponent } from './massive-table/components/add-user/add-user.component';
 const routes: Routes = [
   {
     path: '',
@@ -35,23 +37,31 @@ const routes: Routes = [
     children: [
       {
         path: 'home',
-        component: MainEventsComponent
+        component: MainEventsComponent,
       },
       {
         path: 'users',
-        component: UsersNotPastorComponent
+        component: UsersNotPastorComponent,
       },
       {
         path: 'add',
-        component: AddEventComponent
+        component: AddEventComponent,
       },
       {
         path: 'reports',
-        component: EventReportsComponent
+        component: EventReportsComponent,
       },
       {
         path: 'cupons',
-        component: CuponsReportsComponent
+        component: CuponsReportsComponent,
+      },
+      {
+        path: 'massive',
+        component: MassiveTableComponent,
+      },
+      {
+        path: 'create-massive',
+        component: CreateMassiveComponent,
       },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
@@ -64,8 +74,28 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [G12eventsComponent, AddEventComponent, MainEventsComponent, EventsTableComponent,
-    EditEventComponent, EventReportsComponent, TableReportsComponent, AddAssistantComponent, ShowUsersCountsComponent, ShowCutCountsComponent, UsersNotPastorComponent, EditReportNotPastorComponent, GenerateCodesComponent, changeEventUserComponent, CuponsReportsComponent, CuponsTableComponent],
+  declarations: [
+    G12eventsComponent,
+    AddEventComponent,
+    MainEventsComponent,
+    EventsTableComponent,
+    EditEventComponent,
+    EventReportsComponent,
+    TableReportsComponent,
+    AddAssistantComponent,
+    ShowUsersCountsComponent,
+    ShowCutCountsComponent,
+    UsersNotPastorComponent,
+    EditReportNotPastorComponent,
+    GenerateCodesComponent,
+    changeEventUserComponent,
+    CuponsReportsComponent,
+    CuponsTableComponent,
+    MassiveTableComponent,
+    CreateMassiveComponent,
+    EditMassiveComponent,
+    AddUserMassiveComponent
+  ],
   imports: [
     CommonModule,
     SharedModule,
@@ -76,7 +106,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     MatChipsModule,
     DragDropModule,
-
-  ]
+  ],
 })
-export class G12eventsModule { }
+export class G12eventsModule {}

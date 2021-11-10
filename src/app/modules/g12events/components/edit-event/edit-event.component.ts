@@ -1,23 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
 import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
 import { getBase64 } from 'src/app/_helpers/tools/utils.tool';
-
 import { G12eventsService } from '../../_services/g12events.service';
-import { Donation } from '../../_models/donation.model';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
 
@@ -27,14 +18,17 @@ import Swal from 'sweetalert2';
   styleUrls: ['./edit-event.component.scss'],
 })
 export class EditEventComponent implements OnInit {
+
+  private unsubscribe: Subscription[] = [];
+  private uploadImage: boolean;
+
   public editEventForm: FormGroup = null;
   public event = null;
   public isLoading: boolean = false;
   public minDate: Date;
   public categories = [];
-  private unsubscribe: Subscription[] = [];
-  cuts = new FormArray([]);
-  private uploadImage: boolean;
+  public cuts = new FormArray([]); //CREAMOS EL FORM ARRAY PARA RECORRER LOS FORMULARIOS REACTIVOS QUE SE CREEN
+
 
   constructor(
     private fb: FormBuilder,
@@ -42,16 +36,17 @@ export class EditEventComponent implements OnInit {
     private eventsService: G12eventsService,
     private router: Router,
     public modal: NgbActiveModal
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    console.log('edit event', this.event);
     this.getCategories();
     this.buildForm();
     this.setCuts();
   }
 
+  // CREAMOS EL FORMULARIO REACTIVO
   buildForm() {
+    //CREAMOS EL FORMULARIO REACTIVO CON SUS CORRESPONDIENTES VALIDADORES Y SETEAMOS LOS DATOS DEL FORMULARIO
     this.editEventForm = this.fb.group({
       id: [this.event.id],
       type: ['G12_EVENT', [Validators.required]],
@@ -68,6 +63,7 @@ export class EditEventComponent implements OnInit {
       location: [],
       status: [this.event.status],
     });
+    //VALIDAMOS LA IMAGEN DEL EVENTO Y LA SETEAMOS EN BASE64
     if (this.event.image.url != '' && this.event.image.url) {
       this.form.base64.setValue(this.event.image.url);
     } else {
@@ -75,40 +71,41 @@ export class EditEventComponent implements OnInit {
         'https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj'
       );
     }
+    //ANEXAMOS EL MIN DATE PRA VALIDAR EL INICIO DEL EVENTO
     this.minDate = new Date(this.event.init_date);
   }
-  getCategories() {
-    this.eventsService.getCategories().subscribe((res: any) => {
-      this.categories = res;
-    });
-  }
 
+  //METODO PARA CREAR LOS CORTES EN EL FORMULARIO
   setCuts() {
+    //RECORREMOS LOS CORTES QUE ESTAN EN 'financialCut' DEL EVENTO
     this.event.financialCut.map((cut) => {
-      this.cuts.push(
-        new FormGroup({
-          id: new FormControl(cut.id ? cut.id : null),
-          name: new FormControl(cut.name),
-          cop: new FormControl(cut.prices.cop),
-          usd: new FormControl(cut.prices.usd),
-          quantity: new FormControl(cut.quantity),
-          date_init: new FormControl(cut.date_init),
-          date_finish: new FormControl(cut.date_finish),
-          is_active: new FormControl(cut.is_active ? true : false),
-          price_group_selected: new FormControl(cut.is_group),
-          price_group_usd: new FormControl(cut.price_group?.usd),
-          price_group_cop: new FormControl(cut.price_group?.cop),
-          quantity_register_max: new FormControl(cut.quantity_register_max),
-          quantity_register_min: new FormControl(cut.quantity_register_min),
-          description: new FormControl(cut.description),
-        })
-      );
+      //PUSHEAMOS LOS FORMULARIOS QUE SE IRAN CREANDO PARA CADA CORTE
+        //CREAMOS EL FORMULARIO REACTIVO CON LOS DIFERENTES CAMPOS DEL CORTE
+        this.addCute(cut)
     });
   }
 
-  get form() {
-    return this.editEventForm.controls;
+  addCute(cut?) {
+    this.cuts.push(
+      new FormGroup({
+        id: new FormControl(cut.id ? cut.id : null),
+        name: new FormControl(cut ? cut.name : null),
+        cop: new FormControl(cut ? cut.prices.cop : null),
+        usd: new FormControl(cut ? cut.prices.usd : null),
+        quantity: new FormControl(cut ? cut.quantity : null),
+        date_init: new FormControl(cut ? cut.date_init : null),
+        date_finish: new FormControl(cut ? cut.date_finish : null),
+        is_active: new FormControl(cut ? cut.is_active ? true : false : null),
+        price_group_selected: new FormControl(cut ? cut.is_group : false),
+        price_group_usd: new FormControl(cut ? cut.price_group?.usd : null),
+        price_group_cop: new FormControl(cut ? cut.price_group?.cop : null),
+        quantity_register_max: new FormControl(cut ? cut.quantity_register_max : 1),
+        quantity_register_min: new FormControl(cut ? cut.quantity_register_min : 1),
+        description: new FormControl(cut ? cut.description : null),
+      })
+    );
   }
+
 
   async fileChangeEvent(image) {
     this.form.image.setValue(image.target.files[0]);
@@ -142,9 +139,9 @@ export class EditEventComponent implements OnInit {
       const sendData = this.editEventForm.getRawValue();
       delete sendData.categorieAdd;
       const addEventSubscr = this.eventsService.update(
-          { transaction_info: sendData, cuts, image: this.event.image },
-          this.uploadImage
-        )
+        { transaction_info: sendData, cuts, image: this.event.image },
+        this.uploadImage
+      )
         .subscribe(
           (res: any) => {
             console.log('UPDATEDDDDDD', res);
@@ -168,28 +165,12 @@ export class EditEventComponent implements OnInit {
     } else {
       this.showMessage(2, 'Hay campos vacios requeridos en los cortes');
     }
-
-    // const addGoSubscr = this._goService.insertGo(this.addGoForm.getRawValue())
-    //   .subscribe((res: Response) => {
-    //     if (res.result) {
-    //       this.showMessage(1, "!La nueva célula ha sido registrada con exito¡");
-    //       this.router.navigate(['send'])
-    //     } else {
-    //       this.form.creationUser.setValue(this.currentUser.idUser);
-    //       this.form.modificationUser.setValue(this.currentUser.idUser);
-    //       this.showMessage(res.notificationType, res.message[0])
-    //     }
-    //   }, err => {
-    //     this.form.creationUser.setValue(this.currentUser.idUser);
-    //     this.form.modificationUser.setValue(this.currentUser.idUser);
-    //     this.showMessage(3, err.error.message);
-    //   })
-    // this.unsubscribe.push(addGoSubscr);
   }
+
   cutsToSend() {
     let newCuts = [];
     let error = false;
-    
+
     this.cuts.value.map((cut) => {
       if (cut.price_group_selected) {
         if (
@@ -197,8 +178,8 @@ export class EditEventComponent implements OnInit {
           cut.quantity != '' &&
           cut.date_init != '' &&
           cut.date_finish &&
-          cut.price_group_cop !=''&&
-          cut.price_group_usd   !=''&&
+          cut.price_group_cop != '' &&
+          cut.price_group_usd != '' &&
           cut.quantity_register_max != '' &&
           cut.quantity_register_min != '' &&
           cut.description != ''
@@ -217,7 +198,7 @@ export class EditEventComponent implements OnInit {
             quantity_register_max: cut.quantity_register_max,
             quantity_register_min: cut.quantity_register_min,
             is_group: cut.price_group_selected,
-            description :cut.description
+            description: cut.description
 
           });
         } else {
@@ -245,10 +226,9 @@ export class EditEventComponent implements OnInit {
             quantity_register_max: cut.quantity_register_max,
             quantity_register_min: cut.quantity_register_min,
             is_group: cut.price_group_selected,
-            description :cut.description
+            description: cut.description
           });
         } else {
-          console.log('cut ',cut)
           error = true;
         }
       }
@@ -261,26 +241,8 @@ export class EditEventComponent implements OnInit {
     }
   }
 
-  addCute() {
-    this.cuts.push(
-      new FormGroup({
-        is_active: new FormControl(true),
-        id: new FormControl(null),
-        name: new FormControl(''),
-        cop: new FormControl(''),
-        usd: new FormControl(''),
-        quantity: new FormControl(''),
-        date_init: new FormControl(''),
-        date_finish: new FormControl(''),
-        price_group_selected: new FormControl(false),
-        price_group_usd: new FormControl(''),
-        price_group_cop: new FormControl(''),
-        quantity_register_max: new FormControl(1),
-        quantity_register_min: new FormControl(1),
-        description: new FormControl(''),
-      })
-    );
-  }
+
+
   deleteCute(i) {
     console.log(this.cuts.controls[i]);
 
@@ -293,9 +255,7 @@ export class EditEventComponent implements OnInit {
     );
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.forEach((sb) => sb.unsubscribe());
-  }
+
 
   drop(event: CdkDragDrop<[]>) {
     moveItemInArray(
@@ -318,4 +278,20 @@ export class EditEventComponent implements OnInit {
       this.editEventForm.get('categorieAdd').setValue('');
     }
   }
+
+  //CONSULTAMOS LAS CATEFORIAS DEL EVENTO
+  getCategories() {
+    this.eventsService.getCategories().subscribe((res: any) => {
+      this.categories = res;
+    }, err => { console.log('tenemos error', err) });
+  }
+
+  get form() {
+    return this.editEventForm.controls;
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.forEach((sb) => sb.unsubscribe());
+  }
+
 }

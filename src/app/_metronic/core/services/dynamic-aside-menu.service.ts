@@ -32,8 +32,6 @@ export class DynamicAsideMenuService {
       const DynamicAsideMenuConfig = DynamicAsideMenuConfigOriginal;
       // ASIGNAMOS LOS VALORES DEL OBJETO EN UN ARRAY
       let permissionsArray = Object.keys(res);
-      console.log(permissionsArray)
-
       // RECORREMOS LOS MODULOS PRINCIPALES
       DynamicAsideMenuConfig.items.map((item: any) => {
         // VALIDAMOS QUE EL PERMISO PARA ACCEDER AL MODULO SE ENCUENTRE 
@@ -74,7 +72,6 @@ export class DynamicAsideMenuService {
       .get<any>(`${environment.apiUrlG12Connect.users}/permissions`)
       .pipe(
         map((res) => {
-          console.log('respuesta pipe',res)
           return res;
         }),
         catchError(handleError)

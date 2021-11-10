@@ -1,0 +1,76 @@
+<div class="row">
+  <div class="col-xl-12 col-sm-12">
+    <div class="card card-custom example example-compact gutter-b">
+      <div class="card-header d-flex">
+        <div class="w-75">
+          <div class="card-title d-block pb-2">
+            <h3 class="card-label pt-4 pb-4">Masivos</h3>
+          </div>
+        </div>
+        <div class="card-toolbar">
+          <div class="example-tools justify-content-center">
+            <img src="assets/media/svg/icons/Shopping/Ticket.svg" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-xl-1 col-sm-1">
+            <button type="button" class="btn btn-primary" matTooltip="Crear Masivos"
+              [routerLink]="['/g12events/create-massive']">
+              <mat-icon style="font-size: 25px;">library_books</mat-icon>
+            </button>
+          </div>
+          <div class="col-xl-6 col-sm-6">
+            <mat-form-field class="example-full-width">
+              <mat-icon class="mr-2" color="primary" matPrefix>search</mat-icon>
+              <input matInput type="search" autocomplete="off" placeholder="Buscar...">
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <div class="row mt-5">
+
+          <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="event">
+              <th mat-header-cell *matHeaderCellDef>Evento</th>
+              <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef> </th>
+              <td mat-cell *matCellDef="let element">Cantidad {{element.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="cut">
+              <th mat-header-cell *matHeaderCellDef> Corte </th>
+              <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef> Estado</th>
+              <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="detail">
+              <th mat-header-cell *matHeaderCellDef> Detalle</th>
+              <td mat-cell *matCellDef="let element"> 
+                <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="addUser()">
+                    <span [inlineSVG]="'./assets/media/svg/icons/General/User.svg'"
+                      class="svg-icon svg-icon-md svg-icon-primary"></span>
+                  </a>
+          
+
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

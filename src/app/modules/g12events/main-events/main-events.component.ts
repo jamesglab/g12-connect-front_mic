@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { G12eventsService } from '../_services/g12events.service';
 
 @Component({
   selector: 'app-main-events',
@@ -9,12 +8,12 @@ import { G12eventsService } from '../_services/g12events.service';
 })
 export class MainEventsComponent implements OnInit {
 
-  constructor(private eventsService: G12eventsService, private router: Router) { }
+  constructor(private router: Router) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
+  //NAVEGAMOS AL COMPONENTE DE CREAR EVENTO
   redirectToAdd() {
-    console.log("REDIRECT TO ADD");
     this.router.navigate(['/g12events/add']);
   }
 
