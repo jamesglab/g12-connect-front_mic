@@ -477,5 +477,14 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
-
+  getTransactionInfo(ref: string) {
+    return this.http.get<any>(`${environment.apiUrlG12Connect.payments}/transaction/validate-ref`,
+      { params: { ref } })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }

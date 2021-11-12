@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { COUNTRIES } from 'src/app/_helpers/tools/countrys.tools';
 import { MONTHS_CREDIT_CARD, YEARS_CREDIT_CARD } from 'src/app/_helpers/tools/utils.tool';
+import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 import { G12eventsService } from '../_services/g12events.service';
 
@@ -160,27 +161,48 @@ export class CreateMassiveComponent implements OnInit {
       event_information: this.event_information_value,
       donor_information: this.donor_information_value,
       payment_information: {
+        platform: 'G12CONNECT',
         value: (this.donor_information_value.country == 'Colombia') ? this.payment_information_value.value : this.payment_information_value.value * 100,
         currency: this.payment_information_value.currency,
+        url_response: environment.url_response,
         payment_type: this.payment_type == 'card' ? (this.donor_information_value.country == 'Colombia' ? 'epayco_credit' : 'stripe_credit') : this.payment_type,
         ...this.payment_information_value[this.payment_type]
       }
     }).subscribe(res => {
       this.isLoading = false;
       this.cdr.detectChanges();
-      Swal.fire(res.message ? res.message : 'Transacción exitosa', '', 'success').then(res => {
-        this.router.navigate(['/g12events/massive'])
-      })
+      if (this.payment_type == 'pse') {
+        window.open(res.url, '_blank')
+        Swal.fire({
+          title: '¿ No te redireccionamos ?',
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'abrir',
+          denyButtonText: `cerrar`,
+          icon:'question'
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+            localStorage.setItem('reference',res.ref)
+            window.open(res.url, '_blank');
+          }
+        })
+
+
+      } else {
+        Swal.fire(res.message ? res.message : 'Transacción exitosa', '', 'success').then(res => {
+          this.router.navigate(['/g12events/massive'])
+        })
+      }
+
 
     }, err => {
       Swal.fire(err ? err : 'No se pudo ejecutar la transaccion', '', 'error')
       this.isLoading = false;
       this.cdr.detectChanges();
     });
-
-
-
   }
+
   // /////////////////////////////////////////////
   //ACCESO A LOS VALORES Y CONTROLES DEL FORMULARIO
   // /////////////////////////////////////////////

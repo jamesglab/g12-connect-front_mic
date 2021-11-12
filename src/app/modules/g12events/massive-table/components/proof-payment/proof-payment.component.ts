@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { G12eventsService } from '../../../_services/g12events.service';
 
 @Component({
   selector: 'app-proof-payment',
@@ -8,10 +10,31 @@ import { Component, OnInit } from '@angular/core';
 export class ProofPaymentComponent implements OnInit {
 
   public proof: any;
-  constructor() { }
+  constructor(private route: ActivatedRoute, private g12EventService: G12eventsService, private cdr : ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    if (!this.proof){
+      this.route.queryParams.subscribe((params) => {
+        if (params.id){
+          this.validateTrasaction(params.id);
+          localStorage.removeItem('reference')  
+        }else if (localStorage.getItem('reference')) {
+          this.validateTrasaction(localStorage.getItem('reference'));
+          
+        }
+      });
+    }
+    
+  }
 
+  //VALIDAMOS REFERENCIA DE PAGO
+  validateTrasaction(params) {
+    this.g12EventService.getTransactionInfo(params)
+      .subscribe(res => {
+        this.proof = res;
+        this.cdr.detectChanges();
+        console.log('referencia ',res)
+      }, err => { throw err; })
   }
 
   //VALIDAMOS EL METODO DE CON EL QUE SE REALIZO LA DONACION
