@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { COUNTRIES } from 'src/app/_helpers/tools/countrys.tools';
 import { MONTHS_CREDIT_CARD, YEARS_CREDIT_CARD } from 'src/app/_helpers/tools/utils.tool';
 import Swal from 'sweetalert2';
@@ -25,7 +26,7 @@ export class CreateMassiveComponent implements OnInit {
   public payment_type = 'card';
   public isLoading: boolean = false;
 
-  constructor(private fb: FormBuilder, public _eventService: G12eventsService) { }
+  constructor(private fb: FormBuilder, public _eventService: G12eventsService, private cdr: ChangeDetectorRef, private router: Router) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -47,7 +48,7 @@ export class CreateMassiveComponent implements OnInit {
         document_type: [null, Validators.required],
         name: [null, Validators.required],
         last_name: [null, Validators.required],
-        email: [null, Validators.compose([Validators.required, Validators.email]) ],
+        email: [null, Validators.compose([Validators.required, Validators.email])],
         phone: [null, Validators.required],
         address: [null, Validators.required],
         postal_code: [null, Validators.required],
@@ -113,6 +114,12 @@ export class CreateMassiveComponent implements OnInit {
     //NOS SUBSCRIBIMOS A LOS VALORES DE EL PAIS QUE CAMBIEN
     this.donor_information_controls.get('country').valueChanges.subscribe(country => {
       this.payment_type = 'card'
+      if (country != 'Colombia' && !this.event_information_value.cut.prices['usd']) {
+        this.donor_information_controls.get('country').setValue('Colombia');
+        Swal.fire('Precio del corte no disponible en dolares', '', 'info');
+        return
+
+      }
       this.payment_information_controls.get('currency').setValue(country == 'Colombia' ? 'COP' : 'USD');
       this.payment_information_controls.get('value').setValue((country == 'Colombia' ? this.event_information_value.cut.prices['cop'] : this.event_information_value.cut.prices['usd']) *
         this.event_information_value.quantity_tickets
@@ -148,22 +155,28 @@ export class CreateMassiveComponent implements OnInit {
     if (this.donor_information_controls.invalid && this.event_information_controls.invalid) {
       return
     }
-    console.log('RRR', this.payment_information_value)
+    this.isLoading = true;
     this._eventService.createMassive({
       event_information: this.event_information_value,
       donor_information: this.donor_information_value,
       payment_information: {
-        value: this.payment_information_value.value,
+        value: (this.donor_information_value.country == 'Colombia') ? this.payment_information_value.value : this.payment_information_value.value * 100,
         currency: this.payment_information_value.currency,
         payment_type: this.payment_type == 'card' ? (this.donor_information_value.country == 'Colombia' ? 'epayco_credit' : 'stripe_credit') : this.payment_type,
         ...this.payment_information_value[this.payment_type]
       }
     }).subscribe(res => {
-      console.log('tenemos pago')
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      Swal.fire(res.message ? res.message : 'Transacción exitosa', '', 'success').then(res => {
+        this.router.navigate(['/g12events/massive'])
+      })
+
     }, err => {
-      console.log('error',err)
       Swal.fire(err ? err : 'No se pudo ejecutar la transaccion', '', 'error')
-    })
+      this.isLoading = false;
+      this.cdr.detectChanges();
+    });
 
 
 

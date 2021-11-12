@@ -17,136 +17,65 @@
         </div>
       </div>
       <div class="card-body">
-        <form [formGroup]="proof_form">
+        
           <div class="row">
-            <div class="col-sm-6 col-12" formGroupName="donor_information">
+            <div class="col-sm-12 col-12" >
               <div class="mt-5">
                 <h4 class="h4">Datos del Donante</h4>
-                <mat-form-field
-                  appearance="fill"
-                  class="example-full-width mt-5"
-                >
-                  <mat-label>Pais*</mat-label>
-                  <mat-select type="select" formControlName="country">
-                    <mat-option
-                      *ngFor="let country of countries"
-                      [value]="country.name"
-                      >{{ country.name }}</mat-option
-                    >
-                  </mat-select>
-                </mat-form-field>
-             
-                <div class="row">
+                
+
+                <div class="row mt-3">
                   <div class="col-sm-6 col-12">
-                    <mat-form-field
-                      class="example-full-width"
-                      appearance="fill"
-                    >
-                      <mat-label>Nombre*</mat-label>
-                      <input
-                        matInput
-                        autocomplete="off"
-                        formControlName="name"
-                      />
-                    </mat-form-field>
+                    <div class="payment"><strong>Nombre:</strong> {{ proof.user.name }}</div>
+                
                   </div>
                   <div class="col-sm-6 col-12">
-                    <mat-form-field
-                      class="example-full-width"
-                      appearance="fill"
-                    >
-                      <mat-label>Apellido*</mat-label>
-                      <input
-                        matInput
-                        autocomplete="off"
-                        formControlName="last_name"
-                      />
-                    </mat-form-field>
+                    <div class="payment"><strong>Apellido:</strong> {{ proof.user.last_name }}</div>
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="col-sm-6 col-12">
-                    <mat-form-field
-                      class="example-full-width"
-                      appearance="fill"
-                    >
-                      <mat-label>Email*</mat-label>
-                      <input
-                        matInput
-                        autocomplete="off"
-                        formControlName="email"
-                      />
-                    </mat-form-field>
+                    <div class="payment"><strong>Email:</strong> {{ proof.user.email }}</div>
+                 
                   </div>
                   <div class="col-sm-6 col-12">
-                    <mat-form-field
-                      class="example-full-width"
-                      appearance="fill"
-                    >
-                      <mat-label>Telefono*</mat-label>
-                      <input
-                        matInput
-                        autocomplete="off"
-                        formControlName="phone"
-                      />
-                    </mat-form-field>
+                    <div class="payment"><strong>Telefono:</strong> {{ proof.user.phone }}</div>
                   </div>
                 </div>
-
+                <div class="payment"><strong>Pais:</strong> {{ proof.user.country }}</div>
               </div>
             </div>
 
-            <div class="col-sm-6 col-12" formGroupName="payment_information">
+            <div class="col-sm-12 col-12 mt-7" >
               <div class="row">
-                <div class="col-12 mt-5">
-                    <h4 class="h4">Informacion de Donación</h4>
-                  <mat-form-field
-                  class="example-full-width mt-5"
-                  appearance="fill"
-                >
-                  <mat-label>Evento </mat-label>
-                  <input
-                    matInput
-                    autocomplete="off"
-                    formControlName="event"
-                  />
-                </mat-form-field>
+                <div class="col-12 ">
+                  <h4 class="h4">Informacion de Donación</h4>
+           
                 </div>
               </div>
-              <div class="row mt-5">
+              <div class="row mt-">
                 <div class="col-sm-6 col-12">
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Moneda</mat-label>
-                    <input matInput autocomplete="off" formControlName="currency" />
-                  </mat-form-field>
+                  <div class="payment"><strong>Moneda:</strong> {{ proof.transaction.currency  }}</div>
+       
                 </div>
                 <div class="col-sm-6 col-12">
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Valor</mat-label>
-                    <input matInput autocomplete="off" formControlName="value" />
-                  </mat-form-field>
+                  <!-- VALIDAMOS EL VALOR DE LA TRANSACCION -->
+                  <div class="payment"><strong>Valor:</strong> {{ (proof.transaction.currency == 'USD') ? proof.transaction.amount / 100 :  proof.transaction.amount }}</div>
                 </div>
-
-                
               </div>
               <div class="row">
                 <div class="col-sm-6 col-12">
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Medio de Donación</mat-label>
-                    <input matInput autocomplete="off" formControlName="donation_medium" />
-                  </mat-form-field>
+                <div class="payment"><strong>Metodo de pago:</strong> {{ validatePaymentMethod(proof.transaction.payment_method)  }}</div>
                 </div>
                 <div class="col-sm-6 col-12">
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label># Referencia</mat-label>
-                    <input matInput autocomplete="off" formControlName="reference" />
-                  </mat-form-field>
+                <div class="payment"><strong>Referencia:</strong> {{ proof.transaction.payment_ref }}</div>
+                  
                 </div>
               </div>
             </div>
           </div>
-        </form>
+        
 
         <div class="row d-flex" style="justify-content: flex-end">
           <div class="">
@@ -158,7 +87,8 @@
                 font-weight-bolder
                 py-2
                 px-5
-                cursor-pointer"
+                cursor-pointer
+              "
             >
               Cerrar
             </button>

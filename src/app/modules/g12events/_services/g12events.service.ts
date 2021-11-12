@@ -8,7 +8,7 @@ import {
   headerFile,
 } from 'src/app/_helpers/tools/header.tool';
 import { environment } from 'src/environments/environment';
-import { Donation, sendDonation } from '../_models/donation.model';
+import { sendDonation } from '../_models/donation.model';
 import * as moment from 'moment';
 
 @Injectable({
@@ -426,7 +426,7 @@ export class G12eventsService {
       );
   }
 
-  getPseBanks() : Observable<any> {
+  getPseBanks(): Observable<any> {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.payments}/transaction/epayco/banks`, {
         headers: header,
@@ -439,17 +439,43 @@ export class G12eventsService {
       );
   }
 
-  createMassive(payload){
-    console.log('payload',payload)
+  createMassive(payload) {
     return this.http
-    .post<any>(`${environment.apiUrlG12Connect.donations}/create-massive`, payload, {
-      headers: headerFile,
-    })
-    .pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
+      .post<any>(`${environment.apiUrlG12Connect.donations}/create-massive`, payload, {
+        headers: headerFile,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
+
+  getMassives(): Observable<any> {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.donations}/list-massive`, {
+        headers: header,
+      })
+      .pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  addUser(payload) {
+    return this.http
+      .post<any>(`${environment.apiUrlG12Connect.donations}/add-user-massive`, payload, {
+        headers: headerFile,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
 }
