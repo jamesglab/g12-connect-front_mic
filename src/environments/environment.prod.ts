@@ -25,7 +25,8 @@ export const environment = {
     payments: 'https://api.g12connect.com/api/v2/payments',
     reports : 'https://api.g12connect.com/api/v2/reports'
   },
-  SECRETENCRYPT:"G12jk5FQg6bu8zWSECURITY#wB9jPyURESPONSE"
+  SECRETENCRYPT:"G12jk5FQg6bu8zWSECURITY#wB9jPyURESPONSE",
+  url_response: 'https://dev.mci12.com/g12events/proof-payment'
 
 };
 
