@@ -64,6 +64,10 @@ const routes: Routes = [
         path: 'create-massive',
         component: CreateMassiveComponent,
       },
+      {
+        path: 'proof-payment',
+        component: ProofPaymentComponent,
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
         path: '**',

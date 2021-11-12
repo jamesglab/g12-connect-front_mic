@@ -55,11 +55,14 @@ export class MassiveTableComponent implements OnInit {
     //ANEXAMOS EL NUEVO OBJETO DE ANGULAR MATERIAL
     this.g12EventService.getMassives().subscribe(res => {
       this.dataSource = new MatTableDataSource<any>(res);
+      this.dataSource.filterPredicate = (data: any, filter) => {
+        const filtereds = data.donation.name +
+          data.cut.name + data.transaction.availability_tickets
+        return filtereds.toLocaleLowerCase().includes(filter);
+      }
       this.dataSource.paginator = this.paginator;
-
-    })
-    // this.dataSource = new MatTableDataSource<any>(this.ELEMENT_DATA);
-    //PONEMOS EL PAGINADOR DE ANGULAR MATERIAL
+      //PONEMOS EL PAGINADOR DE ANGULAR MATERIAL
+    });
   }
 
   applyFilter() {
@@ -68,12 +71,13 @@ export class MassiveTableComponent implements OnInit {
   }
 
   //ABRIREMOS EL MODAL PARA CAGREGAR UN USUARIO
-  addUser(transaction, i) {
+  addUser(transaction) {
     //CREAMOE EL MODAL Y ABRIMOS EL COMPONENTE DE EditEventComponent
     const MODAL = this.modalService.open(AddUserMassiveComponent, {
       size: 'lg',//TAMAÑO DEL MODAL
       centered: true// CENTRAMOS EL MODAL
-    })
+    });
+
     MODAL.componentInstance.leaders = this.leaders;
     MODAL.componentInstance.transaction = transaction;
     MODAL.result.then((data) => { //CONSULTAMOS LA RESPUESTA DEL MODAL

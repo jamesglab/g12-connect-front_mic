@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
 
 @Component({
   selector: 'app-proof-payment',
@@ -11,10 +8,10 @@ import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
 export class ProofPaymentComponent implements OnInit {
 
   public proof: any;
-  public proof_form: FormGroup;
-  constructor(public modal: NgbActiveModal) { }
+  constructor() { }
 
   ngOnInit(): void {
+
   }
 
   //VALIDAMOS EL METODO DE CON EL QUE SE REALIZO LA DONACION
