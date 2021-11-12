@@ -30,6 +30,7 @@ import { MassiveTableComponent } from './massive-table/massive-table.component';
 import { CreateMassiveComponent } from './create-massive/create-massive.component';
 import { EditMassiveComponent } from './edit-massive/edit-massive.component';
 import { AddUserMassiveComponent } from './massive-table/components/add-user/add-user.component';
+import { ProofPaymentComponent } from './massive-table/components/proof-payment/proof-payment.component';
 const routes: Routes = [
   {
     path: '',
@@ -94,7 +95,8 @@ const routes: Routes = [
     MassiveTableComponent,
     CreateMassiveComponent,
     EditMassiveComponent,
-    AddUserMassiveComponent
+    AddUserMassiveComponent,
+    ProofPaymentComponent
   ],
   imports: [
     CommonModule,

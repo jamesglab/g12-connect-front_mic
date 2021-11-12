@@ -438,4 +438,18 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
+
+  createMassive(payload){
+    console.log('payload',payload)
+    return this.http
+    .post<any>(`${environment.apiUrlG12Connect.donations}/create-massive`, payload, {
+      headers: headerFile,
+    })
+    .pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
 }

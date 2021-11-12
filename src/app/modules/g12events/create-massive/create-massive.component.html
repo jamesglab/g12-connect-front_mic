@@ -1,6 +1,5 @@
 <div class="row">
   <div class="col-xl-12 col-sm-12">
-
     <div class="card card-custom example example-compact gutter-b">
       <div class="card-header d-flex">
         <div class="w-75">
@@ -59,9 +58,9 @@
 
                 <!-- ///////////////////////////////////////// -->
                 <!-- INICIO DEL GRUPO DE LOS DATOS DEL DONANTE -->
-                <div class="mt-5" formGroupName="donor">
+                <div class="mt-5" formGroupName="donor_information">
                   <h4 class="h4">Datos del Donante</h4>
-                  <mat-form-field appearance="fill" class="example-full-width">
+                  <mat-form-field appearance="fill" class="example-full-width mt-5">
                     <mat-label>Pais*</mat-label>
                     <mat-select type="select" formControlName="country">
                       <mat-option *ngFor="let country of countries" [value]="country.name">{{country.name}}</mat-option>
@@ -76,7 +75,7 @@
                     </div>
                     <div class="col-sm-6 col-12">
                       <mat-form-field appearance="fill" class="example-full-width">
-                        <mat-label>Documento* </mat-label>
+                        <mat-label>Tipo de documento* </mat-label>
                         <mat-select type="select" formControlName="document_type">
                           <mat-option value="CC"> CC
                           </mat-option>
@@ -138,30 +137,22 @@
             </div>
             <!-- ///////////////////////////////////////// -->
             <!-- INICIO DE GRUPO DE INFORMACION DE DONACION -->
-            <div class="col-sm-6 col-12" formGroupName="payment">
+            <div class="col-sm-6 col-12" formGroupName="payment_information">
               <h4 class="h4">Información de Donación</h4>
               <div class="d-flex justify-content-center">
-                {{masive_form.get('event_information').get('event').value?.name}}
+                <h5> {{masive_form.get('event_information').get('event').value?.name}}</h5>
               </div>
               <div class="row mt-5">
-                <div class="col-sm-6 col-12">
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Moneda</mat-label>
-                    <input matInput autocomplete="off" formControlName="currency" />
-                  </mat-form-field>
+                <div class="col-12 d-flex justify-content-center">
+                  <h5>{{(payment_information_value?.currency ? payment_information_value?.currency : ' ')  + ' ' +  (payment_information_value?.value ? payment_information_value?.value :'')}}</h5>
                 </div>
-                <div class="col-sm-6 col-12">
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Valor</mat-label>
-                    <input matInput autocomplete="off" formControlName="value" />
-                  </mat-form-field>
-                </div>
+                
               </div>
               <div class="mt-5">
                 <h4 class="h4">Medios de Donación</h4>
                 <div class="d-flex flex-wrap">
-                  <div class="card-payment p-5" [ngClass]="{'card-selected':payment == 'credit'}"
-                    (click)="payment ='credit'">
+                  <div class="card-payment p-5" [ngClass]="{'card-selected':payment_type == 'card'}"
+                    (click)="payment_type ='card'">
                     <div class="d-flex justify-content-center">
                       <i class="far fa-credit-card fa-2x"></i>
 
@@ -170,16 +161,16 @@
                       Credito
                     </div>
                   </div>
-                  <div class="card-payment p-5" [ngClass]="{'card-selected':payment == 'pse'}" (click)="payment ='pse'">
-                    <div class="d-flex justify-content-center">
+                  <div class="card-payment p-5" [ngClass]="{'card-selected':payment_type == 'pse'}" (click)="payment_type ='pse'" *ngIf="donor_information_value.country =='Colombia'">
+                    <div class="d-flex justify-content-center" >
                       <i class="fas fa-exchange-alt fa-2x"></i>
                     </div>
                     <div class="d-flex justify-content-center mt-3">
                       Banco
                     </div>
                   </div>
-                  <div class="card-payment p-5" [ngClass]="{'card-selected':payment == 'cash'}"
-                    (click)="payment ='cash'">
+                  <div class="card-payment p-5" [ngClass]="{'card-selected':payment_type == 'cash'}"
+                    (click)="payment_type ='cash'" *ngIf="donor_information_value.country =='Colombia'">
                     <div class="d-flex justify-content-center">
                       <i class="fas fa-money-bill-wave fa-2x"></i>
                     </div>
@@ -187,29 +178,39 @@
                       Efectivo
                     </div>
                   </div>
+
+                  <div class="card-payment p-5" [ngClass]="{'card-selected':payment_type == 'paypal'}"
+                  (click)="payment_type ='paypal'" *ngIf="donor_information_value.country !='Colombia'">
+                  <div class="d-flex justify-content-center" >
+                    <i class="fab fa-paypal fa-2x"></i>
+                  </div>
+                  <div class="d-flex justify-content-center mt-3">
+                    Paypal
+                  </div>
+                </div>
                 </div>
               </div>
 
               <!-- ///////////////// -->
               <!-- INICIO PAGO POR TARJETA DE CREDITO-->
-              <div *ngIf="payment == 'credit'" formGroupName="credit" class="mt-5">
+              <div *ngIf="payment_type == 'card'" formGroupName="card" class="mt-5">
                 <mat-form-field class="example-full-width" appearance="fill">
                   <mat-label>Numero de Tarjeta*</mat-label>
-                  <input matInput autocomplete="off" formControlName="number" />
+                  <input matInput autocomplete="off" formControlName="card_number" />
                 </mat-form-field>
 
                 <div class="row">
                   <div class="col-sm-9 col-12">
                     <mat-form-field class="example-full-width" appearance="fill">
                       <mat-label>Nombre de tarjeta*</mat-label>
-                      <input matInput autocomplete="off" formControlName="name" />
+                      <input matInput autocomplete="off" formControlName="card_name" />
                     </mat-form-field>
                   </div>
 
                   <div class="col-sm-3 col-12">
                     <mat-form-field class="example-full-width" appearance="fill">
                       <mat-label>CVC*</mat-label>
-                      <input matInput autocomplete="off" formControlName="code" />
+                      <input matInput autocomplete="off" formControlName="cvc" />
                     </mat-form-field>
                   </div>
                 </div>
@@ -218,7 +219,7 @@
                     <mat-form-field appearance="fill" class="example-full-width">
                       <mat-label>Mes*</mat-label>
                       <mat-select type="select" formControlName="month">
-                        <mat-option *ngFor="let month of monthsCreditCard" [value]="month.id">{{month.name}}
+                        <mat-option *ngFor="let month of monthsCard" [value]="month.id">{{month.name}}
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
@@ -228,19 +229,19 @@
                     <mat-form-field appearance="fill" class="example-full-width">
                       <mat-label>Año*</mat-label>
                       <mat-select type="select" formControlName="year">
-                        <mat-option *ngFor="let year of yearsCreditCard" [value]="year.id">{{year.name}}
+                        <mat-option *ngFor="let year of yearsCard" [value]="year.id">{{year.name}}
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
                   </div>
                 </div>
               </div>
-              <!-- FIN PAGO POR TARJETA DE CREDITO-->
+              <!-- FIN PAGO POR TARJETA DE cardO-->
               <!-- ///////////////////////////// -->
 
               <!-- ///////////////////////////// -->
               <!-- INICIO PAGO POR PSE-->
-              <div class="mt-5" *ngIf="payment == 'pse'" formGroupName="pse">
+              <div class="mt-5" *ngIf="payment_type == 'pse'" formGroupName="pse">
                 <mat-form-field appearance="fill" class="example-full-width">
                   <mat-label>Banco*</mat-label>
                   <mat-select type="select" formControlName="bank">
@@ -263,7 +264,7 @@
 
               <!-- ///////////////////////////// -->
               <!-- INICIO PAGO EFECTIVO-->
-              <div class="mt-5" *ngIf="payment == 'cash'" formGroupName="cash">
+              <div class="mt-5" *ngIf="payment_type == 'cash'" formGroupName="cash">
                 <mat-form-field appearance="fill" class="example-full-width">
                   <mat-label>Efectivo*</mat-label>
                   <mat-select type="select" formControlName="type_cash">
@@ -287,9 +288,6 @@
             </div>
             <!-- FIN DE GRUPO DE INFORMACION DE DONACION -->
             <!-- ///////////////////////////////////////// -->
-
-
-
           </div>
         </div>
       </form>

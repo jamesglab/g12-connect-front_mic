@@ -1,1 +1,144 @@
-<p>add-user works!</p>
+<div class="row">
+  <div class="col-sm-12 col-sm-12">
+    <div class="card card-custom example example-compact gutter-b">
+      <div class="card-header d-flex">
+        <div class="w-75">
+          <div class="card-title d-block pb-2">
+            <h3 class="card-label pt-4 pb-4">Agregar usuario</h3>
+            <h6 style="font-size: small; color: rgb(163, 163, 163)">
+              En esta sección podrás agregar un usuario a el masivo que compro
+            </h6>
+          </div>
+        </div>
+        <div class="card-toolbar">
+          <div class="example-tools justify-content-center">
+            <img src="assets/media/svg/icons/Shopping/Ticket.svg" alt="" />
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="add_user">
+          <!-- <h4 class="h4">Tipo de Registro</h4>
+          <div class="mt-5">
+            <mat-radio-group aria-label="Select an option" formControlName="register_type">
+              <mat-radio-button [value]="1">Nacional (Colombia)</mat-radio-button>
+              <mat-radio-button [value]="2">Internacional</mat-radio-button>
+            </mat-radio-group>
+          </div> -->
+          <h4 class="h4 mt-6">Información Personal</h4>
+
+          <div class="row mt-6">
+            <div class="col-sm-6 col-12">
+              <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Documento* </mat-label>
+                <mat-select type="select" formControlName="document_type">
+                  <mat-option value="CC"> CC </mat-option>
+                  <mat-option value="CC"> TI </mat-option>
+                  <mat-option value="CE"> CE </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6 col-12">
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Documento*</mat-label>
+                <input matInput autocomplete="off" formControlName="document" />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6 col-12">
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Nombre*</mat-label>
+                <input matInput autocomplete="off" formControlName="name" />
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6 col-12">
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Apellido*</mat-label>
+                <input
+                  matInput
+                  autocomplete="off"
+                  formControlName="last_name"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6 col-12">
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Genero*</mat-label>
+              <mat-select type="select" formControlName="gender">
+                <mat-option value="M"> Femenino </mat-option>
+                <mat-option value="F"> Masculino </mat-option>
+              </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          
+            
+          <h4 class="h4">Información de contacto</h4>
+
+          <div class="row mt-5">    
+                
+            <div class="col-sm-6 col-12">
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Correo*</mat-label>
+                <input matInput autocomplete="off" formControlName="email" />
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6 col-12">
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Confirmar Correo*</mat-label>
+                <input matInput autocomplete="off" formControlName="confirm_email" />
+              </mat-form-field>
+            </div>
+
+            
+          </div>
+          <div class="row">
+            <div class="col-sm-6 col-12">
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Celular*</mat-label>
+                <input matInput autocomplete="off" formControlName="phone" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <h4 class="h4">Información Ministerial</h4>
+
+          <div class="row">
+            <div class="col-sm-6 col-12">
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Lider*</mat-label>
+              <mat-select type="select" formControlName="leader">
+                <mat-option  *ngFor="let leader of leaders" [value]="leader"> {{leader.name + ' ' + leader.last_name}} </mat-option>
+              </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </form>
+
+     
+        <div class="row d-flex" style="justify-content: flex-end;">
+          <div class="">
+            
+            <button
+              type="button"
+              (click)="modal.close()"
+              class=" btn btn-sm btn-light-danger font-weight-bolder py-2 px-5 cursor-pointer">Cancelar
+            </button>
+
+            <button class=" btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer mx-3">
+              Guardar
+            </button>
+            
+          </div>
+            
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

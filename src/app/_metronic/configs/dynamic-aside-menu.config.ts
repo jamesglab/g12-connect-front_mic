@@ -3,7 +3,7 @@ export let DynamicAsideMenuConfigOriginal = {
     {
       title: 'Tablero',
       root: true,
-      show:false,
+      show: false,
       code: "DB000",
       svg: './assets/media/svg/icons/Design/PenAndRuller.svg',
       page: '/dashboard',
@@ -13,7 +13,7 @@ export let DynamicAsideMenuConfigOriginal = {
     {
       title: 'Administración',
       root: true,
-      show:false,
+      show: false,
       code: "ADM1000",
       icon: 'flaticon2-architecture-and-city',
       svg: './assets/media/svg/icons/General/Settings-2.svg',
@@ -23,13 +23,13 @@ export let DynamicAsideMenuConfigOriginal = {
         {
           title: 'Gestión Permisos',
           bullet: 'dot',
-          show:false,
+          show: false,
           code: "ADM1100",
           submenu: [
             {
               title: 'Usuarios',
               root: true,
-              show:false,
+              show: false,
               bullet: 'dot',
               code: "ADM1110",
               page: '/admin/permisses/users',
@@ -37,7 +37,7 @@ export let DynamicAsideMenuConfigOriginal = {
             {
               title: 'Roles',
               root: true,
-              show:false,
+              show: false,
               bullet: 'dot',
               code: "ADM1120",
               page: '/admin/permisses/roles'
@@ -45,7 +45,7 @@ export let DynamicAsideMenuConfigOriginal = {
             {
               title: 'Objetos',
               root: true,
-              show:false,
+              show: false,
               bullet: 'dot',
               code: "ADM1130",
               page: '/admin/permisses/objects'
@@ -61,12 +61,12 @@ export let DynamicAsideMenuConfigOriginal = {
       alignment: 'left',
       svg: './assets/media/svg/icons/Shopping/Dollar.svg',
       page: '/donations',
-      show:false,
+      show: false,
       submenu: [
         {
           title: 'Dashboard',
           root: true,
-          show:false,
+          show: false,
           bullet: 'dot',
           code: "DO1100",
           page: '/donations/dashboard'
@@ -74,7 +74,7 @@ export let DynamicAsideMenuConfigOriginal = {
         {
           title: 'Reportes',
           root: true,
-          show:false,
+          show: false,
           bullet: 'dot',
           code: "DO1200",
           page: '/donations/reports'
@@ -88,12 +88,12 @@ export let DynamicAsideMenuConfigOriginal = {
       alignment: 'left',
       svg: './assets/media/svg/icons/Shopping/Ticket.svg',
       page: '/g12events',
-      show:false,
+      show: false,
       submenu: [
         {
           title: 'Inicio',
           root: true,
-          show:false,
+          show: false,
           bullet: 'dot',
           code: "EVT1100",
           page: '/g12events/home'
@@ -101,7 +101,7 @@ export let DynamicAsideMenuConfigOriginal = {
         {
           title: 'Nuevo Evento',
           root: true,
-          show:false,
+          show: false,
           bullet: 'dot',
           code: "EVT1200",
           page: '/g12events/add'
@@ -109,7 +109,7 @@ export let DynamicAsideMenuConfigOriginal = {
         {
           title: 'Reportes',
           root: true,
-          show:false,
+          show: false,
           bullet: 'dot',
           code: "EVT1300",
           page: '/g12events/reports'
@@ -117,7 +117,7 @@ export let DynamicAsideMenuConfigOriginal = {
         {
           title: 'Usuarios',
           root: true,
-          show:false,
+          show: false,
           bullet: 'dot',
           code: "EVT1400",
           page: '/g12events/users'
@@ -125,18 +125,26 @@ export let DynamicAsideMenuConfigOriginal = {
         {
           title: 'Masivos',
           root: true,
-          show:false,
+          show: false,
           bullet: 'dot',
           code: "EVT1500",
-          page: '/g12events/massive'
-        },
-        {
-          title: 'Crear Masivo',
-          root: true,
-          show:false,
-          bullet: 'dot',
-          code: "EVT1600",
-          page: '/g12events/create-massive'
+          submenu: [{
+            title: 'Mis Masivos',
+            root: true,
+            show: false,
+            bullet: 'dot',
+            code: "EVT1510",
+            page: '/g12events/massive'
+          },
+          {
+            title: 'Crear Masivo',
+            root: true,
+            show: false,
+            bullet: 'dot',
+            code: "EVT1520",
+            page: '/g12events/create-massive'
+          }
+          ],
         }
       ]
     },
@@ -151,7 +159,7 @@ export let DynamicAsideMenuConfigOriginal = {
     {
       title: 'Ganar',
       root: true,
-      show:false,
+      show: false,
       code: "G000",
       bullet: 'dot',
       page: '/to-win',
@@ -160,19 +168,19 @@ export let DynamicAsideMenuConfigOriginal = {
         {
           title: 'Personas',
           bullet: 'dot',
-          show:false,
+          show: false,
           code: "G010",
           submenu: [
             {
               title: 'Registrar Nueva',
               page: '/to-win/people/new',
-              show:false,
+              show: false,
               code: "G011",
             },
             {
               title: 'Buscar Persona',
               page: '/to-win/people/search',
-              show:false,
+              show: false,
               code: "G012"
             }
           ]
@@ -180,7 +188,7 @@ export let DynamicAsideMenuConfigOriginal = {
         {
           title: 'Fono Visita',
           root: true,
-          show:false,
+          show: false,
           code: "G020",
           bullet: 'dot',
           page: '/to-win/phone-visit'
@@ -188,7 +196,7 @@ export let DynamicAsideMenuConfigOriginal = {
         {
           title: 'Reportes Ganar',
           root: true,
-          show:false,
+          show: false,
           code: "G030",
           bullet: 'dot',
           page: '/to-win/reports',
@@ -198,7 +206,7 @@ export let DynamicAsideMenuConfigOriginal = {
     {
       title: 'Enviar',
       root: true,
-      show:false,
+      show: false,
       code: "ENV000",
       bullet: 'dot',
       page: '/send',
@@ -208,25 +216,25 @@ export let DynamicAsideMenuConfigOriginal = {
         {
           title: 'Gestión Célula',
           bullet: 'dot',
-          show:false,
+          show: false,
           code: "ENV010",
           submenu: [
             {
               title: 'Lideres',
               page: '/send/go/leaders',
-              show:false,
+              show: false,
               code: "ENV011"
             },
             {
               title: 'Nueva Célula',
               page: '/send/go/new',
-              show:false,
+              show: false,
               code: "ENV012"
             },
             {
               title: 'Seguimiento Semanal',
               page: '/send/go/home',
-              show:false,
+              show: false,
               code: "ENV013"
             }
           ]
@@ -236,7 +244,7 @@ export let DynamicAsideMenuConfigOriginal = {
           root: true,
           bullet: 'dot',
           page: '/send/report/home',
-          show:false,
+          show: false,
           code: "ENV020"
         }
 
