@@ -75,6 +75,14 @@
               </mat-form-field>
 
               <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Masivos*</mat-label>
+                <mat-select type="select" formControlName="massive_pay">
+                  <mat-option [value]="true">Con masivos</mat-option>
+                  <mat-option [value]="false">Sin masivos</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>Selecciona fecha de inicio y fin</mat-label>
                 <mat-date-range-input [rangePicker]="picker" [min]="minDate">
                   <input matStartDate placeholder="Fecha de inicio" formControlName="init_date" />
@@ -215,6 +223,14 @@
                                 </mat-date-range-input>
                                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                                 <mat-date-range-picker #picker></mat-date-range-picker>
+                              </mat-form-field>
+
+                              <mat-form-field appearance="fill" class="example-full-width">
+                                <mat-label>Masivos*</mat-label>
+                                <mat-select type="select" formControlName="massive_pay">
+                                  <mat-option [value]="true">Con masivos</mat-option>
+                                  <mat-option [value]="false">Sin masivos</mat-option>
+                                </mat-select>
                               </mat-form-field>
                             </div>
                           </div>

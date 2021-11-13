@@ -61,6 +61,7 @@ export class EditEventComponent implements OnInit {
       visibility: [this.event.visibility[0]],
       limit: [this.event.limit],
       location: [],
+      massive_pay: [this.event.massive_pay],
       status: [this.event.status],
     });
     //VALIDAMOS LA IMAGEN DEL EVENTO Y LA SETEAMOS EN BASE64
@@ -80,8 +81,8 @@ export class EditEventComponent implements OnInit {
     //RECORREMOS LOS CORTES QUE ESTAN EN 'financialCut' DEL EVENTO
     this.event.financialCut.map((cut) => {
       //PUSHEAMOS LOS FORMULARIOS QUE SE IRAN CREANDO PARA CADA CORTE
-        //CREAMOS EL FORMULARIO REACTIVO CON LOS DIFERENTES CAMPOS DEL CORTE
-        this.addCute(cut)
+      //CREAMOS EL FORMULARIO REACTIVO CON LOS DIFERENTES CAMPOS DEL CORTE
+      this.addCute(cut)
     });
   }
 
@@ -102,6 +103,8 @@ export class EditEventComponent implements OnInit {
         quantity_register_max: new FormControl(cut ? cut.quantity_register_max : 1),
         quantity_register_min: new FormControl(cut ? cut.quantity_register_min : 1),
         description: new FormControl(cut ? cut.description : null),
+        massive_pay: new FormControl(cut ? cut.massive_pay : null),
+
       })
     );
   }

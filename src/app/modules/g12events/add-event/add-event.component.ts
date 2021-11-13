@@ -51,8 +51,10 @@ export class AddEventComponent implements OnInit {
       name: [null, [Validators.required]],
       description: [null],
       image: [null],
+      massive_pay: [null],
       category: [[]],
       categorieAdd: [''],
+
       init_date: [],
       finish_date: [],
       // hour: ['', [Validators.required, hourValidation.bind(this)]],
@@ -144,6 +146,7 @@ export class AddEventComponent implements OnInit {
           cut.description != ''
         ) {
           newCuts.push({
+            massive_pay: cut.massive_pay,
             name: cut.name,
             prices: { cop: cut.cop, usd: cut.usd != '' ? cut.usd : null },
             quantity: cut.quantity,
@@ -155,7 +158,7 @@ export class AddEventComponent implements OnInit {
             quantity_register_max: cut.quantity_register_max,
             quantity_register_min: cut.quantity_register_min,
             is_group: cut.price_group_selected,
-            description :cut.description
+            description: cut.description
 
           });
         } else {
@@ -182,7 +185,7 @@ export class AddEventComponent implements OnInit {
             quantity_register_max: cut.quantity_register_max,
             quantity_register_min: cut.quantity_register_min,
             is_group: cut.price_group_selected,
-            description :cut.description
+            description: cut.description
           });
         } else {
           error = true;
@@ -209,6 +212,7 @@ export class AddEventComponent implements OnInit {
         price_group_usd: new FormControl(''),
         price_group_cop: new FormControl(''),
         date_finish: new FormControl(''),
+        massive_pay: new FormControl(''),
         quantity_register_max: new FormControl(1),
         quantity_register_min: new FormControl(1),
         description: new FormControl(''),
