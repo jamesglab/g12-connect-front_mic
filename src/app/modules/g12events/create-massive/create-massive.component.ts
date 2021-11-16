@@ -187,9 +187,9 @@ export class CreateMassiveComponent implements OnInit {
           /* Read more about isConfirmed, isDenied below */
           this.masive_form.reset();
           this.donor_information_controls.get('country').setValue('Colombia');
-          this.payment_type = "card"
+          this.payment_type = "card";
           if (result.isConfirmed) {
-            localStorage.setItem('reference', res.ref)
+            localStorage.setItem('reference', res.ref);
             window.open(res.url, '_blank');
           }
         })
@@ -197,7 +197,8 @@ export class CreateMassiveComponent implements OnInit {
 
       } else {
         Swal.fire(res.message ? res.message : 'Transacción exitosa', '', 'success').then(res => {
-          this.router.navigate(['/g12events/massive'])
+          this.masive_form.reset();
+          this.donor_information_controls.get('country').setValue('Colombia');
         })
       }
 

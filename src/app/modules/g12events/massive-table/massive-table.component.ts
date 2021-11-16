@@ -5,8 +5,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DynamicAsideMenuService } from 'src/app/_metronic/core';
 import Swal from 'sweetalert2';
-import { StorageService } from '../../auth/_services/storage.service';
-import { UserService } from '../../_services/user.service';
 import { G12eventsService } from '../_services/g12events.service';
 import { AddUserMassiveComponent } from './components/add-user/add-user.component';
 import { ProofPaymentComponent } from './components/proof-payment/proof-payment.component';
@@ -20,18 +18,16 @@ import { ProofPaymentComponent } from './components/proof-payment/proof-payment.
 
 export class MassiveTableComponent implements OnInit {
 
-  private currentUser = this.storageService.getItem('auth').user;
   public leaders: [] = [];
   public displayedColumns: string[] = ['event', 'quantity_tickets', 'availability_tickets', 'cut', 'status', 'detail'];
   public dataSource: MatTableDataSource<any[]>;;
   public permissions: any;
   public search = new FormControl('');
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  constructor(private modalService: NgbModal, private storageService: StorageService, private g12EventService: G12eventsService,
-    private userService: UserService, private asideMenuService: DynamicAsideMenuService, private cdr: ChangeDetectorRef) { }
+  constructor(private modalService: NgbModal, private g12EventService: G12eventsService,
+    private asideMenuService: DynamicAsideMenuService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    this.getLeaders();
     this.getPermissions();
     this.getMassives()
   }
@@ -44,12 +40,6 @@ export class MassiveTableComponent implements OnInit {
     });
   }
 
-  // CONSULTAMOS LOS LIDERES QUE PERTENECEN A LA RED DEL PASTOR
-  getLeaders() {
-    this.userService.getLeadersOrPastors({ userCode: this.currentUser.user_code, church: this.currentUser.church_id }).subscribe(res => {
-      this.leaders = res;
-    })
-  }
 
   // CONSULTAMOS LOS MASIVOS DEL USUARIO
   getMassives() {
@@ -74,7 +64,7 @@ export class MassiveTableComponent implements OnInit {
   //ABRIREMOS EL MODAL PARA CAGREGAR UN USUARIO
   addUser(transaction) {
     //CREAMOE EL MODAL Y ABRIMOS EL COMPONENTE DE EditEventComponent
-    console.log('status',parseInt(transaction.transaction.status))
+    console.log('status', parseInt(transaction.transaction.status))
     if (parseInt(transaction.transaction.status) != 1) {
       Swal.fire('Massivo inactivo', 'No se ha procesado la solicitud del pago intenta mas tarde', 'info');
       return

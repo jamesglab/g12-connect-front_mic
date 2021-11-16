@@ -153,4 +153,17 @@ export class UserService {
       catchError(handleError)
     );
   }
+
+  getUserInfo(params){
+    return this.http
+    .get<any>(`${environment.apiUrlG12Connect.users}/find-user`, {
+      params,
+    })
+    .pipe(
+      map((res: Response) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
 }
