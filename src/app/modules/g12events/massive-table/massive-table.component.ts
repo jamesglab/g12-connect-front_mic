@@ -75,7 +75,7 @@ export class MassiveTableComponent implements OnInit {
   addUser(transaction) {
     //CREAMOE EL MODAL Y ABRIMOS EL COMPONENTE DE EditEventComponent
     console.log('status',parseInt(transaction.transaction.status))
-    if (parseInt(transaction.transaction.status) != 3) {
+    if (parseInt(transaction.transaction.status) != 1) {
       Swal.fire('Massivo inactivo', 'No se ha procesado la solicitud del pago intenta mas tarde', 'info');
       return
     }
