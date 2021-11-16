@@ -104,7 +104,6 @@ export class EditEventComponent implements OnInit {
         quantity_register_min: new FormControl(cut ? cut.quantity_register_min : 1),
         description: new FormControl(cut ? cut.description : null),
         massive_pay: new FormControl(cut ? cut.massive_pay : null),
-
       })
     );
   }
@@ -230,7 +229,9 @@ export class EditEventComponent implements OnInit {
             quantity_register_max: cut.quantity_register_max,
             quantity_register_min: cut.quantity_register_min,
             is_group: cut.price_group_selected,
-            description: cut.description
+            description: cut.description,
+            massive_pay : cut.massive_pay
+
           });
         } else {
           error = true;
