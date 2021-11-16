@@ -74,11 +74,12 @@ export class MassiveTableComponent implements OnInit {
   //ABRIREMOS EL MODAL PARA CAGREGAR UN USUARIO
   addUser(transaction) {
     //CREAMOE EL MODAL Y ABRIMOS EL COMPONENTE DE EditEventComponent
-    if (parseInt(transaction.transaction.status) != 1) {
+    console.log('status',parseInt(transaction.transaction.status))
+    if (parseInt(transaction.transaction.status) != 3) {
       Swal.fire('Massivo inactivo', 'No se ha procesado la solicitud del pago intenta mas tarde', 'info');
       return
     }
-    if (transaction.availability_tickets >= 1) {
+    if (transaction.transaction.availability_tickets >= 1) {
       const MODAL = this.modalService.open(AddUserMassiveComponent, {
         size: 'lg',//TAMAÑO DEL MODAL
         centered: true// CENTRAMOS EL MODAL
