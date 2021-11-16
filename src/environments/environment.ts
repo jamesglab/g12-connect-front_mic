@@ -17,7 +17,7 @@ export const environment = {
     reports: 'https://dev-api.g12connect.com/api/v2/reports'
   },
   SECRETENCRYPT:"G12jk5FQg6bu8zWSECURITY#wB9jPyURESPONSE",
-  url_response: 'http://localhost:4200/g12events/proof-payment',
+  url_response: 'https://dev.mci12.com/g12events/proof-payment',
   // production: true,
   // appVersion: 'v710demo1', //METRONIC
   // USERDATA_KEY: 'authf649fc9a5f55', // METRONIC
