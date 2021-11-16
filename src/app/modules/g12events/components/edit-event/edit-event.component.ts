@@ -201,7 +201,8 @@ export class EditEventComponent implements OnInit {
             quantity_register_max: cut.quantity_register_max,
             quantity_register_min: cut.quantity_register_min,
             is_group: cut.price_group_selected,
-            description: cut.description
+            description: cut.description,
+            massive_pay : cut.massive_pay
 
           });
         } else {

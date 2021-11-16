@@ -15,12 +15,11 @@ export class ProofPaymentComponent implements OnInit {
   ngOnInit(): void {
     if (!this.proof){
       this.route.queryParams.subscribe((params) => {
-        if (params.id){
-          this.validateTrasaction(params.id);
-          localStorage.removeItem('reference')  
+        if (params.id_transaction){
+          this.validateTrasaction(params.id_transaction);
+          localStorage.removeItem('reference');
         }else if (localStorage.getItem('reference')) {
           this.validateTrasaction(localStorage.getItem('reference'));
-          
         }
       });
     }
@@ -49,6 +48,16 @@ export class ProofPaymentComponent implements OnInit {
       return 'Administración'
     } else if (payment_method.toLowerCase() == 'code') {
       return 'Codigo'
+    }
+  }
+
+  validateStatus(status) {
+    if (parseInt(status) == 1) {
+      return 'Aprobado'
+    } else if (parseInt(status) == 2) {
+      return 'En proceso'
+    } else if (parseInt(status) == 3) {
+      return 'Cancelado/Declinado'
     }
   }
 

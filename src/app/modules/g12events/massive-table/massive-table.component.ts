@@ -4,6 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DynamicAsideMenuService } from 'src/app/_metronic/core';
+import Swal from 'sweetalert2';
 import { StorageService } from '../../auth/_services/storage.service';
 import { UserService } from '../../_services/user.service';
 import { G12eventsService } from '../_services/g12events.service';
@@ -73,18 +74,27 @@ export class MassiveTableComponent implements OnInit {
   //ABRIREMOS EL MODAL PARA CAGREGAR UN USUARIO
   addUser(transaction) {
     //CREAMOE EL MODAL Y ABRIMOS EL COMPONENTE DE EditEventComponent
-    const MODAL = this.modalService.open(AddUserMassiveComponent, {
-      size: 'lg',//TAMAÑO DEL MODAL
-      centered: true// CENTRAMOS EL MODAL
-    });
+    if (parseInt(transaction.status) != 1) {
+      Swal.fire('Massivo inactivo', 'No se ha procesado la solicitud del pago intenta mas tarde', 'info');
+      return
+    }
+    if (transaction.availability_tickets >= 1) {
+      const MODAL = this.modalService.open(AddUserMassiveComponent, {
+        size: 'lg',//TAMAÑO DEL MODAL
+        centered: true// CENTRAMOS EL MODAL
+      });
 
-    MODAL.componentInstance.leaders = this.leaders;
-    MODAL.componentInstance.transaction = transaction;
-    MODAL.result.then((data) => { //CONSULTAMOS LA RESPUESTA DEL MODAL
-      if (data) {//
-        this.getMassives();
-      }
-    });
+      MODAL.componentInstance.leaders = this.leaders;
+      MODAL.componentInstance.transaction = transaction;
+      MODAL.result.then((data) => { //CONSULTAMOS LA RESPUESTA DEL MODAL
+        if (data) {//
+          this.getMassives();
+        }
+      });
+    } else {
+      Swal.fire('Capacidad de tiquetes completada', 'alcanzaste el maximo de usuarios registrados para este masivo', 'info');
+    }
+
   }
 
   proofPayment(proof) {

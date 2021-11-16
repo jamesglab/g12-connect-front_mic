@@ -36,10 +36,8 @@ export class AddUserMassiveComponent implements OnInit {
       phone: [null, Validators.required],
       email: [null, Validators.compose([Validators.required, Validators.email])],
       confirm_email: [null, Validators.compose([Validators.required, Validators.email])],
-      pastor: [],
       leader: [null, Validators.required],
     });
-
   }
 
 
@@ -61,9 +59,8 @@ export class AddUserMassiveComponent implements OnInit {
       })
     }, err => {
       this.isLoading = false;
-      console.log('eerrr',err)
       this.cdr.detectChanges();
-      Swal.fire(err.message ? err.message : 'No se pudo ejecutar la acción', '', 'error')
+      Swal.fire(err ? err : 'No se pudo ejecutar la acción', '', 'error')
     })
 
   }

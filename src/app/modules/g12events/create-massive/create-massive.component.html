@@ -179,15 +179,15 @@
                     </div>
                   </div>
 
-                  <!-- <div class="card-payment p-5" [ngClass]="{'card-selected':payment_type == 'paypal'}"
-                  (click)="payment_type ='paypal'" *ngIf="donor_information_value.country !='Colombia'">
+                  <div class="card-payment p-5" [ngClass]="{'card-selected':payment_type == 'paypal_credit'}"
+                  (click)="payment_type ='paypal_credit'" *ngIf="donor_information_value.country !='Colombia'">
                   <div class="d-flex justify-content-center" >
                     <i class="fab fa-paypal fa-2x"></i>
                   </div>
                   <div class="d-flex justify-content-center mt-3">
-                    Paypal
+                    paypal
                   </div>
-                </div> -->
+                </div>
                 </div>
               </div>
 
@@ -267,7 +267,7 @@
               <div class="mt-5" *ngIf="payment_type == 'cash'" formGroupName="cash">
                 <mat-form-field appearance="fill" class="example-full-width">
                   <mat-label>Efectivo*</mat-label>
-                  <mat-select type="select" formControlName="type_cash">
+                  <mat-select type="select" formControlName="point_payment">
                     <mat-option value="EFECTY">Efecty</mat-option>
                     <mat-option value="BALOTO">Baloto</mat-option>
                     <mat-option value="OTHERS_CASH">Paga Todo</mat-option>

@@ -24,8 +24,8 @@ export class CreateMassiveComponent implements OnInit {
   public financial_cuts: [] = [];
 
   //CONDICIONALES
-  public payment_type = 'card';
-  public isLoading: boolean = false;
+  public payment_type = 'card';//TIPO DE PAGO
+  public isLoading: boolean = false;//SPINNER DE LOADER
 
   constructor(private fb: FormBuilder, public _eventService: G12eventsService, private cdr: ChangeDetectorRef, private router: Router) { }
 
@@ -70,7 +70,8 @@ export class CreateMassiveComponent implements OnInit {
           type_person: ['0', Validators.required],
         }),
         cash: this.fb.group({ //PAGO CON EFECTIVO
-          type_cash: [null, Validators.required]
+          point_payment: [null, Validators.required],
+          add_days: [1]
         }),
       })
     });
@@ -132,9 +133,9 @@ export class CreateMassiveComponent implements OnInit {
   //CONSULTAS AL BACKEND
   //////////////////////////////
 
-  //CONSULTAMOS LOS EVENTOS
+  //CONSULTAMOS LOS EVENTOS QUE TENGAN MASSIVOS DISPONIBLES
   getEvents() {
-    this._eventService.getFilter({ type: 'G12_EVENT' }).subscribe(res => {
+    this._eventService.getEventsMassive().subscribe(res => {
       this.events = res;//AGREGAMOS LOS EVENTOS
     }, err => {
       console.log('tuvimos un errror', err);
@@ -159,10 +160,11 @@ export class CreateMassiveComponent implements OnInit {
     this.isLoading = true;
     this._eventService.createMassive({
       event_information: this.event_information_value,
-      donor_information: this.donor_information_value,
+      donor_information: {...this.donor_information_value, email:this.donor_information_value.email.toLowerCase()},//HACEMOS UN DESTRUCTING DE LA INFORMACION DEL USUARIO Y ENVIAMOS EL EMAIL COMO LOWECASE
       payment_information: {
         platform: 'G12CONNECT',
-        value: (this.donor_information_value.country == 'Colombia') ? this.payment_information_value.value : this.payment_information_value.value * 100,
+        //EN EL VALOR VALIDAMOS EM METODO DE PAGO Y SI ES POR CREDITO Y NACIONAL MULTIPLICAMOS EL VALOR POR CENTAVOS DE DOLAR Y SI NO ENVIAMOS EL VALOR NORMAL
+        value: (this.donor_information_value.country != 'Colombia' && this.payment_type == 'card') ?  this.payment_information_value.value * 100 : this.payment_information_value.value ,
         currency: this.payment_information_value.currency,
         url_response: environment.url_response,
         payment_type: this.payment_type == 'card' ? (this.donor_information_value.country == 'Colombia' ? 'epayco_credit' : 'stripe_credit') : this.payment_type,
@@ -171,19 +173,23 @@ export class CreateMassiveComponent implements OnInit {
     }).subscribe(res => {
       this.isLoading = false;
       this.cdr.detectChanges();
-      if (this.payment_type == 'pse') {
-        window.open(res.url, '_blank')
+      if (res.url) {
+        window.open(res.url, '_blank');
         Swal.fire({
-          title: '¿ No te redireccionamos ?',
+          title: res.message ? res.message : 'Transacción exitosa',
+          text:'¿No puedes visualizar el metodo de pago?',
           showDenyButton: true,
           showCancelButton: true,
-          confirmButtonText: 'abrir',
-          denyButtonText: `cerrar`,
-          icon:'question'
+          confirmButtonText: 'Abrir',
+          cancelButtonText:'Cerrar',
+          icon: 'success'
         }).then((result) => {
           /* Read more about isConfirmed, isDenied below */
+          this.masive_form.reset();
+          this.donor_information_controls.get('country').setValue('Colombia');
+          this.payment_type = "card"
           if (result.isConfirmed) {
-            localStorage.setItem('reference',res.ref)
+            localStorage.setItem('reference', res.ref)
             window.open(res.url, '_blank');
           }
         })

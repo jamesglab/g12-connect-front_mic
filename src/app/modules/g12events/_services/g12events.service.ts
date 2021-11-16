@@ -126,6 +126,18 @@ export class G12eventsService {
       );
   }
 
+  getEventsMassive(){
+  return this.http
+      .get<any>(`${environment.apiUrlG12Connect.donations}/event-massive`, {
+        headers: header})
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );  
+  }
+
   getById(params) {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.donations}/id`, {
@@ -428,7 +440,7 @@ export class G12eventsService {
 
   getPseBanks(): Observable<any> {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.payments}/transaction/epayco/banks`, {
+      .get<any>(`${environment.apiUrlG12Connect.payments}/banks`, {
         headers: header,
       })
       .pipe(
@@ -441,7 +453,7 @@ export class G12eventsService {
 
   createMassive(payload) {
     return this.http
-      .post<any>(`${environment.apiUrlG12Connect.donations}/create-massive`, payload, {
+      .post<any>(`${environment.apiUrlG12Connect.payments}/create-massive`, payload, {
         headers: headerFile,
       })
       .pipe(
@@ -477,9 +489,9 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
-  getTransactionInfo(ref: string) {
-    return this.http.get<any>(`${environment.apiUrlG12Connect.payments}/transaction/validate-ref`,
-      { params: { ref } })
+  getTransactionInfo(transaction_id: string) {
+    return this.http.get<any>(`${environment.apiUrlG12Connect.payments}/detail-payment`,
+      { params: { transaction_id } })
       .pipe(
         map((res: any) => {
           return res;
