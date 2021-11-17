@@ -144,11 +144,14 @@ export class CreateMassiveComponent implements OnInit {
 
   //CONSULTAMOS LOS BANCOS DE PSE
   getPseBanks() {
-    this._eventService.getPseBanks().subscribe(res => {
-      this.pse_banks = res;
-    }, err => {
-      console.log('tuvimos un errror', err);
-    });
+    if (this.pse_banks.length == 0){
+      this._eventService.getPseBanks().subscribe(res => {
+        this.pse_banks = res;
+      }, err => {
+        console.log('tuvimos un errror', err);
+      });
+    }
+    
   }
 
   //CREAMOS EL PAGO

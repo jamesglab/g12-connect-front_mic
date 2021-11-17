@@ -242,9 +242,9 @@
               <!-- ///////////////////////////// -->
               <!-- INICIO PAGO POR PSE-->
               <div class="mt-5" *ngIf="payment_type == 'pse'" formGroupName="pse">
-                <mat-form-field appearance="fill" class="example-full-width">
+                <mat-form-field appearance="fill" class="example-full-width" (click)="getPseBanks()">
                   <mat-label>Banco*</mat-label>
-                  <mat-select type="select" formControlName="bank">
+                  <mat-select type="select" formControlName="bank" >
                     <mat-option *ngFor="let bank of pse_banks; let i = index" [value]="bank.bankCode" [disabled]="i==0">
                       {{bank.bankName}}
                     </mat-option>

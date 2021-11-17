@@ -120,7 +120,7 @@ export class DonationsServices {
 
   getTransactionsByHours(params) {
     return this.http.get<any>(
-      `${'https://15b0-201-184-17-202.ngrok.io/reports'}/list-reports-dates`, { params, headers: header }).pipe(
+      `${environment.apiUrlG12Connect.reports}/list-reports-dates`, { params, headers: header }).pipe(
         map((res: Response) => {
           return res;
         }),

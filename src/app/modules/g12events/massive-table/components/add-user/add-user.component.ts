@@ -41,7 +41,7 @@ export class AddUserMassiveComponent implements OnInit {
   buildForm() {
     this.add_user = this.fb.group({
       transaction_id: [this.transaction.transaction.id, Validators.required],
-      id: [null, Validators.required],
+      id: [null],
       country: [this.currentUser.church_id ? 'Colombia' : null, Validators.required],
       document: [null, Validators.required],
       document_type: [null],

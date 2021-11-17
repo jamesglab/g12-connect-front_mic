@@ -126,16 +126,17 @@ export class G12eventsService {
       );
   }
 
-  getEventsMassive(){
-  return this.http
+  getEventsMassive() {
+    return this.http
       .get<any>(`${environment.apiUrlG12Connect.donations}/event-massive`, {
-        headers: header})
+        headers: header
+      })
       .pipe(
         map((res: any) => {
           return res;
         }),
         catchError(handleError)
-      );  
+      );
   }
 
   getById(params) {
@@ -179,6 +180,7 @@ export class G12eventsService {
   }
 
   create(data: sendDonation): Observable<any> {
+    console.log('evento creado', data);
     //DEFINE THE RESPONSE
     data.transaction_info.init_date = moment(data.transaction_info.init_date);
     data.transaction_info.finish_date = moment(data.transaction_info.finish_date);

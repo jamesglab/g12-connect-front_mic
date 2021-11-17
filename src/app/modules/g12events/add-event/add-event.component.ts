@@ -91,6 +91,7 @@ export class AddEventComponent implements OnInit {
 
       } else {
         if (cuts) {
+          console.log('tenemos cortes',cuts)
           const updateEventSubscr = this.eventsService
             .create({ transaction_info: this.addEventForm.getRawValue(), cuts })
             .subscribe(
