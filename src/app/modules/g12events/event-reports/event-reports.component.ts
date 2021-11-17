@@ -217,7 +217,7 @@ export class EventReportsComponent implements OnInit {
             'Metodo de pago': item.transaction.payment_method ? item.transaction.payment_method : 'N/A',
             'Nombre evento': item.donation?.name ? item.donation?.name : 'N/A',
             'Nombre corte': item.cut?.name ? item.cut?.name : 'N/A',
-            Estado: item.transaction.status ? item.transaction.status : 'N/A',
+            Estado: item.transaction.status ? this.validateStatus(item.transaction.status) : 'N/A',
             Costo: item.transaction.currency == 'cop' ? item.cut.prices.cop : item.cut.prices.usd,
             Moneda: item.transaction.currency ? item.transaction.currency : 'N/A',
             'Descripcion de Cambio': item.description_of_change ? item.description_of_change : 'N/A'
