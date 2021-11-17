@@ -76,6 +76,7 @@ export class AddUserMassiveComponent implements OnInit {
       if (user) {
         console.log(res.find(pt => pt.user_code == user.pastor_code))
         this.form_controls.pastor.setValue(res.find(pt => pt.user_code == user.pastor_code));
+        this.form_controls.pastor.disable();
       }
     });
   }
@@ -117,6 +118,10 @@ export class AddUserMassiveComponent implements OnInit {
       this.setUser(res);
     }, err => {
       Swal.fire('No se encontro el usuario', '', 'info');
+      this.form_controls.network.enable();
+      this.form_controls.netork.reset();
+      this.form_controls.pastor.reset();
+      this.form_controls.leader.reset();
     })
   }
 
@@ -193,6 +198,7 @@ export class AddUserMassiveComponent implements OnInit {
     this.form_controls.document_type.setValue(user.document_type);
     this.getPastors(user.pastor_code, user);
     this.getLeaders({ user_code: user.leader_code }, user);
+    this.form_controls.network.disable();
 
   }
 

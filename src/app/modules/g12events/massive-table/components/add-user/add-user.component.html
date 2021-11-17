@@ -42,7 +42,7 @@
             <div class="col-sm-6 col-12">
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Documento*</mat-label>
-                <input matInput autocomplete="off" formControlName="document" (keyup.enter)="searchUser()"/>
+                <input matInput autocomplete="off" formControlName="document" (keydown.Tab)="searchUser()" (keyup.enter)="searchUser()"/>
                 <button *ngIf="form_value.document" type="button" matSuffix mat-icon-button (click)="searchUser()">
                   <mat-icon matPrefix>search</mat-icon>
                   </button>
@@ -102,7 +102,7 @@
             <div class="col-sm-6 col-12">
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Confirmar Correo*</mat-label>
-                <input matInput autocomplete="off" formControlName="confirm_email" (keyup.enter)="searchUser()"/>
+                <input matInput autocomplete="off" formControlName="confirm_email" (keydown.Tab)="searchUser()" (keyup.enter)="searchUser()"/>
                 <button *ngIf="form_value.confirm_email" type="button" matSuffix mat-icon-button (click)="searchUser()">
                   <mat-icon matPrefix>search</mat-icon>
                   </button>
@@ -130,7 +130,6 @@
               </mat-select>
               </mat-form-field>
             </div>
-
             <div class="col-sm-6 col-12">
               <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Red*</mat-label>
@@ -140,8 +139,6 @@
               </mat-select>
               </mat-form-field>
             </div>
-
-            
           </div>
           <div class="row">
           
