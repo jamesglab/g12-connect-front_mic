@@ -41,6 +41,7 @@ export class AddUserMassiveComponent implements OnInit {
   buildForm() {
     this.add_user = this.fb.group({
       transaction_id: [this.transaction.transaction.id, Validators.required],
+      id: [null, Validators.required],
       country: [this.currentUser.church_id ? 'Colombia' : null, Validators.required],
       document: [null, Validators.required],
       document_type: [null],
@@ -69,27 +70,30 @@ export class AddUserMassiveComponent implements OnInit {
     this.pastors = [];
     this.form_controls.leader.disable();
     this.form_controls.pastor.disable();
-    this.userService.getLeadersOrPastors({ userCode: user_code, church: user ? user.church_id : this.currentUser.church_id }).subscribe(res => {
+    this.userService.getLeadersOrPastors({ userCode: user_code, church: this.currentUser.church_id }).subscribe(res => {
       this.pastors = res;
-      this.leaders = []; //REINICAMOS LOS LIDERES
       this.form_controls.pastor.enable();//INHABILITAMOS EL SELECTOR DEL PASTOR
       if (user) {
-        console.log(res.find(pt => pt.user_code == user.pastor_code))
+        console.log('selector', res.find(pt => pt.user_code == user.pastor_code));
         this.form_controls.pastor.setValue(res.find(pt => pt.user_code == user.pastor_code));
         this.form_controls.pastor.disable();
       }
+    }, err => {
+      throw err
     });
   }
 
   // CONSULTAMOS LOS LIDERES QUE PERTENECEN A LA RED DEL PASTOR
   getLeaders(pastor, user?) {
-    this.leaders = [];
-    this.userService.getLeadersOrPastors({ userCode: pastor.user_code, church: user ? user.church_id : this.currentUser.church_id }).subscribe(res => {
+    this.leaders = []; //REINICIAMOS LOS LIDERES QUE CAMBIAN DE UN PASTOR A OTRO
+    this.userService.getLeadersOrPastors({ userCode: pastor.user_code, church: this.currentUser.church_id }).subscribe(res => {
       this.leaders = res;
-      this.add_user.get('leader').enable();//INHABILITAMOS EL SELECTOR DEL LIDER
+      this.add_user.get('leader').enable();//HABILITAMOS EL SELECTOR DEL LIDER
       if (user) {
         this.form_controls.leader.setValue(res.find(ld => ld.user_code == user.leader_code));
       }
+    },err=>{
+      throw err;
     });
   }
 
@@ -97,31 +101,40 @@ export class AddUserMassiveComponent implements OnInit {
     this.userService.getPlaces({ type: 'national', country: 'Colombia' }).subscribe(res => {
       this.add_user.get('church').setValue(res.find(ch => ch.id == this.currentUser.church_id));
       this.churchs = res;
-    });
+    },err=>{throw err});
   }
 
 
 
-  searchUser() {
+  searchUser(autocomplete?) {
     const filters = {};
-
-    if (this.form_value.document) {
-      filters['identification'] = this.form_value.document;
-    }
+    if (this.form_value.document) { filters['identification'] = this.form_value.document.trim(); }
 
     if (this.add_user.value.confirm_email && this.form_value.email == this.form_value.confirm_email) {
-      filters['email'] = this.form_value.email.toLowerCase();
+      filters['email'] = this.form_value.email.trim().toLowerCase();
     }
 
     this.userService.getUserInfo(filters).subscribe(res => {
+      console.log('user', res)
       this.find_user = true;
-      this.setUser(res);
+      if (autocomplete) {
+        this.setUser(res);
+      } else {
+        this.form_controls.id.setValue(res['id']);
+        this.createUser();
+      }
     }, err => {
-      Swal.fire('No se encontro el usuario', '', 'info');
-      this.form_controls.network.enable();
-      this.form_controls.netork.reset();
-      this.form_controls.pastor.reset();
-      this.form_controls.leader.reset();
+      if (autocomplete) {
+        Swal.fire('No se encontro el usuario', '', 'info').then(res => {
+          this.form_controls.network.enable();
+          this.form_controls.network.reset();
+          this.form_controls.pastor.reset();
+          this.form_controls.leader.reset();
+        });
+        throw err;
+      }
+
+
     })
   }
 
@@ -140,7 +153,7 @@ export class AddUserMassiveComponent implements OnInit {
       return
     }
     //MOSTRAMOS EL LOADER\
-    if (this.find_user){
+    if (this.find_user) {
       Swal.fire({
         title: '¿Actualizar Usuario?',
         icon: 'question',
@@ -155,10 +168,11 @@ export class AddUserMassiveComponent implements OnInit {
           this.createUser();
         }
       })
-    }else{
-      this.createUser();
+    } else {
+      //VALIDAMOS QUE EL USUARIO EXISTA
+      this.searchUser();
     }
-    
+
   }
 
 
@@ -188,6 +202,7 @@ export class AddUserMassiveComponent implements OnInit {
 
   setUser(user) {
     this.form_controls.country.setValue(user.country);
+    this.form_controls.id.setValue(user.id);
     this.form_controls.name.setValue(user.name);
     this.form_controls.last_name.setValue(user.last_name);
     this.form_controls.email.setValue(user.email);
@@ -195,6 +210,7 @@ export class AddUserMassiveComponent implements OnInit {
     this.form_controls.gender.setValue(user.gender);
     this.form_controls.phone.setValue(user.phone);
     this.form_controls.network.setValue(user.network);
+    this.form_controls.document.setValue(user.identification);
     this.form_controls.document_type.setValue(user.document_type);
     this.getPastors(user.pastor_code, user);
     this.getLeaders({ user_code: user.leader_code }, user);

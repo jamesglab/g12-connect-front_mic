@@ -153,8 +153,10 @@ export class CreateMassiveComponent implements OnInit {
 
   //CREAMOS EL PAGO
   submit() {
+    console.log('control',this.payment_information_controls.get(this.payment_type))
 
-    if (this.donor_information_controls.invalid && this.event_information_controls.invalid) {
+    if (this.donor_information_controls.invalid || this.event_information_controls.invalid || this.payment_information_controls.get(this.payment_type).invalid) {
+      Swal.fire('Campos requeridos incompletos','','info')
       return
     }
     this.isLoading = true;
