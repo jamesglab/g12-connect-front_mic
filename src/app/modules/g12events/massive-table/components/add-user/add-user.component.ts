@@ -92,7 +92,7 @@ export class AddUserMassiveComponent implements OnInit {
       if (user) {
         this.form_controls.leader.setValue(res.find(ld => ld.user_code == user.leader_code));
       }
-    },err=>{
+    }, err => {
       throw err;
     });
   }
@@ -101,7 +101,7 @@ export class AddUserMassiveComponent implements OnInit {
     this.userService.getPlaces({ type: 'national', country: 'Colombia' }).subscribe(res => {
       this.add_user.get('church').setValue(res.find(ch => ch.id == this.currentUser.church_id));
       this.churchs = res;
-    },err=>{throw err});
+    }, err => { throw err });
   }
 
 
@@ -170,7 +170,8 @@ export class AddUserMassiveComponent implements OnInit {
       })
     } else {
       //VALIDAMOS QUE EL USUARIO EXISTA
-      this.searchUser();
+      this.createUser();
+
     }
 
   }
