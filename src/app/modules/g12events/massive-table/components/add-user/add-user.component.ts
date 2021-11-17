@@ -170,7 +170,21 @@ export class AddUserMassiveComponent implements OnInit {
       })
     } else {
       //VALIDAMOS QUE EL USUARIO EXISTA
-      this.createUser();
+      const filters = {};
+      if (this.form_value.document) { filters['identification'] = this.form_value.document.trim(); }
+
+      if (this.add_user.value.confirm_email && this.form_value.email == this.form_value.confirm_email) {
+        filters['email'] = this.form_value.email.trim().toLowerCase();
+      }
+
+      this.userService.getUserInfo(filters).subscribe(res => {
+        console.log('user', res)
+        this.add_user.get('id').setValue(res['id'])
+        this.find_user = true;
+      }, err => {
+        this.createUser();
+
+      })
 
     }
 
