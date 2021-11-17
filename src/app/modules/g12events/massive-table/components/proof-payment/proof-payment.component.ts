@@ -13,7 +13,7 @@ export class ProofPaymentComponent implements OnInit {
   constructor(private route: ActivatedRoute, private g12EventService: G12eventsService, private cdr : ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    if (!this.proof){
+    if (!this.proof){`1`
       this.route.queryParams.subscribe((params) => {
         if (params.id_transaction){
           this.validateTrasaction(params.id_transaction);
@@ -23,7 +23,6 @@ export class ProofPaymentComponent implements OnInit {
         }
       });
     }
-    
   }
 
   //VALIDAMOS REFERENCIA DE PAGO

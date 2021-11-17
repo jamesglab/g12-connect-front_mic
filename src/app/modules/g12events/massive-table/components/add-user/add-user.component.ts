@@ -96,7 +96,7 @@ export class AddUserMassiveComponent implements OnInit {
     this.userService.getPlaces({ type: 'national', country: 'Colombia' }).subscribe(res => {
       this.add_user.get('church').setValue(res.find(ch => ch.id == this.currentUser.church_id));
       this.churchs = res;
-    })
+    });
   }
 
 
