@@ -103,8 +103,8 @@ export class AddEventComponent implements OnInit {
               },
               (err) => {
                 Swal.fire(
-                  err.error.error
-                    ? err.error.error
+                  err
+                    ? err
                     : 'Ocurrio un error intenta mas tarde!',
                   '',
                   'error'

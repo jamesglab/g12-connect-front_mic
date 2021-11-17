@@ -17,13 +17,13 @@ export class AddUserMassiveComponent implements OnInit {
   public add_user: FormGroup;
   private currentUser = this.storageService.getItem('auth').user;
   public transaction: any;
-
   public leaders: [] = [];
   public pastors: [] = [];
   public churchs: [] = [];
   public countries: any[] = COUNTRIES;//LISTADO DE PAISES;
 
   public isLoading: boolean = false;
+  public find_user: boolean = false;
   constructor(private fb: FormBuilder, public modal: NgbActiveModal, private g12EventService: G12eventsService,
     public cdr: ChangeDetectorRef, private userService: UserService, private storageService: StorageService) { }
 
@@ -103,7 +103,7 @@ export class AddUserMassiveComponent implements OnInit {
 
   searchUser() {
     const filters = {};
-    
+
     if (this.form_value.document) {
       filters['identification'] = this.form_value.document;
     }
@@ -113,9 +113,10 @@ export class AddUserMassiveComponent implements OnInit {
     }
 
     this.userService.getUserInfo(filters).subscribe(res => {
+      this.find_user = true;
       this.setUser(res);
-    },err=>{
-      Swal.fire('No se encontro el usuario','','info');
+    }, err => {
+      Swal.fire('No se encontro el usuario', '', 'info');
     })
   }
 
@@ -133,7 +134,31 @@ export class AddUserMassiveComponent implements OnInit {
       Swal.fire('Los correos no coinciden', '', 'info')
       return
     }
-    //MOSTRAMOS EL LOADER
+    //MOSTRAMOS EL LOADER\
+    if (this.find_user){
+      Swal.fire({
+        title: '¿Actualizar Usuario?',
+        icon: 'question',
+        text: 'El usuario que intentas registrar ya se encuentra en nuestro sistema. al continuar la información del usuario podria verse afectada',
+        confirmButtonText: 'Continuar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true,
+        showCancelButton: true,
+        showCloseButton: true
+      }).then(res => {
+        if (res.isConfirmed) {
+          this.createUser();
+        }
+      })
+    }else{
+      this.createUser();
+    }
+    
+  }
+
+
+
+  createUser() {
     this.isLoading = true;
     //EJECUTAMOS EL ENDPOINT CON LOS DATOS DEL USUARIO
     this.g12EventService.addUser(this.add_user.getRawValue()).subscribe(res => {
@@ -141,13 +166,14 @@ export class AddUserMassiveComponent implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges();
         this.modal.close(res);
-      })
+      });
     }, err => {
       this.isLoading = false;
       this.cdr.detectChanges();
       Swal.fire(err ? err : 'No se pudo ejecutar la acción', '', 'error')
     });
   }
+
 
 
   //****************************/
