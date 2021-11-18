@@ -22,7 +22,7 @@ export const environment = {
     donations: 'https://api.g12connect.com/api/v2/donations',
     managment: 'https://api.g12connect.com/api/v2/managment',
     users: 'https://api.g12connect.com/api/v2/users',
-    payments: 'https://api.g12connect.com/api/v2/payments',
+    payments: 'https://api.g12connect.com/api/v3/payments',
     reports : 'https://api.g12connect.com/api/v2/reports'
   },
   SECRETENCRYPT:"G12jk5FQg6bu8zWSECURITY#wB9jPyURESPONSE",
