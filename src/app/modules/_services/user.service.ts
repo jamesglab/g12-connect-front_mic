@@ -51,6 +51,20 @@ export class UserService {
       );
   }
 
+  getChurchById(filter){
+    return this.http
+    .get<any>(`${environment.apiUrlG12Connect.users}/church/detail`, {
+      headers: header,
+      params: filter,
+    })
+    .pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
   getProfile() {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.users}/detail`, {

@@ -19,7 +19,7 @@ export class AddUserMassiveComponent implements OnInit {
   public transaction: any;
   public leaders: [] = [];
   public pastors: [] = [];
-  public churchs: [] = [];
+  public churchs = [];
   public countries: any[] = COUNTRIES;//LISTADO DE PAISES;
 
   public isLoading: boolean = false;
@@ -29,7 +29,7 @@ export class AddUserMassiveComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
-    this.getChurchs();
+    this.getChurchs(this.currentUser.church_id);
   }
 
 
@@ -70,7 +70,7 @@ export class AddUserMassiveComponent implements OnInit {
     this.pastors = [];
     this.form_controls.leader.disable();
     this.form_controls.pastor.disable();
-    this.userService.getLeadersOrPastors({ userCode: user_code, church: this.currentUser.church_id }).subscribe(res => {
+    this.userService.getLeadersOrPastors({ userCode: user_code, church: user ? user.church_id : this.currentUser.church_id }).subscribe(res => {
       this.pastors = res;
       this.form_controls.pastor.enable();//INHABILITAMOS EL SELECTOR DEL PASTOR
       if (user) {
@@ -86,7 +86,7 @@ export class AddUserMassiveComponent implements OnInit {
   // CONSULTAMOS LOS LIDERES QUE PERTENECEN A LA RED DEL PASTOR
   getLeaders(pastor, user?) {
     this.leaders = []; //REINICIAMOS LOS LIDERES QUE CAMBIAN DE UN PASTOR A OTRO
-    this.userService.getLeadersOrPastors({ userCode: pastor.user_code, church: this.currentUser.church_id }).subscribe(res => {
+    this.userService.getLeadersOrPastors({ userCode: pastor.user_code, church: user ? user.church_id : this.currentUser.church_id}).subscribe(res => {
       this.leaders = res;
       this.add_user.get('leader').enable();//HABILITAMOS EL SELECTOR DEL LIDER
       if (user) {
@@ -97,14 +97,14 @@ export class AddUserMassiveComponent implements OnInit {
     });
   }
 
-  getChurchs() {
-    this.userService.getPlaces({ type: 'national', country: 'Colombia' }).subscribe(res => {
-      this.add_user.get('church').setValue(res.find(ch => ch.id == this.currentUser.church_id));
-      this.churchs = res;
+  getChurchs(id) {
+    this.userService.getChurchById({ id }).subscribe(res => {
+      let city = [];
+      city.push(res)
+      this.add_user.get('church').setValue(city.find(ch => ch.id == id));
+      this.churchs = city;
     }, err => { throw err });
   }
-
-
 
   searchUser(autocomplete?) {
     const filters = {};
@@ -133,8 +133,6 @@ export class AddUserMassiveComponent implements OnInit {
         });
         throw err;
       }
-
-
     })
   }
 
@@ -226,10 +224,12 @@ export class AddUserMassiveComponent implements OnInit {
     this.form_controls.phone.setValue(user.phone);
     this.form_controls.network.setValue(user.network);
     this.form_controls.document.setValue(user.identification);
+    this.form_controls.document.disable();
     this.form_controls.document_type.setValue(user.document_type);
     this.getPastors(user.pastor_code, user);
     this.getLeaders({ user_code: user.leader_code }, user);
     this.form_controls.network.disable();
+    this.getChurchs(user.church_id);
 
   }
 
