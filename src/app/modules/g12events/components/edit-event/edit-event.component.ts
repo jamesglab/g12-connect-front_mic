@@ -89,7 +89,7 @@ export class EditEventComponent implements OnInit {
   addCute(cut?) {
     this.cuts.push(
       new FormGroup({
-        id: new FormControl(cut.id ? cut.id : null),
+        id: new FormControl(cut?.id ? cut.id : null),
         name: new FormControl(cut ? cut.name : null),
         cop: new FormControl(cut ? cut.prices.cop : null),
         usd: new FormControl(cut ? cut.prices.usd : null),
