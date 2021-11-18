@@ -155,6 +155,10 @@ export class CreateMassiveComponent implements OnInit {
 
   //CREAMOS EL PAGO
   submit() {
+    if (this.event_information_value.quantity_tickets<=0){
+      Swal.fire('Revisa los tiquetes que vas a comprar','','info');
+      return
+    }
     if (this.donor_information_controls.invalid || this.event_information_controls.invalid || this.payment_information_controls.get(this.payment_type).invalid) {
       Swal.fire('Campos requeridos incompletos','','info')
       return
