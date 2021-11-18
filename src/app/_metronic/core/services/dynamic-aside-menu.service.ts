@@ -32,6 +32,7 @@ export class DynamicAsideMenuService {
       const DynamicAsideMenuConfig = DynamicAsideMenuConfigOriginal;
       // ASIGNAMOS LOS VALORES DEL OBJETO EN UN ARRAY
       let permissionsArray = Object.keys(res);
+      console.log('tenemos oermisos', res)
       // RECORREMOS LOS MODULOS PRINCIPALES
       DynamicAsideMenuConfig.items.map((item: any) => {
         // VALIDAMOS QUE EL PERMISO PARA ACCEDER AL MODULO SE ENCUENTRE 
@@ -54,14 +55,19 @@ export class DynamicAsideMenuService {
         }
       });
 
-      
+
       this.setMenu(DynamicAsideMenuConfig);
 
     }, err => {
-      if (err.status == 401){
-        console.log('aqui hacemos el refresh token')
-      }
-     });
+      const DynamicAsideMenuConfig = DynamicAsideMenuConfigOriginal;
+      console.log('tenemos menu', DynamicAsideMenuConfig)
+
+      this.setMenu(DynamicAsideMenuConfig);
+
+      // if (err.status == 401){
+      //   console.log('aqui hacemos el refresh token')
+      //   }
+    });
 
 
   }

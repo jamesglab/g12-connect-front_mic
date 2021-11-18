@@ -88,7 +88,7 @@ export let DynamicAsideMenuConfigOriginal = {
       alignment: 'left',
       svg: './assets/media/svg/icons/Shopping/Ticket.svg',
       page: '/g12events',
-      show: false,
+      show: true,
       submenu: [
         {
           title: 'Inicio',
@@ -125,13 +125,13 @@ export let DynamicAsideMenuConfigOriginal = {
         {
           title: 'Masivos',
           root: true,
-          show: false,
+          show: true,
           bullet: 'dot',
           code: "EVT1500",
           submenu: [{
             title: 'Mis Masivos',
             root: true,
-            show: false,
+            show: true,
             bullet: 'dot',
             code: "EVT1510",
             page: '/g12events/massive'
@@ -139,7 +139,7 @@ export let DynamicAsideMenuConfigOriginal = {
           {
             title: 'Crear Masivo',
             root: true,
-            show: false,
+            show: true,
             bullet: 'dot',
             code: "EVT1520",
             page: '/g12events/create-massive'

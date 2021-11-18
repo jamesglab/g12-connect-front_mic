@@ -16,11 +16,13 @@
       <div class="card-body">
         <div class="row">
           <div class="col-xl-1 col-sm-1">
+            <!-- PERMISO DE CREAR MASIVO -->
+            <!-- *ngIf="permissions && permissions['EVT1511']" -->
             <button
               type="button"
               class="btn btn-primary"
               matTooltip="Crear Masivos"
-              *ngIf="permissions && permissions['EVT1511']"
+              
               [routerLink]="['/g12events/create-massive']"
             >
               <mat-icon style="font-size: 25px">library_books</mat-icon>
@@ -75,17 +77,21 @@
             <ng-container matColumnDef="detail">
               <th mat-header-cell *matHeaderCellDef>Detalle</th>
               <td mat-cell *matCellDef="let element; let i =index">
+                <!-- PERMISSION -->
+                <!-- *ngIf="permissions && permissions['EVT1512']" -->
+
                 <a
                   class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
                   (click)="addUser(element)"
-                  *ngIf="permissions && permissions['EVT1512']"
                 >
                   <span><i class="fas fa-user-plus"></i></span>
                 </a>
+                <!-- PERMISSION -->
+                <!-- *ngIf="permissions && permissions['EVT1513']" -->
                 <a
                   class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
                   (click)="proofPayment(element)"
-                  *ngIf="permissions && permissions['EVT1513']"
+                  
                 >
                   <span><i class="fas fa-ticket-alt"></i></span>
                 </a>
