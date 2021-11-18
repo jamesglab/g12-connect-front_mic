@@ -32,7 +32,10 @@ export class DynamicAsideMenuService {
       const DynamicAsideMenuConfig = DynamicAsideMenuConfigOriginal;
       // ASIGNAMOS LOS VALORES DEL OBJETO EN UN ARRAY
       let permissionsArray = Object.keys(res);
-      console.log('tenemos oermisos', res)
+      permissionsArray.push('EVT1000');
+      permissionsArray.push('EVT1500');
+      permissionsArray.push('EVT1510');
+      permissionsArray.push('EVT1520');
       // RECORREMOS LOS MODULOS PRINCIPALES
       DynamicAsideMenuConfig.items.map((item: any) => {
         // VALIDAMOS QUE EL PERMISO PARA ACCEDER AL MODULO SE ENCUENTRE 
@@ -60,8 +63,6 @@ export class DynamicAsideMenuService {
 
     }, err => {
       const DynamicAsideMenuConfig = DynamicAsideMenuConfigOriginal;
-      console.log('tenemos menu', DynamicAsideMenuConfig)
-
       this.setMenu(DynamicAsideMenuConfig);
 
       // if (err.status == 401){
