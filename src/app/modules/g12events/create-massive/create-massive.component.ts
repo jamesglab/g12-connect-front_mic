@@ -155,8 +155,6 @@ export class CreateMassiveComponent implements OnInit {
 
   //CREAMOS EL PAGO
   submit() {
-    console.log('control',this.payment_information_controls.get(this.payment_type))
-
     if (this.donor_information_controls.invalid || this.event_information_controls.invalid || this.payment_information_controls.get(this.payment_type).invalid) {
       Swal.fire('Campos requeridos incompletos','','info')
       return
@@ -190,6 +188,7 @@ export class CreateMassiveComponent implements OnInit {
         }).then((result) => {
           /* Read more about isConfirmed, isDenied below */
           this.masive_form.reset();
+          this.payment_information_controls.get('cash').get('add_days').setValue(1);
           this.donor_information_controls.get('country').setValue('Colombia');
           this.payment_type = "card";
           if (result.isConfirmed) {
@@ -202,6 +201,7 @@ export class CreateMassiveComponent implements OnInit {
       } else {
         Swal.fire(res.message ? res.message : 'Transacción exitosa', '', 'success').then(res => {
           this.masive_form.reset();
+          this.payment_information_controls.get('cash').get('add_days').setValue(1);
           this.donor_information_controls.get('country').setValue('Colombia');
         })
       }
