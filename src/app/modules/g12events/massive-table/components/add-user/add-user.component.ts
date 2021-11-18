@@ -233,6 +233,13 @@ export class AddUserMassiveComponent implements OnInit {
 
   }
 
+
+  validateNumber(e) {
+    if (e.key.match(/[0-9]/i) === null) {
+      // Si la tecla pulsada no es la correcta, eliminado la pulsación
+      e.preventDefault();
+    }
+  }
   // CONTROLES DEL FORMULARIO
   get form_controls() {
     return this.add_user.controls;
