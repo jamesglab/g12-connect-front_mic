@@ -52,7 +52,6 @@ export class CreateMassiveComponent implements OnInit {
         email: [null, Validators.compose([Validators.required, Validators.email])],
         phone: [null, Validators.required],
         address: [null],
-        postal_code: [null],
       }),
       payment_information: this.fb.group({//INFORMACION DE PAGO
         currency: [null, Validators.required],
