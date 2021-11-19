@@ -143,6 +143,14 @@ export let DynamicAsideMenuConfigOriginal = {
             bullet: 'dot',
             code: "EVT1520",
             page: '/g12events/create-massive'
+          },
+          {
+            title: 'Reporte de Masivos',
+            root: true,
+            show: false,
+            bullet: 'dot',
+            code: "EVT1530",
+            page: '/g12events/report-massive'
           }
           ],
         }

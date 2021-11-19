@@ -128,7 +128,7 @@ export class G12eventsService {
 
   getEventsMassive() {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.donations}/event-massive`, {
+      .get<any>(`${'https://3ea1-181-55-4-148.ngrok.io/api/v2/donations'}/event-massive`, {
         headers: header
       })
       .pipe(

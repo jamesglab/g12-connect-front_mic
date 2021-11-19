@@ -16,8 +16,8 @@
       <div class="card-body">
         <div class="container">
           <div class="row">
-            <div class="col">
-              <mat-form-field appearance="fill">
+            <div class="col-sm-3 col">
+              <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>Seleccione un año</mat-label>
                 <input matInput [matDatepicker]="dp" [formControl]="date" [max]="maxDate">
                 <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
@@ -27,11 +27,11 @@
               </mat-form-field>
             </div>
             <div class="col">
-              <mat-form-field appearance="fill">
+              <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>Seleccióna un evento</mat-label>
                 <mat-select [formControl]="event_selected">
                   <mat-option [value]="0">Todos</mat-option>
-                  <mat-option [value]="event" *ngFor="let event of events">{{event.name}}</mat-option>
+                  <mat-option [value]="event" *ngFor="let event of events">{{event.name |uppercase}}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
