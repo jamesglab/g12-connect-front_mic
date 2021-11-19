@@ -249,4 +249,11 @@ export class CreateMassiveComponent implements OnInit {
     return this.masive_form.get('payment_information')
   }
 
+
+  validateNumber(e) {
+    if (e.key.match(/[0-9]/i) === null) {
+      // Si la tecla pulsada no es la correcta, eliminado la pulsación
+      e.preventDefault();
+    }
+  }
 }
