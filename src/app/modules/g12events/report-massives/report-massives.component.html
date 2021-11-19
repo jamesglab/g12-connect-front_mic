@@ -18,15 +18,20 @@
           <div class="col-xl-1 col-sm-1">
             <!-- PERMISO DE CREAR MASIVO -->
             <!--  -->
-            <!-- <button
+            <button
               type="button"
               class="btn btn-primary"
-              matTooltip="Crear Masivos"
-              *ngIf="permissions && permissions['EVT1511']"
-              [routerLink]="['/g12events/create-massive']"
+              matTooltip="Descargar"
+              *ngIf="permissions && permissions['EVT1531']"
+              (click)="getReports()"
+              [disabled]="isLoading"
             >
-              <mat-icon style="font-size: 25px">library_books</mat-icon>
-            </button> -->
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  *ngIf="isLoading"></span>
+              
+              <mat-icon  *ngIf="!isLoading" style="font-size: 25px">cloud_download</mat-icon>
+            </button>
+
           </div>
           <!-- <div class="col-xl-6 col-sm-6">
             <mat-form-field class="example-full-width">
