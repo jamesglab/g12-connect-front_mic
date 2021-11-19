@@ -191,22 +191,28 @@ export class CreateMassiveComponent implements OnInit {
           icon: 'success'
         }).then((result) => {
           /* Read more about isConfirmed, isDenied below */
-          this.masive_form.reset();
-          this.payment_information_controls.get('cash').get('add_days').setValue(1);
-          this.donor_information_controls.get('country').setValue('Colombia');
+          // this.masive_form.reset();
+          // this.payment_information_controls.get('cash').get('add_days').setValue(1);
+          // this.donor_information_controls.get('country').setValue('Colombia');
           this.payment_type = "card";
           if (result.isConfirmed) {
             localStorage.setItem('reference', res.ref);
             window.open(res.url, '_blank');
+            this.router.navigate(['/g12events/massive']);
+          }else {
+            this.router.navigate(['/g12events/massive']);
+
           }
         })
 
 
       } else {
         Swal.fire(res.message ? res.message : 'Transacción exitosa', '', 'success').then(res => {
-          this.masive_form.reset();
-          this.payment_information_controls.get('cash').get('add_days').setValue(1);
-          this.donor_information_controls.get('country').setValue('Colombia');
+          this.router.navigate(['/g12events/massive']);
+
+          // this.masive_form.reset();
+          // this.payment_information_controls.get('cash').get('add_days').setValue(1);
+          // this.donor_information_controls.get('country').setValue('Colombia');
         })
       }
 
