@@ -57,7 +57,7 @@ export class GenerateCodesComponent implements OnInit {
         this.modal.close("success");
       }, err => {
         this.loader = false;
-        Swal.fire(err.error.message ? err.error.message : 'Algo ocurrio intenta mas tarde', '', 'error')
+        Swal.fire(err ? err: 'Algo ocurrio intenta mas tarde', '', 'error')
       })
     } else {
       Swal.fire('Faltan datos en el formulario', '', 'info')
