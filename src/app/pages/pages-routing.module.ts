@@ -49,6 +49,12 @@ const routes: Routes = [
         loadChildren: () =>
           import('../modules/ministerial-info/ministerial-info.module').then((m) => m.MinisterialInfoModule)
       },
+
+      {
+        path: 'boxes',
+        loadChildren: () =>
+          import('../modules/boxes/boxes.module').then((m) => m.BoxesModule)
+      },
       {
         path: '',
         redirectTo: 'dashboard',
