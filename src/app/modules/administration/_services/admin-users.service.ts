@@ -1,5 +1,9 @@
 import { Injectable, Output, EventEmitter } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -12,23 +16,30 @@ import { header, handleError } from 'src/app/_helpers/tools/header.tool';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminUsersService {
-
   public filter: any = null;
   @Output() public reload: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private http: HttpClient, private _storageService: StorageService) { }
+  constructor(
+    private http: HttpClient,
+    private _storageService: StorageService
+  ) {}
 
-//ENVIAMOS EL VALOR DE RECARGAR EN LOS DIFERENTES COMPONENTES QUE USEN EL OUTPUT DE RELOAD
-  handleReload(){ this.reload.emit(true); }
+  //ENVIAMOS EL VALOR DE RECARGAR EN LOS DIFERENTES COMPONENTES QUE USEN EL OUTPUT DE RELOAD
+  handleReload() {
+    this.reload.emit(true);
+  }
 
-
-  getUsers(): Observable<any> { //BURNED
-    return this.http.get<any>(
-      `${environment.apiUrlG12Connect.users}/filter`, { headers: header, 
-      params: this.filter }).pipe(
+  getUsers(): Observable<any> {
+    //BURNED
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.users}/filter`, {
+        headers: header,
+        params: this.filter,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -36,11 +47,13 @@ export class AdminUsersService {
       );
   }
 
-
   getUserRoles(userId: number): Observable<Response> {
-    return this.http.get<Response>(
-      `${environment.apiUrlG12Connect.users}/roles`, 
-      { headers: header, params: { id: userId.toString() } }).pipe(
+    return this.http
+      .get<Response>(`${environment.apiUrlG12Connect.users}/roles`, {
+        headers: header,
+        params: { id: userId.toString() },
+      })
+      .pipe(
         map((res: Response) => {
           return res;
         }),
@@ -49,8 +62,13 @@ export class AdminUsersService {
   }
 
   createUser(user: User): Observable<Response> {
-    return this.http.post<Response>(
-      `${environment.apiUrl}Sso/CreateUser`, JSON.stringify(user), { headers: header }).pipe(
+    return this.http
+      .post<Response>(
+        `${environment.apiUrl}Sso/CreateUser`,
+        JSON.stringify(user),
+        { headers: header }
+      )
+      .pipe(
         map((res: Response) => {
           return res;
         }),
@@ -59,8 +77,13 @@ export class AdminUsersService {
   }
 
   createUserObjects(payload: UserObjects) {
-    return this.http.post<Response>(
-      `${environment.apiUrl}Sso/CreateUserObject`, JSON.stringify(payload), { headers: header }).pipe(
+    return this.http
+      .post<Response>(
+        `${environment.apiUrl}Sso/CreateUserObject`,
+        JSON.stringify(payload),
+        { headers: header }
+      )
+      .pipe(
         map((res: Response) => {
           return res;
         }),
@@ -68,9 +91,15 @@ export class AdminUsersService {
       );
   }
 
-  createUserRole(payload: { user: number, role: number }){//BURNED
-    return this.http.put<Response>(
-      `${environment.apiUrlG12Connect.users}/add-role`, payload, { headers: header }).pipe(
+  createUserRole(payload: { user: number; role: number }) {
+    //BURNED
+    return this.http
+      .put<Response>(
+        `${environment.apiUrlG12Connect.users}/add-role`,
+        payload,
+        { headers: header }
+      )
+      .pipe(
         map((res: Response) => {
           return res;
         }),
@@ -79,18 +108,25 @@ export class AdminUsersService {
   }
 
   editUser(user: User): Observable<Response> {
-    return this.http.put<Response>(
-      `${environment.apiUrlG12Connect.users}`, user, { headers: header }).pipe(
+    return this.http
+      .put<Response>(`${environment.apiUrlG12Connect.users}`, user, {
+        headers: header,
+      })
+      .pipe(
         map((res: Response) => {
           return res;
         }),
         catchError(handleError)
       );
   }
-  
-  deleteUserRole(payload: { user: number, role: number }) { //BURNED
-    return this.http.put<any>(
-      `${environment.apiUrlG12Connect.users}/delete-role`, payload, { headers: header }).pipe(
+
+  deleteUserRole(payload: { user: number; role: number }) {
+    //BURNED
+    return this.http
+      .put<any>(`${environment.apiUrlG12Connect.users}/delete-role`, payload, {
+        headers: header,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -98,4 +134,64 @@ export class AdminUsersService {
       );
   }
 
+  createBox(payload) {
+    return this.http
+      .post<any>(`${environment.apiUrlG12Connect.payments}/boxes`, payload, {
+        headers: header,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  getBoxes(params) {
+    return this.http
+      .get<Response>(`${environment.apiUrlG12Connect.payments}/boxes`, {
+        headers: header,
+        params,
+      })
+      .pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  assignUserToBox(payload) {
+    return this.http
+      .put<Response>(
+        `${environment.apiUrlG12Connect.payments}/boxes/assign-user-to-box`,
+        payload,
+        {
+          headers: header,
+        }
+      )
+      .pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  updateBox(payload) {
+    return this.http
+      .put<Response>(
+        `${environment.apiUrlG12Connect.payments}/boxes`,
+        payload,
+        {
+          headers: header,
+        }
+      )
+      .pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }
