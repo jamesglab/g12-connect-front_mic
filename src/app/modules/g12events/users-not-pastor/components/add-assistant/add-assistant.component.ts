@@ -128,8 +128,6 @@ export class AddAssistantComponent implements OnInit {
     }
   }
 
-
-
   // getDocumentTypes() {
   //   const getDocumentTypesSubscr = this.mainService
   //     .getDocumentTypes().subscribe((res: any) => {
@@ -161,7 +159,6 @@ export class AddAssistantComponent implements OnInit {
     }
   }
   setFinancialCuts() {
-
     this.events.map((event) => {
       if (event.id == this.assistantForm.getRawValue().payment_data.event.id) {
         this.financialCuts = event.financialCut;
@@ -268,7 +265,6 @@ export class AddAssistantComponent implements OnInit {
       return;
     }
 
-
     const formAssistant = this.assistantForm.getRawValue();
 
     const sendObject = {
@@ -284,8 +280,13 @@ export class AddAssistantComponent implements OnInit {
         leader: formAssistant.leader,
         church: formAssistant.headquarters,
         city: formAssistant.registerType == '1' ? formAssistant.city : null,
+        type_church: this.churchTypes.find(
+          (tch) => tch.idDetailMaster == formAssistant.typeChurch
+        ).code,
         country:
-          formAssistant.registerType == '2' ? formAssistant.country : 'COLOMBIA',
+          formAssistant.registerType == '2'
+            ? formAssistant.country
+            : 'COLOMBIA',
       },
       payment: {
         platform: formAssistant.payment_data.platform,
@@ -298,14 +299,13 @@ export class AddAssistantComponent implements OnInit {
       financial_cut: formAssistant.payment_data.financial_cut,
     };
 
-
-    if (this.form.typeChurch.value == '88') { //IN CASE OF SELECTED MCI CHURCHES
-
+    if (this.form.typeChurch.value == '88') {
+      //IN CASE OF SELECTED MCI CHURCHES
     } else {
       // IN CASE OF SELECTED church g12 and other
-      sendObject.user.pastor = { name: this.form.pastorName.value }
-      sendObject.user.leader = { name: "NO APLICA, NO IGLESIA MCI" }
-      sendObject.user.church = { name: this.form.churchName.value }
+      sendObject.user.pastor = { name: this.form.pastorName.value };
+      sendObject.user.leader = { name: 'NO APLICA, NO IGLESIA MCI' };
+      sendObject.user.church = { name: this.form.churchName.value };
     }
     this.mainService.createUserWithPaymentAdmin(sendObject).subscribe((res) => {
       Swal.fire('Se creo el usuario', res.response, 'success');
@@ -324,9 +324,9 @@ export class AddAssistantComponent implements OnInit {
     );
   }
 
-
   changeCut() {
-    this.actualCute = this.assistantForm.controls.payment_data.get('financial_cut').value;
+    this.actualCute =
+      this.assistantForm.controls.payment_data.get('financial_cut').value;
     this.cdr.detectChanges();
   }
 
