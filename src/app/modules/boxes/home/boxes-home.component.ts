@@ -1,15 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
+import { StorageService } from '../../auth/_services/storage.service';
+import { BoxService } from './services/g12events.service';
 
 @Component({
   selector: 'app-boxes-home',
   templateUrl: './boxes-home.component.html',
-  styleUrls: ['./boxes-home.component.scss']
+  styleUrls: ['./boxes-home.component.scss'],
 })
 export class BoxesHomeComponent implements OnInit {
+  private currentUser = this.storageService.getItem('auth').user;
+  public  box;
 
-  constructor() { }
+  constructor(
+    private _boxService: BoxService,
+    private storageService: StorageService,
+    private cdr : ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
+    this.validateUserBox();
   }
 
+  validateUserBox() {
+    this._boxService.findBoxByUser(this.currentUser.id).subscribe(  
+      (res) => {
+        this.box =   res;
+        this.cdr.detectChanges();
+      },
+      (err) => {
+        Swal.fire(err ? err : 'Usuario sin caja asignada', '', 'error');
+      }
+    );
+  }
 }

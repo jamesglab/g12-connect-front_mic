@@ -139,6 +139,20 @@ export class G12eventsService {
       );
   }
 
+  getEventsFilter(){
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.donations}/filter`, {
+        headers: header,
+        params :{type:'G12_EVENT'}
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
   getById(params) {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.donations}/id`, {
