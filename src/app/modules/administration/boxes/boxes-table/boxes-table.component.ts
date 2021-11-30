@@ -34,7 +34,7 @@ export class BoxesTableComponent implements OnInit {
 
   getBoxes() {
     //CONSULTAMOS LAS CAJAS Y NO ENVIAMOS NINGUN PARAMETRO POR EL QUERY PARAMS PARA TRAERLOS TODOS
-    this.adminService.getBoxes({}).subscribe((res: any) => {
+    this.adminService.getBoxes().subscribe((res: any) => {
       //VALIDAMOS SI YA SE CREO EL DATASOUTCE DE LA TABLA DE ANGULAR MATERIAL
       if (this.dataSource) {
         //ASIGNAMOS LOS DATOS A LA TABLA

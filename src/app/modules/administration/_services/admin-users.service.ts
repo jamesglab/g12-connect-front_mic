@@ -136,7 +136,7 @@ export class AdminUsersService {
 
   createBox(payload) {
     return this.http
-      .post<any>(`${environment.apiUrlG12Connect.payments}/boxes`, payload, {
+      .post<any>(`${environment.apiUrlG12Connect.paymentsv3}/box`, payload, {
         headers: header,
       })
       .pipe(
@@ -147,11 +147,10 @@ export class AdminUsersService {
       );
   }
 
-  getBoxes(params) {
+  getBoxes() {
     return this.http
-      .get<Response>(`${environment.apiUrlG12Connect.payments}/boxes`, {
+      .get<Response>(`${environment.apiUrlG12Connect.paymentsv3}/box`, {
         headers: header,
-        params,
       })
       .pipe(
         map((res: Response) => {
@@ -164,7 +163,7 @@ export class AdminUsersService {
   assignUserToBox(payload) {
     return this.http
       .put<Response>(
-        `${environment.apiUrlG12Connect.payments}/boxes/assign-user-to-box`,
+        `${environment.apiUrlG12Connect.paymentsv3}/box/add-user`,
         payload,
         {
           headers: header,
@@ -181,7 +180,7 @@ export class AdminUsersService {
   updateBox(payload) {
     return this.http
       .put<Response>(
-        `${environment.apiUrlG12Connect.payments}/boxes`,
+        `${environment.apiUrlG12Connect.paymentsv3}/box`,
         payload,
         {
           headers: header,

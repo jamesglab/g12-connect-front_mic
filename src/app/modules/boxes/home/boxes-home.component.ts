@@ -10,25 +10,28 @@ import { BoxService } from './services/g12events.service';
 })
 export class BoxesHomeComponent implements OnInit {
   private currentUser = this.storageService.getItem('auth').user;
-  public  box;
+  public box;
 
   constructor(
     private _boxService: BoxService,
     private storageService: StorageService,
-    private cdr : ChangeDetectorRef
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.validateUserBox();
   }
 
+  //VALIDAMOS LA CAJA DEL USUARIO
   validateUserBox() {
-    this._boxService.findBoxByUser(this.currentUser.id).subscribe(  
+    this._boxService.findBoxByUser().subscribe(
       (res) => {
-        this.box =   res;
+        //ASIGNAMOS LA CAJA CONSULTADA DEL USUARIO
+        this.box = res;
         this.cdr.detectChanges();
       },
       (err) => {
+        //MOSTRAMOS EL ERROR DE QUE EL USUARIO NO TIENE LA CAJA
         Swal.fire(err ? err : 'Usuario sin caja asignada', '', 'error');
       }
     );

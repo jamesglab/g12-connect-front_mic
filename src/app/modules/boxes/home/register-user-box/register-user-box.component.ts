@@ -6,12 +6,18 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { platform } from 'os';
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
 import { G12eventsService } from 'src/app/modules/g12events/_services/g12events.service';
 import { UserService } from 'src/app/modules/_services/user.service';
 import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
+import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 import { BoxService } from '../services/g12events.service';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+
+(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-register-user-box',
@@ -19,15 +25,24 @@ import { BoxService } from '../services/g12events.service';
   styleUrls: ['./register-user-box.component.scss'],
 })
 export class RegisterUserBoxComponent implements OnInit {
+  //OBJETOS DEL USUARIO
   public box;
-  public register_user: FormGroup;
   private currentUser = this.storageService.getItem('auth').user;
+
+  //ARRAYS DE CONSULTAS
   public leaders: [] = [];
   public pastors: [] = [];
   public churchs = [];
   public countries: any[] = COUNTRIES; //LISTADO DE PAISES;
   public events: [] = [];
   public financial_cuts: [] = [];
+
+  //FORMULARIO
+
+  public register_user: FormGroup;
+  //CONTROLES EXTERNOS AL FORMULARIO
+  public description_of_changue = new FormControl('', Validators.required);
+  public select_payment_getway = new FormControl('', Validators.required);
 
   public confirm_email = new FormControl(
     null,
@@ -48,7 +63,7 @@ export class RegisterUserBoxComponent implements OnInit {
   ngOnInit(): void {
     this.buildForm();
     this.getEvents();
-    this.getChurchs(this.currentUser.church_id);
+    this.createFakeVersion();
   }
 
   //*************************/
@@ -62,13 +77,13 @@ export class RegisterUserBoxComponent implements OnInit {
       event_information: this.fb.group({
         event: [null, Validators.required],
         financial_cut: [null, Validators.required],
-        quantity_tickets:[1]
+        quantity_tickets: [1],
       }),
       //USER INFORMATION
-      user: this.fb.group({
+      assistant: this.fb.group({
         id: [null],
         country: [
-          this.currentUser.church_id ? 'Colombia' : null,
+          this.currentUser.church_id ? 'COLOMBIA' : null,
           Validators.required,
         ],
         identification: [null, Validators.required],
@@ -81,19 +96,28 @@ export class RegisterUserBoxComponent implements OnInit {
           null,
           Validators.compose([Validators.required, Validators.email]),
         ],
-
-        leader: [{ value: null, disabled: true }, Validators.required],
+        type_church: [null, Validators.required],
         network: [null],
-        type_church: ['MCI'],
-        pastor: [{ value: null, disabled: true }, Validators.required],
-        church: [{ value: null, disabled: true }, Validators.required],
+        leader: [{ value: null, disabled: true }],
+        pastor: [{ value: null }],
+        church: [{ value: null }],
+        name_pastor: [null],
+        name_church: [null],
+      }),
+      payment_information: this.fb.group({
+        currency: ['COP'],
+        payment_type: ['BOX'],
+        platform: ['G12CONNECT'],
+        url_response: [environment.url_response],
+        amount: [],
       }),
     });
     this.subscribeSelectors();
   }
-  ///////////////////////////////
-  //SUBSCRIPCIONES DEL FORMULARIO
-  ///////////////////////////////
+
+  /**
+   *SUBSCRIPCIONES DEL FORMULARIO
+   */
 
   subscribeSelectors() {
     // NOS SUBSCRIBIMOS A LOS CAMBIOS DEL EVENTO SELECCIONADO
@@ -103,13 +127,42 @@ export class RegisterUserBoxComponent implements OnInit {
         this.event_information_controls.get('financial_cut').reset(); //REINICIAMOS EL CORTE SELECCIONADO
         this.financial_cuts = event.financialCut; //RENDERIZAMOS LOS CORTES SELECCIONADOS
       });
-  }
-  //****************************/
-  //CONSULTAS A LA BASE DE DATOS
-  //****************************/
 
-  //CONSULTAMOS LOS EVENTOS
+    //NOS CAMBIAMOS A LOS CAMBIOS DEL CORTE SELECCIONADO
+    this.event_information_controls
+      .get('financial_cut')
+      .valueChanges.subscribe((f_c) => {
+        if (f_c?.prices) {
+          this.payment_information.get('amount').setValue(f_c.prices['cop']);
+        }
+      });
+
+    //NOS SUSCRIBIMOS AL CAMBIO DEL TIPO DE IGLESIA
+    this.assistant_control
+      .get('type_church')
+      .valueChanges.subscribe((type_churh) => {
+        if (type_churh == 'MCI') {
+          this.getChurchs();
+        }
+      });
+
+    this.assistant_control.get('country').valueChanges.subscribe((res) => {
+      this.resetMinisterialInfo();
+    });
+
+    //NOS SUBSCRIBIMOS A LOS CAMBIOS DE LA RED PARA REINICIAR LOS VALORES DE LOS PASTORES
+    this.assistant_control.get('network').valueChanges.subscribe((net) => {
+      this.pastors = [];
+      this.leaders = [];
+      this.assistant_control.get('pastor').reset();
+      this.assistant_control.get('leader').reset();
+    });
+  }
+
+  /**CONSULTAS A LA BASE DE DATOS */
+
   getEvents() {
+    //CONSULTAMOS LOS EVENTOS
     this.g12EventService.getEventsFilter().subscribe((res) => {
       this.events = res;
     });
@@ -119,22 +172,22 @@ export class RegisterUserBoxComponent implements OnInit {
   //NETWORK = RED ;USER = USUARIO ENCONTRADO
   getPastors(user_code, user?) {
     this.pastors = [];
-    this.user_controls.get('leader').disable();
-    this.user_controls.get('pastor').disable();
+    this.assistant_control.get('leader').disable();
+    this.assistant_control.get('pastor').disable();
     this.userService
       .getLeadersOrPastors({
         userCode: user_code,
-        church: user ? user.church_id : this.currentUser.church_id,
+        church: user ? user.church_id : this.assistant_value?.church?.id,
       })
       .subscribe(
         (res) => {
           this.pastors = res;
-          this.user_controls.get('pastor').enable(); //INHABILITAMOS EL SELECTOR DEL PASTOR
+          this.assistant_control.get('pastor').enable(); //INHABILITAMOS EL SELECTOR DEL PASTOR
           if (user) {
-            this.user_controls
+            this.assistant_control
               .get('pastor')
               .setValue(res.find((pt) => pt.user_code == user.pastor_code));
-            this.user_controls.get('pastor').disable();
+            this.assistant_control.get('pastor').disable();
           }
         },
         (err) => {
@@ -149,14 +202,17 @@ export class RegisterUserBoxComponent implements OnInit {
     this.userService
       .getLeadersOrPastors({
         userCode: pastor.user_code,
-        church: user ? user.church_id : this.currentUser.church_id,
+        church: user ? user.church_id : this.assistant_value?.church?.id,
       })
       .subscribe(
         (res) => {
           this.leaders = res;
-          this.user_controls.get('leader').enable(); //HABILITAMOS EL SELECTOR DEL LIDER
+          this.assistant_control.get('leader').enable(); //HABILITAMOS EL SELECTOR DEL LIDER
+
+          //VALIDAMOS LA RENDERIZACION DEL USUARIO
           if (user) {
-            this.user_controls
+            //SETEAMOS LOS VALORES DEL LIDER
+            this.assistant_control
               .get('leader')
               .setValue(res.find((ld) => ld.user_code == user.leader_code));
           }
@@ -167,12 +223,28 @@ export class RegisterUserBoxComponent implements OnInit {
       );
   }
 
-  getChurchs(id) {
+  //CONSULTAMOS LAS IGLESIAS
+  getChurchs() {
+    this.userService
+      .getPlaces({
+        country: this.assistant_value.country.toUpperCase(),
+        type:
+          this.assistant_value.country.toUpperCase() == 'COLOMBIA'
+            ? 'national'
+            : 'international',
+      })
+      .subscribe((res) => {
+        this.churchs = res;
+      });
+  }
+
+  //CONSULTAMOS LAS IGLESIA POR ID
+  getChurchById(id) {
     this.userService.getChurchById({ id }).subscribe(
       (res) => {
         let city = [];
         city.push(res);
-        this.user_controls
+        this.assistant_control
           .get('church')
           .setValue(city.find((ch) => ch.id == id));
         this.churchs = city;
@@ -183,36 +255,42 @@ export class RegisterUserBoxComponent implements OnInit {
     );
   }
 
+  //BUSCAMOS EL USUARIO
   searchUser(autocomplete?) {
     const filters = {};
-    if (this.form_value.identification) {
-      filters['identification'] = this.form_value.identification.trim();
+    if (this.assistant_value.identification) {
+      filters['identification'] = this.assistant_value.identification.trim();
     }
 
     if (
       this.confirm_email.value &&
-      this.form_value.email == this.confirm_email.value
+      this.assistant_value.email == this.confirm_email.value
     ) {
-      filters['email'] = this.form_value.email.trim().toLowerCase();
+      filters['email'] = this.assistant_value.email.trim().toLowerCase();
     }
-
+    //AGREGAMOS LOS FILTROS DEL USUARIO
     this.userService.getUserInfo(filters).subscribe(
       (res) => {
+        //PONEMOS EL TRUE DEL USUARIO
         this.find_user = true;
+        //VALIDAMOS EL AUTOCOMPLETE DEL FORMULARIO
         if (autocomplete) {
+          //AUTOCOMPLEMENTAMOS LOS DATOS DEL USUARIO ENCONTRADO
           this.setUser(res);
         } else {
-          this.user_controls.get('id').setValue(res['id']);
+          //SI NO SE REQUIERE AUTOCOMPLEMENTAR LOS DATOS MANDAMOS LA CREACION DEL USUARIO Y SETEAMOS EL ID
+          this.assistant_control.get('id').setValue(res['id']);
+          //CREAMOS EL USUARIO
           this.createUser();
         }
       },
       (err) => {
         if (autocomplete) {
           Swal.fire('No se encontro el usuario', '', 'info').then((res) => {
-            this.user_controls.get('network').enable();
-            this.user_controls.get('network').reset();
-            this.user_controls.get('pastor').reset();
-            this.user_controls.get('leader').reset();
+            this.assistant_control.get('network').enable();
+            this.assistant_control.get('network').reset();
+            this.assistant_control.get('pastor').reset();
+            this.assistant_control.get('leader').reset();
           });
           throw err;
         }
@@ -223,12 +301,15 @@ export class RegisterUserBoxComponent implements OnInit {
   //SOLICITUD DE CREACION DE USUARIO
   addUserSend() {
     //VALIDAMOS LOS CAMPOS DEL USUARIO
-    if (this.user_controls.invalid || this.event_information_controls.invalid) {
+    if (
+      this.assistant_control.invalid ||
+      this.event_information_controls.invalid
+    ) {
       Swal.fire('Datos incompletos', '', 'info');
       return;
     }
     //CONFIRMAMOS EL EMAIL
-    if (this.user_controls.value.email != this.confirm_email.value) {
+    if (this.assistant_control.value.email != this.confirm_email.value) {
       Swal.fire('Los correos no coinciden', '', 'info');
       return;
     }
@@ -251,20 +332,20 @@ export class RegisterUserBoxComponent implements OnInit {
     } else {
       //VALIDAMOS QUE EL USUARIO EXISTA
       const filters = {};
-      if (this.form_value.identification) {
-        filters['identification'] = this.form_value.identification.trim();
+      if (this.assistant_value.identification) {
+        filters['identification'] = this.assistant_value.identification.trim();
       }
 
       if (
         this.confirm_email.value &&
-        this.form_value.email == this.form_value.confirm_email
+        this.assistant_value.email == this.assistant_value.confirm_email
       ) {
-        filters['email'] = this.form_value.email.trim().toLowerCase();
+        filters['email'] = this.assistant_value.email.trim().toLowerCase();
       }
 
       this.userService.getUserInfo(filters).subscribe(
         (res) => {
-          this.user_controls.get('id').setValue(res['id']);
+          this.assistant_control.get('id').setValue(res['id']);
           this.find_user = true;
         },
         (err) => {
@@ -276,23 +357,104 @@ export class RegisterUserBoxComponent implements OnInit {
 
   createUser() {
     // //EJECUTAMOS EL ENDPOINT CON LOS DATOS DEL USUARIO
-    this.isLoading = true;
-    this.boxService
-      .registerOneUser({
-        ...this.register_user.getRawValue(),
-        box: this.box,
-      })
-      .subscribe(
-        (res) => {
-          this.isLoading = false;
-          Swal.fire('Usuario registrado', '', 'success');
-          this.modal.close();
-        },
-        (err) => {
-          this.isLoading = false;
-          Swal.fire(err ? err : 'No se pudo registrar el usuario', '', 'error');
+    try {
+      if (this.assistant_control.invalid) {
+        throw new Error('Información incompleta');
+      }
+
+      //CREAMOS UNA VARIABLE CON EL PAYLOAD
+      let payload = this.register_user.getRawValue();
+
+      console.log('payloadn init', !payload.assistant.pastor?.id);
+      console.log('payloadn init', payload.assistant.pastor?.id);
+
+      //VALIDAREMOS LA INFORMACION MINISTERIAL
+      switch (payload.assistant.type_church) {
+        case 'MCI':
+          //CASO MCI VALIDAMOS PASTOR IGLESIA Y LIDER
+          if (
+            !payload.assistant.pastor?.id ||
+            !payload.assistant.church?.id ||
+            !payload.assistant.leader?.id
+          ) {
+            //GENERAMOS ERROR SI NO ENCONTRAMOS
+            throw new Error('Revisa la información ministerial efe');
+          }
+          break;
+
+        //CASOS G12 OT VALIDAMOS POR name_pastor name_church
+        case 'G12':
+        case 'OT': {
+          if (
+            !payload.assistant.name_pastor ||
+            !payload.assistant.name_church
+          ) {
+            throw new Error('Revisa la información ministerial');
+          } else {
+            payload.assistant.pastor = {
+              name: payload.assistant.name_pastor,
+            };
+
+            payload.assistant.church = {
+              name: payload.assistant.name_church,
+            };
+          }
+          break;
         }
+        default: {
+          throw new Error('Este caso no existe');
+        }
+      }
+
+      //VALIDAMOS SI HAY UN METODO DE PAGO SELECCIONADO
+      if (!this.select_payment_getway.value) {
+        //CREAMOS UN ERROR DE INFORMACION DE PAGO INCOMPLETA
+        throw new Error('Selecciona una forma de pago');
+      }
+      //HACEMOS UN SWITCH DE LOS DIFERENTES METODOS QUE NECESITAREMOS VALIDAR
+      switch (this.select_payment_getway.value) {
+        //CASO CREDITO NECESITAMOS COMPLEMENTAR LA INFORMACION DE REFERENCIA
+        case 'CREDITO/':
+          //VALIDAMOS LA DESCRIPCION DEL PAGO
+          if (!this.description_of_changue.value) {
+            //CREAMOS UN ERROR DE REFERENCIA DE PAGO INCOMPLETA
+            throw new Error('Referencia de pago incompleta');
+          }
+          break;
+      }
+
+      // MOSTRAMOS EL LOADER
+      this.isLoading = true;
+      this.boxService
+        .registerOneUser({
+          ...payload,
+          box: this.box,
+        })
+        .subscribe(
+          (res) => {
+            //OCULTAMOS EL LOADER
+            this.isLoading = false;
+            //MOSTRAMOS EL MENSAJE DE SUCCESS
+            Swal.fire('Usuario registrado', '', 'success');
+            //CERRAMOS EL MODAL
+            this.modal.close();
+          },
+          (err) => {
+            this.isLoading = false;
+            Swal.fire(
+              err ? err : 'No se pudo registrar el usuario',
+              '',
+              'error'
+            );
+          }
+        );
+    } catch (err) {
+      Swal.fire(
+        err.message ? err.message : 'No pudimos ejecutar la transacción',
+        '',
+        'info'
       );
+    }
   }
 
   //****************************/
@@ -300,41 +462,136 @@ export class RegisterUserBoxComponent implements OnInit {
   //****************************/
 
   setUser(user) {
-    this.user_controls.get('country').setValue(user.country);
-    this.user_controls.get('id').setValue(user.id);
-    this.user_controls.get('name').setValue(user.name);
-    this.user_controls.get('last_name').setValue(user.last_name);
-    this.user_controls.get('email').setValue(user.email);
+    //DISABLES
+
+    switch (user?.type_church) {
+      case 'MCI':
+        //DISABLE INPUTS
+        this.assistant_control.get('country').disable();
+        this.assistant_control.get('church').disable();
+        this.assistant_control.get('network').disable();
+        this.assistant_control.get('type_church').disable();
+
+        //SETEAMOS LOS VALORES DE LA RED
+        this.assistant_control.get('type_church').setValue(user?.type_church);
+        this.assistant_control.get('network').setValue(user.network);
+
+        //CONSULTAMOS LOS DATOS MINISTERIALES PARA POSTERIORMENTE AUTOCOMPLEMENTARLOS
+        this.getPastors(user.pastor_code, user);
+        this.getLeaders({ user_code: user.leader_code }, user);
+        this.getChurchById(user.church_id);
+        break;
+
+      case 'OT':
+      case 'G12': {
+        this.assistant_control.get('name_pastor').setValue('name_pastor');
+        this.assistant_control.get('name_church').setValue('name_church');
+        break;
+      }
+    }
+
+    //AUTOCOMPLETE DATA
+
+    this.assistant_control.get('identification').disable();
+    this.assistant_control.get('country').setValue(user.country);
+    this.assistant_control.get('id').setValue(user.id);
+    this.assistant_control.get('name').setValue(user.name.toLowerCase());
+    this.assistant_control
+      .get('last_name')
+      .setValue(user.last_name.toLowerCase());
+    this.assistant_control.get('email').setValue(user.email);
     this.confirm_email.setValue(user.email);
-    this.user_controls.get('gender').setValue(user.gender);
-    this.user_controls.get('phone').setValue(user.phone);
-    this.user_controls.get('network').setValue(user.network);
-    this.user_controls.get('network').disable();
-    this.user_controls.get('identification').setValue(user.identification);
-    this.user_controls.get('identification').disable();
-    this.user_controls.get('document_type').setValue(user.document_type);
-    this.getPastors(user.pastor_code, user);
-    this.getLeaders({ user_code: user.leader_code }, user);
-    this.getChurchs(user.church_id);
+    this.assistant_control.get('gender').setValue(user.gender);
+    this.assistant_control.get('phone').setValue(user.phone);
+    this.assistant_control.get('identification').setValue(user.identification);
+    this.assistant_control.get('document_type').setValue(user.document_type);
   }
 
+  //VALIDAMOS LOS NUMEROS DE UN INPUT
   validateNumber(e) {
-    if (e.key.match(/[0-9]/i) === null) {
-      // Si la tecla pulsada no es la correcta, eliminado la pulsación
+    if (!e.key.match(/[0-9]/i)) {
       e.preventDefault();
     }
   }
 
-  get user_controls() {
-    return this.register_user.get('user');
+  resetMinisterialInfo() {
+    //REINICIAMOS LA INFORMACION MINISTERIAL DE TIPO MCI
+    this.assistant_control.get('type_church').reset();
+    this.assistant_control.get('network').reset();
+    this.assistant_control.get('church').reset();
+    this.assistant_control.get('pastor').reset();
+    this.assistant_control.get('leader').reset();
+    this.pastors = [];
+    this.churchs = [];
+    this.leaders = [];
+
+    //REINICIAMOS LA INFORMACION DE IGLESIAS NO MCI
+    this.assistant_control.get('name_pastor').reset();
+    this.assistant_control.get('name_church').reset();
+  }
+  //CONTROLES DEL USUARIO
+  get assistant_control() {
+    return this.register_user.get('assistant');
   }
 
+  //CONTROLES DEL EVENTO
   get event_information_controls() {
     return this.register_user.get('event_information');
   }
 
   // VALORES DEL FORMULARIO
-  get form_value() {
-    return this.user_controls.value;
+  get assistant_value() {
+    return this.assistant_control.value;
+  }
+
+  get payment_information() {
+    return this.register_user.get('payment_information');
+  }
+
+  //FAKE
+  createFakeVersion() {
+    var dd = {
+      content: [
+        {
+          text: 'This is a header, using header style',
+          style: 'header',
+        },
+        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam.\n\n',
+        {
+          text: 'Subheader 1 - using subheader style',
+          style: 'subheader',
+        },
+        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.',
+        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.',
+        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.\n\n',
+        {
+          text: 'Subheader 2 - using subheader style',
+          style: 'subheader',
+        },
+        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.',
+        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.\n\n',
+        {
+          text: 'It is possible to apply multiple styles, by passing an array. This paragraph uses two styles: quote and small. When multiple styles are provided, they are evaluated in the specified order which is important in case they define the same properties',
+          style: ['quote', 'small'],
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+        },
+        subheader: {
+          fontSize: 15,
+          bold: true,
+        },
+        quote: {
+          italics: true,
+        },
+        small: {
+          fontSize: 8,
+        },
+      },
+    };
+    pdfMake.createPdf(dd).open();
   }
 }

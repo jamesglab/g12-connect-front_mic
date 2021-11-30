@@ -10,11 +10,9 @@ import { environment } from 'src/environments/environment';
 export class BoxService {
   constructor(private http: HttpClient) {}
 
-  findBoxByUser(user) {
+  findBoxByUser() {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.payments}/boxes/by-user`, {
-        params: { user },
-      })
+      .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/box/my-box  `)
       .pipe(
         map((res: any) => {
           return res;
@@ -26,7 +24,7 @@ export class BoxService {
   registerOneUser(payload) {
     return this.http
       .post<any>(
-        `${environment.apiUrlG12Connect.payments}/transaction/box-payment-one-user`,
+        `${environment.apiUrlG12Connect.paymentsv3}/box/payment`,
         payload,
         {}
       )
@@ -40,9 +38,55 @@ export class BoxService {
 
   getTransactionsByBox(box_id) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.payments}/transaction/box`, {
+      .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/transaction/box`, {
         params: { box_id },
       })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  filterTransaction(params) {
+    return this.http
+      .get<any>(
+        `${environment.apiUrlG12Connect.paymentsv3}/box/filter_transactions`,
+        {
+          params,
+        }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  getGrupalTransactionsBox(payment_ref, assistant) {
+    return this.http
+      .get<any>(
+        `${environment.apiUrlG12Connect.paymentsv3}/boxes/grupal_transactions-box`,
+        {
+          params: { payment_ref, assistant },
+        }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  updateTransactions(payload) {
+    return this.http
+      .put<any>(
+        `${environment.apiUrlG12Connect.paymentsv3}/box/validate`,
+        payload
+      )
       .pipe(
         map((res: any) => {
           return res;

@@ -18,6 +18,7 @@
           </div>
         </div>
       </div>
+      <!-- MOSTRAMOS EN CASO DE QUE EXISTA CAJA -->
       <div class="card-body m-1" *ngIf="box">
         <div class="row">
           <h4 class="h4">Eventos</h4>
@@ -32,6 +33,7 @@
           <app-registered-users [box]="box"> </app-registered-users>
         </div>
       </div>
+    <!-- MOSTRAMOS EN CASO DE QUE NO EXISTA CAJA -->
       <div class="card-body not-found" *ngIf="!box">
         <div>USUARIO SIN CAJA ASIGNADA</div>
       </div>

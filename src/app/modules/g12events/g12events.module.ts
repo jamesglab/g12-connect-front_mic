@@ -32,6 +32,7 @@ import { EditMassiveComponent } from './edit-massive/edit-massive.component';
 import { AddUserMassiveComponent } from './massive-table/components/add-user/add-user.component';
 import { ProofPaymentComponent } from './massive-table/components/proof-payment/proof-payment.component';
 import { ReportMassivesComponent } from './report-massives/report-massives.component';
+import { EmailEventComponent } from './email-event/email-event.component';
 const routes: Routes = [
   {
     path: '',
@@ -106,7 +107,8 @@ const routes: Routes = [
     EditMassiveComponent,
     AddUserMassiveComponent,
     ProofPaymentComponent,
-    ReportMassivesComponent
+    ReportMassivesComponent,
+    EmailEventComponent
   ],
   imports: [
     CommonModule,

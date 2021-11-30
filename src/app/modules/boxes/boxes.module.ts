@@ -24,7 +24,6 @@ import { InlineSVGModule } from 'ng-inline-svg';
     ReactiveFormsModule,
     NgbModule,
     InlineSVGModule,
-    
   ]
 })
 export class BoxesModule { }

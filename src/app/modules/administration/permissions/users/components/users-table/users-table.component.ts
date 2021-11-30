@@ -163,7 +163,7 @@ export class UsersTableComponent implements OnInit {
 
   //CONSULTAMOS LAS CAJAS EN EL SISTEMAS PARA AGREGARLAS A UN USUARIO
   getBoxes() {
-    this._adminUsersService.getBoxes({ status: true }).subscribe(
+    this._adminUsersService.getBoxes().subscribe(
       (res: any) => {
         this.boxes = res;
       },

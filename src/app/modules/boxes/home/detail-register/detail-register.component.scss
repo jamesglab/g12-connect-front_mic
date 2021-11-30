@@ -11,4 +11,15 @@
   font-size: 19px;
   font-weight: bold;
 }
- 
+
+.img-cont {
+  width: auto;
+  object-fit: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img-event {
+  width: 20rem;
+}
