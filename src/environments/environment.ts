@@ -13,7 +13,7 @@ export const environment = {
     donations: 'https://dev-api.g12connect.com/api/v2/donations',
     managment: 'https://dev-api.g12connect.com/api/v2/managment',
     users: 'https://dev-api.g12connect.com/api/v2/users',
-    payments: 'http://localhost:3000/api/v2/payments',
+    payments: 'https://dev-api.g12connect.com/api/v2/payments',
     paymentsv3: 'https://d687-181-55-4-148.ngrok.io/api/v3/payments',
     reports: 'https://dev-api.g12connect.com/api/v2/reports'
   },
