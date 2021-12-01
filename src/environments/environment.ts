@@ -14,7 +14,7 @@ export const environment = {
     managment: 'https://dev-api.g12connect.com/api/v2/managment',
     users: 'https://dev-api.g12connect.com/api/v2/users',
     payments: 'https://dev-api.g12connect.com/api/v2/payments',
-    paymentsv3: 'https://dev-api.g12connect.com/api/v3/payments',
+    paymentsv3: 'https://d687-181-55-4-148.ngrok.io/api/v3/payments',
     reports: 'https://dev-api.g12connect.com/api/v2/reports'
   },
   SECRETENCRYPT:"G12jk5FQg6bu8zWSECURITY#wB9jPyURESPONSE",

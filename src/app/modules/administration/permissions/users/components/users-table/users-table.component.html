@@ -1,16 +1,17 @@
 <div class="example-container mat-elevation-z0">
   <mat-table #table [dataSource]="dataSource">
-
     <ng-container matColumnDef="idUser">
       <mat-header-cell *matHeaderCellDef> Código </mat-header-cell>
       <mat-cell *matCellDef="let element" class="cursor-pointer">
-        {{element.id}} </mat-cell>
+        {{ element.id }}
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
       <mat-cell *matCellDef="let element" class="cursor-pointer">
-        {{element.name}} {{element.last_name }} </mat-cell>
+        {{ element.name }} {{ element.last_name }}
+      </mat-cell>
     </ng-container>
 
     <!-- <ng-container matColumnDef="lastName">
@@ -22,42 +23,68 @@
     <ng-container matColumnDef="email">
       <mat-header-cell *matHeaderCellDef> Email</mat-header-cell>
       <mat-cell *matCellDef="let element" class="cursor-pointer">
-        {{ element.email }}</mat-cell>
+        {{ element.email }}</mat-cell
+      >
     </ng-container>
 
     <ng-container matColumnDef="country">
       <mat-header-cell *matHeaderCellDef> País </mat-header-cell>
       <mat-cell *matCellDef="let element" class="cursor-pointer">
-        {{ element.country }} </mat-cell>
+        {{ element.country }}
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="status">
       <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
       <mat-cell *matCellDef="let element" class="cursor-pointer">
-        {{element.status ? 'Activo' : 'Inactivo' }} </mat-cell>
+        {{ element.status ? "Activo" : "Inactivo" }}
+      </mat-cell>
     </ng-container>
-
-
 
     <ng-container matColumnDef="actions">
       <mat-header-cell *matHeaderCellDef></mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleAddRole(element)">
-          <span [inlineSVG]="'./assets/media/svg/icons/General/Duplicate.svg'"
-            class="svg-icon svg-icon-md svg-icon-primary"></span>
+        <a
+          class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
+          (click)="handleAddRole(element)"
+        >
+          <span
+            [inlineSVG]="'./assets/media/svg/icons/General/Duplicate.svg'"
+            class="svg-icon svg-icon-md svg-icon-primary"
+          ></span>
         </a>
 
-        <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleEdit(element)">
-          <span [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"
-            class="svg-icon svg-icon-md svg-icon-primary"></span>
+        <a
+          class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
+          (click)="handleEdit(element)"
+        >
+          <span
+            [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"
+            class="svg-icon svg-icon-md svg-icon-primary"
+          ></span>
+        </a>
+
+        <a
+          class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
+          (click)="handleBox(element)"
+          
+        >
+          <span >
+            <i class="fas fa-box-open" style="color: #3699ff"></i>
+          </span>
         </a>
       </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
   </mat-table>
-  <mat-paginator class="mat-elevation-z0" #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"
-    [showFirstLastButtons]="true">
+  <mat-paginator
+    class="mat-elevation-z0"
+    #paginator
+    [pageSize]="5"
+    [pageSizeOptions]="[5, 10, 20]"
+    [showFirstLastButtons]="true"
+  >
   </mat-paginator>
 </div>

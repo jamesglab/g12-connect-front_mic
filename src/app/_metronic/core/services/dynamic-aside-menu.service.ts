@@ -30,6 +30,7 @@ export class DynamicAsideMenuService {
     this.getPermissionsUser().subscribe(res => {
 
       const DynamicAsideMenuConfig = DynamicAsideMenuConfigOriginal;
+      this.storage.setItem('permissions',res)
       // ASIGNAMOS LOS VALORES DEL OBJETO EN UN ARRAY
       let permissionsArray = Object.keys(res);
       // RECORREMOS LOS MODULOS PRINCIPALES

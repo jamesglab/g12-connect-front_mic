@@ -41,6 +41,10 @@ import { EditObjectTypeComponent } from './permissions/objects/components/edit-o
 import { UserObjectsComponent } from './permissions/users/components/user-objects/user-objects.component';
 import { UserRolesComponent } from './permissions/users/components/user-roles/user-roles.component';
 import { RolesObjectsComponent } from './permissions/roles/components/roles-objects/roles-objects.component';
+import { AddBoxUserComponent } from './permissions/users/components/add-box-user/add-box-user.component';
+import { BoxesTableComponent } from './boxes/boxes-table/boxes-table.component';
+import { EditBoxComponent } from './boxes/edit-box/edit-box.component';
+import { CreateBoxComponent } from './boxes/create-box/create-box.component';
 
 const routes: Routes = [
   {
@@ -53,11 +57,16 @@ const routes: Routes = [
       },
       {
         path: 'permisses/roles',
-        component: MainRolesComponent
+        component: MainRolesComponent,
       },
       {
         path: 'permisses/objects',
-        component: MainObjectsComponent
+        component: MainObjectsComponent,
+      },
+
+      {
+        path: 'boxes',
+        component: BoxesTableComponent,
       },
       { path: '', redirectTo: 'permisses/users', pathMatch: 'full' },
       {
@@ -70,11 +79,37 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AdministrationComponent, MainUsersComponent, MainRolesComponent, MainObjectsComponent, 
-    AddUserComponent, UsersTableComponent, AddRoleComponent, AddObjectComponent, UserTypesComponent, 
-    TypesTableComponent, AddUserTypeComponent, RolesTableComponent, MainObjectsTypesComponent, 
-    AddObjectTypeComponent, ObjectsTableComponent, ObjectsTypesTableComponent, EditUserComponent, 
-    EditUserTypeComponent, DeleteItemComponent, EditRoleComponent, EditObjectComponent, EditObjectTypeComponent, UserObjectsComponent, UserRolesComponent, RolesObjectsComponent],
+  declarations: [
+    AdministrationComponent,
+    MainUsersComponent,
+    MainRolesComponent,
+    MainObjectsComponent,
+    AddUserComponent,
+    UsersTableComponent,
+    AddRoleComponent,
+    AddObjectComponent,
+    UserTypesComponent,
+    TypesTableComponent,
+    AddUserTypeComponent,
+    RolesTableComponent,
+    MainObjectsTypesComponent,
+    AddObjectTypeComponent,
+    ObjectsTableComponent,
+    ObjectsTypesTableComponent,
+    EditUserComponent,
+    EditUserTypeComponent,
+    DeleteItemComponent,
+    EditRoleComponent,
+    EditObjectComponent,
+    EditObjectTypeComponent,
+    UserObjectsComponent,
+    UserRolesComponent,
+    RolesObjectsComponent,
+    AddBoxUserComponent,
+    BoxesTableComponent,
+    EditBoxComponent,
+    CreateBoxComponent,
+  ],
   imports: [
     CommonModule,
     SharedModule,
@@ -83,7 +118,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     InlineSVGModule,
-    RouterModule.forChild(routes)
-  ]
+    RouterModule.forChild(routes),
+  ],
 })
-export class AdministrationModule { }
+export class AdministrationModule {}
