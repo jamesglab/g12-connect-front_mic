@@ -201,9 +201,9 @@ export class AddUserMassiveComponent implements OnInit {
     //MOSTRAMOS EL LOADER\
     if (this.find_user) {
       Swal.fire({
-        title: '¿Actualizar Usuario?',
+        title: 'Asignar usuario',
         icon: 'question',
-        text: 'El usuario que intentas registrar ya se encuentra en nuestro sistema. al continuar la información del usuario podria verse afectada',
+        text: '¿Estas seguro que deseas asignar a este usuario al evento seleccionado?',
         confirmButtonText: 'Continuar',
         cancelButtonText: 'Cancelar',
         reverseButtons: true,
