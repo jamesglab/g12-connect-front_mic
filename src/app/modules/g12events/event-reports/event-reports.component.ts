@@ -287,9 +287,12 @@ export class EventReportsComponent implements OnInit {
             Estado: item.transaction.status
               ? this.validateStatus(item.transaction.status)
               : 'N/A',
-            Costo: item.transaction.amount,
+            Costo:
+              item.cut.prices[
+                item.transaction.currency.toString().toLowerCase()
+              ],
             Moneda: item.transaction.currency
-              ? item.transaction.currency
+              ? item.transaction.currency.toString().toUpperCase()
               : 'N/A',
             'Descripcion de Cambio': item.description_of_change
               ? item.description_of_change
