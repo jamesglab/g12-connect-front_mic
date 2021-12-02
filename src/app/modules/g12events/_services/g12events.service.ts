@@ -15,7 +15,7 @@ import * as moment from 'moment';
   providedIn: 'root',
 })
 export class G12eventsService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getTransactions(params?): Observable<any> {
     return this.http
@@ -129,7 +129,7 @@ export class G12eventsService {
   getEventsMassive() {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.donations}/event-massive`, {
-        headers: header
+        headers: header,
       })
       .pipe(
         map((res: any) => {
@@ -139,11 +139,11 @@ export class G12eventsService {
       );
   }
 
-  getEventsFilter(){
+  getEventsFilter() {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.donations}/filter`, {
         headers: header,
-        params :{type:'G12_EVENT'}
+        params: { type: 'G12_EVENT' },
       })
       .pipe(
         map((res: any) => {
@@ -167,7 +167,7 @@ export class G12eventsService {
       );
   }
 
-  getOne() { }
+  getOne() {}
 
   getFormData(data: sendDonation, uploadImage?): FormData {
     const send_data = new FormData();
@@ -182,7 +182,7 @@ export class G12eventsService {
   }
 
   getFormUpdate(data: sendDonation, updoadImage): FormData {
-    console.log('llego data')
+    console.log('llego data');
     const send_data = new FormData();
     if (updoadImage) {
       send_data.append('image', data.transaction_info.image);
@@ -197,8 +197,10 @@ export class G12eventsService {
     console.log('evento creado', data);
     //DEFINE THE RESPONSE
     data.transaction_info.init_date = moment(data.transaction_info.init_date);
-    data.transaction_info.finish_date = moment(data.transaction_info.finish_date);
-    data.transaction_info.visibility = [data.transaction_info.visibility]
+    data.transaction_info.finish_date = moment(
+      data.transaction_info.finish_date
+    );
+    data.transaction_info.visibility = [data.transaction_info.visibility];
     return this.http
       .post<any>(
         `${environment.apiUrlG12Connect.donations}`,
@@ -228,7 +230,7 @@ export class G12eventsService {
   }
 
   update(data: sendDonation, updateImage) {
-    console.log('ejecutamos data', data)
+    console.log('ejecutamos data', data);
     return this.http
       .put<any>(
         `${environment.apiUrlG12Connect.donations}`,
@@ -242,7 +244,7 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
-  delete() { }
+  delete() {}
 
   /// query Mongo
   getTransactionsReports(params) {
@@ -271,7 +273,6 @@ export class G12eventsService {
         }),
         catchError(handleError)
       );
-
   }
 
   ///EDIT USERSSS EVENT
@@ -290,7 +291,6 @@ export class G12eventsService {
       );
   }
 
-
   getDataByFilterValue(filter: any) {
     //IS FOR GET INFO USERS NOT PASTORS
     return this.http
@@ -305,7 +305,6 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
-
 
   getPlaces(filter: any): Observable<any> {
     return this.http
@@ -414,9 +413,13 @@ export class G12eventsService {
 
   createCodesByEvent(data) {
     return this.http
-      .post<any>(`${environment.apiUrlG12Connect.payments}/transaction/generate-codes`, data, {
-        headers: headerFile,
-      })
+      .post<any>(
+        `${environment.apiUrlG12Connect.paymentsv3}/generate-codes`,
+        data,
+        {
+          headers: headerFile,
+        }
+      )
       .pipe(
         map((res: any) => {
           return res;
@@ -469,9 +472,13 @@ export class G12eventsService {
 
   createMassive(payload) {
     return this.http
-      .post<any>(`${environment.apiUrlG12Connect.paymentsv3}/create-massive`, payload, {
-        headers: headerFile,
-      })
+      .post<any>(
+        `${environment.apiUrlG12Connect.paymentsv3}/create-massive`,
+        payload,
+        {
+          headers: headerFile,
+        }
+      )
       .pipe(
         map((res: any) => {
           return res;
@@ -495,19 +502,25 @@ export class G12eventsService {
 
   addUser(payload) {
     return this.http
-      .post<any>(`${environment.apiUrlG12Connect.donations}/add-user-massive`, payload, {
-        headers: headerFile,
-      })
+      .post<any>(
+        `${environment.apiUrlG12Connect.donations}/add-user-massive`,
+        payload,
+        {
+          headers: headerFile,
+        }
+      )
       .pipe(
         map((res: any) => {
           return res;
         }),
         catchError(handleError)
       );
-  }   
+  }
   getTransactionInfo(transaction_id: string) {
-    return this.http.get<any>(`${environment.apiUrlG12Connect.paymentsv3}/detail-payment`,
-      { params: { transaction_id } })
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/detail-payment`, {
+        params: { transaction_id },
+      })
       .pipe(
         map((res: any) => {
           return res;
@@ -516,15 +529,14 @@ export class G12eventsService {
       );
   }
 
-  getReportsMassive(){
-    
-      return this.http.get<any>(`${environment.apiUrlG12Connect.reports}/report-massive`
-        )
-        .pipe(
-          map((res: any) => {
-            return res;
-          }),
-          catchError(handleError)
-        );
+  getReportsMassive() {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.reports}/report-massive`)
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 }
