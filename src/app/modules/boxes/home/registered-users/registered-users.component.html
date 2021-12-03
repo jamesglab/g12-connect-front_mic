@@ -99,7 +99,11 @@
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef>Precio</th>
         <td mat-cell *matCellDef="let element">
-          {{ element?.cut?.prices[element?.transaction?.currency.toString().toLowerCase()] }}
+          {{
+            element?.cut?.prices[
+              element?.transaction?.currency.toString().toLowerCase()
+            ]
+          }}
         </td>
       </ng-container>
 
@@ -112,6 +116,13 @@
             (click)="openModalAprobePayment(element)"
           >
             <span><i class="fas fa-user-plus"></i></span>
+          </a>
+
+          <a
+            class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
+            (click)="createPdf(element)"
+          >
+            <span><i class="far fa-file-pdf"></i> </span>
           </a>
         </td>
       </ng-container>
@@ -208,7 +219,11 @@
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef>Precio</th>
         <td mat-cell *matCellDef="let element">
-          {{ element?.cut?.prices[element?.transaction?.currency.toString().toLowerCase()] }}          
+          {{
+            element?.cut?.prices[
+              element?.transaction?.currency.toString().toLowerCase()
+            ]
+          }}
         </td>
       </ng-container>
 
@@ -227,7 +242,7 @@
             class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
             (click)="createPdf(element)"
           >
-            <span><i class="fas fa-user-plus"></i></span>
+            <span><i class="far fa-file-pdf"></i> </span>
           </a>
         </td>
       </ng-container>
