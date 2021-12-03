@@ -63,7 +63,6 @@ export class RegisterUserBoxComponent implements OnInit {
   ngOnInit(): void {
     this.buildForm();
     this.getEvents();
-    this.createFakeVersion();
   }
 
   //*************************/
@@ -82,12 +81,17 @@ export class RegisterUserBoxComponent implements OnInit {
       //USER INFORMATION
       assistant: this.fb.group({
         id: [null],
-        country: [
-          this.currentUser.church_id ? 'COLOMBIA' : null,
-          Validators.required,
+        country: [Validators.required],
+        identification: [
+          null,
+          Validators.compose([
+            Validators.required,
+            Validators.pattern(/^[0-9a-zA-Z\s,-]+$/),
+            Validators.minLength(6),
+            Validators.maxLength(13),
+          ]),
         ],
-        identification: [null, Validators.required],
-        document_type: [null],
+        document_type: [null, Validators.required],
         name: [null, Validators.required],
         last_name: [null, Validators.required],
         gender: [null, Validators.required],
@@ -141,13 +145,38 @@ export class RegisterUserBoxComponent implements OnInit {
     this.assistant_control
       .get('type_church')
       .valueChanges.subscribe((type_churh) => {
-        if (type_churh == 'MCI') {
+        if (type_churh == 'MCI' && this.assistant_value.country) {
           this.getChurchs();
         }
       });
 
-    this.assistant_control.get('country').valueChanges.subscribe((res) => {
-      this.resetMinisterialInfo();
+    this.assistant_control.get('country').valueChanges.subscribe((country) => {
+      //VALIDAMOS EL CAMBIO DE PAIS
+      if (country.toString().toUpperCase() == 'COLOMBIA') {
+        //PARA CASO COLOMBIA EXIGIMOS EL NUMERO DE IDENTIFICACON CON LOS VALORES A REQUERIR
+        this.assistant_control
+          .get('identification')
+          .setValidators([
+            Validators.required,
+            Validators.pattern(/^[0-9a-zA-Z\s,-]+$/),
+            Validators.minLength(6),
+            Validators.maxLength(13),
+          ]);
+        //EXIGIMOS EL TIPO DE DOCUMENTO
+        this.assistant_control
+          .get('document_type')
+          .setValidators([Validators.required]);
+      } else {
+        //ELIMINAMOS LOS ERRORES Y LOS VALIDADORES DE IDENTIFICACION Y TIPO DE DOCUMENTO
+        this.assistant_control.get('identification').setValidators(null);
+        this.assistant_control.get('identification').setErrors(null);
+        this.assistant_control.get('document_type').setValidators(null);
+        this.assistant_control.get('document_type').setErrors(null);
+      }
+
+      if (this.assistant_value.type_churh == 'MCI') {
+        this.getChurchs();
+      }
     });
 
     //NOS SUBSCRIBIMOS A LOS CAMBIOS DE LA RED PARA REINICIAR LOS VALORES DE LOS PASTORES
@@ -225,6 +254,7 @@ export class RegisterUserBoxComponent implements OnInit {
 
   //CONSULTAMOS LAS IGLESIAS
   getChurchs() {
+    console.log('this.assistant_value', this.assistant_value);
     this.userService
       .getPlaces({
         country: this.assistant_value.country.toUpperCase(),
@@ -365,9 +395,6 @@ export class RegisterUserBoxComponent implements OnInit {
       //CREAMOS UNA VARIABLE CON EL PAYLOAD
       let payload = this.register_user.getRawValue();
 
-      console.log('payloadn init', !payload.assistant.pastor?.id);
-      console.log('payloadn init', payload.assistant.pastor?.id);
-
       //VALIDAREMOS LA INFORMACION MINISTERIAL
       switch (payload.assistant.type_church) {
         case 'MCI':
@@ -462,18 +489,15 @@ export class RegisterUserBoxComponent implements OnInit {
   //****************************/
 
   setUser(user) {
+    this.assistant_control.get('type_church').setValue(user.type_church);
     //DISABLES
-
-    switch (user?.type_church) {
+    switch (user?.type_church?.toString().toUpperCase()) {
       case 'MCI':
         //DISABLE INPUTS
-        this.assistant_control.get('country').disable();
         this.assistant_control.get('church').disable();
         this.assistant_control.get('network').disable();
-        this.assistant_control.get('type_church').disable();
 
         //SETEAMOS LOS VALORES DE LA RED
-        this.assistant_control.get('type_church').setValue(user?.type_church);
         this.assistant_control.get('network').setValue(user.network);
 
         //CONSULTAMOS LOS DATOS MINISTERIALES PARA POSTERIORMENTE AUTOCOMPLEMENTARLOS
@@ -491,8 +515,7 @@ export class RegisterUserBoxComponent implements OnInit {
     }
 
     //AUTOCOMPLETE DATA
-
-    this.assistant_control.get('identification').disable();
+    this.assistant_control.get('country').disable();
     this.assistant_control.get('country').setValue(user.country);
     this.assistant_control.get('id').setValue(user.id);
     this.assistant_control.get('name').setValue(user.name.toLowerCase());
@@ -505,6 +528,7 @@ export class RegisterUserBoxComponent implements OnInit {
     this.assistant_control.get('phone').setValue(user.phone);
     this.assistant_control.get('identification').setValue(user.identification);
     this.assistant_control.get('document_type').setValue(user.document_type);
+    this.cdr.detectChanges();
   }
 
   //VALIDAMOS LOS NUMEROS DE UN INPUT
@@ -514,9 +538,11 @@ export class RegisterUserBoxComponent implements OnInit {
     }
   }
 
-  resetMinisterialInfo() {
+  resetMinisterialInfo(reset_type_church?: boolean) {
     //REINICIAMOS LA INFORMACION MINISTERIAL DE TIPO MCI
-    this.assistant_control.get('type_church').reset();
+    if (reset_type_church) {
+      this.assistant_control.get('type_church').reset();
+    }
     this.assistant_control.get('network').reset();
     this.assistant_control.get('church').reset();
     this.assistant_control.get('pastor').reset();

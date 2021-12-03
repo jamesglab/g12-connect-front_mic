@@ -35,6 +35,9 @@ export class DetailRegisterComponent implements OnInit {
   public transaction;
   public box;
 
+  //BANDERAS
+  public isLoading: boolean = false;
+
   constructor(public _boxService: BoxService, private modal: NgbActiveModal) {}
 
   ngOnInit(): void {
@@ -95,6 +98,7 @@ export class DetailRegisterComponent implements OnInit {
       }).then((res) => {
         //SI LA CONFIRMACION ES APROBADA PROCEDEMOS CON EL PAGO
         if (res.isConfirmed) {
+          this.isLoading = true;
           this._boxService
             .updateTransactions({
               transaction_id: this.transaction.transaction.id,
@@ -106,6 +110,8 @@ export class DetailRegisterComponent implements OnInit {
             .subscribe(
               (res) => {
                 Swal.fire('Usuarios registrados', '', 'success');
+                this.isLoading = false;
+
                 this.modal.close();
               },
               (err) => {
@@ -114,6 +120,7 @@ export class DetailRegisterComponent implements OnInit {
                   '',
                   'error'
                 );
+                this.isLoading = false;
               }
             );
         }

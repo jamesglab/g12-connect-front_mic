@@ -99,7 +99,7 @@
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef>Precio</th>
         <td mat-cell *matCellDef="let element">
-          {{ element?.transaction?.amount }}
+          {{ element?.cut?.prices[element?.transaction?.currency.toString().toLowerCase()] }}
         </td>
       </ng-container>
 
@@ -155,89 +155,87 @@
       </div>
     </div>
 
+    <table mat-table [dataSource]="grupal_table">
+      <!-- Position Column -->
+      <ng-container matColumnDef="user_name">
+        <th mat-header-cell *matHeaderCellDef>Usuario</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element?.user?.name + " " + element?.user?.last_name }}
+        </td>
+      </ng-container>
 
-    
-  <table mat-table [dataSource]="grupal_table">
-    <!-- Position Column -->
-    <ng-container matColumnDef="user_name">
-      <th mat-header-cell *matHeaderCellDef>Usuario</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element?.user?.name + " " + element?.user?.last_name }}
-      </td>
-    </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="user_email">
+        <th mat-header-cell *matHeaderCellDef>Correo</th>
+        <td mat-cell *matCellDef="let element">{{ element?.user?.email }}</td>
+      </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="user_email">
-      <th mat-header-cell *matHeaderCellDef>Correo</th>
-      <td mat-cell *matCellDef="let element">{{ element?.user?.email }}</td>
-    </ng-container>
+      <ng-container matColumnDef="payment_ref">
+        <th mat-header-cell *matHeaderCellDef>Referencia de pago</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.transaction?.payment_ref }}
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="payment_ref">
-      <th mat-header-cell *matHeaderCellDef>Referencia de pago</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.transaction?.payment_ref }}
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.transaction.status == "1" ? "APROBADA" : "PENDIENTE" }}
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>Estado</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.transaction.status == "1" ? "APROBADA" : "PENDIENTE" }}
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="created_at">
+        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.created_at | date }}
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="created_at">
-      <th mat-header-cell *matHeaderCellDef>Fecha</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.created_at | date }}
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="event">
+        <th mat-header-cell *matHeaderCellDef>Evento</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.donation.name | uppercase }}
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="event">
-      <th mat-header-cell *matHeaderCellDef>Evento</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.donation.name | uppercase }}
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="cut">
+        <th mat-header-cell *matHeaderCellDef>Corte</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element?.cut?.name | uppercase }}
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="cut">
-      <th mat-header-cell *matHeaderCellDef>Corte</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element?.cut?.name | uppercase }}
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>Precio</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element?.cut?.prices[element?.transaction?.currency.toString().toLowerCase()] }}          
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="amount">
-      <th mat-header-cell *matHeaderCellDef>Precio</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element?.transaction?.amount }}
-      </td>
-    </ng-container>
+      <!-- options Column -->
+      <ng-container matColumnDef="options">
+        <th mat-header-cell *matHeaderCellDef>Opciones</th>
+        <td mat-cell *matCellDef="let element">
+          <a
+            class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
+            (click)="openModalAprobePayment(element)"
+          >
+            <span><i class="fas fa-user-plus"></i></span>
+          </a>
+        </td>
+      </ng-container>
 
-    <!-- options Column -->
-    <ng-container matColumnDef="options">
-      <th mat-header-cell *matHeaderCellDef>Opciones</th>
-      <td mat-cell *matCellDef="let element">
-        <a
-          class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
-          (click)="openModalAprobePayment(element)"
-        >
-          <span><i class="fas fa-user-plus"></i></span>
-        </a>
-      </td>
-    </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
-
-  <mat-paginator
-    [length]="100"
-    [pageSize]="10"
-    [pageSizeOptions]="[5, 10, 25, 100]"
-    aria-label="Select page"
-  >
-  </mat-paginator>
+    <mat-paginator
+      [length]="100"
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page"
+    >
+    </mat-paginator>
   </mat-tab>
 </mat-tab-group>
 
@@ -260,5 +258,4 @@
       </button>
     </div>
   </div>
-
 </div>

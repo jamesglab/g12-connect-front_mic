@@ -60,7 +60,37 @@
             <div class="row mt-6">
               <div class="col-sm-6 col-12">
                 <mat-form-field appearance="fill" class="example-full-width">
-                  <mat-label>Documento* </mat-label>
+                  <mat-label>Pais*</mat-label>
+                  <mat-select type="select" formControlName="country">
+                    <mat-option
+                      (click)="resetMinisterialInfo(true)"
+                      *ngFor="let country of countries"
+                      [value]="country.name"
+                      >{{ country.name }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-6 col-12">
+                <mat-form-field class="example-full-width" appearance="fill">
+                  <mat-label>Genero*</mat-label>
+                  <mat-select type="select" formControlName="gender">
+                    <mat-option value="F"> Femenino </mat-option>
+                    <mat-option value="M"> Masculino </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div
+              class="row"
+              *ngIf="
+                assistant_value?.country?.toString().toUpperCase() == 'COLOMBIA'
+              "
+            >
+              <div class="col-sm-6 col-12">
+                <mat-form-field appearance="fill" class="example-full-width">
+                  <mat-label>Tipo de documento* </mat-label>
                   <mat-select type="select" formControlName="document_type">
                     <mat-option value="CC"> CC </mat-option>
                     <mat-option value="CC"> TI </mat-option>
@@ -68,7 +98,6 @@
                   </mat-select>
                 </mat-form-field>
               </div>
-
               <div class="col-sm-6 col-12">
                 <mat-form-field class="example-full-width" appearance="fill">
                   <mat-label>Documento*</mat-label>
@@ -107,29 +136,6 @@
                     autocomplete="off"
                     formControlName="last_name"
                   />
-                </mat-form-field>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6 col-12">
-                <mat-form-field class="example-full-width" appearance="fill">
-                  <mat-label>Genero*</mat-label>
-                  <mat-select type="select" formControlName="gender">
-                    <mat-option value="F"> Femenino </mat-option>
-                    <mat-option value="M"> Masculino </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-              <div class="col-sm-6 col-12">
-                <mat-form-field appearance="fill" class="example-full-width">
-                  <mat-label>Pais*</mat-label>
-                  <mat-select type="select" formControlName="country">
-                    <mat-option
-                      *ngFor="let country of countries"
-                      [value]="country.name"
-                      >{{ country.name }}</mat-option
-                    >
-                  </mat-select>
                 </mat-form-field>
               </div>
             </div>
@@ -180,23 +186,36 @@
               <div class="col-sm-6 col-12">
                 <mat-form-field class="example-full-width" appearance="fill">
                   <mat-label>Tipo de iglesia*</mat-label>
-                  <mat-select type="select" formControlName="type_church">
-                    <mat-option value="MCI"> Iglesia MCI </mat-option>
-                    <mat-option value="G12"> Iglesia G12 </mat-option>
-                    <mat-option value="OT"> Otra Iglesia </mat-option>
+                  <mat-select
+                    type="select"
+                    formControlName="type_church"
+                    [disabled]="find_user"
+                  >
+                    <mat-option value="MCI" (click)="resetMinisterialInfo()">
+                      Iglesia MCI
+                    </mat-option>
+                    <mat-option value="G12" (click)="resetMinisterialInfo()">
+                      Iglesia G12
+                    </mat-option>
+                    <mat-option value="OT" (click)="resetMinisterialInfo()">
+                      Otra Iglesia
+                    </mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
 
               <div
                 class="col-sm-6 col-12"
-                *ngIf="assistant_value.type_church == 'MCI'"
+                *ngIf="
+                  assistant_value?.type_church?.toString().toUpperCase() ==
+                  'MCI'
+                "
               >
                 <mat-form-field class="example-full-width" appearance="fill">
                   <mat-label>Iglesia*</mat-label>
                   <mat-select type="select" formControlName="church">
                     <mat-option *ngFor="let church of churchs" [value]="church">
-                      {{ church.name }}
+                      {{ church.name | uppercase }}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -206,7 +225,10 @@
 
               <div
                 class="col-sm-6 col-12"
-                *ngIf="assistant_value.type_church == 'MCI'"
+                *ngIf="
+                  assistant_value?.type_church?.toString().toUpperCase() ==
+                  'MCI'
+                "
               >
                 <mat-form-field class="example-full-width" appearance="fill">
                   <mat-label>Red*</mat-label>
@@ -228,7 +250,10 @@
               </div>
               <div
                 class="col-sm-6 col-12"
-                *ngIf="assistant_value.type_church == 'MCI'"
+                *ngIf="
+                  assistant_value?.type_church?.toString().toUpperCase() ==
+                  'MCI'
+                "
               >
                 <mat-form-field class="example-full-width" appearance="fill">
                   <mat-label>Pastor*</mat-label>
@@ -238,7 +263,7 @@
                       [value]="pastor"
                       (click)="getLeaders(assistant_value.pastor)"
                     >
-                      {{ pastor.name + " " + pastor.last_name }}
+                      {{ pastor.name + " " + pastor.last_name | uppercase }}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -246,13 +271,16 @@
 
               <div
                 class="col-sm-6 col-12"
-                *ngIf="assistant_value.type_church == 'MCI'"
+                *ngIf="
+                  assistant_value?.type_church?.toString().toUpperCase() ==
+                  'MCI'
+                "
               >
                 <mat-form-field class="example-full-width" appearance="fill">
                   <mat-label>Lider*</mat-label>
                   <mat-select type="select" formControlName="leader">
                     <mat-option *ngFor="let leader of leaders" [value]="leader">
-                      {{ leader.name + " " + leader.last_name }}
+                      {{ leader.name + " " + leader.last_name | uppercase }}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -263,8 +291,9 @@
               <div
                 class="col-sm-6 col-12"
                 *ngIf="
-                  assistant_value.type_church &&
-                  assistant_value.type_church != 'MCI'
+                  assistant_value?.type_church?.toString().toUpperCase() &&
+                  assistant_value?.type_church?.toString().toUpperCase() !=
+                    'MCI'
                 "
               >
                 <mat-form-field class="example-full-width" appearance="fill">
@@ -272,7 +301,7 @@
                   <input
                     matInput
                     autocomplete="off"
-                    formControlName="church_name"
+                    formControlName="name_church"
                   />
                 </mat-form-field>
               </div>
@@ -280,8 +309,9 @@
               <div
                 class="col-sm-6 col-12"
                 *ngIf="
-                  assistant_value.type_church &&
-                  assistant_value.type_church != 'MCI'
+                  assistant_value?.type_church?.toString().toUpperCase() &&
+                  assistant_value?.type_church?.toString().toUpperCase() !=
+                    'MCI'
                 "
               >
                 <mat-form-field class="example-full-width" appearance="fill">
@@ -304,11 +334,8 @@
                     [formControl]="select_payment_getway"
                   >
                     <mat-option value="EFECTIVO"> EFECTIVO</mat-option>
-                    <mat-option value="CREDITO/"> CREDITO</mat-option>
+                    <mat-option value="CREDITO/"> DATAFONO</mat-option>
                   </mat-select>
-                  <!-- <mat-error *ngIf="form.idDocumentType.errors?.required">El tipo de documento es
-                            requerido
-                        </mat-error> -->
                 </mat-form-field>
               </div>
               <div class="col-sm-3 col-12">
@@ -317,7 +344,7 @@
                   appearance="fill"
                   *ngIf="select_payment_getway.value == 'CREDITO/'"
                 >
-                  <mat-label>Referencia*</mat-label>
+                  <mat-label>Numero de aprobación*</mat-label>
                   <textarea
                     matInput
                     [formControl]="description_of_changue"

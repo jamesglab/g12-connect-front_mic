@@ -243,35 +243,35 @@ export class EventReportsComponent implements OnInit {
         const dataToExport = [];
         res.map((item) => {
           const newData = {
-            Nombre: item.user?.name ? item.user.name : 'N/A',
-            Apellido: item.user?.last_name ? item.user.last_name : 'N/A',
+            Nombre: item.user?.name ? item.user.name.toString().toUpperCase() : 'N/A',
+            Apellido: item.user?.last_name ? item.user.last_name.toString().toUpperCase() : 'N/A',
             'No. Documento': item.user?.identification
               ? item.user.identification
               : 'N/A',
             'Fecha Nacimiento': item.user?.birth_date
               ? new Date(item.user.birth_date)
               : 'N/A',
-            Genero: item.user?.gender ? item.user.gender : 'N/A',
+            Genero: item.user?.gender ? item.user.gender.toString().toUpperCase() : 'N/A',
             Telefono: item.user?.phone ? item.user.phone : 'N/A',
             'E-mail': item.user?.email ? item.user.email : 'N/A',
-            Pais: item.user?.country ? item.user.country : 'N/A',
+            Pais: item.user?.country ? item.user.country.toString().toUpperCase() : 'N/A',
             Departamento: item.user?.departament
-              ? item.user.departament
+              ? item.user.departament.toString().toUpperCase()
               : 'N/A',
             Municipio: item.user?.city ? item.user.city : 'N/A',
             'Tipo de Iglesia': item?.user?.type_church
-              ? item?.user?.type_church
+              ? item?.user?.type_church.toString().toUpperCase()
               : 'N/A',
-            Sede: item.church?.name ? item.church.name : 'N/A',
+            Sede: item.church?.name ? item.church.name.toString().toUpperCase() : 'N/A',
             Pastor: item.pastor?.name
               ? `${item.pastor.name} ${
                   item.pastor.last_name ? item.pastor.last_name : ''
-                }`
+                }`.toString().toUpperCase()
               : 'N/A',
             'Lider Doce': item.leader?.name
               ? `${item.leader.name} ${
                   item.leader.last_name ? item.leader.last_name : ''
-                }`
+                }`.toString().toUpperCase()
               : 'N/A',
             // 'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
             'Fecha de Donación': new Date(item.created_at),
@@ -282,17 +282,17 @@ export class EventReportsComponent implements OnInit {
             'Metodo de pago': item.transaction.payment_method
               ? item.transaction.payment_method
               : 'N/A',
-            'Nombre evento': item.donation?.name ? item.donation?.name : 'N/A',
-            'Nombre corte': item.cut?.name ? item.cut?.name : 'N/A',
+            'Nombre evento': item.donation?.name ? item.donation?.name.toString().toUpperCase() : 'N/A',
+            'Nombre corte': item.cut?.name ? item.cut?.name.toString().toUpperCase() : 'N/A',
             Estado: item.transaction.status
-              ? this.validateStatus(item.transaction.status)
+              ? this.validateStatus(item.transaction.status).toString().toUpperCase()
               : 'N/A',
             Costo: item.transaction.amount,
             Moneda: item.transaction.currency
-              ? item.transaction.currency
+              ? item.transaction.currency.toString().toUpperCase()
               : 'N/A',
             'Descripcion de Cambio': item.description_of_change
-              ? item.description_of_change
+              ? item.description_of_change.toString().toUpperCase()
               : 'N/A',
           };
           dataToExport.push(newData);
@@ -329,6 +329,7 @@ export class EventReportsComponent implements OnInit {
   }
 
   validatePaymentMethod(payment_method) {
+    console.log('tenemos caja', payment_method);
     if (payment_method.toLowerCase() == 'credit') {
       return 'Tarjeta de credito';
     } else if (payment_method.toLowerCase() == 'pse') {
@@ -339,6 +340,8 @@ export class EventReportsComponent implements OnInit {
       return 'Administración';
     } else if (payment_method.toLowerCase() == 'code') {
       return 'Codigo';
+    } else if (payment_method.toLowerCase() == 'cajas mci') {
+      return 'Caja MCI';
     }
   }
 
