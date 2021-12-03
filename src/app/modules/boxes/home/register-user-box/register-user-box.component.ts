@@ -14,10 +14,6 @@ import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 import { BoxService } from '../services/g12events.service';
-import * as pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-
-(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-register-user-box',
@@ -446,6 +442,9 @@ export class RegisterUserBoxComponent implements OnInit {
           if (!this.description_of_changue.value) {
             //CREAMOS UN ERROR DE REFERENCIA DE PAGO INCOMPLETA
             throw new Error('Referencia de pago incompleta');
+          } else {
+            payload.payment_information.description_of_change =
+              this.description_of_changue.value;
           }
           break;
       }
@@ -455,6 +454,7 @@ export class RegisterUserBoxComponent implements OnInit {
       this.boxService
         .registerOneUser({
           ...payload,
+
           box: this.box,
         })
         .subscribe(
@@ -516,7 +516,9 @@ export class RegisterUserBoxComponent implements OnInit {
 
     //AUTOCOMPLETE DATA
     this.assistant_control.get('country').disable();
-    this.assistant_control.get('country').setValue(user.country);
+    this.assistant_control
+      .get('country')
+      .setValue(user.country?.toString().toUpperCase());
     this.assistant_control.get('id').setValue(user.id);
     this.assistant_control.get('name').setValue(user.name.toLowerCase());
     this.assistant_control
@@ -572,52 +574,5 @@ export class RegisterUserBoxComponent implements OnInit {
 
   get payment_information() {
     return this.register_user.get('payment_information');
-  }
-
-  //FAKE
-  createFakeVersion() {
-    var dd = {
-      content: [
-        {
-          text: 'This is a header, using header style',
-          style: 'header',
-        },
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam.\n\n',
-        {
-          text: 'Subheader 1 - using subheader style',
-          style: 'subheader',
-        },
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.',
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.',
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.\n\n',
-        {
-          text: 'Subheader 2 - using subheader style',
-          style: 'subheader',
-        },
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.',
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.\n\n',
-        {
-          text: 'It is possible to apply multiple styles, by passing an array. This paragraph uses two styles: quote and small. When multiple styles are provided, they are evaluated in the specified order which is important in case they define the same properties',
-          style: ['quote', 'small'],
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true,
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true,
-        },
-        quote: {
-          italics: true,
-        },
-        small: {
-          fontSize: 8,
-        },
-      },
-    };
-    pdfMake.createPdf(dd).open();
   }
 }

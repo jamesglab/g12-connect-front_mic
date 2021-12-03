@@ -243,18 +243,26 @@ export class EventReportsComponent implements OnInit {
         const dataToExport = [];
         res.map((item) => {
           const newData = {
-            Nombre: item.user?.name ? item.user.name.toString().toUpperCase() : 'N/A',
-            Apellido: item.user?.last_name ? item.user.last_name.toString().toUpperCase() : 'N/A',
+            Nombre: item.user?.name
+              ? item.user.name.toString().toUpperCase()
+              : 'N/A',
+            Apellido: item.user?.last_name
+              ? item.user.last_name.toString().toUpperCase()
+              : 'N/A',
             'No. Documento': item.user?.identification
               ? item.user.identification
               : 'N/A',
             'Fecha Nacimiento': item.user?.birth_date
               ? new Date(item.user.birth_date)
               : 'N/A',
-            Genero: item.user?.gender ? item.user.gender.toString().toUpperCase() : 'N/A',
+            Genero: item.user?.gender
+              ? item.user.gender.toString().toUpperCase()
+              : 'N/A',
             Telefono: item.user?.phone ? item.user.phone : 'N/A',
             'E-mail': item.user?.email ? item.user.email : 'N/A',
-            Pais: item.user?.country ? item.user.country.toString().toUpperCase() : 'N/A',
+            Pais: item.user?.country
+              ? item.user.country.toString().toUpperCase()
+              : 'N/A',
             Departamento: item.user?.departament
               ? item.user.departament.toString().toUpperCase()
               : 'N/A',
@@ -262,16 +270,22 @@ export class EventReportsComponent implements OnInit {
             'Tipo de Iglesia': item?.user?.type_church
               ? item?.user?.type_church.toString().toUpperCase()
               : 'N/A',
-            Sede: item.church?.name ? item.church.name.toString().toUpperCase() : 'N/A',
+            Sede: item.church?.name
+              ? item.church.name.toString().toUpperCase()
+              : 'N/A',
             Pastor: item.pastor?.name
               ? `${item.pastor.name} ${
                   item.pastor.last_name ? item.pastor.last_name : ''
-                }`.toString().toUpperCase()
+                }`
+                  .toString()
+                  .toUpperCase()
               : 'N/A',
             'Lider Doce': item.leader?.name
               ? `${item.leader.name} ${
                   item.leader.last_name ? item.leader.last_name : ''
-                }`.toString().toUpperCase()
+                }`
+                  .toString()
+                  .toUpperCase()
               : 'N/A',
             // 'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
             'Fecha de Donación': new Date(item.created_at),
@@ -282,12 +296,21 @@ export class EventReportsComponent implements OnInit {
             'Metodo de pago': item.transaction.payment_method
               ? item.transaction.payment_method
               : 'N/A',
-            'Nombre evento': item.donation?.name ? item.donation?.name.toString().toUpperCase() : 'N/A',
-            'Nombre corte': item.cut?.name ? item.cut?.name.toString().toUpperCase() : 'N/A',
-            Estado: item.transaction.status
-              ? this.validateStatus(item.transaction.status).toString().toUpperCase()
+            'Nombre evento': item.donation?.name
+              ? item.donation?.name.toString().toUpperCase()
               : 'N/A',
-            Costo: item.transaction.amount,
+            'Nombre corte': item.cut?.name
+              ? item.cut?.name.toString().toUpperCase()
+              : 'N/A',
+            Estado: item.transaction.status
+              ? this.validateStatus(item.transaction.status)
+                  .toString()
+                  .toUpperCase()
+              : 'N/A',
+            Costo:
+              item.cut.prices[
+                item.transaction.currency?.toString().toLowerCase()
+              ],
             Moneda: item.transaction.currency
               ? item.transaction.currency.toString().toUpperCase()
               : 'N/A',

@@ -28,7 +28,7 @@ export class DetailRegisterComponent implements OnInit {
     'assistant',
   ];
   public table_users: [] = [];
-  public description_of_changue = new FormControl('', Validators.required);
+  public description_of_change = new FormControl('', Validators.required);
   public select_payment_getway = new FormControl('', Validators.required);
 
   //OBJETOS DE COMPONENTES PADRES
@@ -78,7 +78,7 @@ export class DetailRegisterComponent implements OnInit {
         //CASO CREDITO NECESITAMOS COMPLEMENTAR LA INFORMACION DE REFERENCIA
         case 'CREDITO/':
           //VALIDAMOS LA DESCRIPCION DEL PAGO
-          if (!this.description_of_changue.value) {
+          if (!this.description_of_change.value) {
             //CREAMOS UN ERROR DE REFERENCIA DE PAGO INCOMPLETA
             throw new Error('Referencia de pago incompleta');
           }
@@ -103,9 +103,7 @@ export class DetailRegisterComponent implements OnInit {
             .updateTransactions({
               transaction_id: this.transaction.transaction.id,
               box: this.box,
-              description_of_change:
-                this.select_payment_getway.value +
-                this.description_of_changue.value,
+              description_of_change: this.description_of_change.value,
             })
             .subscribe(
               (res) => {

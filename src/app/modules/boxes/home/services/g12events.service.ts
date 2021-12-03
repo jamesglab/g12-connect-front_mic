@@ -65,6 +65,22 @@ export class BoxService {
       );
   }
 
+  filterTransactionByReference(params) {
+    return this.http
+      .get<any>(
+        `${environment.apiUrlG12Connect.paymentsv3}/box/by-reference`,
+        {
+          params,
+        }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
   getGrupalTransactionsBox(payment_ref, assistant) {
     return this.http
       .get<any>(
