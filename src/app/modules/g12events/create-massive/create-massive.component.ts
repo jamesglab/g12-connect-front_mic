@@ -279,7 +279,7 @@ export class CreateMassiveComponent implements OnInit {
           } else {
             Swal.fire(
               res.message ? res.message : 'Transacción exitosa',
-              '',
+              res.ref ? `Referencia de pago : ${res?.ref}` : '',
               'success'
             ).then((res) => {
               this.router.navigate(['/g12events/massive']);

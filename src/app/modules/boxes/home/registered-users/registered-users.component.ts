@@ -3,11 +3,10 @@ import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DetailRegisterComponent } from '../detail-register/detail-register.component';
 import { RegisterUserBoxComponent } from '../register-user-box/register-user-box.component';
-import { BoxService } from '../services/g12events.service';
+import { BoxService } from '../services/Boxes.service';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import * as moment from 'moment';
-import { userInfo } from 'os';
+import { MakePdfService } from '../services/make-pdf.service';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 @Component({
@@ -23,7 +22,6 @@ export class RegisteredUsersComponent implements OnInit {
    * CONTROLES DE INPUTS
    */
   public identification = new FormControl(); //CONTROL PARA FILTRO POR IDENTIFICACION
-
   public payment_ref_grupal = new FormControl(); //CONTROL PARA CONSULTAR REFERENCIA GRUPAL
   public email = new FormControl();
 
@@ -44,12 +42,16 @@ export class RegisteredUsersComponent implements OnInit {
   ]; //DATOS A MOSTRAR EN LAS TABLAS DEL ANGULAR MATERIAL
 
   public individual_table: [] = [];
-  public grupal_table: [] = [];
+  public grupal_table = [];
+
+  //BOOLEANS
+  public isLoading: boolean = false;
 
   constructor(
     private modalService: NgbModal,
     private _boxService: BoxService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private _makePdfService: MakePdfService
   ) {}
 
   ngOnInit(): void {}
@@ -64,6 +66,9 @@ export class RegisteredUsersComponent implements OnInit {
     });
     modale.componentInstance.transaction = element;
     modale.componentInstance.box = this.box;
+    if (element.transaction.user_massive) {
+      modale.componentInstance.user_massive = true;
+    }
   }
 
   //MODAL DE REGISTRO DE USUARIO UNICO EN CAJA APROBANDO DIRECTAMENTE LA TRANSACCION
@@ -110,7 +115,7 @@ export class RegisteredUsersComponent implements OnInit {
   }
 
   //CONSULTA POR TRANSACCION GRUPAL
-  searchTransactionBoxGrupal() {
+  async searchTransactionBoxGrupal() {
     //VALIDAMOS EL PARAMETRO DE CONSULTA DE REFERENCIA GRUPAL
     if (this.payment_ref_grupal.value) {
       //CONSULTAMOS LAS TRANSACCIONES
@@ -118,12 +123,44 @@ export class RegisteredUsersComponent implements OnInit {
        * payment_ref_grupal REFERENCIA DE PAGO
        * boolean = false CONSULTAMOS POR USUARIOS DONANTE
        */
+      this.isLoading = true; //MOSTRAMOS EL LOADER
       this._boxService
         .filterTransaction({ payment_ref: this.payment_ref_grupal.value })
-        .subscribe((res) => {
-          this.grupal_table = res;
-          this.cdr.detectChanges();
-        });
+        .subscribe(
+          (res) => {
+            //REINICAMOS LA TABLA DE LOS USUARIOS
+            this.grupal_table = [];
+            let find_user_massive = false;
+            let transactions = [];
+
+            res.map((tr) => {
+              //VALIDAMOS EL REGISTROS DE USUARIOS MASIVOS
+              //PUSHEAMOS SOLO EL USUARIO DONANTE DE MASIVO
+              if (tr.transaction?.user_massive) {
+                transactions.push(tr);
+                find_user_massive = true;
+              }
+            });
+
+            //SI NO ENCONTRAMOS USUARIO MASIVO
+            if (!find_user_massive) {
+              res.map((tr) => {
+                //VALIDAMOS LOS USUARIOS ASISTENTES Y LOS RENDERIZAMOS
+                if (tr.isAssistant) {
+                  transactions.push(tr);
+                }
+              });
+            }
+            this.isLoading = false; //OCULTAMOS EL LOADER
+            this.grupal_table = transactions;
+            this.cdr.detectChanges();
+          },
+          (err) => {
+            this.isLoading = false; //OCULTAMOS EL LOADER
+            this.cdr.detectChanges();
+            throw new Error('NO SE PUDO EJECUTAR LA TRANSACCIÓN');
+          }
+        );
     }
   }
 
@@ -136,199 +173,8 @@ export class RegisteredUsersComponent implements OnInit {
     }
   }
 
-  //CREAMOS PDF DE LA TRANSACCION
-  async createPdf(element) {
-    //METODO PARA CONSULTAR LAS TRANSACCIONES DE LOS USUARIOS ASITENTES
-
-    //CONSULTAMOS LAS TRANSACCIONES
-    /**
-     * payment_ref  REFERENCIA DE PAGO
-     * boolean = true CONSULTAMOS POR USUARIOS ASITENTES
-     */
-    this._boxService
-      .filterTransactionByReference({
-        payment_ref: element.transaction.payment_ref,
-      })
-      .subscribe(
-        async (res) => {
-          let donor;
-          res.map((tr) => {
-            if (!tr.isAssistant) {
-              donor = tr;
-            }
-          });
-          const table = await this.createUsersTable(res);
-
-          //AGREGAMOS RESPUESTA A LA TABLA DE USUARIOS
-          var dd = {
-            content: [
-              {
-                text: 'IGLESIA MISIÓN CARISMÁTICA INTERNACIONAL',
-                style: 'header',
-              },
-
-              { style: 'cont_ministerial', text: 'NIT 800195397-7' },
-
-              {
-                text: `Usuario : ${
-                  element.user.name.toString().toUpperCase() +
-                  ' ' +
-                  element.user.last_name.toString().toUpperCase()
-                }`,
-                style: 'parrafo',
-              },
-              {
-                style: 'parrafo',
-                columns: [
-                  {
-                    width: 400,
-                    text: `REFERENCIA : ${donor.transaction.payment_ref}`,
-                  },
-                  {
-                    width: 500,
-                    text: `FECHA: ${moment(donor.transaction.created_at).format(
-                      'YYYY/MM/DD'
-                    )}`,
-                  },
-                ],
-              },
-
-              { style: 'cont_donation', text: '' },
-              { text: 'COMPROBANTE DE DONACIÓN', style: 'subheader' },
-
-              {
-                style: 'tableExample',
-                table: {
-                  body: table,
-                },
-              },
-
-              {
-                columns: [
-                  {
-                    width: 380,
-                    text: '',
-                  },
-                  {
-                    width: 420,
-                    style: 'bold',
-                    text: `TOTAL A DONAR : ${
-                      donor.transaction.currency +
-                      ' ' +
-                      donor.transaction.amount
-                    }`,
-                  },
-                ],
-              },
-
-              {
-                style: 'parrafo',
-                columns: [
-                  {
-                    width: 420,
-                    text: 'FECHA Y HORA DE IMPRESIÓN',
-                  },
-                  {
-                    width: 400,
-                    text: 'NOMBRE DE LA CAJA',
-                  },
-                ],
-              },
-              {
-                style: 'parrafo',
-
-                columns: [
-                  {
-                    width: 430,
-                    text: moment().format('YYYY/MM/DD'),
-                  },
-                  {
-                    width: 500,
-                    text: this.box.name.toString().toUpperCase(),
-                  },
-                ],
-              },
-              {
-                style: 'parrafo',
-                columns: [
-                  {
-                    text: 'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
-                    style: 'bold',
-                  },
-                ],
-              },
-            ],
-            styles: {
-              parrafo: {
-                margin: [0, 10, 0, 0],
-              },
-              bold: {
-                bold: true,
-              },
-              cont_ministerial: {
-                margin: [0, 20, 0, 0],
-              },
-              cont_donation: {
-                margin: [0, 50, 0, 0],
-              },
-              header: {
-                fontSize: 18,
-                bold: true,
-                margin: [0, 0, 0, 10],
-              },
-              subheader: {
-                fontSize: 14,
-                bold: true,
-                margin: [0, 15, 0, 5],
-              },
-              tableExample: {
-                margin: [0, 20, 0, 15],
-              },
-              tableHeader: {
-                bold: true,
-                fontSize: 11,
-                color: 'black',
-              },
-            },
-          };
-          pdfMake.createPdf(dd).open();
-        },
-        (err) => {
-          throw new Error(err);
-        }
-      );
-  }
-
-  createUsersTable(transactions) {
-    let table = [
-      [
-        { text: 'DOCUMENTO', style: 'tableHeader' },
-        { text: 'NOMBRES Y APELLIDOS', style: 'tableHeader' },
-        { text: 'NOMBRE DEL EVENTO', style: 'tableHeader' },
-        { text: 'PASTOR PRINCIPAL', style: 'tableHeader' },
-        { text: 'VALOR', style: 'tableHeader' },
-      ],
-    ];
-
-    transactions.map((tr) => {
-      console.log('tr', tr);
-      if (tr.isAssistant) {
-        table.push([
-          tr.user.identification ? tr.user.identification : 'INTERNACIONAL',
-          tr.user.name && tr.user.last_name
-            ? tr.user.name.toString().toUpperCase() +
-              ' ' +
-              tr.user.last_name.toString().toUpperCase()
-            : '',
-          tr.donation.name ? tr.donation.name.toString().toUpperCase() : '',
-          tr.pastor.name ? tr.pastor.name.toString().toUpperCase() : '',
-          tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
-            ? tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
-            : '',
-        ]);
-      }
-    });
-    console.log('tenemos tabla', table);
-    return table;
+  createPdf(element) {
+    
+    this._makePdfService.createPdf(element.transaction.payment_ref, this.box);
   }
 }

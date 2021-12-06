@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { StorageService } from '../../auth/_services/storage.service';
-import { BoxService } from './services/g12events.service';
+import { BoxService } from './services/Boxes.service';
 
 @Component({
   selector: 'app-boxes-home',
@@ -9,7 +9,6 @@ import { BoxService } from './services/g12events.service';
   styleUrls: ['./boxes-home.component.scss'],
 })
 export class BoxesHomeComponent implements OnInit {
-  private currentUser = this.storageService.getItem('auth').user;
   public box;
 
   constructor(

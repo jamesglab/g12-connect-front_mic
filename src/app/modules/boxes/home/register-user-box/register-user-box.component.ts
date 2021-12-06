@@ -13,7 +13,8 @@ import { UserService } from 'src/app/modules/_services/user.service';
 import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
-import { BoxService } from '../services/g12events.service';
+import { BoxService } from '../services/Boxes.service';
+import { MakePdfService } from '../services/make-pdf.service';
 
 @Component({
   selector: 'app-register-user-box',
@@ -43,7 +44,7 @@ export class RegisterUserBoxComponent implements OnInit {
     null,
     Validators.compose([Validators.required, Validators.email])
   );
-  
+
   public isLoading: boolean = false;
   public find_user: boolean = false;
   constructor(
@@ -52,8 +53,8 @@ export class RegisterUserBoxComponent implements OnInit {
     private g12EventService: G12eventsService,
     public cdr: ChangeDetectorRef,
     private userService: UserService,
-    private storageService: StorageService,
-    private boxService: BoxService
+    private boxService: BoxService,
+    private _makePdfService: MakePdfService
   ) {}
 
   ngOnInit(): void {
@@ -455,7 +456,6 @@ export class RegisterUserBoxComponent implements OnInit {
       this.boxService
         .registerOneUser({
           ...payload,
-
           box: this.box,
         })
         .subscribe(
@@ -465,7 +465,9 @@ export class RegisterUserBoxComponent implements OnInit {
             //MOSTRAMOS EL MENSAJE DE SUCCESS
             Swal.fire('Usuario registrado', '', 'success');
             //CERRAMOS EL MODAL
-            this.modal.close();
+            // this.modal.close();
+            this._makePdfService.createPdf(res.box_reference, this.box);
+            console.log('TRANSACTION', res);
           },
           (err) => {
             this.isLoading = false;

@@ -114,8 +114,11 @@
           <a
             class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
             (click)="openModalAprobePayment(element)"
+            *ngIf="element.transaction.status == '2'"
           >
-            <span><i class="fas fa-user-plus"></i></span>
+            <span>
+              <i class="fas fa-check-double"></i>
+            </span>
           </a>
 
           <a
@@ -141,6 +144,7 @@
   </mat-tab>
 
   <!-- TAB GRUPAL -->
+
   <mat-tab label="Grupal">
     <div class="row">
       <div class="col-sm-3 col-12">
@@ -163,6 +167,13 @@
             <mat-icon matPrefix>search</mat-icon>
           </button>
         </mat-form-field>
+      </div>
+      <div class="col-sm-1 d-flex justify-content-center" *ngIf="isLoading">
+        <div>
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -234,8 +245,11 @@
           <a
             class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
             (click)="openModalAprobePayment(element)"
+            *ngIf="element.transaction.status == '2'"
           >
-            <span><i class="fas fa-user-plus"></i></span>
+            <span>
+              <i class="fas fa-check-double"></i>
+            </span>
           </a>
 
           <a

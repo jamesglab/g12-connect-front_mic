@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
-import { BoxService } from '../services/g12events.service';
+import { BoxService } from '../services/Boxes.service';
+import { MakePdfService } from '../services/make-pdf.service';
 export interface PeriodicElement {
   name: string;
   position: number;
@@ -27,7 +28,8 @@ export class DetailRegisterComponent implements OnInit {
     'document',
     'assistant',
   ];
-  public table_users: [] = [];
+  public table_users = [];
+  public user_massive: boolean = false;
   public description_of_change = new FormControl('', Validators.required);
   public select_payment_getway = new FormControl('', Validators.required);
 
@@ -38,7 +40,11 @@ export class DetailRegisterComponent implements OnInit {
   //BANDERAS
   public isLoading: boolean = false;
 
-  constructor(public _boxService: BoxService, private modal: NgbActiveModal) {}
+  constructor(
+    public _boxService: BoxService,
+    public modal: NgbActiveModal,
+    private makePdfService: MakePdfService
+  ) {}
 
   ngOnInit(): void {
     this.getTransactions();
@@ -58,7 +64,14 @@ export class DetailRegisterComponent implements OnInit {
       .subscribe(
         (res) => {
           //AGREGAMOS RESPUESTA A LA TABLA DE USUARIOS
-          this.table_users = res;
+          let transactions = [];
+
+          res.map((tr) => {
+            if (tr.isAssistant) {
+              transactions.push(tr);
+            }
+          });
+          this.table_users = transactions;
         },
         (err) => {
           throw new Error(err);
@@ -108,6 +121,10 @@ export class DetailRegisterComponent implements OnInit {
             .subscribe(
               (res) => {
                 Swal.fire('Usuarios registrados', '', 'success');
+                this.makePdfService.createPdf(
+                  this.transaction.transaction.payment_ref,
+                  this.box
+                );
                 this.isLoading = false;
 
                 this.modal.close();
@@ -140,7 +157,6 @@ export class DetailRegisterComponent implements OnInit {
       showCloseButton: true,
     }).then((res) => {
       if (res.isConfirmed) {
-        
         this.isLoading = true;
         this._boxService
           .cancelTransaction({
