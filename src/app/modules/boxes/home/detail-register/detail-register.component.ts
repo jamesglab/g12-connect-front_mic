@@ -87,7 +87,7 @@ export class DetailRegisterComponent implements OnInit {
 
       //CREAMOS UNA CONFIRMACION DEL PAGO
       Swal.fire({
-        title: '¿Aprobar Transacción ?',
+        title: '¿Aprobar Transacción?',
         icon: 'question',
         text: 'Al aprobar la transacción los usuarios asistentes quedaran inscritos en el evento',
         confirmButtonText: 'Continuar',
@@ -126,5 +126,32 @@ export class DetailRegisterComponent implements OnInit {
     } catch (error) {
       Swal.fire(error.message, '', 'info');
     }
+  }
+
+  cancelTransaction() {
+    Swal.fire({
+      title: '¿Cancelar Transacción?',
+      icon: 'question',
+      text: '¿Estas seguro de cancelar la transacción?',
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No',
+      reverseButtons: true,
+      showCancelButton: true,
+      showCloseButton: true,
+    }).then((res) => {
+      if (res.isConfirmed) {
+        
+        this.isLoading = true;
+        this._boxService
+          .cancelTransaction({
+            transaction_id: this.transaction.transaction.id,
+          })
+          .subscribe((res) => {
+            Swal.fire('Transacción cancelada', '', 'success');
+            this.isLoading = false;
+            this.modal.close();
+          });
+      }
+    });
   }
 }
