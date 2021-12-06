@@ -52,31 +52,7 @@ export let DynamicAsideMenuConfigOriginal = {
             },
           ],
         },
-        {
-          title: 'Cajas',
-          bullet: 'dot',
-          show: false,
-          code: 'ADM1200',
-          submenu: [
-            {
-              title: 'Cajas en el sistema',
-              root: true,
-              show: false,
-              bullet: 'dot',
-              code: 'ADM1210',
-              page: '/admin/boxes',
-            },
 
-            {
-              title: 'Mi caja',
-              root: true,
-              show: false,
-              bullet: 'dot',
-              code: 'ADM1220',
-              page: 'boxes/home',
-            },
-          ],
-        },
       ],
     },
     {
@@ -182,6 +158,33 @@ export let DynamicAsideMenuConfigOriginal = {
         },
       ],
     },
+
+    {
+      title: 'Cajas',
+      bullet: 'dot',
+      show: false,
+      code: 'CJ1000',
+      submenu: [
+        {
+          title: 'Cajas en el sistema',
+          root: true,
+          show: false,
+          bullet: 'dot',
+          code: 'CJ1100',
+          page: '/admin/boxes',
+        },
+
+        {
+          title: 'Mi caja',
+          root: true,
+          show: false,
+          bullet: 'dot',
+          code: 'CJ1200',
+          page: 'boxes/home',
+        },
+      ],
+    },
+
     // {
     //   title: 'Mi perfil',
     //   root: true,
