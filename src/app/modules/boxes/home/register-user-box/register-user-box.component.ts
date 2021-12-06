@@ -23,7 +23,6 @@ import { BoxService } from '../services/g12events.service';
 export class RegisterUserBoxComponent implements OnInit {
   //OBJETOS DEL USUARIO
   public box;
-  private currentUser = this.storageService.getItem('auth').user;
 
   //ARRAYS DE CONSULTAS
   public leaders: [] = [];
@@ -44,6 +43,7 @@ export class RegisterUserBoxComponent implements OnInit {
     null,
     Validators.compose([Validators.required, Validators.email])
   );
+  
   public isLoading: boolean = false;
   public find_user: boolean = false;
   constructor(
@@ -384,6 +384,7 @@ export class RegisterUserBoxComponent implements OnInit {
   createUser() {
     // //EJECUTAMOS EL ENDPOINT CON LOS DATOS DEL USUARIO
     try {
+      console.log('ERROR', this.assistant_control);
       if (this.assistant_control.invalid) {
         throw new Error('Información incompleta');
       }
@@ -401,7 +402,7 @@ export class RegisterUserBoxComponent implements OnInit {
             !payload.assistant.leader?.id
           ) {
             //GENERAMOS ERROR SI NO ENCONTRAMOS
-            throw new Error('Revisa la información ministerial efe');
+            throw new Error('Revisa la información ministerial');
           }
           break;
 
@@ -515,10 +516,11 @@ export class RegisterUserBoxComponent implements OnInit {
     }
 
     //AUTOCOMPLETE DATA
-    this.assistant_control.get('country').disable();
+
     this.assistant_control
       .get('country')
       .setValue(user.country?.toString().toUpperCase());
+    // this.assistant_control.get('country').disable();
     this.assistant_control.get('id').setValue(user.id);
     this.assistant_control.get('name').setValue(user.name.toLowerCase());
     this.assistant_control
