@@ -115,6 +115,7 @@
             class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
             (click)="openModalAprobePayment(element)"
             *ngIf="element.transaction.status == '2'"
+            matTooltip="Aprobar transacción"
           >
             <span>
               <i class="fas fa-check-double"></i>
@@ -124,6 +125,9 @@
           <a
             class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
             (click)="createPdf(element)"
+            matTooltip="Info about the action"
+            matTooltip="Descargar comprobante"
+            *ngIf="element.transaction.status == '1'"
           >
             <span><i class="far fa-file-pdf"></i> </span>
           </a>
@@ -246,15 +250,17 @@
             class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
             (click)="openModalAprobePayment(element)"
             *ngIf="element.transaction.status == '2'"
+            matTooltip="Aprobar transacción"
           >
             <span>
               <i class="fas fa-check-double"></i>
             </span>
           </a>
-
           <a
             class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
             (click)="createPdf(element)"
+            matTooltip="Descargar comprobante"
+            *ngIf="element.transaction.status == '1'"
           >
             <span><i class="far fa-file-pdf"></i> </span>
           </a>

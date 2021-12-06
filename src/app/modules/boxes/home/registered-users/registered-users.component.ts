@@ -69,6 +69,10 @@ export class RegisteredUsersComponent implements OnInit {
     if (element.transaction.user_massive) {
       modale.componentInstance.user_massive = true;
     }
+    modale.result.then(result=>{
+      this.searchTransactionBoxGrupal();
+      this.searchTransactionsOneUser();
+    })
   }
 
   //MODAL DE REGISTRO DE USUARIO UNICO EN CAJA APROBANDO DIRECTAMENTE LA TRANSACCION
@@ -174,7 +178,7 @@ export class RegisteredUsersComponent implements OnInit {
   }
 
   createPdf(element) {
-    
+
     this._makePdfService.createPdf(element.transaction.payment_ref, this.box);
   }
 }

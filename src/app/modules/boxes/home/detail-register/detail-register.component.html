@@ -70,6 +70,7 @@
                   <mat-label>Numero de aprobación*</mat-label>
                   <textarea
                     matInput
+                    maxlength="6"
                     [formControl]="description_of_change"
                   ></textarea>
                 </mat-form-field>
@@ -79,8 +80,7 @@
           <div class="col-sm-8 col-12">
             <h4>Usuarios</h4>
             <div class="row">
-              
-              <div class="col-12" >
+              <div class="col-12">
                 <table mat-table [dataSource]="table_users">
                   <!--- Note that these columns can be defined in any order.
                         The actual rendered columns are set as a property on the row definition" -->
