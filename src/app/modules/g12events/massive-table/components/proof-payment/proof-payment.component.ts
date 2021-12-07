@@ -43,6 +43,7 @@ export class ProofPaymentComponent implements OnInit {
 
   //VALIDAMOS EL METODO DE CON EL QUE SE REALIZO LA DONACION
   validatePaymentMethod(payment_method) {
+    console.log('validaremos metodo de pago',payment_method)
     if (payment_method.toLowerCase() == 'credit') {
       return 'Tarjeta de credito'
     } else if (payment_method.toLowerCase() == 'pse') {
@@ -53,7 +54,10 @@ export class ProofPaymentComponent implements OnInit {
       return 'Administración'
     } else if (payment_method.toLowerCase() == 'code') {
       return 'Codigo'
+    } else if(payment_method.toUpperCase() == 'CAJAS MCI') {
+      return 'Cajas MCI'
     }
+    
   }
 
   validateStatus(status) {

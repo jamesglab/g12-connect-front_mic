@@ -45,8 +45,11 @@ export class RegisterUserBoxComponent implements OnInit {
     Validators.compose([Validators.required, Validators.email])
   );
 
+  //BANDERAS BOOLEANAS
   public isLoading: boolean = false;
   public find_user: boolean = false;
+  public disable_ministerial_info: boolean = true;
+
   constructor(
     private fb: FormBuilder,
     public modal: NgbActiveModal,
@@ -493,29 +496,37 @@ export class RegisterUserBoxComponent implements OnInit {
 
   setUser(user) {
     this.assistant_control.get('type_church').setValue(user.type_church);
-    //DISABLES
-    switch (user?.type_church?.toString().toUpperCase()) {
-      case 'MCI':
-        //DISABLE INPUTS
-        this.assistant_control.get('church').disable();
-        this.assistant_control.get('network').disable();
 
-        //SETEAMOS LOS VALORES DE LA RED
-        this.assistant_control.get('network').setValue(user.network);
+    if (user.type_church) {
+      //INHABILITAMOS LA INFORMACION MINISTERIAL AL EDITAR
+      this.disable_ministerial_info = true;
+      switch (user?.type_church?.toString().toUpperCase()) {
+        case 'MCI':
+          //DISABLE INPUTS
+          this.assistant_control.get('church').disable();
+          this.assistant_control.get('network').disable();
 
-        //CONSULTAMOS LOS DATOS MINISTERIALES PARA POSTERIORMENTE AUTOCOMPLEMENTARLOS
-        this.getPastors(user.pastor_code, user);
-        this.getLeaders({ user_code: user.leader_code }, user);
-        this.getChurchById(user.church_id);
-        break;
+          //SETEAMOS LOS VALORES DE LA RED
+          this.assistant_control.get('network').setValue(user.network);
 
-      case 'OT':
-      case 'G12': {
-        this.assistant_control.get('name_pastor').setValue('name_pastor');
-        this.assistant_control.get('name_church').setValue('name_church');
-        break;
+          //CONSULTAMOS LOS DATOS MINISTERIALES PARA POSTERIORMENTE AUTOCOMPLEMENTARLOS
+          this.getPastors(user.pastor_code, user);
+          this.getLeaders({ user_code: user.leader_code }, user);
+          this.getChurchById(user.church_id);
+          break;
+
+        case 'OT':
+        case 'G12': {
+          this.assistant_control.get('name_pastor').setValue('name_pastor');
+          this.assistant_control.get('name_church').setValue('name_church');
+          break;
+        }
       }
+    } else {
+      //HABILITAMOS LA INFORMACION MINISTERIAL PARA EDITARLA
+      this.disable_ministerial_info = false;
     }
+    //DISABLES
 
     //AUTOCOMPLETE DATA
 

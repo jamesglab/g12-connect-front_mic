@@ -42,7 +42,7 @@
               <div class="col-12 d-flex justify-content-center mt-2">
                 <div class="price">
                   {{
-                    transaction.transaction.amount | currency: "COP":"symbol"
+                    transaction.transaction.amount | currency: "COP":"symbol":'1.0-0'
                   }}
                 </div>
               </div>
@@ -119,7 +119,7 @@
                   <ng-container matColumnDef="document">
                     <th mat-header-cell *matHeaderCellDef>Documento</th>
                     <td mat-cell *matCellDef="let element">
-                      {{ element?.user?.identification }}
+                      {{ element?.user?.identification ?  element?.user?.identification : 'INTERNACIONAL' }}
                     </td>
                   </ng-container>
 
