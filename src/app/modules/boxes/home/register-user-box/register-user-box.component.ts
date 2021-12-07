@@ -47,7 +47,7 @@ export class RegisterUserBoxComponent implements OnInit {
   //BANDERAS BOOLEANAS
   public isLoading: boolean = false;
   public find_user: boolean = false;
-  public disable_ministerial_info: boolean = true;
+  public disable_ministerial_info: boolean = false;
 
   constructor(
     private fb: FormBuilder,

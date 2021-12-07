@@ -13,12 +13,12 @@ export class BoxesHomeComponent implements OnInit {
 
   constructor(
     private _boxService: BoxService,
-    private storageService: StorageService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.validateUserBox();
+    this.getEventsBox();
   }
 
   //VALIDAMOS LA CAJA DEL USUARIO
@@ -32,6 +32,17 @@ export class BoxesHomeComponent implements OnInit {
       (err) => {
         //MOSTRAMOS EL ERROR DE QUE EL USUARIO NO TIENE LA CAJA
         Swal.fire(err ? err : 'Usuario sin caja asignada', '', 'error');
+      }
+    );
+  }
+
+  getEventsBox() {
+    this._boxService.getEventsBox().subscribe(
+      (res) => {
+        console.log('res', res);
+      },
+      (err) => {
+        throw new Error('err');
       }
     );
   }

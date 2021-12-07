@@ -121,4 +121,15 @@ export class BoxService {
         catchError(handleError)
       );
   }
+
+  getEventsBox() {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/box/event`, {})
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }
