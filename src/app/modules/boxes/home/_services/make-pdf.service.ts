@@ -66,103 +66,9 @@ export class MakePdfService {
     //CREAMOS LA TABLA CON LOS USUARIOS DEL MASIVO
     const table = await this.createUsersTableMassive(transactions);
 
-    let dd = {
-      content: [
-        {
-          text: 'IGLESIA MISIÓN CARISMÁTICA INTERNACIONAL',
-          style: 'header',
-        },
-
-        { style: 'cont_ministerial', text: 'NIT 800195397-7' },
-
-        {
-          text: `Usuario : ${
-            donor.user.name.toString().toUpperCase() +
-            ' ' +
-            donor.user.last_name.toString().toUpperCase()
-          }`,
-          style: 'parrafo',
-        },
-        {
-          style: 'parrafo',
-          columns: [
-            {
-              width: 380,
-              text: `REFERENCIA : ${donor.transaction.payment_ref}`,
-            },
-            {
-              width: 400,
-              text: `FECHA: ${moment(donor.transaction.created_at).format(
-                'YYYY/MM/DD - h:mm a'
-              )}`,
-            },
-          ],
-        },
-
-        { style: 'cont_donation', text: '' },
-        { text: 'COMPROBANTE DE DONACIÓN', style: 'subheader' },
-
-        {
-          style: 'tableExample',
-          table: {
-            body: table,
-          },
-        },
-
-        {
-          columns: [
-            {
-              width: 380,
-              text: '',
-            },
-            {
-              width: 420,
-              style: 'bold',
-              text: `TOTAL A DONAR : ${this.formatPrice(
-                donor.transaction.currency,
-                donor.transaction.amount
-              )}`,
-            },
-          ],
-        },
-
-        {
-          style: 'parrafo',
-          columns: [
-            {
-              width: 420,
-              text: 'FECHA Y HORA DE IMPRESIÓN',
-            },
-            {
-              width: 400,
-              text: 'NOMBRE DE LA CAJA',
-            },
-          ],
-        },
-        {
-          style: 'parrafo',
-
-          columns: [
-            {
-              width: 430,
-              text: moment().format('YYYY/MM/DD h:mm a'),
-            },
-            {
-              width: 500,
-              text: box.name.toString().toUpperCase(),
-            },
-          ],
-        },
-        {
-          style: 'parrafo',
-          columns: [
-            {
-              text: 'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
-              style: 'bold',
-            },
-          ],
-        },
-      ],
+    //OBJETO DE CREACION DEL PDF  
+    let pdf = {
+      //DEFINIMOS LOS ESTILOS QUE USARA NUESTRO PDF
       styles: {
         parrafo: {
           margin: [0, 10, 0, 0],
@@ -195,8 +101,117 @@ export class MakePdfService {
           color: 'black',
         },
       },
+      //ABRIMOS EL CONTENIDO QUE TENDRA LA MATRIZ DE NUESTRO PDF
+      /**BASE DE OBJETOS
+       *TEXT : TEXTO QUE CONTENDRA
+       *STYLE ::LLAMAMOS UN STYLO DE NUESTRA RAIZ de 'styeles'
+       */
+      content: [
+        {
+          text: 'IGLESIA MISIÓN CARISMÁTICA INTERNACIONAL',
+          style: 'header',
+        },
+
+        { text: 'NIT 800195397-7', style: 'cont_ministerial' },
+
+        {
+          text: `Usuario : ${
+            donor.user.name.toString().toUpperCase() +
+            ' ' +
+            donor.user.last_name.toString().toUpperCase()
+          }`,
+          style: 'parrafo',
+        },
+
+        {
+          style: 'parrafo',
+          //CREACION DE COLUMNAS ESPECIFICAMOS UN ARRAY QUE LEERA OBJETOS DE POSICIONES
+          columns: [
+            {
+              //TAMAÑO DE LA COLUMNA
+              width: 380,
+              //TEXTO
+              text: `REFERENCIA : ${donor.transaction.payment_ref}`,
+            },
+            {
+              //TAMAÑO DE LA COLUMNA
+              width: 400,
+              //TEXTO
+              text: `FECHA: ${moment(donor.transaction.created_at).format(
+                'YYYY/MM/DD - h:mm a'
+              )}`,
+            },
+          ],
+        },
+
+        //ABIRMOS UN CONTENEDOR CON ESPACIO PARA SEPARAR LA INFORMACION POR CONTENEDORES
+        { style: 'cont_donation', text: '' },
+        //INFORMACION DE COMPROBANTE DE DONACION
+        { text: 'COMPROBANTE DE DONACIÓN', style: 'subheader' },
+        //CREACION DE TABLA
+        {
+          style: 'tableExample',
+          table: {
+            body: table,
+          },
+        },
+        //ABIRMOS UN CONTENEDOR CON ESPACIO DE LOS TOTALES DE LA DONACION
+        {
+          columns: [
+            {
+              width: 380,
+              text: '',
+            },
+            {
+              width: 420,
+              style: 'bold',
+              text: `TOTAL A DONAR : ${this.formatPrice(
+                donor.transaction.currency,
+                donor.transaction.amount
+              )}`,
+            },
+          ],
+        },
+        //ABRIMOS CONTENEDOR DE LA INFORMACION DE LA IMPRESION
+        {
+          style: 'parrafo',
+          columns: [
+            {
+              width: 420,
+              text: 'FECHA Y HORA DE IMPRESIÓN',
+            },
+            {
+              width: 400,
+              text: 'NOMBRE DE LA CAJA',
+            },
+          ],
+        },
+        //ABRIMOS CONTENEDOR DE INFORMACION DE LA IMPRESION
+        {
+          style: 'parrafo',
+          columns: [
+            {
+              width: 430,
+              text: moment().format('YYYY/MM/DD h:mm a'),
+            },
+            {
+              width: 500,
+              text: box.name.toString().toUpperCase(),
+            },
+          ],
+        },
+        {
+          style: 'parrafo',
+          columns: [
+            {
+              text: 'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
+              style: 'bold',
+            },
+          ],
+        },
+      ],
     };
-    pdfMake.createPdf(dd).open();
+    pdfMake.createPdf(pdf).open();
   }
 
   private createUsersTableMassive(transactions) {
@@ -225,6 +240,9 @@ export class MakePdfService {
     return table;
   }
 
+
+
+
   //PDF DE USUARIOS DE COMPRAS NO MASIVAS
   private async createPdfNotMassive(transactions, box) {
     let donor;
@@ -236,103 +254,9 @@ export class MakePdfService {
     const table = await this.createUsersTableNotMassive(transactions);
 
     //AGREGAMOS RESPUESTA A LA TABLA DE USUARIOS
-    let dd = {
-      content: [
-        {
-          text: 'IGLESIA MISIÓN CARISMÁTICA INTERNACIONAL',
-          style: 'header',
-        },
-
-        { style: 'cont_ministerial', text: 'NIT 800195397-7' },
-
-        {
-          text: `Usuario : ${
-            donor.user.name.toString().toUpperCase() +
-            ' ' +
-            donor.user.last_name.toString().toUpperCase()
-          }`,
-          style: 'parrafo',
-        },
-        {
-          style: 'parrafo',
-          columns: [
-            {
-              width: 380,
-              text: `REFERENCIA : ${donor.transaction.payment_ref}`,
-            },
-            {
-              width: 400,
-              text: `FECHA: ${moment(donor.transaction.created_at).format(
-                'YYYY/MM/DD  - h:mm a'
-              )}`,
-            },
-          ],
-        },
-
-        { style: 'cont_donation', text: '' },
-        { text: 'COMPROBANTE DE DONACIÓN', style: 'subheader' },
-
-        {
-          style: 'tableExample',
-          table: {
-            body: table,
-          },
-        },
-
-        {
-          columns: [
-            {
-              width: 380,
-              text: '',
-            },
-            {
-              width: 420,
-              style: 'bold',
-              text: `TOTAL A DONAR : ${this.formatPrice(
-                donor.transaction.currency,
-                donor.transaction.amount
-              )}`,
-            },
-          ],
-        },
-
-        {
-          style: 'parrafo',
-          columns: [
-            {
-              width: 420,
-              text: 'FECHA Y HORA DE IMPRESIÓN',
-            },
-            {
-              width: 400,
-              text: 'NOMBRE DE LA CAJA',
-            },
-          ],
-        },
-        {
-          style: 'parrafo',
-
-          columns: [
-            {
-              width: 430,
-              text: moment().format('YYYY/MM/DD  - h:mm a'),
-            },
-            {
-              width: 500,
-              text: box.name.toString().toUpperCase(),
-            },
-          ],
-        },
-        {
-          style: 'parrafo',
-          columns: [
-            {
-              text: 'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
-              style: 'bold',
-            },
-          ],
-        },
-      ],
+    //OBJETO DE CREACION DEL PDF
+    let pdf = {
+      //DEFINIMOS LOS ESTILOS QUE USARA NUESTRO PDF
       styles: {
         parrafo: {
           margin: [0, 10, 0, 0],
@@ -365,8 +289,117 @@ export class MakePdfService {
           color: 'black',
         },
       },
+      //ABRIMOS EL CONTENIDO QUE TENDRA LA MATRIZ DE NUESTRO PDF
+      /**BASE DE OBJETOS
+       *TEXT : TEXTO QUE CONTENDRA
+       *STYLE ::LLAMAMOS UN STYLO DE NUESTRA RAIZ de 'styeles'
+       */
+      content: [
+        {
+          text: 'IGLESIA MISIÓN CARISMÁTICA INTERNACIONAL',
+          style: 'header',
+        },
+
+        { text: 'NIT 800195397-7', style: 'cont_ministerial' },
+
+        {
+          text: `Usuario : ${
+            donor.user.name.toString().toUpperCase() +
+            ' ' +
+            donor.user.last_name.toString().toUpperCase()
+          }`,
+          style: 'parrafo',
+        },
+
+        {
+          style: 'parrafo',
+          //CREACION DE COLUMNAS ESPECIFICAMOS UN ARRAY QUE LEERA OBJETOS DE POSICIONES
+          columns: [
+            {
+              //TAMAÑO DE LA COLUMNA
+              width: 380,
+              //TEXTO
+              text: `REFERENCIA : ${donor.transaction.payment_ref}`,
+            },
+            {
+              //TAMAÑO DE LA COLUMNA
+              width: 400,
+              //TEXTO
+              text: `FECHA: ${moment(donor.transaction.created_at).format(
+                'YYYY/MM/DD - h:mm a'
+              )}`,
+            },
+          ],
+        },
+
+        //ABIRMOS UN CONTENEDOR CON ESPACIO PARA SEPARAR LA INFORMACION POR CONTENEDORES
+        { style: 'cont_donation', text: '' },
+        //INFORMACION DE COMPROBANTE DE DONACION
+        { text: 'COMPROBANTE DE DONACIÓN', style: 'subheader' },
+        //CREACION DE TABLA
+        {
+          style: 'tableExample',
+          table: {
+            body: table,
+          },
+        },
+        //ABIRMOS UN CONTENEDOR CON ESPACIO DE LOS TOTALES DE LA DONACION
+        {
+          columns: [
+            {
+              width: 380,
+              text: '',
+            },
+            {
+              width: 420,
+              style: 'bold',
+              text: `TOTAL A DONAR : ${this.formatPrice(
+                donor.transaction.currency,
+                donor.transaction.amount
+              )}`,
+            },
+          ],
+        },
+        //ABRIMOS CONTENEDOR DE LA INFORMACION DE LA IMPRESION
+        {
+          style: 'parrafo',
+          columns: [
+            {
+              width: 420,
+              text: 'FECHA Y HORA DE IMPRESIÓN',
+            },
+            {
+              width: 400,
+              text: 'NOMBRE DE LA CAJA',
+            },
+          ],
+        },
+        //ABRIMOS CONTENEDOR DE INFORMACION DE LA IMPRESION
+        {
+          style: 'parrafo',
+          columns: [
+            {
+              width: 430,
+              text: moment().format('YYYY/MM/DD h:mm a'),
+            },
+            {
+              width: 500,
+              text: box.name.toString().toUpperCase(),
+            },
+          ],
+        },
+        {
+          style: 'parrafo',
+          columns: [
+            {
+              text: 'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
+              style: 'bold',
+            },
+          ],
+        },
+      ],
     };
-    pdfMake.createPdf(dd).open();
+    pdfMake.createPdf(pdf).open();
   }
 
   //CREAMOS EL PDF DE USUARIOS NO MASIVOS
@@ -408,7 +441,7 @@ export class MakePdfService {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency,
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
     }).format(value);
   }
 }

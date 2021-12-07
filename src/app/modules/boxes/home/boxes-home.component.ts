@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { StorageService } from '../../auth/_services/storage.service';
-import { BoxService } from './services/Boxes.service';
+import { BoxService } from './_services/Boxes.service';
 
 @Component({
   selector: 'app-boxes-home',

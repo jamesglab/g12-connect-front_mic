@@ -13,8 +13,8 @@ import { UserService } from 'src/app/modules/_services/user.service';
 import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
-import { BoxService } from '../services/Boxes.service';
-import { MakePdfService } from '../services/make-pdf.service';
+import { BoxService } from '../_services/Boxes.service';
+import { MakePdfService } from '../_services/make-pdf.service';
 
 @Component({
   selector: 'app-register-user-box',

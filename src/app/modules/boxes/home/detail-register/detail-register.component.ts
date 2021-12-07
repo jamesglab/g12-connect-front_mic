@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
-import { BoxService } from '../services/Boxes.service';
-import { MakePdfService } from '../services/make-pdf.service';
+import { BoxService } from '../_services/Boxes.service';
+import { MakePdfService } from '../_services/make-pdf.service';
 export interface PeriodicElement {
   name: string;
   position: number;

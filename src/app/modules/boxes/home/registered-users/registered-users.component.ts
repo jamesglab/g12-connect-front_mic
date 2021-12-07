@@ -3,10 +3,10 @@ import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DetailRegisterComponent } from '../detail-register/detail-register.component';
 import { RegisterUserBoxComponent } from '../register-user-box/register-user-box.component';
-import { BoxService } from '../services/Boxes.service';
+import { BoxService } from '../_services/Boxes.service';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { MakePdfService } from '../services/make-pdf.service';
+import { MakePdfService } from '../_services/make-pdf.service';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 @Component({
