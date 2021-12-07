@@ -39,6 +39,7 @@ export class RegisterUserBoxComponent implements OnInit {
   //CONTROLES EXTERNOS AL FORMULARIO
   public description_of_changue = new FormControl('', Validators.required);
   public select_payment_getway = new FormControl('', Validators.required);
+  public currency = new FormControl('', Validators.required);
 
   public confirm_email = new FormControl(
     null,
@@ -388,11 +389,13 @@ export class RegisterUserBoxComponent implements OnInit {
   createUser() {
     // //EJECUTAMOS EL ENDPOINT CON LOS DATOS DEL USUARIO
     try {
-      console.log('ERROR', this.assistant_control);
       if (this.assistant_control.invalid) {
         throw new Error('Información incompleta');
       }
 
+      if (this.event_information_controls.invalid) {
+        throw new Error('Información del evento incompleta ');
+      }
       //CREAMOS UNA VARIABLE CON EL PAYLOAD
       let payload = this.register_user.getRawValue();
 

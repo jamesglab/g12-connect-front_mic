@@ -329,6 +329,18 @@
             <div class="row mt-5">
               <div class="col-sm-3">
                 <mat-form-field appearance="fill" class="example-full-width">
+                  <mat-label>Moneda*</mat-label>
+                  <mat-select
+                    type="select"
+                    formControlName="currency"
+                  >
+                    <mat-option value="COP"> COP</mat-option>
+                    <mat-option value="USD"> USD</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field appearance="fill" class="example-full-width">
                   <mat-label>Forma de pago*</mat-label>
                   <mat-select
                     type="select"
