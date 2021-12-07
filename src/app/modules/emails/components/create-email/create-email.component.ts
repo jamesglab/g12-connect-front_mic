@@ -3,12 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-email-event',
-  templateUrl: './email-event.component.html',
-  styleUrls: ['./email-event.component.scss'],
+  selector: 'app-create-email',
+  templateUrl: './create-email.component.html',
+  styleUrls: ['./create-email.component.scss']
 })
-export class EmailEventComponent implements OnInit {
-  public event: any;
+export class CreateEmailComponent implements OnInit {
   public show_image = 'assets/images/default-image.png'; //IMAGEN INCIALIZADA EN DEFAULT
   public image_file: File; //GUARDAREMOS EL ARCHIVO DE LA IMAGEN
   public isLoading: boolean = false;
@@ -24,7 +23,6 @@ export class EmailEventComponent implements OnInit {
   // CREAMOS EL FORMULARIO
   buildForm() {
     this.create_email = this.fb.group({
-      event: [this.event, Validators.required],
       //EVENT INFORMATION
       subject: this.fb.group({
         es: [null, Validators.required],

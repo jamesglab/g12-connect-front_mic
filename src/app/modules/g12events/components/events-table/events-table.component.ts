@@ -14,6 +14,7 @@ import { Donation } from '../../_models/donation.model';
 import { EditEventComponent } from '../edit-event/edit-event.component';
 import { GenerateCodesComponent } from '../generate-codes/generate-codes.component';
 import { EmailEventComponent } from '../../email-event/email-event.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-events-table',
@@ -24,6 +25,8 @@ export class EventsTableComponent implements OnInit {
   @Input() public search: String = '';
   public isLoading: boolean = false;
   private unsubscribe: Subscription[] = [];
+  public email_image;
+
   public displayedColumns: String[] = [
     'image',
     'name',
@@ -144,4 +147,5 @@ export class EventsTableComponent implements OnInit {
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
+
 }
