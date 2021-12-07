@@ -10,7 +10,7 @@ import { BoxService } from './_services/Boxes.service';
 })
 export class BoxesHomeComponent implements OnInit {
   public box;
-
+  public events = [];
   constructor(
     private _boxService: BoxService,
     private cdr: ChangeDetectorRef
@@ -39,7 +39,7 @@ export class BoxesHomeComponent implements OnInit {
   getEventsBox() {
     this._boxService.getEventsBox().subscribe(
       (res) => {
-        console.log('res', res);
+        this.events = res;
       },
       (err) => {
         throw new Error('err');

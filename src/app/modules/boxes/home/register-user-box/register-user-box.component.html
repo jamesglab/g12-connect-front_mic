@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="card-body">
-        <form [formGroup]="register_user">
+        <form [formGroup]="register_user" (onSumbit)="createUser()">
           <!-- <h4 class="h4">Tipo de Registro</h4>
           <div class="mt-5">
             <mat-radio-group aria-label="Select an option" formControlName="register_type">
@@ -365,42 +365,46 @@
               </mat-form-field>
             </div>
           </div>
+
+
+          <div class="row d-flex" style="justify-content: flex-end">
+            <div class="">
+              <button
+                type="button"
+                (click)="modal.close()"
+                class="
+                  btn btn-sm btn-light-danger
+                  font-weight-bolder
+                  py-2
+                  px-5
+                  cursor-pointer
+                "
+              >
+                Cancelar
+              </button>
+  
+              <button
+                class="
+                  btn btn-sm btn-light-primary
+                  font-weight-bolder
+                  py-2
+                  px-5
+                  cursor-pointer
+                  mx-3
+                "
+                type="submit"
+              >
+                <div class="spinner-border" role="status" *ngIf="isLoading">
+                  <span class="sr-only">Loading...</span>
+                </div>
+                <div *ngIf="!isLoading">Registrar usuario</div>
+              </button>
+            </div>
+          </div>
+
         </form>
 
-        <div class="row d-flex" style="justify-content: flex-end">
-          <div class="">
-            <button
-              type="button"
-              (click)="modal.close()"
-              class="
-                btn btn-sm btn-light-danger
-                font-weight-bolder
-                py-2
-                px-5
-                cursor-pointer
-              "
-            >
-              Cancelar
-            </button>
-
-            <button
-              class="
-                btn btn-sm btn-light-primary
-                font-weight-bolder
-                py-2
-                px-5
-                cursor-pointer
-                mx-3
-              "
-              (click)="createUser()"
-            >
-              <div class="spinner-border" role="status" *ngIf="isLoading">
-                <span class="sr-only">Loading...</span>
-              </div>
-              <div *ngIf="!isLoading">Registrar usuario</div>
-            </button>
-          </div>
-        </div>
+       
       </div>
     </div>
   </div>

@@ -145,7 +145,7 @@ export class RegisterUserBoxComponent implements OnInit {
             );
         }
       });
-
+    //NOS SUBSCRIBIMOS A LOS CAMBIOS DEL CURRENCY
     this.payment_information
       .get('currency')
       .valueChanges.subscribe((currency) => {
@@ -247,6 +247,7 @@ export class RegisterUserBoxComponent implements OnInit {
   // CONSULTAMOS LOS LIDERES QUE PERTENECEN A LA RED DEL PASTOR
   getLeaders(pastor, user?) {
     this.leaders = []; //REINICIAMOS LOS LIDERES QUE CAMBIAN DE UN PASTOR A OTRO
+    this.assistant_control.get('leader').reset();
     this.userService
       .getLeadersOrPastors({
         userCode: pastor.user_code,
@@ -412,12 +413,13 @@ export class RegisterUserBoxComponent implements OnInit {
         throw new Error('Información incompleta');
       }
 
-      // if (this.event_information_controls.invalid) {
-      //   throw new Error('Información del evento incompleta ');
-      // }
+      if (this.event_information_controls.invalid) {
+        throw new Error('Información del evento incompleta ');
+      }
       //CREAMOS UNA VARIABLE CON EL PAYLOAD
       let payload = this.register_user.getRawValue();
 
+      console.log('payload', payload);
       //VALIDAREMOS LA INFORMACION MINISTERIAL
       switch (payload.assistant.type_church) {
         case 'MCI':
