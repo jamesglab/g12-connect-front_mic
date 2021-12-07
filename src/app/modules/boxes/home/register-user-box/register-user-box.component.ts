@@ -335,6 +335,7 @@ export class RegisterUserBoxComponent implements OnInit {
       },
       (err) => {
         if (autocomplete) {
+          this.disable_ministerial_info = false;
           Swal.fire('No se encontro el usuario', '', 'info').then((res) => {
             this.assistant_control.get('network').enable();
             this.assistant_control.get('network').reset();
@@ -518,7 +519,7 @@ export class RegisterUserBoxComponent implements OnInit {
   setUser(user) {
     this.assistant_control.get('type_church').setValue(user.type_church);
 
-    if (user.type_church) {
+    if (user?.type_church) {
       //INHABILITAMOS LA INFORMACION MINISTERIAL AL EDITAR
       this.disable_ministerial_info = true;
       switch (user?.type_church?.toString().toUpperCase()) {
