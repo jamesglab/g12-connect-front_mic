@@ -549,8 +549,7 @@ export class RegisterUserBoxComponent implements OnInit {
       //HABILITAMOS LA INFORMACION MINISTERIAL PARA EDITARLA
       this.disable_ministerial_info = false;
     }
-    //DISABLES
-
+    this.assistant_control.get('identification').disable()
     //AUTOCOMPLETE DATA
 
     this.assistant_control
