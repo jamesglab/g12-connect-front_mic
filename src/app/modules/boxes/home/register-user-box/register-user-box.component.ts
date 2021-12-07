@@ -492,9 +492,8 @@ export class RegisterUserBoxComponent implements OnInit {
             //MOSTRAMOS EL MENSAJE DE SUCCESS
             Swal.fire('Usuario registrado', '', 'success');
             //CERRAMOS EL MODAL
-            // this.modal.close();
             this._makePdfService.createPdf(res.ref, this.box);
-            console.log('TRANSACTION', res);
+            this.modal.close();
           },
           (err) => {
             this.isLoading = false;

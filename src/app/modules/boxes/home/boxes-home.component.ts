@@ -40,6 +40,7 @@ export class BoxesHomeComponent implements OnInit {
     this._boxService.getEventsBox().subscribe(
       (res) => {
         this.events = res;
+        this.cdr.detectChanges();
       },
       (err) => {
         throw new Error('err');

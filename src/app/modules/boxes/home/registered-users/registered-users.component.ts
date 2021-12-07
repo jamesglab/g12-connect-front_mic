@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DetailRegisterComponent } from '../detail-register/detail-register.component';
@@ -17,6 +24,10 @@ import { MakePdfService } from '../_services/make-pdf.service';
 export class RegisteredUsersComponent implements OnInit {
   /**VARIABLES DE COMPONENTES PADRES */
   @Input() box;
+
+  /**SALIDAS DEL COMPONENTE HIJO*/
+
+  @Output() refresh_events = new EventEmitter<any>();
 
   /**
    * CONTROLES DE INPUTS
@@ -72,6 +83,7 @@ export class RegisteredUsersComponent implements OnInit {
     modale.result.then((result) => {
       this.searchTransactionBoxGrupal();
       this.searchTransactionsOneUser();
+      this.refresh_events.emit(true);
     });
   }
 
@@ -82,6 +94,9 @@ export class RegisteredUsersComponent implements OnInit {
       size: 'xl',
     });
     modale.componentInstance.box = this.box;
+    modale.result.then((res) => {
+      this.refresh_events.emit(true);
+    });
   }
 
   /**CONSULTAS A LA BASE DE DATOS */

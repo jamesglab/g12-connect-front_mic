@@ -25,13 +25,13 @@
             <h4 class="h4">Ingreso de referencia</h4>
           </div>
         </div>
-        <app-registered-users [box]="box"> </app-registered-users>
+        <app-registered-users [box]="box" (refresh_events)="getEventsBox()"> </app-registered-users>
 
         <div class="row">
           <h4 class="h4">Eventos</h4>
         </div>
         <div>
-          <app-events [dataSource]="events"></app-events>
+          <app-events [dataSource]="events" ></app-events>
         </div>
       </div>
       <!-- MOSTRAMOS EN CASO DE QUE NO EXISTA CAJA -->

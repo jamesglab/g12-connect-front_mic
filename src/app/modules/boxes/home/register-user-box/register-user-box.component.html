@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="card-body">
-        <form [formGroup]="register_user" (onSumbit)="createUser()">
+        <form [formGroup]="register_user" (ngSubmit)="createUser()">
           <!-- <h4 class="h4">Tipo de Registro</h4>
           <div class="mt-5">
             <mat-radio-group aria-label="Select an option" formControlName="register_type">
