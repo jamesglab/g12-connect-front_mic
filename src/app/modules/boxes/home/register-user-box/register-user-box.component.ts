@@ -136,7 +136,27 @@ export class RegisterUserBoxComponent implements OnInit {
       .get('financial_cut')
       .valueChanges.subscribe((f_c) => {
         if (f_c?.prices) {
-          this.payment_information.get('amount').setValue(f_c.prices['cop']);
+          this.payment_information
+            .get('amount')
+            .setValue(
+              f_c.prices[
+                this.payment_information_value.currency.toString().toLowerCase()
+              ]
+            );
+        }
+      });
+
+    this.payment_information
+      .get('currency')
+      .valueChanges.subscribe((currency) => {
+        if (this.event_information_value?.financial_cut?.id) {
+          this.payment_information
+            .get('amount')
+            .setValue(
+              this.event_information_value?.financial_cut?.prices[
+                currency.toString().toLowerCase()
+              ]
+            );
         }
       });
 
@@ -583,6 +603,10 @@ export class RegisterUserBoxComponent implements OnInit {
     return this.register_user.get('event_information');
   }
 
+  get event_information_value() {
+    return this.register_user.get('event_information').value;
+  }
+
   // VALORES DEL FORMULARIO
   get assistant_value() {
     return this.assistant_control.value;
@@ -590,5 +614,9 @@ export class RegisterUserBoxComponent implements OnInit {
 
   get payment_information() {
     return this.register_user.get('payment_information');
+  }
+
+  get payment_information_value() {
+    return this.register_user.get('payment_information').value;
   }
 }
