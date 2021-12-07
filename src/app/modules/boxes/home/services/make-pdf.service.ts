@@ -118,9 +118,10 @@ export class MakePdfService {
             {
               width: 420,
               style: 'bold',
-              text: `TOTAL A DONAR : ${
-                donor.transaction.currency + ' ' + donor.transaction.amount
-              }`,
+              text: `TOTAL A DONAR : ${this.formatPrice(
+                donor.transaction.currency,
+                donor.transaction.amount
+              )}`,
             },
           ],
         },
@@ -173,7 +174,7 @@ export class MakePdfService {
           margin: [0, 20, 0, 0],
         },
         cont_donation: {
-          margin: [0, 50, 0, 0],
+          margin: [0, 10, 0, 0],
         },
         header: {
           fontSize: 18,
@@ -215,16 +216,17 @@ export class MakePdfService {
       table.push([
         tr.donation.name ? tr.donation.name.toString().toUpperCase() : '',
         tr.cut.name ? tr.cut.name.toString().toUpperCase() : '',
-
         tr.transaction?.quantity_tickets ? tr.transaction.quantity_tickets : '',
-        tr.transaction?.amount ? tr.transaction.amount : '',
+        tr.transaction?.amount
+          ? this.formatPrice(tr.transaction.currency, tr.transaction.amount)
+          : '',
       ]);
     });
     return table;
   }
 
   //PDF DE USUARIOS DE COMPRAS NO MASIVAS
- private  async createPdfNotMassive(transactions, box) {
+  private async createPdfNotMassive(transactions, box) {
     let donor;
     transactions.map((tr) => {
       if (!tr.isAssistant) {
@@ -286,9 +288,10 @@ export class MakePdfService {
             {
               width: 420,
               style: 'bold',
-              text: `TOTAL A DONAR : ${
-                donor.transaction.currency + ' ' + donor.transaction.amount
-              }`,
+              text: `TOTAL A DONAR : ${this.formatPrice(
+                donor.transaction.currency,
+                donor.transaction.amount
+              )}`,
             },
           ],
         },
@@ -341,7 +344,7 @@ export class MakePdfService {
           margin: [0, 20, 0, 0],
         },
         cont_donation: {
-          margin: [0, 50, 0, 0],
+          margin: [0, 10, 0, 0],
         },
         header: {
           fontSize: 18,
@@ -390,11 +393,22 @@ export class MakePdfService {
           tr.donation.name ? tr.donation.name.toString().toUpperCase() : '',
           tr.pastor.name ? tr.pastor.name.toString().toUpperCase() : '',
           tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
-            ? tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
+            ? this.formatPrice(
+                tr.transaction.currency.toString().toLowerCase(),
+                tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
+              )
             : '',
         ]);
       }
     });
     return table;
+  }
+
+  formatPrice(currency, value) {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 0
+    }).format(value);
   }
 }

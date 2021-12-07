@@ -69,10 +69,10 @@ export class RegisteredUsersComponent implements OnInit {
     if (element.transaction.user_massive) {
       modale.componentInstance.user_massive = true;
     }
-    modale.result.then(result=>{
+    modale.result.then((result) => {
       this.searchTransactionBoxGrupal();
       this.searchTransactionsOneUser();
-    })
+    });
   }
 
   //MODAL DE REGISTRO DE USUARIO UNICO EN CAJA APROBANDO DIRECTAMENTE LA TRANSACCION
@@ -93,12 +93,15 @@ export class RegisteredUsersComponent implements OnInit {
     //VALIDAMOS EL INPUT DE IDENTIFICACION
     if (this.identification.value) {
       //ANEXAMOS CONSULTA POR 'identification'
-      params['identification'] = this.identification.value;
+      params['identification'] = this.identification.value
+        ?.toString()
+        .trim()
+        .toLowerCase();
     }
     //VALIDAMOS EL INPUT POR EL EMAIL
     if (this.email.value) {
       //ANEXAMOS CONSULTA POR EMAIL
-      params['email'] = this.email.value;
+      params['email'] = this.email.value?.toString().trim().toLowerCase();
     }
 
     //VALIDAMOS QUE EXISTAN PARAMETROS DE CONSULTA
@@ -129,7 +132,12 @@ export class RegisteredUsersComponent implements OnInit {
        */
       this.isLoading = true; //MOSTRAMOS EL LOADER
       this._boxService
-        .filterTransaction({ payment_ref: this.payment_ref_grupal.value })
+        .filterTransaction({
+          payment_ref: this.payment_ref_grupal.value
+            ?.toString()
+            .trim()
+            .toLowerCase(),
+        })
         .subscribe(
           (res) => {
             //REINICAMOS LA TABLA DE LOS USUARIOS
@@ -178,7 +186,6 @@ export class RegisteredUsersComponent implements OnInit {
   }
 
   createPdf(element) {
-
     this._makePdfService.createPdf(element.transaction.payment_ref, this.box);
   }
 }
