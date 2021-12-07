@@ -6,8 +6,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { platform } from 'os';
-import { StorageService } from 'src/app/modules/auth/_services/storage.service';
 import { G12eventsService } from 'src/app/modules/g12events/_services/g12events.service';
 import { UserService } from 'src/app/modules/_services/user.service';
 import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
