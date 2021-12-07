@@ -393,9 +393,9 @@ export class RegisterUserBoxComponent implements OnInit {
         throw new Error('Información incompleta');
       }
 
-      if (this.event_information_controls.invalid) {
-        throw new Error('Información del evento incompleta ');
-      }
+      // if (this.event_information_controls.invalid) {
+      //   throw new Error('Información del evento incompleta ');
+      // }
       //CREAMOS UNA VARIABLE CON EL PAYLOAD
       let payload = this.register_user.getRawValue();
 
@@ -472,7 +472,7 @@ export class RegisterUserBoxComponent implements OnInit {
             Swal.fire('Usuario registrado', '', 'success');
             //CERRAMOS EL MODAL
             // this.modal.close();
-            this._makePdfService.createPdf(res.box_reference, this.box);
+            this._makePdfService.createPdf(res.ref, this.box);
             console.log('TRANSACTION', res);
           },
           (err) => {
