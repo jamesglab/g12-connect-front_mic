@@ -14,37 +14,76 @@
         </div>
       </div>
       <div class="card-body">
-        <button type="button" class="btn btn-primary" matTooltip="Crear Correo" (click)="createEmail()">
+        <button
+          type="button"
+          class="btn btn-primary"
+          matTooltip="Crear Correo"
+          (click)="createEmail()"
+        >
           <i class="fas fa-envelope fa-lg"></i>
         </button>
 
         <div class="row">
-          <table mat-table [dataSource]="dataSource" >
-            <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
-
-            <!-- Position Column -->
-            <ng-container matColumnDef="position">
+          <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="i">
               <th mat-header-cell *matHeaderCellDef>No.</th>
-              <td mat-cell *matCellDef="let element">{{ element.position }}</td>
+              <td mat-cell *matCellDef="let element; let i = index">
+                {{ i + 1 }}
+              </td>
             </ng-container>
 
-            <!-- Name Column -->
-            <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef>Name</th>
-              <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+            <ng-container matColumnDef="image">
+              <th mat-header-cell *matHeaderCellDef>Imagen</th>
+              <td mat-cell *matCellDef="let element">
+                <img
+                  class="image-email"
+                  [src]="element?.image?.url"
+                  alt=""
+                  (error)="handleErrorImage($event)"
+                />
+              </td>
             </ng-container>
 
-            <!-- Weight Column -->
-            <ng-container matColumnDef="weight">
-              <th mat-header-cell *matHeaderCellDef>Weight</th>
-              <td mat-cell *matCellDef="let element">{{ element.weight }}</td>
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef>Tipo</th>
+              <td mat-cell *matCellDef="let element">
+                {{ getType(element.type) }}
+              </td>
             </ng-container>
 
-            <!-- Symbol Column -->
-            <ng-container matColumnDef="symbol">
-              <th mat-header-cell *matHeaderCellDef>Symbol</th>
-              <td mat-cell *matCellDef="let element">{{ element.symbol }}</td>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <td mat-cell *matCellDef="let element">
+                {{ getStatus(element.status) }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="created_at">
+              <th mat-header-cell *matHeaderCellDef>Fecha de creación</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.created_at | date: "yyyy/MM/dd" }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="updated_at">
+              <th mat-header-cell *matHeaderCellDef>Fecha de actualización</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.updated_at | date: "yyyy/MM/dd" }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="options">
+              <th mat-header-cell *matHeaderCellDef>Opciónes</th>
+              <td mat-cell *matCellDef="let element">
+                <a
+                  (click)="handleEditEmail(element)"
+                  class="btn btn-icon btn-light btn-sm mr-3 cursor-pointer"
+                >
+                  <span class="svg-icon svg-icon-md svg-icon-primary">
+                    <mat-icon class="icon-list"> edit</mat-icon>
+                  </span></a
+                >
+              </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

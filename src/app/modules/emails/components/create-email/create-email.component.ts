@@ -1,20 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
+import { EmailService } from '../../_services/email.service';
 
 @Component({
   selector: 'app-create-email',
   templateUrl: './create-email.component.html',
-  styleUrls: ['./create-email.component.scss']
+  styleUrls: ['./create-email.component.scss'],
 })
 export class CreateEmailComponent implements OnInit {
+  
   public show_image = 'assets/images/default-image.png'; //IMAGEN INCIALIZADA EN DEFAULT
   public image_file: File; //GUARDAREMOS EL ARCHIVO DE LA IMAGEN
   public isLoading: boolean = false;
+  public create_email_form: FormGroup; //FORM
 
-  public create_email: FormGroup; //FORM
-
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private _emailService: EmailService,
+    public modal: NgbActiveModal
+  ) {}
 
   ngOnInit(): void {
     this.buildForm();
@@ -22,8 +28,7 @@ export class CreateEmailComponent implements OnInit {
 
   // CREAMOS EL FORMULARIO
   buildForm() {
-    this.create_email = this.fb.group({
-      //EVENT INFORMATION
+    this.create_email_form = this.fb.group({
       subject: this.fb.group({
         es: [null, Validators.required],
         en: [null, Validators.required],
@@ -39,7 +44,39 @@ export class CreateEmailComponent implements OnInit {
         en: [null, Validators.required],
         pt: [null, Validators.required],
       }),
+      type: [null, Validators.required],
+      status: [null, Validators.required],
     });
+  }
+
+  createEmail() {
+    try {
+      if (this.create_email_form.invalid) {
+        throw new Error('Campos incompletos');
+      }
+      if (!this.image_file) {
+        throw new Error('No haz creado la imagen del correo');
+      }
+      const payload = new FormData();
+      payload.append('image', this.image_file);
+      payload.append(
+        'payload',
+        JSON.stringify(this.create_email_form.getRawValue())
+      );
+      this.isLoading = true;
+      this._emailService.createEmailModule(payload).subscribe(
+        (res) => {
+          this.isLoading = true;
+          Swal.fire('Correo creado', '', 'success');
+          this.modal.close();
+        },
+        (err) => {
+          throw new Error(err ? err : 'No encontramos el error');
+        }
+      );
+    } catch (error) {
+      Swal.fire(error?.message ? error.message : '', '', 'error');
+    }
   }
 
   fileChangeEvent(event: any): void {
@@ -62,9 +99,5 @@ export class CreateEmailComponent implements OnInit {
         resolve(event.target.result);
       };
     });
-  }
-
-  createEmail(){
-    console.log('tenemos el cuerpo ',this.create_email.getRawValue())
   }
 }

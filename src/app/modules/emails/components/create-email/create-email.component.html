@@ -7,12 +7,23 @@
             <h3 class="card-label pt-4 pb-4">Crear Email</h3>
           </div>
         </div>
+        <div class="w-25">
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="modal.close()"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="card-toolbar">
           <div class="example-tools justify-content-center"></div>
         </div>
       </div>
       <div class="card-body">
-        <form [formGroup]="create_email" (ngSubmit)="createEmail()">
+        <form [formGroup]="create_email_form" (ngSubmit)="createEmail()">
           <h4 class="h4">Asunto</h4>
           <div class="row mt-5" formGroupName="subject">
             <div class="col">
@@ -118,6 +129,31 @@
             </div>
           </div>
 
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Tipo*</mat-label>
+                <mat-select type="select" formControlName="type">
+                  <mat-option value="MCI_DONACIONES"> DONACIONES </mat-option>
+                  <mat-option value="G12_EVENTOS"> EVENTOS G12 </mat-option>
+                  <mat-option value="CONEXION_BOX"> CONEXIÓN CAJAS </mat-option>
+                  <mat-option value="CONEXION_MASSIVE">
+                    CONEXIÓN MASIVOS
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Estado*</mat-label>
+                <mat-select type="select" formControlName="status">
+                  <mat-option value="1"> APROBADA </mat-option>
+                  <mat-option value="2"> PENDIENTE </mat-option>
+                  <mat-option value="3"> CANCELADO </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
           <h4 class="h4 mt-5">Imagen</h4>
           <div class="row">
             <div>
@@ -143,6 +179,7 @@
                     cursor-pointer
                   "
                   type="submit"
+                  [disabled]="isLoading"
                 >
                   <div class="spinner-border" role="status" *ngIf="isLoading">
                     <span class="sr-only">Loading...</span>

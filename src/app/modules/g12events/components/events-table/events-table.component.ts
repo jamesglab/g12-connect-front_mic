@@ -120,7 +120,7 @@ export class EventsTableComponent implements OnInit {
     });
   }
 
-  handleEmailEvent() {
+  handleEmailEvent(event) {
     const MODAL = this.modalService.open(EmailEventComponent, {
       windowClass: 'fadeIn',
       size: 'xl',
@@ -128,6 +128,7 @@ export class EventsTableComponent implements OnInit {
       keyboard: true,
       centered: true,
     });
+    MODAL.componentInstance.event =  event;
   }
 
   //VALIDAMOS EL ERROR DE LA IMAGEN Y ANEXAMOS LA IMAGEN DE CONEXION

@@ -52,7 +52,6 @@ export let DynamicAsideMenuConfigOriginal = {
             },
           ],
         },
-
       ],
     },
     {
@@ -162,6 +161,7 @@ export let DynamicAsideMenuConfigOriginal = {
     {
       title: 'Cajas',
       bullet: 'dot',
+      svg: './assets/media/svg/icons/Communication/Clipboard-check.svg',
       show: false,
       code: 'CJ1000',
       submenu: [
@@ -183,6 +183,16 @@ export let DynamicAsideMenuConfigOriginal = {
           page: 'boxes/home',
         },
       ],
+    },
+
+    {
+      title: 'Emails',
+      bullet: 'dot',
+      svg: './assets/media/svg/icons/Communication/Mail.svg',
+      show: false,
+      page: 'emails',
+      code: 'EML1000',
+      
     },
 
     // {

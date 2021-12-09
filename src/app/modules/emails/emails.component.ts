@@ -1,25 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateEmailComponent } from './components/create-email/create-email.component';
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
-];
+import { UpdateEmailComponent } from './components/update-email/update-email.component';
+import { EmailService } from './_services/email.service';
 
 @Component({
   selector: 'app-emails',
@@ -27,14 +10,34 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./emails.component.scss'],
 })
 export class EmailsComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = ELEMENT_DATA;
-  constructor(private modalService : NgbModal) {}
+  displayedColumns: string[] = [
+    'i',
+    'image',
+    'type',
+    'status',
+    'created_at',
+    'updated_at',
+    'options'
+  ];
+  dataSource;
+  constructor(
+    private modalService: NgbModal,
+    private _emailService: EmailService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getEmails();
+  }
+
+  getEmails() {
+    this._emailService.getEmailsModules().subscribe((res) => {
+      this.dataSource = res;
+      this.cdr.detectChanges();
+    });
+  }
 
   createEmail() {
-    console.log('estamos')
     const MODAL = this.modalService.open(CreateEmailComponent, {
       windowClass: 'fadeIn',
       size: 'xl',
@@ -42,5 +45,64 @@ export class EmailsComponent implements OnInit {
       keyboard: true,
       centered: true,
     });
+    MODAL.result.then((r) => {
+      this.getEmails();
+    });
+  }
+
+  handleEditEmail(email) {
+    const MODAL = this.modalService.open(UpdateEmailComponent, {
+      windowClass: 'fadeIn',
+      size: 'xl',
+      backdrop: true,
+      keyboard: true,
+      centered: true,
+    });
+    MODAL.componentInstance.email_to_update = email;
+    MODAL.result.then((r) => {
+      this.getEmails();
+    });
+  }
+
+  getStatus(status) {
+    switch (parseInt(status)) {
+      case 1:
+        return 'APROBADA';
+        break;
+      case 2:
+        return 'PENDIENTE';
+        break;
+
+      case 3:
+        return 'CANCELADA';
+        break;
+      default:
+        break;
+    }
+  }
+
+  getType(type) {
+    switch (type?.toString().toUpperCase()) {
+      case 'MCI_DONACIONES':
+        return 'MCI DONACIONES';
+        break;
+      case 'G12_EVENTOS':
+        return 'EVENTOS G12';
+        break;
+
+      case 'CONEXION_BOX':
+        return 'CONEXIÓN CAJAS';
+        break;
+
+      case 'CONEXION_MASSIVE':
+        return 'CONEXIÓN MASIVOS';
+        break;
+
+      default:
+        break;
+    }
+  }
+  handleErrorImage($event: any) {
+    $event.target.src = 'assets/media/logos/logoConexion12.png';
   }
 }
