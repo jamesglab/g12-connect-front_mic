@@ -32,18 +32,18 @@ export class UpdateEmailComponent implements OnInit {
       id: [],
       subject: this.fb.group({
         es: [null, Validators.required],
-        en: [null, Validators.required],
-        pt: [null, Validators.required],
+        en: [null],
+        pt: [null],
       }),
       body: this.fb.group({
         es: [null, Validators.required],
-        en: [null, Validators.required],
-        pt: [null, Validators.required],
+        en: [null],
+        pt: [null],
       }),
       biblical_text: this.fb.group({
         es: [null, Validators.required],
-        en: [null, Validators.required],
-        pt: [null, Validators.required],
+        en: [null],
+        pt: [null],
       }),
       type: [null, Validators.required],
       status: [null, Validators.required],
@@ -74,11 +74,12 @@ export class UpdateEmailComponent implements OnInit {
       this.isLoading = true;
       this._emailService.updateEmail(payload).subscribe(
         (res) => {
-          this.isLoading = true;
+          this.isLoading = false;
           Swal.fire('Correo Actualizado', '', 'success');
           this.modal.close();
         },
         (err) => {
+          this.isLoading = false;
           throw new Error(err ? err : 'No encontramos el error');
         }
       );

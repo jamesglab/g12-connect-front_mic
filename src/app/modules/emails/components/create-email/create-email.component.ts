@@ -31,18 +31,18 @@ export class CreateEmailComponent implements OnInit {
     this.create_email_form = this.fb.group({
       subject: this.fb.group({
         es: [null, Validators.required],
-        en: [null, Validators.required],
-        pt: [null, Validators.required],
+        en: [null],
+        pt: [null],
       }),
       body: this.fb.group({
         es: [null, Validators.required],
-        en: [null, Validators.required],
-        pt: [null, Validators.required],
+        en: [null],
+        pt: [null],
       }),
       biblical_text: this.fb.group({
         es: [null, Validators.required],
-        en: [null, Validators.required],
-        pt: [null, Validators.required],
+        en: [null],
+        pt: [null],
       }),
       type: [null, Validators.required],
       status: [null, Validators.required],
