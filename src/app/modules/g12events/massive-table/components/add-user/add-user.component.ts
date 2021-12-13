@@ -52,6 +52,7 @@ export class AddUserMassiveComponent implements OnInit {
         Validators.required,
       ],
       document: [null, Validators.required],
+      language: [null, Validators.required],
       document_type: [null],
       name: [null, Validators.required],
       last_name: [null, Validators.required],

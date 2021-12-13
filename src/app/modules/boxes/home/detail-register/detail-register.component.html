@@ -8,6 +8,17 @@
             <h6 style="font-size: small; color: rgb(163, 163, 163)"></h6>
           </div>
         </div>
+        <div>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="modal.close()"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
       </div>
       <div class="card-body m-1">
         <div class="row">
@@ -31,7 +42,7 @@
               <div class="col-12 d-flex justify-content-center mt-2">
                 <div class="price">
                   {{
-                    transaction.transaction.amount | currency: "COP":"symbol"
+                    transaction.transaction.amount | currency: "COP":"symbol":'1.0-0'
                   }}
                 </div>
               </div>
@@ -43,7 +54,7 @@
                     [formControl]="select_payment_getway"
                   >
                     <mat-option value="EFECTIVO"> EFECTIVO</mat-option>
-                    <mat-option value="CREDITO/"> CREDITO</mat-option>
+                    <mat-option value="CREDITO/"> DATAFONO</mat-option>
                   </mat-select>
                   <!-- <mat-error *ngIf="form.idDocumentType.errors?.required">El tipo de documento es
                           requerido
@@ -56,10 +67,11 @@
                   appearance="fill"
                   *ngIf="select_payment_getway.value == 'CREDITO/'"
                 >
-                  <mat-label>Referencia*</mat-label>
+                  <mat-label>Numero de aprobación*</mat-label>
                   <textarea
                     matInput
-                    [formControl]="description_of_changue"
+                    maxlength="6"
+                    [formControl]="description_of_change"
                   ></textarea>
                 </mat-form-field>
               </div>
@@ -107,7 +119,7 @@
                   <ng-container matColumnDef="document">
                     <th mat-header-cell *matHeaderCellDef>Documento</th>
                     <td mat-cell *matCellDef="let element">
-                      {{ element?.user?.identification }}
+                      {{ element?.user?.identification ?  element?.user?.identification : 'INTERNACIONAL' }}
                     </td>
                   </ng-container>
 
@@ -134,6 +146,24 @@
             <div class="d-flex justify-content-center">
               <button
                 class="
+                  btn btn-sm btn-light-danger
+                  font-weight-bolder
+                  mt-3
+                  mx-3
+                  py-2
+                  px-5
+                  cursor-pointer
+                "
+                (click)="cancelTransaction()"
+              >
+                <div class="spinner-border" role="status" *ngIf="isLoading">
+                  <span class="sr-only">Loading...</span>
+                </div>
+                <div *ngIf="!isLoading">Cancelar Registro</div>
+              </button>
+
+              <button
+                class="
                   btn btn-sm btn-light-primary
                   font-weight-bolder
                   mt-3
@@ -143,7 +173,10 @@
                 "
                 (click)="updateTransaction()"
               >
-                Validar Registro
+                <div class="spinner-border" role="status" *ngIf="isLoading">
+                  <span class="sr-only">Loading...</span>
+                </div>
+                <div *ngIf="!isLoading">Validar Registro</div>
               </button>
             </div>
           </div>

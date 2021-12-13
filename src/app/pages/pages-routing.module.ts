@@ -56,6 +56,11 @@ const routes: Routes = [
           import('../modules/boxes/boxes.module').then((m) => m.BoxesModule)
       },
       {
+        path: 'emails',
+        loadChildren: () =>
+          import('../modules/emails/emails.module').then((m) => m.EmailsModule)
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

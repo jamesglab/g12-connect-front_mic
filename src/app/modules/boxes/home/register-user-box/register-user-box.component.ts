@@ -6,18 +6,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { platform } from 'os';
-import { StorageService } from 'src/app/modules/auth/_services/storage.service';
 import { G12eventsService } from 'src/app/modules/g12events/_services/g12events.service';
 import { UserService } from 'src/app/modules/_services/user.service';
 import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
-import { BoxService } from '../services/g12events.service';
-import * as pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-
-(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+import { BoxService } from '../_services/Boxes.service';
+import { MakePdfService } from '../_services/make-pdf.service';
 
 @Component({
   selector: 'app-register-user-box',
@@ -27,7 +22,6 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 export class RegisterUserBoxComponent implements OnInit {
   //OBJETOS DEL USUARIO
   public box;
-  private currentUser = this.storageService.getItem('auth').user;
 
   //ARRAYS DE CONSULTAS
   public leaders: [] = [];
@@ -43,27 +37,31 @@ export class RegisterUserBoxComponent implements OnInit {
   //CONTROLES EXTERNOS AL FORMULARIO
   public description_of_changue = new FormControl('', Validators.required);
   public select_payment_getway = new FormControl('', Validators.required);
+  public currency = new FormControl('', Validators.required);
 
   public confirm_email = new FormControl(
     null,
     Validators.compose([Validators.required, Validators.email])
   );
+
+  //BANDERAS BOOLEANAS
   public isLoading: boolean = false;
   public find_user: boolean = false;
+  public disable_ministerial_info: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     public modal: NgbActiveModal,
     private g12EventService: G12eventsService,
     public cdr: ChangeDetectorRef,
     private userService: UserService,
-    private storageService: StorageService,
-    private boxService: BoxService
+    private boxService: BoxService,
+    private _makePdfService: MakePdfService
   ) {}
 
   ngOnInit(): void {
     this.buildForm();
     this.getEvents();
-    this.createFakeVersion();
   }
 
   //*************************/
@@ -82,12 +80,18 @@ export class RegisterUserBoxComponent implements OnInit {
       //USER INFORMATION
       assistant: this.fb.group({
         id: [null],
-        country: [
-          this.currentUser.church_id ? 'COLOMBIA' : null,
-          Validators.required,
+        country: [Validators.required],
+        identification: [
+          null,
+          Validators.compose([
+            Validators.required,
+            Validators.pattern(/^[0-9a-zA-Z\s,-]+$/),
+            Validators.minLength(6),
+            Validators.maxLength(13),
+          ]),
         ],
-        identification: [null, Validators.required],
-        document_type: [null],
+        language: [null, Validators.required],
+        document_type: [null, Validators.required],
         name: [null, Validators.required],
         last_name: [null, Validators.required],
         gender: [null, Validators.required],
@@ -133,7 +137,27 @@ export class RegisterUserBoxComponent implements OnInit {
       .get('financial_cut')
       .valueChanges.subscribe((f_c) => {
         if (f_c?.prices) {
-          this.payment_information.get('amount').setValue(f_c.prices['cop']);
+          this.payment_information
+            .get('amount')
+            .setValue(
+              f_c.prices[
+                this.payment_information_value.currency.toString().toLowerCase()
+              ]
+            );
+        }
+      });
+    //NOS SUBSCRIBIMOS A LOS CAMBIOS DEL CURRENCY
+    this.payment_information
+      .get('currency')
+      .valueChanges.subscribe((currency) => {
+        if (this.event_information_value?.financial_cut?.id) {
+          this.payment_information
+            .get('amount')
+            .setValue(
+              this.event_information_value?.financial_cut?.prices[
+                currency.toString().toLowerCase()
+              ]
+            );
         }
       });
 
@@ -141,13 +165,38 @@ export class RegisterUserBoxComponent implements OnInit {
     this.assistant_control
       .get('type_church')
       .valueChanges.subscribe((type_churh) => {
-        if (type_churh == 'MCI') {
+        if (type_churh == 'MCI' && this.assistant_value.country) {
           this.getChurchs();
         }
       });
 
-    this.assistant_control.get('country').valueChanges.subscribe((res) => {
-      this.resetMinisterialInfo();
+    this.assistant_control.get('country').valueChanges.subscribe((country) => {
+      //VALIDAMOS EL CAMBIO DE PAIS
+      if (country.toString().toUpperCase() == 'COLOMBIA') {
+        //PARA CASO COLOMBIA EXIGIMOS EL NUMERO DE IDENTIFICACON CON LOS VALORES A REQUERIR
+        this.assistant_control
+          .get('identification')
+          .setValidators([
+            Validators.required,
+            Validators.pattern(/^[0-9a-zA-Z\s,-]+$/),
+            Validators.minLength(6),
+            Validators.maxLength(13),
+          ]);
+        //EXIGIMOS EL TIPO DE DOCUMENTO
+        this.assistant_control
+          .get('document_type')
+          .setValidators([Validators.required]);
+      } else {
+        //ELIMINAMOS LOS ERRORES Y LOS VALIDADORES DE IDENTIFICACION Y TIPO DE DOCUMENTO
+        this.assistant_control.get('identification').setValidators(null);
+        this.assistant_control.get('identification').setErrors(null);
+        this.assistant_control.get('document_type').setValidators(null);
+        this.assistant_control.get('document_type').setErrors(null);
+      }
+
+      if (this.assistant_value.type_churh == 'MCI') {
+        this.getChurchs();
+      }
     });
 
     //NOS SUBSCRIBIMOS A LOS CAMBIOS DE LA RED PARA REINICIAR LOS VALORES DE LOS PASTORES
@@ -199,6 +248,7 @@ export class RegisterUserBoxComponent implements OnInit {
   // CONSULTAMOS LOS LIDERES QUE PERTENECEN A LA RED DEL PASTOR
   getLeaders(pastor, user?) {
     this.leaders = []; //REINICIAMOS LOS LIDERES QUE CAMBIAN DE UN PASTOR A OTRO
+    this.assistant_control.get('leader').reset();
     this.userService
       .getLeadersOrPastors({
         userCode: pastor.user_code,
@@ -225,6 +275,7 @@ export class RegisterUserBoxComponent implements OnInit {
 
   //CONSULTAMOS LAS IGLESIAS
   getChurchs() {
+    console.log('this.assistant_value', this.assistant_value);
     this.userService
       .getPlaces({
         country: this.assistant_value.country.toUpperCase(),
@@ -286,6 +337,7 @@ export class RegisterUserBoxComponent implements OnInit {
       },
       (err) => {
         if (autocomplete) {
+          this.disable_ministerial_info = false;
           Swal.fire('No se encontro el usuario', '', 'info').then((res) => {
             this.assistant_control.get('network').enable();
             this.assistant_control.get('network').reset();
@@ -362,11 +414,11 @@ export class RegisterUserBoxComponent implements OnInit {
         throw new Error('Información incompleta');
       }
 
+      if (this.event_information_controls.invalid) {
+        throw new Error('Información del evento incompleta ');
+      }
       //CREAMOS UNA VARIABLE CON EL PAYLOAD
       let payload = this.register_user.getRawValue();
-
-      console.log('payloadn init', !payload.assistant.pastor?.id);
-      console.log('payloadn init', payload.assistant.pastor?.id);
 
       //VALIDAREMOS LA INFORMACION MINISTERIAL
       switch (payload.assistant.type_church) {
@@ -378,7 +430,7 @@ export class RegisterUserBoxComponent implements OnInit {
             !payload.assistant.leader?.id
           ) {
             //GENERAMOS ERROR SI NO ENCONTRAMOS
-            throw new Error('Revisa la información ministerial efe');
+            throw new Error('Revisa la información ministerial');
           }
           break;
 
@@ -419,6 +471,9 @@ export class RegisterUserBoxComponent implements OnInit {
           if (!this.description_of_changue.value) {
             //CREAMOS UN ERROR DE REFERENCIA DE PAGO INCOMPLETA
             throw new Error('Referencia de pago incompleta');
+          } else {
+            payload.payment_information.description_of_change =
+              this.description_of_changue.value;
           }
           break;
       }
@@ -437,6 +492,7 @@ export class RegisterUserBoxComponent implements OnInit {
             //MOSTRAMOS EL MENSAJE DE SUCCESS
             Swal.fire('Usuario registrado', '', 'success');
             //CERRAMOS EL MODAL
+            this._makePdfService.createPdf(res.ref, this.box);
             this.modal.close();
           },
           (err) => {
@@ -462,39 +518,46 @@ export class RegisterUserBoxComponent implements OnInit {
   //****************************/
 
   setUser(user) {
-    //DISABLES
+    this.assistant_control.get('type_church').setValue(user.type_church);
 
-    switch (user?.type_church) {
-      case 'MCI':
-        //DISABLE INPUTS
-        this.assistant_control.get('country').disable();
-        this.assistant_control.get('church').disable();
-        this.assistant_control.get('network').disable();
-        this.assistant_control.get('type_church').disable();
+    if (user?.type_church) {
+      //INHABILITAMOS LA INFORMACION MINISTERIAL AL EDITAR
+      this.disable_ministerial_info = true;
+      switch (user?.type_church?.toString().toUpperCase()) {
+        case 'MCI':
+          //DISABLE INPUTS
+          this.assistant_control.get('church').disable();
+          this.assistant_control.get('network').disable();
 
-        //SETEAMOS LOS VALORES DE LA RED
-        this.assistant_control.get('type_church').setValue(user?.type_church);
-        this.assistant_control.get('network').setValue(user.network);
+          //SETEAMOS LOS VALORES DE LA RED
+          this.assistant_control.get('network').setValue(user.network);
 
-        //CONSULTAMOS LOS DATOS MINISTERIALES PARA POSTERIORMENTE AUTOCOMPLEMENTARLOS
-        this.getPastors(user.pastor_code, user);
-        this.getLeaders({ user_code: user.leader_code }, user);
-        this.getChurchById(user.church_id);
-        break;
+          //CONSULTAMOS LOS DATOS MINISTERIALES PARA POSTERIORMENTE AUTOCOMPLEMENTARLOS
+          this.getPastors(user.pastor_code, user);
+          this.getLeaders({ user_code: user.leader_code }, user);
+          this.getChurchById(user.church_id);
+          break;
 
-      case 'OT':
-      case 'G12': {
-        this.assistant_control.get('name_pastor').setValue('name_pastor');
-        this.assistant_control.get('name_church').setValue('name_church');
-        break;
+        case 'OT':
+        case 'G12': {
+          this.assistant_control.get('name_pastor').setValue('name_pastor');
+          this.assistant_control.get('name_church').setValue('name_church');
+          break;
+        }
       }
+    } else {
+      //HABILITAMOS LA INFORMACION MINISTERIAL PARA EDITARLA
+      this.disable_ministerial_info = false;
     }
-
+    this.assistant_control.get('identification').disable();
     //AUTOCOMPLETE DATA
 
-    this.assistant_control.get('identification').disable();
-    this.assistant_control.get('country').setValue(user.country);
+    this.assistant_control
+      .get('country')
+      .setValue(user.country?.toString().toUpperCase());
+    // this.assistant_control.get('country').disable();
     this.assistant_control.get('id').setValue(user.id);
+    this.assistant_control.get('language').setValue(user.language);
     this.assistant_control.get('name').setValue(user.name.toLowerCase());
     this.assistant_control
       .get('last_name')
@@ -505,6 +568,7 @@ export class RegisterUserBoxComponent implements OnInit {
     this.assistant_control.get('phone').setValue(user.phone);
     this.assistant_control.get('identification').setValue(user.identification);
     this.assistant_control.get('document_type').setValue(user.document_type);
+    this.cdr.detectChanges();
   }
 
   //VALIDAMOS LOS NUMEROS DE UN INPUT
@@ -514,9 +578,11 @@ export class RegisterUserBoxComponent implements OnInit {
     }
   }
 
-  resetMinisterialInfo() {
+  resetMinisterialInfo(reset_type_church?: boolean) {
     //REINICIAMOS LA INFORMACION MINISTERIAL DE TIPO MCI
-    this.assistant_control.get('type_church').reset();
+    if (reset_type_church) {
+      this.assistant_control.get('type_church').reset();
+    }
     this.assistant_control.get('network').reset();
     this.assistant_control.get('church').reset();
     this.assistant_control.get('pastor').reset();
@@ -539,6 +605,10 @@ export class RegisterUserBoxComponent implements OnInit {
     return this.register_user.get('event_information');
   }
 
+  get event_information_value() {
+    return this.register_user.get('event_information').value;
+  }
+
   // VALORES DEL FORMULARIO
   get assistant_value() {
     return this.assistant_control.value;
@@ -548,50 +618,7 @@ export class RegisterUserBoxComponent implements OnInit {
     return this.register_user.get('payment_information');
   }
 
-  //FAKE
-  createFakeVersion() {
-    var dd = {
-      content: [
-        {
-          text: 'This is a header, using header style',
-          style: 'header',
-        },
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam.\n\n',
-        {
-          text: 'Subheader 1 - using subheader style',
-          style: 'subheader',
-        },
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.',
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.',
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.\n\n',
-        {
-          text: 'Subheader 2 - using subheader style',
-          style: 'subheader',
-        },
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.',
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.\n\n',
-        {
-          text: 'It is possible to apply multiple styles, by passing an array. This paragraph uses two styles: quote and small. When multiple styles are provided, they are evaluated in the specified order which is important in case they define the same properties',
-          style: ['quote', 'small'],
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true,
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true,
-        },
-        quote: {
-          italics: true,
-        },
-        small: {
-          fontSize: 8,
-        },
-      },
-    };
-    pdfMake.createPdf(dd).open();
+  get payment_information_value() {
+    return this.register_user.get('payment_information').value;
   }
 }

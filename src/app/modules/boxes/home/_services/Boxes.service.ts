@@ -65,6 +65,19 @@ export class BoxService {
       );
   }
 
+  filterTransactionByReference(params) {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/box/by-reference`, {
+        params,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
   getGrupalTransactionsBox(payment_ref, assistant) {
     return this.http
       .get<any>(
@@ -87,6 +100,31 @@ export class BoxService {
         `${environment.apiUrlG12Connect.paymentsv3}/box/validate`,
         payload
       )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  cancelTransaction(payload) {
+    return this.http
+      .put<any>(
+        `${environment.apiUrlG12Connect.paymentsv3}/box/cancel-payment`,
+        payload
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  getEventsBox() {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/box/event`)
       .pipe(
         map((res: any) => {
           return res;

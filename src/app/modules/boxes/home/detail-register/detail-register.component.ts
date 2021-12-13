@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
-import { BoxService } from '../services/g12events.service';
+import { BoxService } from '../_services/Boxes.service';
+import { MakePdfService } from '../_services/make-pdf.service';
 export interface PeriodicElement {
   name: string;
   position: number;
@@ -27,15 +28,23 @@ export class DetailRegisterComponent implements OnInit {
     'document',
     'assistant',
   ];
-  public table_users: [] = [];
-  public description_of_changue = new FormControl('', Validators.required);
+  public table_users = [];
+  public user_massive: boolean = false;
+  public description_of_change = new FormControl('', Validators.required);
   public select_payment_getway = new FormControl('', Validators.required);
 
   //OBJETOS DE COMPONENTES PADRES
   public transaction;
   public box;
 
-  constructor(public _boxService: BoxService, private modal: NgbActiveModal) {}
+  //BANDERAS
+  public isLoading: boolean = false;
+
+  constructor(
+    public _boxService: BoxService,
+    public modal: NgbActiveModal,
+    private makePdfService: MakePdfService
+  ) {}
 
   ngOnInit(): void {
     this.getTransactions();
@@ -55,7 +64,14 @@ export class DetailRegisterComponent implements OnInit {
       .subscribe(
         (res) => {
           //AGREGAMOS RESPUESTA A LA TABLA DE USUARIOS
-          this.table_users = res;
+          let transactions = [];
+
+          res.map((tr) => {
+            if (tr.isAssistant) {
+              transactions.push(tr);
+            }
+          });
+          this.table_users = transactions;
         },
         (err) => {
           throw new Error(err);
@@ -75,7 +91,7 @@ export class DetailRegisterComponent implements OnInit {
         //CASO CREDITO NECESITAMOS COMPLEMENTAR LA INFORMACION DE REFERENCIA
         case 'CREDITO/':
           //VALIDAMOS LA DESCRIPCION DEL PAGO
-          if (!this.description_of_changue.value) {
+          if (!this.description_of_change.value) {
             //CREAMOS UN ERROR DE REFERENCIA DE PAGO INCOMPLETA
             throw new Error('Referencia de pago incompleta');
           }
@@ -84,7 +100,7 @@ export class DetailRegisterComponent implements OnInit {
 
       //CREAMOS UNA CONFIRMACION DEL PAGO
       Swal.fire({
-        title: '¿Aprobar Transacción ?',
+        title: '¿Aprobar Transacción?',
         icon: 'question',
         text: 'Al aprobar la transacción los usuarios asistentes quedaran inscritos en el evento',
         confirmButtonText: 'Continuar',
@@ -95,17 +111,22 @@ export class DetailRegisterComponent implements OnInit {
       }).then((res) => {
         //SI LA CONFIRMACION ES APROBADA PROCEDEMOS CON EL PAGO
         if (res.isConfirmed) {
+          this.isLoading = true;
           this._boxService
             .updateTransactions({
               transaction_id: this.transaction.transaction.id,
               box: this.box,
-              description_of_change:
-                this.select_payment_getway.value +
-                this.description_of_changue.value,
+              description_of_change: this.description_of_change.value,
             })
             .subscribe(
               (res) => {
                 Swal.fire('Usuarios registrados', '', 'success');
+                this.makePdfService.createPdf(
+                  this.transaction.transaction.payment_ref,
+                  this.box
+                );
+                this.isLoading = false;
+
                 this.modal.close();
               },
               (err) => {
@@ -114,6 +135,7 @@ export class DetailRegisterComponent implements OnInit {
                   '',
                   'error'
                 );
+                this.isLoading = false;
               }
             );
         }
@@ -121,5 +143,31 @@ export class DetailRegisterComponent implements OnInit {
     } catch (error) {
       Swal.fire(error.message, '', 'info');
     }
+  }
+
+  cancelTransaction() {
+    Swal.fire({
+      title: '¿Cancelar Transacción?',
+      icon: 'question',
+      text: '¿Estas seguro de cancelar la transacción?',
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No',
+      reverseButtons: true,
+      showCancelButton: true,
+      showCloseButton: true,
+    }).then((res) => {
+      if (res.isConfirmed) {
+        this.isLoading = true;
+        this._boxService
+          .cancelTransaction({
+            transaction_id: this.transaction.transaction.id,
+          })
+          .subscribe((res) => {
+            Swal.fire('Transacción cancelada', '', 'success');
+            this.isLoading = false;
+            this.modal.close();
+          });
+      }
+    });
   }
 }

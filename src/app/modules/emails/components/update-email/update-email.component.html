@@ -4,7 +4,7 @@
       <div class="card-header d-flex">
         <div class="w-75">
           <div class="card-title d-block pb-2">
-            <h3 class="card-label pt-4 pb-4">Email de bienvenida</h3>
+            <h3 class="card-label pt-4 pb-4">Actualizar Email</h3>
           </div>
         </div>
         <div class="w-25">
@@ -23,53 +23,9 @@
         </div>
       </div>
       <div class="card-body">
-        <!-- VALIDAMOS SI ENCONTRAMOS EL EMAIL DEL EVENTO PARA ACTUALIZAR O EN SU DEFECTO LO CREAMOS -->
-        <form
-          [formGroup]="create_email_form"
-          (ngSubmit)="find_email ? updateEmail() : createEmail()"
-        >
+        <form [formGroup]="update_email_form" (ngSubmit)="updateEmail()">
           <h4 class="h4">Asunto</h4>
           <div class="row mt-5" formGroupName="subject">
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Español</mat-label>
-                <input
-                  matInput
-                  type="text"
-                  autocomplete="off"
-                  placeholder=""
-                  formControlName="es"
-                />
-              </mat-form-field>
-            </div>
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Ingles</mat-label>
-                <input
-                  matInput
-                  type="text"
-                  autocomplete="off"
-                  placeholder=""
-                  formControlName="en"
-                />
-              </mat-form-field>
-            </div>
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Portugues</mat-label>
-                <input
-                  matInput
-                  type="text"
-                  autocomplete="off"
-                  placeholder=""
-                  formControlName="pt"
-                />
-              </mat-form-field>
-            </div>
-          </div>
-
-          <h4 class="h4">Titulo</h4>
-          <div class="row mt-5" formGroupName="title_email">
             <div class="col">
               <mat-form-field class="example-full-width">
                 <mat-label>Español</mat-label>
@@ -133,57 +89,6 @@
             </div>
           </div>
 
-          <h4 class="h4 mt-5">Titulo de tipo de evento</h4>
-          <div class="row mt-5" formGroupName="title_body">
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Español </mat-label>
-                <textarea matInput autocomplete="off" formControlName="es">
-                </textarea>
-              </mat-form-field>
-            </div>
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Ingles </mat-label>
-                <textarea matInput autocomplete="off" formControlName="en">
-                </textarea>
-              </mat-form-field>
-            </div>
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Portugues </mat-label>
-                <textarea matInput autocomplete="off" formControlName="pt">
-                </textarea>
-              </mat-form-field>
-            </div>
-          </div>
-
-
-          <h4 class="h4 mt-5">Recomendación de ingreso</h4>
-          <div class="row mt-5" formGroupName="description_body">
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Español </mat-label>
-                <textarea matInput autocomplete="off" formControlName="es">
-                </textarea>
-              </mat-form-field>
-            </div>
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Ingles </mat-label>
-                <textarea matInput autocomplete="off" formControlName="en">
-                </textarea>
-              </mat-form-field>
-            </div>
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Portugues </mat-label>
-                <textarea matInput autocomplete="off" formControlName="pt">
-                </textarea>
-              </mat-form-field>
-            </div>
-          </div>
-
           <h4 class="h4">Texto Bliblico</h4>
           <div class="row mt-5" formGroupName="biblical_text">
             <div class="col">
@@ -224,47 +129,31 @@
             </div>
           </div>
 
-
-          <h4 class="h4">Información de contacto</h4>
-          <div class="row mt-5" formGroupName="contact_us">
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Español</mat-label>
-                <input
-                  matInput
-                  type="text"
-                  autocomplete="off"
-                  placeholder=""
-                  formControlName="es"
-                />
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Tipo*</mat-label>
+                <mat-select type="select" formControlName="type">
+                  <mat-option value="MCI_DONACIONES"> DONACIONES </mat-option>
+                  <mat-option value="G12_EVENTOS"> EVENTOS G12 </mat-option>
+                  <mat-option value="CONEXION_BOX"> CONEXIÓN CAJAS </mat-option>
+                  <mat-option value="CONEXION_MASSIVE">
+                    CONEXIÓN MASIVOS
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
             </div>
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Ingles</mat-label>
-                <input
-                  matInput
-                  type="text"
-                  autocomplete="off"
-                  placeholder=""
-                  formControlName="en"
-                />
-              </mat-form-field>
-            </div>
-            <div class="col">
-              <mat-form-field class="example-full-width">
-                <mat-label>Portugues</mat-label>
-                <input
-                  matInput
-                  type="text"
-                  autocomplete="off"
-                  placeholder=""
-                  formControlName="pt"
-                />
+            <div class="col-sm-3">
+              <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Estado*</mat-label>
+                <mat-select type="select" formControlName="status">
+                  <mat-option value="1"> APROBADA </mat-option>
+                  <mat-option value="2"> PENDIENTE </mat-option>
+                  <mat-option value="3"> CANCELADO </mat-option>
+                </mat-select>
               </mat-form-field>
             </div>
           </div>
-
           <h4 class="h4 mt-5">Imagen</h4>
           <div class="row">
             <div>
@@ -290,14 +179,12 @@
                     cursor-pointer
                   "
                   type="submit"
+                  [disabled]="isLoading"
                 >
                   <div class="spinner-border" role="status" *ngIf="isLoading">
                     <span class="sr-only">Loading...</span>
                   </div>
-                  <div *ngIf="!isLoading">
-                    <!-- MOSTRAMOS EL MENSAJE DE CREAR O ACTUALIZAR EL CORREO -->
-                    {{ find_email ? "Actualizar correo" : "Crear Correo" }}
-                  </div>
+                  <div *ngIf="!isLoading">Actualizar Email</div>
                 </button>
               </div>
             </div>

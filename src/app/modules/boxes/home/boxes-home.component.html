@@ -5,7 +5,7 @@
         <div class="w-75">
           <div class="card-title d-block pb-2">
             <h3 class="card-label pt-4 pb-4">
-              {{ (box ? "Caja " + box.name : "Sin caja") |uppercase}}
+              {{ (box ? "Caja " + box.name : "Sin caja") | uppercase }}
             </h3>
             <h6 style="font-size: small; color: rgb(163, 163, 163)"></h6>
           </div>
@@ -20,24 +20,25 @@
       </div>
       <!-- MOSTRAMOS EN CASO DE QUE EXISTA CAJA -->
       <div class="card-body m-1" *ngIf="box">
+        <div class="col-sm-3">
+          <div class="d-flex ">
+            <h4 class="h4">Ingreso de referencia</h4>
+          </div>
+        </div>
+        <app-registered-users [box]="box" (refresh_events)="getEventsBox()"> </app-registered-users>
+
         <div class="row">
           <h4 class="h4">Eventos</h4>
         </div>
         <div>
-          <app-events></app-events>
-        </div>
-        <div class="mt-3">
-          <div class="d-flex justify-content-center">
-            <h4 class="h4">Registrar Usuarios</h4>
-          </div>
-          <app-registered-users [box]="box"> </app-registered-users>
+          <app-events [dataSource]="events" ></app-events>
         </div>
       </div>
-    <!-- MOSTRAMOS EN CASO DE QUE NO EXISTA CAJA -->
+      <!-- MOSTRAMOS EN CASO DE QUE NO EXISTA CAJA -->
+
       <div class="card-body not-found" *ngIf="!box">
         <div>USUARIO SIN CAJA ASIGNADA</div>
       </div>
-
     </div>
   </div>
 </div>

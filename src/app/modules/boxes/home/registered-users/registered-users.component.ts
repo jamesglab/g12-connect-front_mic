@@ -1,10 +1,21 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DetailRegisterComponent } from '../detail-register/detail-register.component';
 import { RegisterUserBoxComponent } from '../register-user-box/register-user-box.component';
-import { BoxService } from '../services/g12events.service';
+import { BoxService } from '../_services/Boxes.service';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { MakePdfService } from '../_services/make-pdf.service';
 
+(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 @Component({
   selector: 'app-registered-users',
   templateUrl: './registered-users.component.html',
@@ -14,11 +25,14 @@ export class RegisteredUsersComponent implements OnInit {
   /**VARIABLES DE COMPONENTES PADRES */
   @Input() box;
 
+  /**SALIDAS DEL COMPONENTE HIJO*/
+
+  @Output() refresh_events = new EventEmitter<any>();
+
   /**
    * CONTROLES DE INPUTS
    */
   public identification = new FormControl(); //CONTROL PARA FILTRO POR IDENTIFICACION
-
   public payment_ref_grupal = new FormControl(); //CONTROL PARA CONSULTAR REFERENCIA GRUPAL
   public email = new FormControl();
 
@@ -39,17 +53,19 @@ export class RegisteredUsersComponent implements OnInit {
   ]; //DATOS A MOSTRAR EN LAS TABLAS DEL ANGULAR MATERIAL
 
   public individual_table: [] = [];
-  public grupal_table: [] = [];
+  public grupal_table = [];
+
+  //BOOLEANS
+  public isLoading: boolean = false;
 
   constructor(
     private modalService: NgbModal,
     private _boxService: BoxService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private _makePdfService: MakePdfService
   ) {}
 
-  ngOnInit(): void {
-  
-  }
+  ngOnInit(): void {}
 
   /**MODALES*/
 
@@ -61,6 +77,14 @@ export class RegisteredUsersComponent implements OnInit {
     });
     modale.componentInstance.transaction = element;
     modale.componentInstance.box = this.box;
+    if (element.transaction.user_massive) {
+      modale.componentInstance.user_massive = true;
+    }
+    modale.result.then((result) => {
+      this.searchTransactionBoxGrupal();
+      this.searchTransactionsOneUser();
+      this.refresh_events.emit(true);
+    });
   }
 
   //MODAL DE REGISTRO DE USUARIO UNICO EN CAJA APROBANDO DIRECTAMENTE LA TRANSACCION
@@ -70,6 +94,9 @@ export class RegisteredUsersComponent implements OnInit {
       size: 'xl',
     });
     modale.componentInstance.box = this.box;
+    modale.result.then((res) => {
+      this.refresh_events.emit(true);
+    });
   }
 
   /**CONSULTAS A LA BASE DE DATOS */
@@ -81,12 +108,15 @@ export class RegisteredUsersComponent implements OnInit {
     //VALIDAMOS EL INPUT DE IDENTIFICACION
     if (this.identification.value) {
       //ANEXAMOS CONSULTA POR 'identification'
-      params['identification'] = this.identification.value;
+      params['identification'] = this.identification.value
+        ?.toString()
+        .trim()
+        .toLowerCase();
     }
     //VALIDAMOS EL INPUT POR EL EMAIL
     if (this.email.value) {
       //ANEXAMOS CONSULTA POR EMAIL
-      params['email'] = this.email.value;
+      params['email'] = this.email.value?.toString().trim().toLowerCase();
     }
 
     //VALIDAMOS QUE EXISTAN PARAMETROS DE CONSULTA
@@ -107,7 +137,7 @@ export class RegisteredUsersComponent implements OnInit {
   }
 
   //CONSULTA POR TRANSACCION GRUPAL
-  searchTransactionBoxGrupal() {
+  async searchTransactionBoxGrupal() {
     //VALIDAMOS EL PARAMETRO DE CONSULTA DE REFERENCIA GRUPAL
     if (this.payment_ref_grupal.value) {
       //CONSULTAMOS LAS TRANSACCIONES
@@ -115,12 +145,49 @@ export class RegisteredUsersComponent implements OnInit {
        * payment_ref_grupal REFERENCIA DE PAGO
        * boolean = false CONSULTAMOS POR USUARIOS DONANTE
        */
+      this.isLoading = true; //MOSTRAMOS EL LOADER
       this._boxService
-        .filterTransaction({ payment_ref: this.payment_ref_grupal.value })
-        .subscribe((res) => {
-          this.grupal_table = res;
-          this.cdr.detectChanges();
-        });
+        .filterTransaction({
+          payment_ref: this.payment_ref_grupal.value
+            ?.toString()
+            .trim()
+            .toLowerCase(),
+        })
+        .subscribe(
+          (res) => {
+            //REINICAMOS LA TABLA DE LOS USUARIOS
+            this.grupal_table = [];
+            let find_user_massive = false;
+            let transactions = [];
+
+            res.map((tr) => {
+              //VALIDAMOS EL REGISTROS DE USUARIOS MASIVOS
+              //PUSHEAMOS SOLO EL USUARIO DONANTE DE MASIVO
+              if (tr.transaction?.user_massive) {
+                transactions.push(tr);
+                find_user_massive = true;
+              }
+            });
+
+            //SI NO ENCONTRAMOS USUARIO MASIVO
+            if (!find_user_massive) {
+              res.map((tr) => {
+                //VALIDAMOS LOS USUARIOS ASISTENTES Y LOS RENDERIZAMOS
+                if (tr.isAssistant) {
+                  transactions.push(tr);
+                }
+              });
+            }
+            this.isLoading = false; //OCULTAMOS EL LOADER
+            this.grupal_table = transactions;
+            this.cdr.detectChanges();
+          },
+          (err) => {
+            this.isLoading = false; //OCULTAMOS EL LOADER
+            this.cdr.detectChanges();
+            throw new Error('NO SE PUDO EJECUTAR LA TRANSACCIÓN');
+          }
+        );
     }
   }
 
@@ -131,5 +198,9 @@ export class RegisteredUsersComponent implements OnInit {
     if (!e.key.match(/[0-9]/i)) {
       e.preventDefault(); //ELIMINAMOS PULSACION SI NO ES UN NUMERO
     }
+  }
+
+  createPdf(element) {
+    this._makePdfService.createPdf(element.transaction.payment_ref, this.box);
   }
 }
