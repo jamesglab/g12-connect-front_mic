@@ -1,6 +1,6 @@
 <div class="example-container mat-elevation-z0">
   <mat-table #table [dataSource]="dataSource">
-    <ng-container matColumnDef="image">
+    <ng-container matColumnDef="image" sticky>
       <mat-header-cell *matHeaderCellDef>Imagen</mat-header-cell>
       <mat-cell *matCellDef="let element" class="cursor-pointer">
         <img
@@ -11,7 +11,7 @@
       </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="name">
+    <ng-container matColumnDef="name" >
       <mat-header-cell *matHeaderCellDef>Nombre </mat-header-cell>
       <mat-cell *matCellDef="let element" class="cursor-pointer">
         {{ element.name }}
@@ -40,7 +40,7 @@
       >
     </ng-container>
 
-    <ng-container matColumnDef="actions">
+    <ng-container matColumnDef="actions" sticky>
       <mat-header-cell *matHeaderCellDef></mat-header-cell>
       <mat-cell *matCellDef="let element">
         <a

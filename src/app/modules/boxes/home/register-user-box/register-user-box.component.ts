@@ -90,6 +90,7 @@ export class RegisterUserBoxComponent implements OnInit {
             Validators.maxLength(13),
           ]),
         ],
+        language: [null, Validators.required],
         document_type: [null, Validators.required],
         name: [null, Validators.required],
         last_name: [null, Validators.required],
@@ -419,7 +420,6 @@ export class RegisterUserBoxComponent implements OnInit {
       //CREAMOS UNA VARIABLE CON EL PAYLOAD
       let payload = this.register_user.getRawValue();
 
-      console.log('payload', payload);
       //VALIDAREMOS LA INFORMACION MINISTERIAL
       switch (payload.assistant.type_church) {
         case 'MCI':
@@ -549,7 +549,7 @@ export class RegisterUserBoxComponent implements OnInit {
       //HABILITAMOS LA INFORMACION MINISTERIAL PARA EDITARLA
       this.disable_ministerial_info = false;
     }
-    this.assistant_control.get('identification').disable()
+    this.assistant_control.get('identification').disable();
     //AUTOCOMPLETE DATA
 
     this.assistant_control
@@ -557,6 +557,7 @@ export class RegisterUserBoxComponent implements OnInit {
       .setValue(user.country?.toString().toUpperCase());
     // this.assistant_control.get('country').disable();
     this.assistant_control.get('id').setValue(user.id);
+    this.assistant_control.get('language').setValue(user.language);
     this.assistant_control.get('name').setValue(user.name.toLowerCase());
     this.assistant_control
       .get('last_name')

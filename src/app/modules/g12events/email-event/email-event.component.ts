@@ -33,14 +33,34 @@ export class EmailEventComponent implements OnInit {
   // CREAMOS EL FORMULARIO
   buildForm() {
     this.create_email_form = this.fb.group({
-      event: [this.event.id, Validators.required],
       //EVENT INFORMATION
+      event: [this.event.id, Validators.required],
       subject: this.fb.group({
         es: [null, Validators.required],
         en: [null],
         pt: [null],
       }),
       body: this.fb.group({
+        es: [null, Validators.required],
+        en: [null],
+        pt: [null],
+      }),
+      title_email: this.fb.group({
+        es: [null, Validators.required],
+        en: [null],
+        pt: [null],
+      }),
+      title_body: this.fb.group({
+        es: [null, Validators.required],
+        en: [null],
+        pt: [null],
+      }),
+      description_body: this.fb.group({
+        es: [null, Validators.required],
+        en: [null],
+        pt: [null],
+      }),
+      contact_us: this.fb.group({
         es: [null, Validators.required],
         en: [null],
         pt: [null],

@@ -44,6 +44,7 @@ export class AddUserMassiveComponent implements OnInit {
       id: [null],
       country: [this.currentUser.church_id ? 'Colombia' : null, Validators.required],
       document: [null, Validators.required],
+      language: [null, Validators.required],
       document_type: [null],
       name: [null, Validators.required],
       last_name: [null, Validators.required],

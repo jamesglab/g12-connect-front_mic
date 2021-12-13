@@ -23,10 +23,53 @@
         </div>
       </div>
       <div class="card-body">
-      <!-- VALIDAMOS SI ENCONTRAMOS EL EMAIL DEL EVENTO PARA ACTUALIZAR O EN SU DEFECTO LO CREAMOS -->
-        <form [formGroup]="create_email_form" (ngSubmit)="find_email ? updateEmail() : createEmail()">
+        <!-- VALIDAMOS SI ENCONTRAMOS EL EMAIL DEL EVENTO PARA ACTUALIZAR O EN SU DEFECTO LO CREAMOS -->
+        <form
+          [formGroup]="create_email_form"
+          (ngSubmit)="find_email ? updateEmail() : createEmail()"
+        >
           <h4 class="h4">Asunto</h4>
           <div class="row mt-5" formGroupName="subject">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Español</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  autocomplete="off"
+                  placeholder=""
+                  formControlName="es"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Ingles</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  autocomplete="off"
+                  placeholder=""
+                  formControlName="en"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Portugues</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  autocomplete="off"
+                  placeholder=""
+                  formControlName="pt"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <h4 class="h4">Titulo</h4>
+          <div class="row mt-5" formGroupName="title_email">
             <div class="col">
               <mat-form-field class="example-full-width">
                 <mat-label>Español</mat-label>
@@ -90,8 +133,100 @@
             </div>
           </div>
 
+          <h4 class="h4 mt-5">Titulo de tipo de evento</h4>
+          <div class="row mt-5" formGroupName="title_body">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Español </mat-label>
+                <textarea matInput autocomplete="off" formControlName="es">
+                </textarea>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Ingles </mat-label>
+                <textarea matInput autocomplete="off" formControlName="en">
+                </textarea>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Portugues </mat-label>
+                <textarea matInput autocomplete="off" formControlName="pt">
+                </textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+
+          <h4 class="h4 mt-5">Recomendación de ingreso</h4>
+          <div class="row mt-5" formGroupName="description_body">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Español </mat-label>
+                <textarea matInput autocomplete="off" formControlName="es">
+                </textarea>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Ingles </mat-label>
+                <textarea matInput autocomplete="off" formControlName="en">
+                </textarea>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Portugues </mat-label>
+                <textarea matInput autocomplete="off" formControlName="pt">
+                </textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
           <h4 class="h4">Texto Bliblico</h4>
           <div class="row mt-5" formGroupName="biblical_text">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Español</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  autocomplete="off"
+                  placeholder=""
+                  formControlName="es"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Ingles</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  autocomplete="off"
+                  placeholder=""
+                  formControlName="en"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>Portugues</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  autocomplete="off"
+                  placeholder=""
+                  formControlName="pt"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+
+
+          <h4 class="h4">Información de contacto</h4>
+          <div class="row mt-5" formGroupName="contact_us">
             <div class="col">
               <mat-form-field class="example-full-width">
                 <mat-label>Español</mat-label>
