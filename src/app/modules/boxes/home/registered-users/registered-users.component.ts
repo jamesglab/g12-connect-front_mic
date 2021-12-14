@@ -52,7 +52,7 @@ export class RegisteredUsersComponent implements OnInit {
     'options',
   ]; //DATOS A MOSTRAR EN LAS TABLAS DEL ANGULAR MATERIAL
 
-  public individual_table: [] = [];
+  public individual_table = [];
   public grupal_table = [];
 
   //BOOLEANS
@@ -126,6 +126,16 @@ export class RegisteredUsersComponent implements OnInit {
         (res) => {
           //AGREGAMOS LA RESPUESTA A LA TABLA DE REGISTRO INDIVIDUAL
           this.individual_table = res;
+          //REINICIAMOS LAS TRANSACCIONES
+          this.individual_table = [];
+          //RECORREMOS LAS TRANSACCIONES
+          res.map((tr) => {
+            //VALIDAMOS EL USUARIO ASISTENTE
+            if (tr.isAssistant) {
+              //ANEXAMOS EL USUARIO ASISTENTE
+              this.individual_table.push(tr);
+            }
+          });
           //HACEMOS UN DETECTOR DE LOS CANMBIOS PARA PODER VISUALIZARLOS
           this.cdr.detectChanges();
         },
