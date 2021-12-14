@@ -148,6 +148,15 @@
               ></i>
             </span>
           </a>
+
+          <a
+          class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
+          (click)="createPdf(element)"
+          matTooltip="Descargar comprobante"
+          *ngIf="element.transaction.status == '1'"
+        >
+          <span><i class="far fa-file-pdf"></i> </span>
+        </a>
         </td>
       </ng-container>
 
