@@ -226,6 +226,7 @@ export class EventReportsComponent implements OnInit {
       })
       .subscribe((res: any) => {
         this.countsCutTable = res.count;
+        console.log('cortes',res)
         if (!this.data_cut_table) {
           this.data_cut_table = new MatTableDataSource<any[]>(res.reports);
           this.cdr.detectChanges();

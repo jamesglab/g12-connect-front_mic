@@ -309,6 +309,7 @@ export class RegisterUserBoxComponent implements OnInit {
   //BUSCAMOS EL USUARIO
   searchUser(autocomplete?) {
     const filters = {};
+    console.log('crearemos filtros');
     if (this.assistant_value.identification) {
       filters['identification'] = this.assistant_value.identification.trim();
     }
@@ -319,35 +320,38 @@ export class RegisterUserBoxComponent implements OnInit {
     ) {
       filters['email'] = this.assistant_value.email.trim().toLowerCase();
     }
+
     //AGREGAMOS LOS FILTROS DEL USUARIO
-    this.userService.getUserInfo(filters).subscribe(
-      (res) => {
-        //PONEMOS EL TRUE DEL USUARIO
-        this.find_user = true;
-        //VALIDAMOS EL AUTOCOMPLETE DEL FORMULARIO
-        if (autocomplete) {
-          //AUTOCOMPLEMENTAMOS LOS DATOS DEL USUARIO ENCONTRADO
-          this.setUser(res);
-        } else {
-          //SI NO SE REQUIERE AUTOCOMPLEMENTAR LOS DATOS MANDAMOS LA CREACION DEL USUARIO Y SETEAMOS EL ID
-          this.assistant_control.get('id').setValue(res['id']);
-          //CREAMOS EL USUARIO
-          this.createUser();
+    if (Object.keys(filters).length > 0) {
+      this.userService.getUserInfo(filters).subscribe(
+        (res) => {
+          //PONEMOS EL TRUE DEL USUARIO
+          this.find_user = true;
+          //VALIDAMOS EL AUTOCOMPLETE DEL FORMULARIO
+          if (autocomplete) {
+            //AUTOCOMPLEMENTAMOS LOS DATOS DEL USUARIO ENCONTRADO
+            this.setUser(res);
+          } else {
+            //SI NO SE REQUIERE AUTOCOMPLEMENTAR LOS DATOS MANDAMOS LA CREACION DEL USUARIO Y SETEAMOS EL ID
+            this.assistant_control.get('id').setValue(res['id']);
+            //CREAMOS EL USUARIO
+            this.createUser();
+          }
+        },
+        (err) => {
+          if (autocomplete) {
+            this.disable_ministerial_info = false;
+            Swal.fire('No se encontro el usuario', '', 'info').then((res) => {
+              this.assistant_control.get('network').enable();
+              this.assistant_control.get('network').reset();
+              this.assistant_control.get('pastor').reset();
+              this.assistant_control.get('leader').reset();
+            });
+            throw err;
+          }
         }
-      },
-      (err) => {
-        if (autocomplete) {
-          this.disable_ministerial_info = false;
-          Swal.fire('No se encontro el usuario', '', 'info').then((res) => {
-            this.assistant_control.get('network').enable();
-            this.assistant_control.get('network').reset();
-            this.assistant_control.get('pastor').reset();
-            this.assistant_control.get('leader').reset();
-          });
-          throw err;
-        }
-      }
-    );
+      );
+    }
   }
 
   //SOLICITUD DE CREACION DE USUARIO
@@ -490,10 +494,12 @@ export class RegisterUserBoxComponent implements OnInit {
             //OCULTAMOS EL LOADER
             this.isLoading = false;
             //MOSTRAMOS EL MENSAJE DE SUCCESS
-            Swal.fire('Usuario registrado', '', 'success');
+            Swal.fire('Usuario registrado', '', 'success').then(r=>{
+              this._makePdfService.createPdf(res.ref, this.box);
+              this.modal.close();
+            });
             //CERRAMOS EL MODAL
-            this._makePdfService.createPdf(res.ref, this.box);
-            this.modal.close();
+            
           },
           (err) => {
             this.isLoading = false;

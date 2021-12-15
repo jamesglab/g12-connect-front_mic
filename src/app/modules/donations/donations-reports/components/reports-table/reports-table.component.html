@@ -4,66 +4,84 @@
   </mat-form-field> -->
 </div>
 
-<table #table mat-table [dataSource]="dataSource">
+<mat-table [dataSource]="dataSource" matSort>
   <ng-container matColumnDef="reference">
-    <th mat-header-cell *matHeaderCellDef> Referencia</th>
-    <td mat-cell *matCellDef="let element">
-      {{element.reference}}
-    </td>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>
+      Referencia
+    </mat-header-cell>
+    <mat-cell *matCellDef="let element" data-label="Referencia">
+      {{ element.reference ? element.reference : "" }}
+    </mat-cell>
   </ng-container>
 
-
   <ng-container matColumnDef="document">
-    <th mat-header-cell *matHeaderCellDef> Documento</th>
-    <td mat-cell *matCellDef="let element">
-      {{element.document}}
-    </td>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>
+      Documento
+    </mat-header-cell>
+    <mat-cell *matCellDef="let element" data-label="Documento">
+      {{ element.document }}
+    </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="phone">
-    <th mat-header-cell *matHeaderCellDef> Telefono </th>
-    <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>
+      Telefono
+    </mat-header-cell>
+    <mat-cell *matCellDef="let element" data-label="Telefono">
+      {{ element.phone }}
+    </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> Email</th>
-    <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Email </mat-header-cell>
+    <mat-cell *matCellDef="let element" data-label="Email">
+      {{ element.email }}
+    </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="offering_value">
-    <th mat-header-cell *matHeaderCellDef> Valor Ofrenda </th>
-    <td mat-cell *matCellDef="let element"> {{element.offering_value}} </td>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>
+      Valor Ofrenda
+    </mat-header-cell>
+    <mat-cell
+      *matCellDef="let element"
+      data-label="Estado"
+      data-label="Valor Ofrenda"
+    >
+      {{ element.offering_value }}
+    </mat-cell>
   </ng-container>
-
   <ng-container matColumnDef="offering_type">
-    <th mat-header-cell *matHeaderCellDef> Tipo de Ofrenda </th>
-    <td mat-cell *matCellDef="let element"> {{element.offering_type}} </td>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>
+      Tipo de Ofrenda
+    </mat-header-cell>
+    <mat-cell *matCellDef="let element" data-label="Tipo de Ofrenda">
+      {{ element.offering_type }}
+    </mat-cell>
   </ng-container>
-
-
   <ng-container matColumnDef="payment">
-    <th mat-header-cell *matHeaderCellDef>Metodo de pago </th>
-    <td mat-cell *matCellDef="let element"> {{element.payment}} </td>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>
+      Metodo de pago
+    </mat-header-cell>
+    <mat-cell *matCellDef="let element" data-label="Metodo de pago">
+      {{ element.payment }}
+    </mat-cell>
   </ng-container>
-
   <ng-container matColumnDef="created_at">
-    <th mat-header-cell *matHeaderCellDef>Fecha</th>
-    <td mat-cell *matCellDef="let element"> {{element.created_at }} </td>
-  </ng-container>
-
-
-  <ng-container matColumnDef="country">
-    <th mat-header-cell *matHeaderCellDef>Pais </th>
-    <td mat-cell *matCellDef="let element"> {{element.country}} </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-  <ng-container matColumnDef="actions">
-    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-    <mat-cell *matCellDef="let element">
-
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</mat-header-cell>
+    <mat-cell *matCellDef="let element" data-label="Fecha">
+      {{ element.created_at }}
+    </mat-cell> </ng-container
+  ><ng-container matColumnDef="country">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Pais </mat-header-cell>
+    <mat-cell *matCellDef="let element" data-label="Pais">
+      {{ element.country }}
+    </mat-cell> </ng-container
+  ><ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>
+      Opciónes
+    </mat-header-cell>
+    <mat-cell *matCellDef="let element" data-label="Opciónes ">
       <a (click)="openModaleCheck(element)">
         <span class="svg-icon svg-icon-md svg-icon-primary">
           <mat-icon class="icon-list"> launch</mat-icon>
@@ -71,10 +89,16 @@
       </a>
     </mat-cell>
   </ng-container>
-</table>
 
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns"> </mat-row>
+</mat-table>
 
-
-<mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" (page)="emitPageData($event) "
-  aria-label="Select page">
+<mat-paginator
+  [length]="count"
+  [pageSize]="10"
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  (page)="emitPageData($event)"
+  aria-label="Select page"
+>
 </mat-paginator>

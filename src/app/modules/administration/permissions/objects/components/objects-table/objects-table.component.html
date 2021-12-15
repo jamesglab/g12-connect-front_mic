@@ -3,25 +3,25 @@
 
         <ng-container matColumnDef="idObject">
             <mat-header-cell *matHeaderCellDef> Código </mat-header-cell>
-            <mat-cell *matCellDef="let element" class="cursor-pointer">
+            <mat-cell *matCellDef="let element" class="cursor-pointer" data-label="Código">
                 {{element.id}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="value">
             <mat-header-cell *matHeaderCellDef> Valor </mat-header-cell>
-            <mat-cell *matCellDef="let element" class="cursor-pointer">
+            <mat-cell *matCellDef="let element" class="cursor-pointer" data-label="Valor">
                 {{element.value}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="description">
             <mat-header-cell *matHeaderCellDef> Descripción </mat-header-cell>
-            <mat-cell *matCellDef="let element" class="cursor-pointer">
+            <mat-cell *matCellDef="let element" class="cursor-pointer" data-label="Descripción">
                 {{element.description }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
-            <mat-cell *matCellDef="let element" class="cursor-pointer">
+            <mat-cell *matCellDef="let element" class="cursor-pointer" data-label="Estado">
                 
             <span class="btn btn-sm font-weight-bold cursor-pointer" [ngClass]="{'btn-light-success': element.status, 
             'btn-light-danger': !element.status}">{{element.status ? 'Activo' : 'Inactivo' }} </span>
@@ -29,8 +29,8 @@
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element">
+            <mat-header-cell *matHeaderCellDef>Opciónes</mat-header-cell>
+            <mat-cell *matCellDef="let element" data-label="Opciónes">
                 <a class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer" (click)="handleEdit(element)">
                     <span
                       [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"

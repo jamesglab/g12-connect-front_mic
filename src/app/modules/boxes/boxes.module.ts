@@ -11,10 +11,14 @@ import { RegisterUserBoxComponent } from './home/register-user-box/register-user
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg';
+import { BoxReportsComponent } from './home/box-reports/box-reports.component';
+import { ConsolidatedCashiersComponent } from './home/box-reports/tables/consolidated-cashiers/consolidated-cashiers.component';
+import { CloseCashierComponent } from './home/box-reports/tables/close-cashier/close-cashier.component';
+import { ConsolidatedBunkerComponent } from './home/box-reports/tables/consolidated-bunker/consolidated-bunker.component';
 
 
 @NgModule({
-  declarations: [BoxesHomeComponent, EventsComponent, RegisteredUsersComponent, DetailRegisterComponent, RegisterUserBoxComponent],
+  declarations: [BoxesHomeComponent, EventsComponent, RegisteredUsersComponent, DetailRegisterComponent, RegisterUserBoxComponent, BoxReportsComponent, ConsolidatedCashiersComponent, CloseCashierComponent, ConsolidatedBunkerComponent],
   imports: [
     CommonModule,
     BoxesRoutingModule,
