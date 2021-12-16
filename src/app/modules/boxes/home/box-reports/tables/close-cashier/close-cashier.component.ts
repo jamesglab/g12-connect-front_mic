@@ -108,10 +108,14 @@ export class CloseCashierComponent implements OnInit {
         'Total COP': this.calculate_position('total_cop'),
         'Total USD': this.calculate_position('total_usd'),
       });
-      console.log('BOXXXNAME',this.box)
+
       this.exportService.exportAsExcelFile(
         export_data,
-        `CIERRE_CAJERO_${this.box.name.toString().replace(/\s+/g, '').trim().toUpperCase()}`
+        `CIERRE_CAJERO_${this.box.name
+          .toString()
+          .replace(/\s+/g, '')
+          .trim()
+          .toUpperCase()}`
       );
     } catch (error) {
       Swal.fire(
