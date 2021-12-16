@@ -69,7 +69,8 @@ export class ConsolidatedCashiersComponent implements OnInit {
         return this.dataSource.reduce(
           //ACCEDEMOS A LOS VALORES POR OBJETOS Y CALCULAMOS LA POSICION IMPLEMENTADA
           (previus_value, object_data_source) =>
-            previus_value[position] + object_data_source[position]
+            previus_value + object_data_source[position],
+          0
         );
       } else {
         return 0;

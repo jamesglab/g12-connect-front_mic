@@ -32,9 +32,14 @@
               <mat-datepicker #dp3 disabled="false"></mat-datepicker>
             </mat-form-field>
           </div>
-          <div>
+          <div class="d-flex">
             <div class="ml-3">
-              <button mat-mini-fab style="background: #1e6d41" (click)="exportFiles()">
+              <button
+                mat-mini-fab
+                style="background: #1e6d41"
+                (click)="exportFiles()"
+                matTooltip="Descargar consolidado"
+              >
                 <span
                   class="spinner-border spinner-border-sm"
                   role="status"
@@ -43,6 +48,24 @@
                 ></span>
                 <span *ngIf="!isLoading">
                   <i class="fas fa-file-excel" style="color: white"></i>
+                </span>
+              </button>
+            </div>
+            <div class="ml-3">
+              <button
+                mat-mini-fab
+                style="background: #07508b"
+                (click)="exportUsersBox()"
+                matTooltip="Detallado de usuarios"
+              >
+                <span
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                  *ngIf="isLoading"
+                ></span>
+                <span *ngIf="!isLoading">
+                  <i class="fas fa-users" style="color: white"></i>
                 </span>
               </button>
             </div>

@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
+import Swal from 'sweetalert2';
 import { BoxService } from '../_services/Boxes.service';
 
 @Component({
@@ -12,7 +13,8 @@ export class BoxReportsComponent implements OnInit {
   public permissions = this.storageService.getItem('permissions');
   constructor(
     public _boxService: BoxService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private cdr : ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -20,8 +22,18 @@ export class BoxReportsComponent implements OnInit {
   }
 
   getUserBox() {
-    this._boxService.findBoxByUser().subscribe((res) => {
-      this.box = res;
-    });
+    try {
+      this._boxService.findBoxByUser().subscribe(
+        (res) => {
+          this.box = res;
+          this.cdr.detectChanges();
+        },
+        (err) => {
+          throw new Error(err);
+        }
+      );
+    } catch (error) {
+      Swal.fire(error.message ? error.message : 'Tenemos error', '', 'error');
+    }
   }
 }

@@ -158,4 +158,17 @@ export class BoxService {
         catchError(handleError)
       );
   }
+
+  reportsUsersBox(params) {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.reports}/box/users-registers`, {
+        params,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }
