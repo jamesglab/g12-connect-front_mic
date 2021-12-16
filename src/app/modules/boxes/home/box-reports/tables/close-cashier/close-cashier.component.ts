@@ -91,7 +91,12 @@ export class CloseCashierComponent implements OnInit {
   public calculate_position(position: string) {
     //CALCULAMOS LOS VALORES Y RETORNAMOS LOS TOTALES POR FILAS
     if (this.dataSource) {
-      return this.dataSource.reduce((accum, curr) => accum + curr[position], 0);
+      //HACEMOS UN REDUCE PARA SUMAR LOS TOTALES
+      return this.dataSource.reduce(
+        //ACCEDEMOS A LOS VALORES POR OBJETOS Y CALCULAMOS LA POSICION IMPLEMENTADA
+        (previus_value, object_data_source) =>
+          previus_value[position] + object_data_source[position]
+      );
     } else {
       return 0;
     }

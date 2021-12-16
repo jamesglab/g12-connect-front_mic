@@ -24,7 +24,7 @@ export class ConsolidatedCashiersComponent implements OnInit {
     'total_usd',
   ];
 
-  public dataSource = [];
+  public dataSource = null;
 
   constructor(
     private _boxService: BoxService,
@@ -48,23 +48,36 @@ export class ConsolidatedCashiersComponent implements OnInit {
   //METODO PARA CONSUMIR EL API
   getReports(date_filter) {
     //CONSUMIMOS EL REPORTE POR FECHA Y POR CAJA
-    this._boxService.reportsAllBox({ date_filter }).subscribe((res) => {
-      this.dataSource = [];
-      this.dataSource = res;
-      this.cdr.detectChanges();
-    });
+    this._boxService.reportsAllBox({ date_filter }).subscribe(
+      (res) => {
+        this.dataSource = [];
+        this.dataSource = res;
+        this.cdr.detectChanges();
+      },
+      (err) => {
+        throw new Error(err.message ? err.message : 'Error');
+      }
+    );
   }
 
   //CONTADORES RECIBIMOS LA POSICION DEL CONTADOR
   public calculate_position(position: string) {
     //CALCULAMOS LOS VALORES Y RETORNAMOS LOS TOTALES POR FILAS
-    if (this.dataSource) {
-      return this.dataSource.reduce((accum, curr) => accum + curr[position], 0);
-    } else {
-      return 0;
+    try {
+      if (this.dataSource) {
+        //HACEMOS UN REDUCE PARA SUMAR LOS TOTALES
+        return this.dataSource.reduce(
+          //ACCEDEMOS A LOS VALORES POR OBJETOS Y CALCULAMOS LA POSICION IMPLEMENTADA
+          (previus_value, object_data_source) =>
+            previus_value[position] + object_data_source[position]
+        );
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      Swal.fire(error.message ? error.message : 'Error inesperado', 'info');
     }
   }
-
   //METODO PARA EXPORTAR LOS DATOS
   exportFiles() {
     try {
@@ -100,7 +113,7 @@ export class ConsolidatedCashiersComponent implements OnInit {
         'Total COP': this.calculate_position('total_cop'),
         'Total USD': this.calculate_position('total_usd'),
       });
-      this._exportService.exportAsExcelFile(export_data,'CONSOLIDADO_CAJEROS')
+      this._exportService.exportAsExcelFile(export_data, 'CONSOLIDADO_CAJEROS');
     } catch (error) {
       Swal.fire(
         error.message ? error.message : 'No pudimos procesar tu solicitud',
