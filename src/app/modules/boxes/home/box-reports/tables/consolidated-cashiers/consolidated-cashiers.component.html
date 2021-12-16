@@ -65,9 +65,10 @@
               <mat-cell *matCellDef="let row" data-label="Cantidad de Usuarios">
                 {{ row.quantity_users }}
               </mat-cell>
-              <mat-footer-cell *matFooterCellDef>{{
-                calculate_position("quantity_users")
-              }}</mat-footer-cell>
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Cantidad de Usuarios :</div>
+                {{ calculate_position("quantity_users") }}</mat-footer-cell
+              >
             </ng-container>
   
             <ng-container matColumnDef="diner_cash_cop">
@@ -77,10 +78,13 @@
               <mat-cell *matCellDef="let row" data-label="Dinero Efectivo COP">
                 {{ row.diner_cash_cop | currency: "COP":"symbol":"1.0-0" }}
               </mat-cell>
-              <mat-footer-cell *matFooterCellDef>{{
-                calculate_position("diner_cash_cop")
-                  | currency: "COP":"symbol":"1.0-0"
-              }}</mat-footer-cell>
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Dinero Efectivo COP :</div>
+                {{
+                  calculate_position("diner_cash_cop")
+                    | currency: "COP":"symbol":"1.0-0"
+                }}</mat-footer-cell
+              >
             </ng-container>
   
             <ng-container matColumnDef="diner_cash_usd">
@@ -90,9 +94,10 @@
               <mat-cell *matCellDef="let row" data-label="Dinero Efectivo USD">
                 {{ row.diner_cash_usd + " $" }}
               </mat-cell>
-              <mat-footer-cell *matFooterCellDef>{{
-                calculate_position("diner_cash_usd") + " $"
-              }}</mat-footer-cell>
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Dinero Efectivo USD :</div>
+                {{ calculate_position("diner_cash_usd") + " $" }}</mat-footer-cell
+              >
             </ng-container>
   
             <ng-container matColumnDef="diner_dathaphone_cop">
@@ -102,10 +107,14 @@
               <mat-cell *matCellDef="let row" data-label="Dinero Datafono COP">
                 {{ row.diner_dathaphone_cop | currency: "COP":"symbol":"1.0-0" }}
               </mat-cell>
-              <mat-footer-cell *matFooterCellDef>{{
-                calculate_position("diner_dathaphone_cop")
-                  | currency: "COP":"symbol":"1.0-0"
-              }}</mat-footer-cell>
+  
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Dinero Datafono COP :</div>
+                {{
+                  calculate_position("diner_dathaphone_cop")
+                    | currency: "COP":"symbol":"1.0-0"
+                }}</mat-footer-cell
+              >
             </ng-container>
   
             <ng-container matColumnDef="diner_dathaphone_usd">
@@ -115,9 +124,12 @@
               <mat-cell *matCellDef="let row" data-label="Dinero Datafono USD">
                 {{ row.diner_dathaphone_usd + " $" }}
               </mat-cell>
-              <mat-footer-cell *matFooterCellDef>{{
-                calculate_position("diner_dathaphone_usd") + " $"
-              }}</mat-footer-cell>
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Dinero Datafono USD :</div>
+                {{
+                  calculate_position("diner_dathaphone_usd") + " $"
+                }}</mat-footer-cell
+              >
             </ng-container>
   
             <ng-container matColumnDef="total_cop">
@@ -125,10 +137,14 @@
               <mat-cell *matCellDef="let row" data-label="Total COP">
                 {{ row.total_cop | currency: "COP":"symbol":"1.0-0" }}
               </mat-cell>
-              <mat-footer-cell *matFooterCellDef>{{
-                calculate_position("total_cop")
-                  | currency: "COP":"symbol":"1.0-0"
-              }}</mat-footer-cell>
+  
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Total COP :</div>
+                {{
+                  calculate_position("total_cop")
+                    | currency: "COP":"symbol":"1.0-0"
+                }}</mat-footer-cell
+              >
             </ng-container>
   
             <ng-container matColumnDef="total_usd">
@@ -136,9 +152,10 @@
               <mat-cell *matCellDef="let row" data-label="Total USD">
                 {{ row.total_usd + " $" }}
               </mat-cell>
-              <mat-footer-cell *matFooterCellDef>{{
-                calculate_position("total_usd") + " $"
-              }}</mat-footer-cell>
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Total USD</div>
+                {{ calculate_position("total_usd") + " $" }}</mat-footer-cell
+              >
             </ng-container>
   
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

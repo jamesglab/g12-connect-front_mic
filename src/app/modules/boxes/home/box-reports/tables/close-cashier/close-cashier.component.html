@@ -66,7 +66,7 @@
               {{ row.quantity_users }}
             </mat-cell>
             <mat-footer-cell *matFooterCellDef>
-              <div class="show-footer">Cantidad de Usuarios  :</div>
+              <div class="show-footer">Cantidad de Usuarios :</div>
               {{ calculate_position("quantity_users") }}</mat-footer-cell
             >
           </ng-container>
@@ -79,7 +79,7 @@
               {{ row.diner_cash_cop | currency: "COP":"symbol":"1.0-0" }}
             </mat-cell>
             <mat-footer-cell *matFooterCellDef>
-              <div class="show-footer">Dinero Efectivo COP  :</div>
+              <div class="show-footer">Dinero Efectivo COP :</div>
               {{
                 calculate_position("diner_cash_cop")
                   | currency: "COP":"symbol":"1.0-0"
@@ -95,7 +95,7 @@
               {{ row.diner_cash_usd + " $" }}
             </mat-cell>
             <mat-footer-cell *matFooterCellDef>
-              <div class="show-footer">Dinero Efectivo USD  :</div>
+              <div class="show-footer">Dinero Efectivo USD :</div>
               {{ calculate_position("diner_cash_usd") + " $" }}</mat-footer-cell
             >
           </ng-container>
@@ -109,7 +109,7 @@
             </mat-cell>
 
             <mat-footer-cell *matFooterCellDef>
-              <div class="show-footer">Dinero Datafono COP  :</div>
+              <div class="show-footer">Dinero Datafono COP :</div>
               {{
                 calculate_position("diner_dathaphone_cop")
                   | currency: "COP":"symbol":"1.0-0"
@@ -125,7 +125,7 @@
               {{ row.diner_dathaphone_usd + " $" }}
             </mat-cell>
             <mat-footer-cell *matFooterCellDef>
-              <div class="show-footer">Dinero Datafono USD  :</div>
+              <div class="show-footer">Dinero Datafono USD :</div>
               {{
                 calculate_position("diner_dathaphone_usd") + " $"
               }}</mat-footer-cell
@@ -133,13 +133,13 @@
           </ng-container>
 
           <ng-container matColumnDef="total_cop">
-            <mat-header-cell *matHeaderCellDef> Total COP  :</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> Total COP </mat-header-cell>
             <mat-cell *matCellDef="let row" data-label="Total COP">
               {{ row.total_cop | currency: "COP":"symbol":"1.0-0" }}
             </mat-cell>
 
             <mat-footer-cell *matFooterCellDef>
-              <div class="show-footer">Total COP  :</div>
+              <div class="show-footer">Total COP :</div>
               {{
                 calculate_position("total_cop")
                   | currency: "COP":"symbol":"1.0-0"
