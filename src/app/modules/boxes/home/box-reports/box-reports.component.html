@@ -1,6 +1,6 @@
 <div>
   <div>
-    <app-close-cashier [box]="box"></app-close-cashier>
+    <app-close-cashier [box]="box" *ngIf="permissions['CJ1301']"></app-close-cashier>
   </div>
 
   <!-- <div>
@@ -8,6 +8,6 @@
   </div> -->
 
   <div>
-    <app-consolidated-cashiers [box]="box"></app-consolidated-cashiers>
+    <app-consolidated-cashiers [box]="box" *ngIf="permissions['CJ1302']"></app-consolidated-cashiers>
   </div>
 </div>
