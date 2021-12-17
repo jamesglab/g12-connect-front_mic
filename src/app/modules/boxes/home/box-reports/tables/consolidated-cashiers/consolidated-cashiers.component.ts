@@ -24,6 +24,17 @@ export class ConsolidatedCashiersComponent implements OnInit {
     'total_usd',
   ];
 
+  public headers_report = {
+    total_registers: 'TOTAL REGISTRADOS',
+    diner_cash_cop: 'DINERO EFECTIVO COP',
+    diner_cash_usd: 'DINERO EFECTIVO USD',
+    diner_dathaphone_cop: 'DINERO DATAFONO COP',
+    diner_dathaphone_usd: 'DINERO DATAFONO USD',
+    name_box_user: 'NOMBRE DE CAJA',
+    total_cop: 'TOTAL COP',
+    total_usd: 'TOTAL USD',
+  };
+
   public dataSource;
 
   constructor(
@@ -158,27 +169,14 @@ export class ConsolidatedCashiersComponent implements OnInit {
         })
         .subscribe(
           (res) => {
-            let export_consolidate = res || [];
+            let export_consolidate = [];
 
-            const total_values = {};
-            //CACULAREMOS LOS TOTALES
-            //RECORREMOS EL PRIMER OBJETO DEL ARRAY OBTENER LOS KEYS DE LOS OBJETOS
-            Object.keys(res[0]).map((key) => {
-              //VALIDAMOS SI LA KEY ES DE TIPO NUMERO
-              if (typeof res[0][key] === 'number') {
-                //CACULAMOS EL VALOR DE LA TABLA
-                total_values[key] = this.calculate_position(
-                  export_consolidate,
-                  key
-                );
-              } else {
-                //PONEMOS EL TOTAL DE LA KEY
-                total_values[key] = 'TOTAL';
-              }
+            res.map((report) => {
+              export_consolidate.push(this.validateObjectReport(report));
             });
-            //ANEXAMOS EL OBJETO A LOS VALORES
-            export_consolidate.push(total_values);
-            //GENERMOS EL DESCARGABLE
+
+            export_consolidate.push(this.calculateTotalReport(res));
+
             this._exportService.exportAsExcelFile(
               export_consolidate,
               'consolidado'
@@ -192,6 +190,48 @@ export class ConsolidatedCashiersComponent implements OnInit {
         );
     } catch (error) {
       Swal.fire(error.message ? error.message : 'Error', '', 'error');
+    }
+  }
+
+  //VALIDAREMOS OBJETO A OBJETO
+  validateObjectReport(object) {
+    try {
+      let new_object_report = {
+        'NOMBRE DE CAJA': '',
+      };
+      Object.keys(object).map((key) => {
+        if (this.headers_report[key]) {
+          new_object_report[this.headers_report[key]] = object[key];
+        } else {
+          new_object_report[key] = object[key];
+        }
+      });
+      return new_object_report;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  calculateTotalReport(array) {
+    try {
+      let total_object = {
+        'NOMBRE DE CAJA': 'TOTAL',
+      };
+      Object.keys(array[0]).map((key) => {
+        if (typeof array[0][key] == 'number') {
+          if (this.headers_report[key]) {
+            total_object[this.headers_report[key]] = this.calculate_position(
+              array,
+              key
+            );
+          } else {
+            total_object[key] = this.calculate_position(array, key);
+          }
+        }
+      });
+      return total_object;
+    } catch (error) {
+      return error;
     }
   }
 }
