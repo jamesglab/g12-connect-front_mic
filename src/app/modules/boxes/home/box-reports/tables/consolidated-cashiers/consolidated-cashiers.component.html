@@ -37,7 +37,9 @@
               <button
                 mat-mini-fab
                 style="background: #1e6d41"
+                matTooltip="Consolidado Cajeros"
                 (click)="exportFiles()"
+                m
               >
                 <span
                   class="spinner-border spinner-border-sm"
@@ -54,8 +56,9 @@
             <div class="ml-3">
               <button
                 mat-mini-fab
+                matTooltip="Consolidado Bunker"
                 style="background: #07508b"
-                (click)="downloadConsolidated()"
+                (click)="downloadConsolidatedBunker()"
               >
                 <span
                   class="spinner-border spinner-border-sm"
@@ -65,7 +68,10 @@
                   *ngIf="isLoading"
                 ></span>
                 <span *ngIf="!isLoading">
-                  <i class="fas fa-file-signature" style="color: white; margin-left: 4px;" ></i>
+                  <i
+                    class="fas fa-file-signature"
+                    style="color: white; margin-left: 4px"
+                  ></i>
                 </span>
               </button>
             </div>
@@ -90,7 +96,9 @@
               </mat-cell>
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Cantidad de Usuarios :</div>
-                {{ calculate_position(dataSource,"quantity_users") }}</mat-footer-cell
+                {{
+                  calculate_position(dataSource, "quantity_users")
+                }}</mat-footer-cell
               >
             </ng-container>
 
@@ -104,7 +112,7 @@
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Dinero Efectivo COP :</div>
                 {{
-                  calculate_position(dataSource,"diner_cash_cop")
+                  calculate_position(dataSource, "diner_cash_cop")
                     | currency: "COP":"symbol":"1.0-0"
                 }}</mat-footer-cell
               >
@@ -120,7 +128,7 @@
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Dinero Efectivo USD :</div>
                 {{
-                  calculate_position(dataSource,"diner_cash_usd") + " $"
+                  calculate_position(dataSource, "diner_cash_usd") + " $"
                 }}</mat-footer-cell
               >
             </ng-container>
@@ -138,7 +146,7 @@
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Dinero Datafono COP :</div>
                 {{
-                  calculate_position(dataSource,"diner_dathaphone_cop")
+                  calculate_position(dataSource, "diner_dathaphone_cop")
                     | currency: "COP":"symbol":"1.0-0"
                 }}</mat-footer-cell
               >
@@ -154,7 +162,7 @@
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Dinero Datafono USD :</div>
                 {{
-                  calculate_position(dataSource,"diner_dathaphone_usd") + " $"
+                  calculate_position(dataSource, "diner_dathaphone_usd") + " $"
                 }}</mat-footer-cell
               >
             </ng-container>
@@ -168,7 +176,7 @@
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Total COP :</div>
                 {{
-                  calculate_position(dataSource,"total_cop")
+                  calculate_position(dataSource, "total_cop")
                     | currency: "COP":"symbol":"1.0-0"
                 }}</mat-footer-cell
               >
@@ -181,7 +189,9 @@
               </mat-cell>
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Total USD</div>
-                {{ calculate_position(dataSource,"total_usd") + " $" }}</mat-footer-cell
+                {{
+                  calculate_position(dataSource, "total_usd") + " $"
+                }}</mat-footer-cell
               >
             </ng-container>
 

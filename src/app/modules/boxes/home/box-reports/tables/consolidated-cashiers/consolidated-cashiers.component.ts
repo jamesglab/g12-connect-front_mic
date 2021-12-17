@@ -93,6 +93,7 @@ export class ConsolidatedCashiersComponent implements OnInit {
   //METODO PARA EXPORTAR LOS DATOS
   exportFiles() {
     try {
+      //VALIDAMOS LA FECHA SELECCIONADA
       if (!this.date_filter.value) {
         throw new Error('Seleccióna una fecha');
       }
@@ -143,6 +144,7 @@ export class ConsolidatedCashiersComponent implements OnInit {
         'Total COP': this.calculate_position(this.dataSource, 'total_cop'),
         'Total USD': this.calculate_position(this.dataSource, 'total_usd'),
       });
+      //GENERAMOS EL PDF
       this._exportService.exportAsExcelFile(export_data, 'CONSOLIDADO_CAJEROS');
     } catch (error) {
       Swal.fire(
@@ -153,8 +155,9 @@ export class ConsolidatedCashiersComponent implements OnInit {
     }
   }
 
-  async downloadConsolidated() {
+  async downloadConsolidatedBunker() {
     try {
+      //VALIDAMOS LAS FECHAS
       if (!this.date_filter.value) {
         throw new Error('Seleccióna una fecha');
       }
@@ -162,21 +165,27 @@ export class ConsolidatedCashiersComponent implements OnInit {
       if (this.dataSource.length == 0) {
         throw new Error('No hay datos por descargar');
       }
+      //MOSTRAMOS EL LOADER
       this.isLoading = true;
+      //CONSUMIMOS EL INPUT DE DESCARGAR EL BUNKER
       this._boxService
         .consolidatedReports({
           date_filter: new Date(this.date_filter.value).getTime(),
         })
         .subscribe(
           (res) => {
+            //CREAMOS LA VARIABLE PARA DESCARGAR LOS DATOS
             let export_consolidate = [];
 
+            //RECORREMOS LOS REPORTES
             res.map((report) => {
+              //ASIGNAMOS EL OBJETO YA RECORRIDO
               export_consolidate.push(this.validateObjectReport(report));
             });
 
+            //ASIGNAMOS LOS TOTALES DE LA TABLA
             export_consolidate.push(this.calculateTotalReport(res));
-
+            //CREAMOS EL REPORTE DESCARGADO
             this._exportService.exportAsExcelFile(
               export_consolidate,
               'consolidado'
@@ -193,19 +202,25 @@ export class ConsolidatedCashiersComponent implements OnInit {
     }
   }
 
-  //VALIDAREMOS OBJETO A OBJETO
+  //VALIDAREMOS OBJTO DE TRANSACCION
   validateObjectReport(object) {
     try {
+      //CREAMOS EL OBJETO INICIALIZANDO EL NOMBRE DE LA CAJA
       let new_object_report = {
         'NOMBRE DE CAJA': '',
       };
+      //RECORREMOS LaS KEYS DE EL OBJETO
       Object.keys(object).map((key) => {
+        //VALIDAMOS SI LA KEY SE ENCUENTRA EN NUESTRO DATACENTER
         if (this.headers_report[key]) {
+          //ASIGNAMOS LA NUEVA VARIABLE EN LA POSICION DEL DATACENTER
           new_object_report[this.headers_report[key]] = object[key];
         } else {
+          //ASIGNAMOS EL VALOR EN LA KEY DEL OBJETO
           new_object_report[key] = object[key];
         }
       });
+      //RETORNAMOR EL OBJETO
       return new_object_report;
     } catch (error) {
       return error;
@@ -214,19 +229,25 @@ export class ConsolidatedCashiersComponent implements OnInit {
 
   calculateTotalReport(array) {
     try {
+      //INCIIAMOS EL NOMBRE DE LA CAJA CON EL TOTAL PARA MOSTRAR EL MNS
       let total_object = {
         'NOMBRE DE CAJA': 'TOTAL',
       };
+      //RECORREMOS LAS KEYS DE EL PRIMER OBJETO DE LA TABLA
       Object.keys(array[0]).map((key) => {
+        //VALIDAMOS LA KEY SI ES NUMERO
         if (typeof array[0][key] == 'number') {
+          //VALIDAMOS SI LA KEY SE ENCUENTRA EN EL DATACENTER
           if (this.headers_report[key]) {
+            //ASIGNAMOS EL TOTAL DE LOS OBJETOS CON NUESTRA KEY EN EL DATACENTER
             total_object[this.headers_report[key]] = this.calculate_position(
               array,
               key
             );
+            //ASIGNAMOS EL TOTAL DE LOS OBJETOS A LA KEY QUE NO FUE VALIDADA
           } else {
             total_object[key] = this.calculate_position(array, key);
-          }
+          } //NO TENEMOS ELSE POR QUE SOLO VALIDAREMOS TOTALES DE NUMEROS
         }
       });
       return total_object;
