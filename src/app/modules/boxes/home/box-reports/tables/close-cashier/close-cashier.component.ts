@@ -251,7 +251,6 @@ export class CloseCashierComponent implements OnInit {
   }
 
   validatePaymentMethod(payment_method) {
-    console.log('tenemos caja', payment_method);
     if (payment_method.toLowerCase() == 'credit') {
       return 'Tarjeta de credito';
     } else if (payment_method.toLowerCase() == 'pse') {

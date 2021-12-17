@@ -24,7 +24,7 @@ export class ConsolidatedCashiersComponent implements OnInit {
     'total_usd',
   ];
 
-  public dataSource = null;
+  public dataSource;
 
   constructor(
     private _boxService: BoxService,
@@ -61,12 +61,12 @@ export class ConsolidatedCashiersComponent implements OnInit {
   }
 
   //CONTADORES RECIBIMOS LA POSICION DEL CONTADOR
-  public calculate_position(position: string) {
+  public calculate_position(array, position: string) {
     //CALCULAMOS LOS VALORES Y RETORNAMOS LOS TOTALES POR FILAS
     try {
-      if (this.dataSource) {
+      if (array) {
         //HACEMOS UN REDUCE PARA SUMAR LOS TOTALES
-        return this.dataSource.reduce(
+        return array.reduce(
           //ACCEDEMOS A LOS VALORES POR OBJETOS Y CALCULAMOS LA POSICION IMPLEMENTADA
           (previus_value, object_data_source) =>
             previus_value + object_data_source[position],
@@ -82,6 +82,9 @@ export class ConsolidatedCashiersComponent implements OnInit {
   //METODO PARA EXPORTAR LOS DATOS
   exportFiles() {
     try {
+      if (!this.date_filter.value) {
+        throw new Error('Seleccióna una fecha');
+      }
       //VALIDAMOS QUE EXISTAN DATOS POR DESCARGAR
       if (this.dataSource.length == 0) {
         throw new Error('No hay datos por descargar');
@@ -106,13 +109,28 @@ export class ConsolidatedCashiersComponent implements OnInit {
       //CALCULAMOS LOS TOTALES
       export_data.push({
         Evento: 'TOTAL',
-        'Cantidad de Usuarios': this.calculate_position('quantity_users'),
-        'Dinero Efectivo COP': this.calculate_position('diner_cash_cop'),
-        'Dinero Efectivo USD': this.calculate_position('diner_cash_usd'),
-        'Dinero Datafono COP': this.calculate_position('diner_dathaphone_cop'),
-        'Dinero Datafono USD': this.calculate_position('diner_dathaphone_usd'),
-        'Total COP': this.calculate_position('total_cop'),
-        'Total USD': this.calculate_position('total_usd'),
+        'Cantidad de Usuarios': this.calculate_position(
+          this.dataSource,
+          'quantity_users'
+        ),
+        'Dinero Efectivo COP': this.calculate_position(
+          this.dataSource,
+          'diner_cash_cop'
+        ),
+        'Dinero Efectivo USD': this.calculate_position(
+          this.dataSource,
+          'diner_cash_usd'
+        ),
+        'Dinero Datafono COP': this.calculate_position(
+          this.dataSource,
+          'diner_dathaphone_cop'
+        ),
+        'Dinero Datafono USD': this.calculate_position(
+          this.dataSource,
+          'diner_dathaphone_usd'
+        ),
+        'Total COP': this.calculate_position(this.dataSource, 'total_cop'),
+        'Total USD': this.calculate_position(this.dataSource, 'total_usd'),
       });
       this._exportService.exportAsExcelFile(export_data, 'CONSOLIDADO_CAJEROS');
     } catch (error) {
@@ -121,6 +139,59 @@ export class ConsolidatedCashiersComponent implements OnInit {
         '',
         'error'
       );
+    }
+  }
+
+  async downloadConsolidated() {
+    try {
+      if (!this.date_filter.value) {
+        throw new Error('Seleccióna una fecha');
+      }
+      //VALIDAMOS QUE EXISTAN DATOS POR DESCARGAR
+      if (this.dataSource.length == 0) {
+        throw new Error('No hay datos por descargar');
+      }
+      this.isLoading = true;
+      this._boxService
+        .consolidatedReports({
+          date_filter: new Date(this.date_filter.value).getTime(),
+        })
+        .subscribe(
+          (res) => {
+            let export_consolidate = res || [];
+
+            const total_values = {};
+            //CACULAREMOS LOS TOTALES
+            //RECORREMOS EL PRIMER OBJETO DEL ARRAY OBTENER LOS KEYS DE LOS OBJETOS
+            Object.keys(res[0]).map((key) => {
+              //VALIDAMOS SI LA KEY ES DE TIPO NUMERO
+              if (typeof res[0][key] === 'number') {
+                //CACULAMOS EL VALOR DE LA TABLA
+                total_values[key] = this.calculate_position(
+                  export_consolidate,
+                  key
+                );
+              } else {
+                //PONEMOS EL TOTAL DE LA KEY
+                total_values[key] = 'TOTAL';
+              }
+            });
+            //ANEXAMOS EL OBJETO A LOS VALORES
+            export_consolidate.push(total_values);
+            //GENERMOS EL DESCARGABLE
+            this._exportService.exportAsExcelFile(
+              export_consolidate,
+              'consolidado'
+            );
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          },
+          (err) => {
+            throw new Error(err.message ? err.message : 'Error de endpoint');
+          }
+        );
+    } catch (error) {
+      Swal.fire(error.message ? error.message : 'Error', '', 'error');
     }
   }
 }

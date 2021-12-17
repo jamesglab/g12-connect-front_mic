@@ -171,4 +171,17 @@ export class BoxService {
         catchError(handleError)
       );
   }
+
+  consolidatedReports(params){
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.reports}/box/consolidated`, {
+        params,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }

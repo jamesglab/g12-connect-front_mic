@@ -32,17 +32,40 @@
               <mat-datepicker #dp3 disabled="false"></mat-datepicker>
             </mat-form-field>
           </div>
-          <div>
-            <div class="ml-3">
-              <button mat-mini-fab style="background: #1e6d41" (click)="exportFiles()">
+          <div class="d-flex">
+            <div class="ml-sm-3">
+              <button
+                mat-mini-fab
+                style="background: #1e6d41"
+                (click)="exportFiles()"
+              >
                 <span
                   class="spinner-border spinner-border-sm"
                   role="status"
                   aria-hidden="true"
+                  matTooltip="Descargar datos"
                   *ngIf="isLoading"
                 ></span>
                 <span *ngIf="!isLoading">
                   <i class="fas fa-file-excel" style="color: white"></i>
+                </span>
+              </button>
+            </div>
+            <div class="ml-3">
+              <button
+                mat-mini-fab
+                style="background: #07508b"
+                (click)="downloadConsolidated()"
+              >
+                <span
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                  matTooltip="Consolidado"
+                  *ngIf="isLoading"
+                ></span>
+                <span *ngIf="!isLoading">
+                  <i class="fas fa-file-signature" style="color: white; margin-left: 4px;" ></i>
                 </span>
               </button>
             </div>
@@ -57,7 +80,7 @@
               </mat-cell>
               <mat-footer-cell *matFooterCellDef>TOTAL</mat-footer-cell>
             </ng-container>
-  
+
             <ng-container matColumnDef="quantity_users">
               <mat-header-cell *matHeaderCellDef>
                 Cantidad de Usuarios
@@ -67,10 +90,10 @@
               </mat-cell>
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Cantidad de Usuarios :</div>
-                {{ calculate_position("quantity_users") }}</mat-footer-cell
+                {{ calculate_position(dataSource,"quantity_users") }}</mat-footer-cell
               >
             </ng-container>
-  
+
             <ng-container matColumnDef="diner_cash_cop">
               <mat-header-cell *matHeaderCellDef>
                 Dinero Efectivo COP
@@ -81,12 +104,12 @@
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Dinero Efectivo COP :</div>
                 {{
-                  calculate_position("diner_cash_cop")
+                  calculate_position(dataSource,"diner_cash_cop")
                     | currency: "COP":"symbol":"1.0-0"
                 }}</mat-footer-cell
               >
             </ng-container>
-  
+
             <ng-container matColumnDef="diner_cash_usd">
               <mat-header-cell *matHeaderCellDef>
                 Dinero Efectivo USD
@@ -96,27 +119,31 @@
               </mat-cell>
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Dinero Efectivo USD :</div>
-                {{ calculate_position("diner_cash_usd") + " $" }}</mat-footer-cell
+                {{
+                  calculate_position(dataSource,"diner_cash_usd") + " $"
+                }}</mat-footer-cell
               >
             </ng-container>
-  
+
             <ng-container matColumnDef="diner_dathaphone_cop">
               <mat-header-cell *matHeaderCellDef>
                 Dinero Datafono COP
               </mat-header-cell>
               <mat-cell *matCellDef="let row" data-label="Dinero Datafono COP">
-                {{ row.diner_dathaphone_cop | currency: "COP":"symbol":"1.0-0" }}
+                {{
+                  row.diner_dathaphone_cop | currency: "COP":"symbol":"1.0-0"
+                }}
               </mat-cell>
-  
+
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Dinero Datafono COP :</div>
                 {{
-                  calculate_position("diner_dathaphone_cop")
+                  calculate_position(dataSource,"diner_dathaphone_cop")
                     | currency: "COP":"symbol":"1.0-0"
                 }}</mat-footer-cell
               >
             </ng-container>
-  
+
             <ng-container matColumnDef="diner_dathaphone_usd">
               <mat-header-cell *matHeaderCellDef>
                 Dinero Datafono USD
@@ -127,26 +154,26 @@
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Dinero Datafono USD :</div>
                 {{
-                  calculate_position("diner_dathaphone_usd") + " $"
+                  calculate_position(dataSource,"diner_dathaphone_usd") + " $"
                 }}</mat-footer-cell
               >
             </ng-container>
-  
+
             <ng-container matColumnDef="total_cop">
               <mat-header-cell *matHeaderCellDef> Total COP </mat-header-cell>
               <mat-cell *matCellDef="let row" data-label="Total COP">
                 {{ row.total_cop | currency: "COP":"symbol":"1.0-0" }}
               </mat-cell>
-  
+
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Total COP :</div>
                 {{
-                  calculate_position("total_cop")
+                  calculate_position(dataSource,"total_cop")
                     | currency: "COP":"symbol":"1.0-0"
                 }}</mat-footer-cell
               >
             </ng-container>
-  
+
             <ng-container matColumnDef="total_usd">
               <mat-header-cell *matHeaderCellDef> Total USD </mat-header-cell>
               <mat-cell *matCellDef="let row" data-label="Total USD">
@@ -154,15 +181,17 @@
               </mat-cell>
               <mat-footer-cell *matFooterCellDef>
                 <div class="show-footer">Total USD</div>
-                {{ calculate_position("total_usd") + " $" }}</mat-footer-cell
+                {{ calculate_position(dataSource,"total_usd") + " $" }}</mat-footer-cell
               >
             </ng-container>
-  
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+            <mat-header-row
+              *matHeaderRowDef="displayedColumns"
+            ></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns"> </mat-row>
-  
+
             <!-- Rows -->
-  
+
             <mat-footer-row
               class="sticky-footer"
               *matFooterRowDef="displayedColumns"
