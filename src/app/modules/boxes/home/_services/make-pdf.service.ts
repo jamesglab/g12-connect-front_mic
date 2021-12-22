@@ -424,7 +424,7 @@ export class MakePdfService {
               tr.user.last_name.toString().toUpperCase()
             : '',
           tr.donation.name ? tr.donation.name.toString().toUpperCase() : '',
-          tr.pastor.name ? tr.pastor.name.toString().toUpperCase() : '',
+          tr.pastor.name ? tr.pastor.name.toString().toUpperCase() : '' + tr.pastor.last_name ? tr.pastor.last_name.toString().toUpperCase() : '',
           tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
             ? this.formatPrice(
                 tr.transaction.currency.toString().toLowerCase(),
