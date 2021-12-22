@@ -1,41 +1,47 @@
-<div class="row">
-  <table mat-table [dataSource]="dataSource">
-    <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
 
-    <!-- Position Column -->
+  <mat-table #table [dataSource]="dataSource">
     <ng-container matColumnDef="position">
-      <th mat-header-cell *matHeaderCellDef>No.</th>
-      <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+      <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+      <mat-cell
+        class="cursor-pointer"
+        data-label="No."
+        *matCellDef="let element; let i = index"
+        >{{ i + 1 }}
+      </mat-cell>
     </ng-container>
 
-    <!-- Name Column -->
     <ng-container matColumnDef="name_event">
-      <th mat-header-cell *matHeaderCellDef>Nombre Evento</th>
-      <td mat-cell *matCellDef="let element">{{ element.name_event }}</td>
+      <mat-header-cell *matHeaderCellDef> Nombre Evento </mat-header-cell>
+      <mat-cell
+        class="cursor-pointer"
+        data-label="Nombre Evento "
+        *matCellDef="let element"
+        >{{ element.name_event }}
+      </mat-cell>
     </ng-container>
 
-    <!-- Weight Column -->
     <ng-container matColumnDef="cupo">
-      <th mat-header-cell *matHeaderCellDef>Cupo</th>
-      <td mat-cell *matCellDef="let element">{{ element.cupo }}</td>
+      <mat-header-cell *matHeaderCellDef> Cupo</mat-header-cell>
+      <mat-cell
+        *matCellDef="let element"
+        class="cursor-pointer"
+        data-label="Cupo"
+      >
+        {{ element.cupo }}
+      </mat-cell>
     </ng-container>
 
-    <!-- Symbol Column -->
     <ng-container matColumnDef="availability">
-      <th mat-header-cell *matHeaderCellDef>Disponibilidad</th>
-      <td mat-cell *matCellDef="let element">{{ element.availability }}</td>
+      <mat-header-cell *matHeaderCellDef> Disponibilidad </mat-header-cell>
+      <mat-cell
+        *matCellDef="let element"
+        class="cursor-pointer"
+        data-label="Disponibilidad"
+      >
+        {{ element.availability }}
+      </mat-cell>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
-</div>
-
-<!-- <mat-paginator
-  [length]="100"
-  [pageSize]="10"
-  [pageSizeOptions]="[5, 10, 25, 100]"
-  aria-label="Select page"
->
-</mat-paginator> -->
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>

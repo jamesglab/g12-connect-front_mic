@@ -1,0 +1,19 @@
+<div>
+  <div>
+    <app-close-cashier
+      [box]="box"
+      *ngIf="permissions['CJ1301'] && box"
+    ></app-close-cashier>
+  </div>
+
+  <!-- <div>
+    <app-consolidated-bunker></app-consolidated-bunker>
+  </div> -->
+
+  <div>
+    <app-consolidated-cashiers
+      [box]="box"
+      *ngIf="permissions['CJ1302']"
+    ></app-consolidated-cashiers>
+  </div>
+</div>

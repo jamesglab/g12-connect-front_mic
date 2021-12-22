@@ -67,10 +67,6 @@
   margin-right: 0px !important;
 }
 
-.mat-table {
-  font-family: Poppins, Helvetica, "sans-serif" !important;
-  width: 100%;
-}
 .mat-header-cell {
   color: rgba(0, 0, 0, 0.54);
   font-size: 14px !important;
@@ -94,10 +90,10 @@
 //   .mat-table caption {
 //     font-size: 1em;
 //   }
-  
+
 //   /*  Enable this to hide header
 //   .mat-table .mat-header-cell {
-    
+
 //     border: 10px solid;
 //     clip: rect(0 0 0 0);
 //     height: 1px;
@@ -133,7 +129,7 @@
 //     float: left;
 //     text-transform: uppercase;
 //     font-weight: normal;
-    
+
 //     font-size: .85em;
 //   }
 //   .mat-table .mat-cell:last-child {
@@ -203,73 +199,6 @@
 //     padding-left: unset !important;
 //   }
 // }
-@media screen and (max-width: 450px) {
-            
-  td.overhide{
-    float:none;
-    clear:none;
-    width: auto;
-     position: relative;
-     display:block;
-  }
-
-        md-toolbar.md-table-toolbar .md-toolbar-tools {
-            height: 64px;
-            max-height: initial;
-        }
-        
-        table.md-table > .table {
-            margin-bottom: 0;
-            background-color: transparent;
-        }
-        table.md-table > thead,
-        table.md-table > tfoot {
-            display: none;
-        }
-        table.md-table tbody {
-            display: block;
-        }
-        table.md-table tbody tr {
-            display: block;
-            border: 1px solid #e0e0e0;
-            border-radius: 2px;
-            margin-bottom: 1.6rem;
-        }
-        table.md-table tbody td {
-            background-color: #ffffff;
-            display: block;
-            vertical-align: middle;
-            text-align: right;
-        }
-        table.md-table tbody td[data-title]:before {
-            content: attr(data-title);
-            float: left;
-            font-weight: bold;
-        }
-        table.md-table td.md-cell {
-            text-align: right;
-        }
-        table.md-table td.md-cell {
-            padding: 17px !important;
-        }
-        table.md-table td.md-cell {
-            border-top: 1px solid #f4f4f4;
-        }
-        table.md-table tbody.md-body > tr.md-row,
-        table.md-table tfoot.md-foot > tr.md-row {
-            height: auto;
-        }
-        td.md-checkbox-cell,
-        td.iconplus {
-            display: none !important;
-        }
-  tr.secondary, td.plusbuttonicon{ display:none !important; }
-    }
-
-
-
-
-
 
 .mat-card {
   font-family: Poppins, Helvetica, "sans-serif";
@@ -290,6 +219,76 @@
 
 .cdk-global-overlay-wrapper,
 .cdk-overlay-container {
-  z-index: 99999 ;
+  z-index: 99999;
   font-family: Poppins, Helvetica, "sans-serif" !important;
+}
+
+.mat-table {
+  width: 100% !important;
+}
+
+@media screen and (max-width: 960px) {
+  .mat-table caption {
+    font-size: 1em;
+  }
+  .mat-header-row {
+    display: none;
+  }
+
+  /*  Enable this to hide header
+  .mat-table .mat-header-cell {
+    
+    border: 10px solid;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+  */
+  .mat-table .mat-row {
+    display: block;
+    border: 2px solid #edeef7;
+    padding: 17px;
+    margin-top: 14px;
+    border-radius: 10px;
+  }
+  /*
+  .mat-table .mat-row:nth-child(even) {background: #CCC}
+  .mat-table .mat-row:nth-child(odd) {background: #FFF}
+  */
+  .mat-table .mat-cell {
+    display: block;
+    font-size: 1em;
+    text-align: right;
+    height: 30px;
+    font-weight: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mat-table .mat-cell:before {
+    /*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+    content: attr(data-label);
+    float: left;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.85em;
+  }
+  .mat-table .mat-cell:last-child {
+    border-bottom: 0;
+  }
+  .mat-table .mat-footer-row {
+    display: block;
+  }
+  .mat-table .mat-cell:first-of-type {
+    padding-left: 0px;
+  }
+  .mat-table .mat-cell:last-of-type {
+    padding-right: 0px;
+  }
 }

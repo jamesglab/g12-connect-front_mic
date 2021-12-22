@@ -132,4 +132,56 @@ export class BoxService {
         catchError(handleError)
       );
   }
+
+  reportsMyBox(params) {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.reports}/box/my`, {
+        params,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  reportsAllBox(params) {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.reports}/box/all`, {
+        params,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  reportsUsersBox(params) {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.reports}/box/users-registers`, {
+        params,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  consolidatedReports(params){
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.reports}/box/consolidated`, {
+        params,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }

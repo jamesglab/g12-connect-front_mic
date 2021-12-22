@@ -161,30 +161,31 @@ export class AddUserMassiveComponent implements OnInit {
     ) {
       filters['email'] = this.form_value.email.trim().toLowerCase();
     }
-
-    this.userService.getUserInfo(filters).subscribe(
-      (res) => {
-        console.log('user', res);
-        this.find_user = true;
-        if (autocomplete) {
-          this.setUser(res);
-        } else {
-          this.form_controls.id.setValue(res['id']);
-          this.createUser();
+    if (Object.keys(filters).length > 0) {
+      this.userService.getUserInfo(filters).subscribe(
+        (res) => {
+          this.find_user = true;
+          if (autocomplete) {
+            this.setUser(res);
+          } else {
+            this.form_controls.id.setValue(res['id']);
+            this.createUser();
+          }
+        },
+        (err) => {
+          if (autocomplete) {
+            Swal.fire('No se encontro el usuario', '', 'info').then((res) => {
+              this.form_controls.network.enable();
+              this.form_controls.network.reset();
+              this.form_controls.pastor.reset();
+              this.form_controls.leader.reset();
+            });
+            throw err;
+          }
         }
-      },
-      (err) => {
-        if (autocomplete) {
-          Swal.fire('No se encontro el usuario', '', 'info').then((res) => {
-            this.form_controls.network.enable();
-            this.form_controls.network.reset();
-            this.form_controls.pastor.reset();
-            this.form_controls.leader.reset();
-          });
-          throw err;
-        }
-      }
-    );
+      );
+    }
+  
   }
 
   //SOLICITUD DE CREACION DE USUARIO

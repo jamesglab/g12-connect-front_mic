@@ -13,10 +13,11 @@ export class BoxesHomeComponent implements OnInit {
   public events = [];
   constructor(
     private _boxService: BoxService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
+    
     this.validateUserBox();
     this.getEventsBox();
   }

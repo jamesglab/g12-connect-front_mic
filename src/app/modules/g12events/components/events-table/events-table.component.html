@@ -1,48 +1,62 @@
-<div class="example-container mat-elevation-z0">
-  <mat-table #table [dataSource]="dataSource">
-    <ng-container matColumnDef="image" sticky>
-      <mat-header-cell *matHeaderCellDef>Imagen</mat-header-cell>
-      <mat-cell *matCellDef="let element" class="cursor-pointer">
+<div class="example-container">
+  <mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="image">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        Imagen
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element" data-label="Imagen">
         <img
           class="img-rounded"
-          src="{{ element.image.url }}"
+          [src]="element.image.url"
           (error)="handleErrorImage($event)"
         />
       </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="name" >
-      <mat-header-cell *matHeaderCellDef>Nombre </mat-header-cell>
-      <mat-cell *matCellDef="let element" class="cursor-pointer">
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        Nombre
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element" data-label="Nombre">
         {{ element.name }}
       </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="description">
-      <mat-header-cell *matHeaderCellDef>Descripción </mat-header-cell>
-      <mat-cell *matCellDef="let element" class="cursor-pointer">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        Descripción
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element" data-label="Descripción">
         {{ element.description }}
       </mat-cell>
     </ng-container>
-    <!--{{ element.date | date:'shortTime'}}-->
 
     <ng-container matColumnDef="category">
-      <mat-header-cell *matHeaderCellDef>Categoria</mat-header-cell>
-      <mat-cell *matCellDef="let element" class="cursor-pointer">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        Categoria
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element" data-label="Categoria">
         {{ element.category }}
       </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="status">
-      <mat-header-cell *matHeaderCellDef>Estatus</mat-header-cell>
-      <mat-cell *matCellDef="let element" class="cursor-pointer">
-        {{ element.status ? "Activo" : "Inactivo" }}</mat-cell
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        Estado
+      </mat-header-cell>
+      <mat-cell
+        *matCellDef="let element"
+        data-label="Estado"
+        data-label="Estado"
       >
+        {{ element.status ? "Activo" : "Inactivo" }}
+      </mat-cell>
     </ng-container>
-
-    <ng-container matColumnDef="actions" sticky>
-      <mat-header-cell *matHeaderCellDef></mat-header-cell>
-      <mat-cell *matCellDef="let element">
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        Opciónes
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element" data-label="Opciónes">
         <a
           class="btn btn-icon btn-light btn-sm mr-3 cursor-pointer"
           (click)="handleToEdit(element)"
@@ -68,21 +82,12 @@
           <span class="svg-icon svg-icon-md svg-icon-primary">
             <mat-icon class="icon-list"> email</mat-icon>
           </span></a
-        > 
+        >
       </mat-cell>
     </ng-container>
 
-    <!--ICONNN-->
-    <!-- <ng-container matColumnDef="seeReport">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let element" (click)="handleSeeReportGo(element);" class="cursor-pointer" matTooltip="Reporte GO"
-            style="color: var(--primary); display: flex; justify-content: center;">
-               <mat-icon>description</mat-icon>
-            </mat-cell>
-        </ng-container> -->
-
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"> </mat-row>
   </mat-table>
   <mat-paginator
     class="mat-elevation-z0"
@@ -93,5 +98,3 @@
   >
   </mat-paginator>
 </div>
-
-

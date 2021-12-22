@@ -173,7 +173,6 @@ export let DynamicAsideMenuConfigOriginal = {
           code: 'CJ1100',
           page: '/admin/boxes',
         },
-
         {
           title: 'Mi caja',
           root: true,
@@ -182,6 +181,14 @@ export let DynamicAsideMenuConfigOriginal = {
           code: 'CJ1200',
           page: 'boxes/home',
         },
+        {
+          title: 'Reportes',
+          root: true,
+          show: false,
+          bullet: 'dot',
+          code: 'CJ1300',
+          page: 'boxes/reports',
+        }
       ],
     },
 
