@@ -410,7 +410,7 @@ export class EventsTableComponent implements OnInit {
             .toUpperCase()
         : 'N/A',
       // 'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
-      'Fecha de Donación': new Date(item.created_at),
+      'Fecha de Donación': new Date(item.transaction.created_at),
       'Referencia Transaccion': item.transaction.payment_ref
         ? item.transaction.payment_ref
         : 'N/A',
