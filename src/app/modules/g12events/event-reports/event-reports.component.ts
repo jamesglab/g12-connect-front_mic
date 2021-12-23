@@ -226,7 +226,7 @@ export class EventReportsComponent implements OnInit {
       })
       .subscribe((res: any) => {
         this.countsCutTable = res.count;
-        console.log('cortes',res)
+        console.log('cortes', res);
         if (!this.data_cut_table) {
           this.data_cut_table = new MatTableDataSource<any[]>(res.reports);
           this.cdr.detectChanges();
@@ -353,7 +353,7 @@ export class EventReportsComponent implements OnInit {
   }
 
   validatePaymentMethod(payment_method) {
-    console.log('tenemos caja', payment_method);
+    
     if (payment_method.toLowerCase() == 'credit') {
       return 'Tarjeta de credito';
     } else if (payment_method.toLowerCase() == 'pse') {

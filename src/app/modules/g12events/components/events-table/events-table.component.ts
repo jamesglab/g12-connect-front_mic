@@ -14,7 +14,10 @@ import { Donation } from '../../_models/donation.model';
 import { EditEventComponent } from '../edit-event/edit-event.component';
 import { GenerateCodesComponent } from '../generate-codes/generate-codes.component';
 import { EmailEventComponent } from '../../email-event/email-event.component';
-import Swal from 'sweetalert2';
+import { report } from 'process';
+import { resolve } from 'dns';
+import { rejects } from 'assert';
+import { ExportService } from 'src/app/modules/_services/export.service';
 
 @Component({
   selector: 'app-events-table',
@@ -41,7 +44,8 @@ export class EventsTableComponent implements OnInit {
 
   constructor(
     private eventsService: G12eventsService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private exportService: ExportService
   ) {}
 
   ngOnInit(): void {
@@ -128,9 +132,211 @@ export class EventsTableComponent implements OnInit {
       keyboard: true,
       centered: true,
     });
-    MODAL.componentInstance.event =  event;
+    MODAL.componentInstance.event = event;
   }
 
+  async handleReportConsolidate(donation) {
+    const reports = await Promise.all([
+      new Promise((resolve, reject) => {
+        this.eventsService.getMassiveReportConsolidate(donation.id).subscribe(
+          (res) => {
+            resolve({ masivos: res.reports });
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      }),
+
+      //REPORTE TOTAL DE DONACIONES NACIONALES
+      new Promise((resolve, reject) => {
+        this.eventsService.totalNationalReport(donation.id).subscribe(
+          (res) => {
+            const total_donations = [];
+            res.reports.map((item, i) => {
+              total_donations.push(this.createObjectReport(item, i));
+            });
+            resolve({ 'Det. Total Don Nal': total_donations });
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      }),
+
+      new Promise((resolve, reject) => {
+        this.eventsService.totalBogota(donation.id).subscribe(
+          (res) => {
+            const total_donations = [];
+            res.reports.map((item, i) => {
+              total_donations.push(this.createObjectReport(item, i));
+            });
+            resolve({ 'Det. Total Don Bog': total_donations });
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      }),
+
+      new Promise((resolve, reject) => {
+        this.eventsService.totalOtherG12(donation.id).subscribe(
+          (res) => {
+            const total_donations = [];
+            res.reports.map((item, i) => {
+              total_donations.push(this.createObjectReport(item, i));
+            });
+            resolve({ 'Det.G12.Otras': total_donations });
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      }),
+
+
+      new Promise((resolve, reject) => {
+        this.eventsService.reportsNationals(donation.id).subscribe(
+          (res) => {
+            resolve({ 'Nacional': res.reports });
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      }),
+
+      
+      new Promise((resolve, reject) => {
+        this.eventsService.reportsInternationalMCI(donation.id).subscribe(
+          (res) => {
+            resolve({ 'Int-MCI': res.reports });
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      }),
+
+      new Promise((resolve, reject) => {
+        this.eventsService.reportsInternationalOthers(donation.id).subscribe(
+          (res) => {
+            resolve({ 'Int-G12': res.reports });
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      }),
+    ]);
+
+    const constructor_reports = {};
+    reports.map((one_report, i) => {
+      Object.keys(one_report).map((key) => {
+        constructor_reports[key] = reports[i][key];
+      });
+    });
+    this.exportService.exportConsolidateEvents(constructor_reports, 'Export');
+  }
+
+  validateStatus(status) {
+    if (parseInt(status) == 1) {
+      return 'Aprobado';
+    } else if (parseInt(status) == 2) {
+      return 'En proceso';
+    } else if (parseInt(status) == 3) {
+      return 'Cancelado/Declinado';
+    }
+  }
+
+  validatePaymentMethod(payment_method) {
+    if (payment_method.toLowerCase() == 'credit') {
+      return 'Tarjeta de credito';
+    } else if (payment_method.toLowerCase() == 'pse') {
+      return 'PSE';
+    } else if (payment_method.toLowerCase() == 'cash') {
+      return 'Efectivo';
+    } else if (payment_method.toLowerCase() == 'administration') {
+      return 'Administración';
+    } else if (payment_method.toLowerCase() == 'code') {
+      return 'Codigo';
+    } else if (payment_method.toLowerCase() == 'cajas mci') {
+      return 'Caja MCI';
+    }
+  }
+
+  createObjectReport(item, i) {
+    return {
+      No: i + 1,
+      Nombre: item.user?.name ? item.user.name.toString().toUpperCase() : 'N/A',
+      Apellido: item.user?.last_name
+        ? item.user.last_name.toString().toUpperCase()
+        : 'N/A',
+      'No. Documento': item.user?.identification
+        ? item.user.identification
+        : 'N/A',
+      'Fecha Nacimiento': item.user?.birth_date
+        ? new Date(item.user.birth_date)
+        : 'N/A',
+      Genero: item.user?.gender
+        ? item.user.gender.toString().toUpperCase()
+        : 'N/A',
+      Telefono: item.user?.phone ? item.user.phone : 'N/A',
+      'E-mail': item.user?.email ? item.user.email : 'N/A',
+      Pais: item.user?.country
+        ? item.user.country.toString().toUpperCase()
+        : 'N/A',
+      Departamento: item.user?.departament
+        ? item.user.departament.toString().toUpperCase()
+        : 'N/A',
+      Municipio: item.user?.city ? item.user.city : 'N/A',
+      'Tipo de Iglesia': item?.user?.type_church
+        ? item?.user?.type_church.toString().toUpperCase()
+        : 'N/A',
+      Sede: item.church?.name
+        ? item.church.name.toString().toUpperCase()
+        : 'N/A',
+      Pastor: item.pastor?.name
+        ? `${item.pastor.name} ${
+            item.pastor.last_name ? item.pastor.last_name : ''
+          }`
+            .toString()
+            .toUpperCase()
+        : 'N/A',
+      'Lider Doce': item.leader?.name
+        ? `${item.leader.name} ${
+            item.leader.last_name ? item.leader.last_name : ''
+          }`
+            .toString()
+            .toUpperCase()
+        : 'N/A',
+      // 'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
+      'Fecha de Donación': new Date(item.created_at),
+      'Referencia Transaccion': item.transaction.payment_ref
+        ? item.transaction.payment_ref
+        : 'N/A',
+      Codigo: item.transaction.code ? item.transaction.code : 'N/A',
+      'Metodo de pago': item.transaction.payment_method
+        ? item.transaction.payment_method
+        : 'N/A',
+      'Nombre evento': item.donation?.name
+        ? item.donation?.name.toString().toUpperCase()
+        : 'N/A',
+      'Nombre corte': item.cut?.name
+        ? item.cut?.name.toString().toUpperCase()
+        : 'N/A',
+      Estado: item.transaction.status
+        ? this.validateStatus(item.transaction.status).toString().toUpperCase()
+        : 'N/A',
+      Costo:
+        item.cut.prices[item.transaction.currency?.toString().toLowerCase()],
+      Moneda: item.transaction.currency
+        ? item.transaction.currency.toString().toUpperCase()
+        : 'N/A',
+
+
+    };
+  }
   //VALIDAMOS EL ERROR DE LA IMAGEN Y ANEXAMOS LA IMAGEN DE CONEXION
   handleErrorImage($event: any) {
     $event.target.src = 'assets/media/logos/logoConexion12.png';
@@ -148,5 +354,4 @@ export class EventsTableComponent implements OnInit {
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
-
 }

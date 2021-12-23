@@ -539,4 +539,83 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
+
+  //ENDPOINTS REPORT CONSOLIDATE
+  getMassiveReportConsolidate(donation_id) {
+    return this.http
+      .get<any>(`${environment.reports_lamda}/masivos/${donation_id}`)
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  //TOTAL NACIONALES REPORTES
+  totalNationalReport(donation_id) {
+    return this.http
+      .get<any>(`${environment.reports_lamda}/total-nacional/${donation_id}`)
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  totalBogota(donation_id) {
+    return this.http
+      .get<any>(`${environment.reports_lamda}/total-bogota/${donation_id}`)
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  totalOtherG12(donation_id) {
+    return this.http
+      .get<any>(`${environment.reports_lamda}/total-g12-otras/${donation_id}`)
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  reportsNationals(donation_id) {
+    return this.http
+      .get<any>(`${environment.reports_lamda}/nacional/${donation_id}`)
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  reportsInternationalMCI(donation_id) {
+    return this.http
+      .get<any>(`${environment.reports_lamda}/internacional-mci/${donation_id}`)
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  reportsInternationalOthers(donation_id) {
+    return this.http
+      .get<any>(`${environment.reports_lamda}/internacional-g12-otras/${donation_id}`)
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }

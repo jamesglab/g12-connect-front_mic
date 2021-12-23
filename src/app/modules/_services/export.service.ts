@@ -1,33 +1,38 @@
 import { Injectable } from '@angular/core';
 import * as FileSaver from 'file-saver';
-import { Workbook } from 'exceljs';
 import * as XLSX from 'xlsx';
-const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+const EXCEL_TYPE =
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ExportService {
-
-  constructor() { }
+  constructor() {}
 
   public buildData(headers: any, data: any[]): any {
     let newData = [];
-    data.map(item => {
+    data.map((item) => {
       let obj = {};
       for (let i in headers) {
-        if (i == "state" || i == "State" || i == "status") {
+        if (i == 'state' || i == 'State' || i == 'status') {
           obj[headers[i]] = this.getState(item[i]);
-        } else if (i == "done") {
+        } else if (i == 'done') {
           obj[headers[i]] = this.getDone(item[i]);
-        }else if(i == "week1" || i == "week2" || i == "week3" || i == "week4" || i == "week5"){
-          if(item[i] != 0){
-            obj[headers[i]] = "Si";
-          }else{
-            obj[headers[i]] = "No";
+        } else if (
+          i == 'week1' ||
+          i == 'week2' ||
+          i == 'week3' ||
+          i == 'week4' ||
+          i == 'week5'
+        ) {
+          if (item[i] != 0) {
+            obj[headers[i]] = 'Si';
+          } else {
+            obj[headers[i]] = 'No';
           }
-        }else {
+        } else {
           obj[headers[i]] = item[i];
         }
       }
@@ -36,37 +41,62 @@ export class ExportService {
     return newData;
   }
 
- private getState(state): string {
+  private getState(state): string {
     if (state) {
-      if (state == "1" || state) {
-        return "Activa";
+      if (state == '1' || state) {
+        return 'Activa';
       } else {
-        return "Inactiva";
+        return 'Inactiva';
       }
     }
-    return "";
+    return '';
   }
 
- private getDone(done): string {
+  private getDone(done): string {
     if (done) {
-      return "Si";
+      return 'Si';
     } else {
-      return "No";
+      return 'No';
     }
   }
-  
-  public exportAsExcelFile(json: any[], excelFileName: string): void {
 
+  public exportAsExcelFile(json: any[], excelFileName: string): void {
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+
+    this.saveAsExcelFile(excelBuffer, excelFileName);
+  }
+
+  public exportConsolidateEvents(json: any, excelFileName: string): void {
+    const export_sheet_data = {};
+    Object.keys(json).map((key) => {
+      export_sheet_data[key] = XLSX.utils.json_to_sheet(json[key]);
+    });
+    const workbook: XLSX.WorkBook = {
+      Sheets: export_sheet_data,
+      SheetNames: Object.keys(json),
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
 
     this.saveAsExcelFile(excelBuffer, excelFileName);
   }
 
   private saveAsExcelFile(buffer: Blob, fileName: string): void {
     const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
-    FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+    FileSaver.saveAs(
+      data,
+      fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION
+    );
   }
   //for new export type......
   // private saveAsExcelFile(workbook: Workbook, title: string): void {
@@ -75,5 +105,4 @@ export class ExportService {
   //   //   FileSaver.saveAs(blob, title + '.xlsx');
   //   // })
   // }
-
 }
