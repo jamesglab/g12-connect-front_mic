@@ -618,4 +618,26 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
+
+  reportsDetailBogota(donation_id){
+    return this.http
+      .get<any>(`${environment.reports_lamda}/detail-bogota-reports/${donation_id}`)
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  reportsConsolidate(donation_id){
+    return this.http
+    .get<any>(`${environment.reports_lamda}/consolidate/${donation_id}`)
+    .pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
 }

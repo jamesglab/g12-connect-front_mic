@@ -27,7 +27,9 @@ export const environment = {
     reports : 'https://api.g12connect.com/api/v2/reports'
   },
   SECRETENCRYPT:"G12jk5FQg6bu8zWSECURITY#wB9jPyURESPONSE",
-  url_response: 'https://app.mci12.com/g12events/proof-payment'
+  url_response: 'https://app.mci12.com/g12events/proof-payment',
+  reports_lamda:
+  'https://f492-2800-484-3690-6500-4994-1ecd-317b-5594.ngrok.io/dev',
 
 };
 

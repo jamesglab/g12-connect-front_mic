@@ -194,11 +194,10 @@ export class EventsTableComponent implements OnInit {
         );
       }),
 
-
       new Promise((resolve, reject) => {
         this.eventsService.reportsNationals(donation.id).subscribe(
           (res) => {
-            resolve({ 'Nacional': res.reports });
+            resolve({ Nacional: res.reports });
           },
           (err) => {
             reject(err);
@@ -206,7 +205,6 @@ export class EventsTableComponent implements OnInit {
         );
       }),
 
-      
       new Promise((resolve, reject) => {
         this.eventsService.reportsInternationalMCI(donation.id).subscribe(
           (res) => {
@@ -222,6 +220,28 @@ export class EventsTableComponent implements OnInit {
         this.eventsService.reportsInternationalOthers(donation.id).subscribe(
           (res) => {
             resolve({ 'Int-G12': res.reports });
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      }),
+
+      new Promise((resolve, reject) => {
+        this.eventsService.reportsDetailBogota(donation.id).subscribe(
+          (res) => {
+            resolve({ 'Detalle bogota': res.reports });
+          },
+          (err) => {
+            reject(err);
+          }
+        );
+      }),
+
+      new Promise((resolve, reject) => {
+        this.eventsService.reportsConsolidate(donation.id).subscribe(
+          (res) => {
+            resolve({ 'Consolidado ': res.reports });
           },
           (err) => {
             reject(err);
@@ -333,8 +353,6 @@ export class EventsTableComponent implements OnInit {
       Moneda: item.transaction.currency
         ? item.transaction.currency.toString().toUpperCase()
         : 'N/A',
-
-
     };
   }
   //VALIDAMOS EL ERROR DE LA IMAGEN Y ANEXAMOS LA IMAGEN DE CONEXION
