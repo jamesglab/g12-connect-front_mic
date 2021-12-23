@@ -531,7 +531,7 @@ export class G12eventsService {
 
   getReportsMassive() {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.reports}/report-massive`)
+      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/report-massive`)
       .pipe(
         map((res: any) => {
           return res;
@@ -541,9 +541,13 @@ export class G12eventsService {
   }
 
   //ENDPOINTS REPORT CONSOLIDATE
-  getMassiveReportConsolidate(donation_id) {
+  getMassiveReportConsolidate(event_id) {
     return this.http
-      .get<any>(`${environment.reports_lamda}/masivos/${donation_id}`)
+      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/masivos`, {
+        params :{
+          event_id
+        }
+      })
       .pipe(
         map((res: any) => {
           return res;
@@ -553,9 +557,13 @@ export class G12eventsService {
   }
 
   //TOTAL NACIONALES REPORTES
-  totalNationalReport(donation_id) {
+  totalNationalReport(event_id) {
     return this.http
-      .get<any>(`${environment.reports_lamda}/total-nacional/${donation_id}`)
+      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/total-nacional`,{
+        params :{
+          event_id
+        }
+      })
       .pipe(
         map((res: any) => {
           return res;
@@ -564,9 +572,13 @@ export class G12eventsService {
       );
   }
 
-  totalBogota(donation_id) {
+  totalBogota(event_id) {
     return this.http
-      .get<any>(`${environment.reports_lamda}/total-bogota/${donation_id}`)
+      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/total-bogota`,{
+        params :{
+          event_id
+        }
+      })
       .pipe(
         map((res: any) => {
           return res;
@@ -575,9 +587,13 @@ export class G12eventsService {
       );
   }
 
-  totalOtherG12(donation_id) {
+  totalOtherG12(event_id) {
     return this.http
-      .get<any>(`${environment.reports_lamda}/total-g12-otras/${donation_id}`)
+      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/total-g12-otras`,{
+        params :{
+          event_id
+        }
+      })
       .pipe(
         map((res: any) => {
           return res;
@@ -586,9 +602,13 @@ export class G12eventsService {
       );
   }
 
-  reportsNationals(donation_id) {
+  reportsNationals(event_id) {
     return this.http
-      .get<any>(`${environment.reports_lamda}/nacional/${donation_id}`)
+      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/nacional`,{
+        params :{
+          event_id
+        }
+      })
       .pipe(
         map((res: any) => {
           return res;
@@ -597,9 +617,13 @@ export class G12eventsService {
       );
   }
 
-  reportsInternationalMCI(donation_id) {
+  reportsInternationalMCI(event_id) {
     return this.http
-      .get<any>(`${environment.reports_lamda}/internacional-mci/${donation_id}`)
+      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/internacional-mci`,{
+        params :{
+          event_id
+        }
+      })
       .pipe(
         map((res: any) => {
           return res;
@@ -608,9 +632,13 @@ export class G12eventsService {
       );
   }
 
-  reportsInternationalOthers(donation_id) {
+  reportsInternationalOthers(event_id) {
     return this.http
-      .get<any>(`${environment.reports_lamda}/internacional-g12-otras/${donation_id}`)
+      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/internacional-g12-otras`,{
+        params :{
+          event_id
+        }
+      })
       .pipe(
         map((res: any) => {
           return res;
@@ -619,9 +647,13 @@ export class G12eventsService {
       );
   }
 
-  reportsDetailBogota(donation_id){
+  reportsDetailBogota(event_id){
     return this.http
-      .get<any>(`${environment.reports_lamda}/detail-bogota-reports/${donation_id}`)
+      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/detail-bogota-reports`,{
+        params :{
+          event_id
+        }
+      })
       .pipe(
         map((res: any) => {
           return res;
@@ -630,9 +662,13 @@ export class G12eventsService {
       );
   }
 
-  reportsConsolidate(donation_id){
+  reportsConsolidate(event_id){
     return this.http
-    .get<any>(`${environment.reports_lamda}/consolidate/${donation_id}`)
+    .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/consolidate`,{
+      params :{
+        event_id
+      }
+    })
     .pipe(
       map((res: any) => {
         return res;

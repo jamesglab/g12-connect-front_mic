@@ -4,6 +4,7 @@ import {
   Input,
   ViewChild,
   SimpleChanges,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -18,6 +19,7 @@ import { report } from 'process';
 import { resolve } from 'dns';
 import { rejects } from 'assert';
 import { ExportService } from 'src/app/modules/_services/export.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-events-table',
@@ -27,6 +29,7 @@ import { ExportService } from 'src/app/modules/_services/export.service';
 export class EventsTableComponent implements OnInit {
   @Input() public search: String = '';
   public isLoading: boolean = false;
+  public export_excel: boolean = false;
   private unsubscribe: Subscription[] = [];
   public email_image;
 
@@ -45,7 +48,8 @@ export class EventsTableComponent implements OnInit {
   constructor(
     private eventsService: G12eventsService,
     private modalService: NgbModal,
-    private exportService: ExportService
+    private exportService: ExportService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -136,6 +140,12 @@ export class EventsTableComponent implements OnInit {
   }
 
   async handleReportConsolidate(donation) {
+    Swal.fire(
+      'Estamos procesando la informacion',
+      'esto puede tardar un momento',
+      'info'
+    );
+    this.export_excel = true;
     const reports = await Promise.all([
       new Promise((resolve, reject) => {
         this.eventsService.getMassiveReportConsolidate(donation.id).subscribe(
@@ -148,7 +158,7 @@ export class EventsTableComponent implements OnInit {
         );
       }),
 
-      //REPORTE TOTAL DE DONACIONES NACIONALES
+      // REPORTE TOTAL DE DONACIONES NACIONALES
       new Promise((resolve, reject) => {
         this.eventsService.totalNationalReport(donation.id).subscribe(
           (res) => {
@@ -241,7 +251,7 @@ export class EventsTableComponent implements OnInit {
       new Promise((resolve, reject) => {
         this.eventsService.reportsConsolidate(donation.id).subscribe(
           (res) => {
-            resolve({ 'Consolidado ': res.reports });
+            resolve({ Consolidado: res.reports });
           },
           (err) => {
             reject(err);
@@ -250,13 +260,82 @@ export class EventsTableComponent implements OnInit {
       }),
     ]);
 
-    const constructor_reports = {};
+    let constructor_reports = {
+      // masivos: [
+      //   {
+      //     Hola: 1,
+      //     Hola1: 1,
+      //     Hola2: 1,
+      //     Hola3: 1,
+      //     Hola4: 1,
+      //     Hola5: 1,
+      //     Hola6: 1,
+      //     Hola7: 1,
+      //     Hola8: 1,
+      //     Hola9: 1,
+      //     Hola20: 1,
+      //     Hola11: 1,
+      //     Hola12: 1,
+      //     Hola13: 1,
+      //     Hola14: 1,
+      //     Hola15: 1,
+      //     Hola16: 1,
+      //   },
+      //   {
+      //     Hola: '',
+      //     Hola1: '',
+      //     Hola2: '',
+      //     Hola3: '',
+      //     Hola4: '',
+      //     Hola5: '',
+      //     Hola6: '',
+      //     Hola7: '',
+      //     Hola8: '',
+      //     Hola9: '',
+      //     Hola20: '',
+      //     Hola11: '',
+      //     Hola12: '',
+      //     Hola13: '',
+      //     Hola14: '',
+      //     Hola15: '',
+      //     Hola16: '',
+      //   },
+      //   {
+      //     Hola: 1,
+      //     Hola1: 1,
+      //     Hola2: 1,
+      //     Hola3: 1,
+      //     Hola4: 1,
+      //     Hola5: 1,
+      //     Hola6: 1,
+      //     Hola7: 1,
+      //     Hola8: 1,
+      //     Hola9: 1,
+      //     Hola20: 1,
+      //     Hola11: 1,
+      //     Hola12: 1,
+      //     Hola13: 1,
+      //     Hola14: 1,
+      //     Hola15: 1,
+      //     Hola16: 1,
+      //   },
+      // ],
+    };
+
+    this.export_excel = false;
+    this.cdr.detectChanges();
     reports.map((one_report, i) => {
       Object.keys(one_report).map((key) => {
-        constructor_reports[key] = reports[i][key];
+        if (reports[i][key].length > 0) {
+          constructor_reports[key] = reports[i][key];
+        }
       });
     });
-    this.exportService.exportConsolidateEvents(constructor_reports, 'Export');
+
+    this.exportService.exportConsolidateWithStyles(
+      constructor_reports,
+      'Export'
+    );
   }
 
   validateStatus(status) {

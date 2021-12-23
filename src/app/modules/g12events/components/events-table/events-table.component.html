@@ -85,6 +85,7 @@
         >
 
         <a
+          *ngIf="!export_excel"
           (click)="handleReportConsolidate(element)"
           class="btn btn-icon btn-light btn-sm mr-3 cursor-pointer"
         >
