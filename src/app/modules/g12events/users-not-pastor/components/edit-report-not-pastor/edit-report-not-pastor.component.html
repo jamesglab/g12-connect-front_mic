@@ -5,49 +5,67 @@
         <div class="w-75">
           <div class="card-title d-block pb-2">
             <h3 class="card-label pt-4 pb-4">Editar Usuario</h3>
-            <h6 style="font-size: small; color: rgb(163, 163, 163);">
-              En esta sección podrás editar la información del usuario seleccionado
+            <h6 style="font-size: small; color: rgb(163, 163, 163)">
+              En esta sección podrás editar la información del usuario
+              seleccionado
             </h6>
           </div>
         </div>
         <div class="card-toolbar">
           <div class="example-tools justify-content-center">
-            <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">settings</mat-icon>
+            <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214)"
+              >settings</mat-icon
+            >
           </div>
         </div>
       </div>
       <div class="card-body">
-        <form class="w-form" [formGroup]="editUserForm" (ngSubmit)="onSubmit();">
+        <form class="w-form" [formGroup]="editUserForm" (ngSubmit)="onSubmit()">
           <div class="row">
             <div class="col">
               <div formGroupName="user">
-                <mat-form-field appearance="fill" class="w-100" >
+                <mat-form-field appearance="fill" class="w-100">
                   <mat-label>Tipo de documento *</mat-label>
                   <mat-select type="select" formControlName="documentType">
-                    <mat-option *ngFor="let type of documentTypes" [value]="type">
+                    <mat-option
+                      *ngFor="let type of documentTypes"
+                      [value]="type"
+                    >
                       {{ type }}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
                 <mat-form-field appearance="fill" style="width: 100%">
                   <mat-label>Identificación</mat-label>
-                  <input matInput placeholder="Ingrese la identificación..." formControlName="identification"
-                    (keypress)="numberOnly($event);">
+                  <input
+                    matInput
+                    placeholder="Ingrese la identificación..."
+                    formControlName="identification"
+                    (keypress)="numberOnly($event)"
+                  />
                 </mat-form-field>
 
                 <mat-form-field appearance="fill" style="width: 100%">
                   <mat-label>Nombre</mat-label>
-                  <input matInput placeholder="Ingrese el nombre..." formControlName="name">
+                  <input
+                    matInput
+                    placeholder="Ingrese el nombre..."
+                    formControlName="name"
+                  />
                 </mat-form-field>
 
                 <mat-form-field appearance="fill" style="width: 100%">
                   <mat-label>Apellido</mat-label>
-                  <input matInput placeholder="Apellidos" formControlName="last_name">
+                  <input
+                    matInput
+                    placeholder="Apellidos"
+                    formControlName="last_name"
+                  />
                 </mat-form-field>
 
                 <mat-form-field appearance="fill" class="w-100">
                   <mat-label>Genero</mat-label>
-                  <mat-select type="select" formControlName="gender" >
+                  <mat-select type="select" formControlName="gender">
                     <mat-option value="M">Masculino</mat-option>
                     <mat-option value="F">Femenino</mat-option>
                   </mat-select>
@@ -55,8 +73,14 @@
 
                 <mat-form-field appearance="fill" class="w-100">
                   <mat-label>Fecha de nacimiento*</mat-label>
-                  <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="bornDate"
-                    formControlName="birth_date" disabled>
+                  <input
+                    matInput
+                    [min]="minDate"
+                    [max]="maxDate"
+                    [matDatepicker]="bornDate"
+                    formControlName="birth_date"
+                    disabled
+                  />
                   <mat-datepicker-toggle matSuffix [for]="bornDate">
                   </mat-datepicker-toggle>
                   <mat-datepicker #bornDate disabled="false"></mat-datepicker>
@@ -64,37 +88,52 @@
 
                 <mat-form-field class="w-100" appearance="fill">
                   <mat-label>Celular</mat-label>
-                  <input matInput autocomplete="off" formControlName="phone" (keypress)="numberOnly($event);">
+                  <input
+                    matInput
+                    autocomplete="off"
+                    formControlName="phone"
+                    (keypress)="numberOnly($event)"
+                  />
                 </mat-form-field>
 
                 <mat-form-field appearance="fill" style="width: 100%">
                   <mat-label>email</mat-label>
-                  <input matInput placeholder="Email" formControlName="email">
+                  <input matInput placeholder="Email" formControlName="email" />
                 </mat-form-field>
-
-                
 
                 <mat-form-field appearance="fill" class="w-100">
                   <mat-label>País *</mat-label>
-                  <mat-select type="select" formControlName="country" (selectionChange)="getPlaces();">
+                  <mat-select
+                    type="select"
+                    formControlName="country"
+                    (selectionChange)="getPlaces()"
+                  >
                     <mat-option value="null">SELECCIONA PAIS</mat-option>
-                    <mat-option *ngFor="let country of countries" value="{{country.name.toLowerCase()}}">{{
-                                            country.name }}</mat-option>
+                    <mat-option
+                      *ngFor="let country of countries"
+                      value="{{ country.name.toLowerCase() }}"
+                      >{{ country.name }}</mat-option
+                    >
                   </mat-select>
                 </mat-form-field>
-
               </div>
             </div>
           </div>
-          <hr>
+          <hr />
 
           <div class="row">
             <div class="col">
-
               <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Iglesia *</mat-label>
-                <mat-select type="select" formControlName="typeChurch" (selectionChange)="getPlaces();">
-                  <mat-option *ngFor="let type of churchTypes" [value]="type.idDetailMaster">
+                <mat-select
+                  type="select"
+                  formControlName="typeChurch"
+                  (selectionChange)="getPlaces()"
+                >
+                  <mat-option
+                    *ngFor="let type of churchTypes"
+                    [value]="type.idDetailMaster"
+                  >
                     {{ type.description }}
                   </mat-option>
                 </mat-select>
@@ -103,7 +142,11 @@
               <ng-container *ngIf="form.typeChurch.value == '88'">
                 <mat-form-field appearance="fill" class="w-100">
                   <mat-label>Sede *</mat-label>
-                  <mat-select type="select" formControlName="headquarter" (selectionChange)="getPastors()">
+                  <mat-select
+                    type="select"
+                    formControlName="headquarter"
+                    (selectionChange)="getPastors()"
+                  >
                     <mat-option *ngFor="let place of places" [value]="place">
                       {{ place.name }} | {{ place.city }}
                     </mat-option>
@@ -112,29 +155,42 @@
 
                 <mat-form-field appearance="fill" class="w-100">
                   <mat-label>Red *</mat-label>
-                  <mat-select type="select" formControlName="network" (selectionChange)="getPastors()">
+                  <mat-select
+                    type="select"
+                    formControlName="network"
+                    (selectionChange)="getPastors()"
+                  >
                     <mat-option value="01">Hombres</mat-option>
                     <mat-option value="02">Mujeres</mat-option>
                   </mat-select>
                 </mat-form-field>
-
               </ng-container>
 
-              <ng-container *ngIf="form.typeChurch.value && form.typeChurch.value != '88'">
-
+              <ng-container
+                *ngIf="form.typeChurch.value && form.typeChurch.value != '88'"
+              >
                 <mat-form-field class="w-100" appearance="fill">
                   <mat-label>Nombre de la iglesia *</mat-label>
-                  <input matInput autocomplete="off" formControlName="churchName">
+                  <input
+                    matInput
+                    autocomplete="off"
+                    formControlName="churchName"
+                  />
                 </mat-form-field>
               </ng-container>
 
               <ng-container *ngIf="form.typeChurch.value == '88'">
                 <mat-form-field appearance="fill" class="w-100">
                   <mat-label>Pastor/Lider principal *</mat-label>
-                  <mat-select type="select" formControlName="pastor" (selectionChange)="getLeaders($event.value)">
-                    <mat-option *ngFor="let pastor of pastors ; let i = index" [value]="pastor">{{
-                                            pastor.name }} {{
-                                            pastor.last_name }}
+                  <mat-select
+                    type="select"
+                    formControlName="pastor"
+                    (selectionChange)="getLeaders($event.value)"
+                  >
+                    <mat-option
+                      *ngFor="let pastor of pastors; let i = index"
+                      [value]="pastor"
+                      >{{ pastor.name | uppercase }} {{ pastor.last_name | uppercase }}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -142,35 +198,64 @@
                 <mat-form-field appearance="fill" class="w-100">
                   <mat-label>Lider *</mat-label>
                   <mat-select type="select" formControlName="leader">
-                    <mat-option *ngFor="let leader of leaders" [value]="leader">{{ leader.name
-                                            }} {{ leader.last_name
-                                            }}
+                    <mat-option *ngFor="let leader of leaders" [value]="leader"
+                      >{{ leader.name| uppercase }} {{ leader.last_name| uppercase }}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
               </ng-container>
 
-              <ng-container *ngIf="form.typeChurch.value && form.typeChurch.value != '88'">
+              <ng-container
+                *ngIf="form.typeChurch.value && form.typeChurch.value != '88'"
+              >
                 <mat-form-field class="w-100" appearance="fill">
                   <mat-label>Nombre del pastor principal *</mat-label>
-                  <input matInput autocomplete="off" formControlName="pastorName">
+                  <input
+                    matInput
+                    autocomplete="off"
+                    formControlName="pastorName"
+                  />
                 </mat-form-field>
               </ng-container>
-
             </div>
           </div>
 
           <div class="row">
             <div *ngIf="!isLoading" class="col-xl-6 col-sm-12 mt-5">
-              <button ngbAutofocus
-                class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">Guardar</button>
+              <button
+                ngbAutofocus
+                class="
+                  btn btn-sm btn-light-primary
+                  font-weight-bolder
+                  py-2
+                  px-5
+                  cursor-pointer
+                "
+              >
+                Guardar
+              </button>
             </div>
-            <div *ngIf="isLoading" class="spinner-border text-primary ml-5" role="status">
+            <div
+              *ngIf="isLoading"
+              class="spinner-border text-primary ml-5"
+              role="status"
+            >
               <span class="sr-only">Loading...</span>
             </div>
             <div class="col-xl-6 col-sm-12 mt-5">
-              <button type="button" (click)="modal.close()"
-                class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5 cursor-pointer">Cancelar</button>
+              <button
+                type="button"
+                (click)="modal.close()"
+                class="
+                  btn btn-sm btn-light-danger
+                  font-weight-bolder
+                  py-2
+                  px-5
+                  cursor-pointer
+                "
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         </form>
