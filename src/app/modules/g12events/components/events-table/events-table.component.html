@@ -85,12 +85,20 @@
         >
 
         <a
-          *ngIf="!export_excel"
           (click)="handleReportConsolidate(element)"
           class="btn btn-icon btn-light btn-sm mr-3 cursor-pointer"
         >
           <span class="svg-icon svg-icon-md svg-icon-primary">
-            <mat-icon class="icon-list"> book</mat-icon>
+            <div
+              class="spinner-border"
+              role="status"
+              *ngIf="export_excel == element.id"
+            >
+              <span class="sr-only">Loading...</span>
+            </div>
+            <mat-icon class="icon-list" *ngIf="export_excel != element.id">
+              book</mat-icon
+            >
           </span></a
         >
       </mat-cell>
