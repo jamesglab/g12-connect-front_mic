@@ -531,7 +531,7 @@ export class G12eventsService {
 
   getReportsMassive() {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/report-massive`)
+      .get<any>(`${environment.apiUrlG12Connect.reports}/report-massive`)
       .pipe(
         map((res: any) => {
           return res;
