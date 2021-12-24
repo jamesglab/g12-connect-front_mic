@@ -333,6 +333,9 @@ export class EventsTableComponent implements OnInit {
       Pais: item.user?.country
         ? item.user.country.toString().toUpperCase()
         : 'N/A',
+      'Tipo de Iglesia': item.user?.type_church
+        ? item.user?.type_church
+        : 'N/A',
       Sede: item.church?.name
         ? item.church.name.toString().toUpperCase()
         : 'N/A',
