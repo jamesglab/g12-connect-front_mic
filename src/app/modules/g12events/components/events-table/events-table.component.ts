@@ -148,7 +148,7 @@ export class EventsTableComponent implements OnInit {
       );
     } else {
       Swal.fire(
-        'Estamos procesando la informacion',
+        'Estamos procesando la información',
         'esto puede tardar un momento',
         'info'
       );
@@ -281,7 +281,7 @@ export class EventsTableComponent implements OnInit {
 
       this.exportService.exportConsolidateWithStyles(
         constructor_reports,
-        'Export'
+        donation.name.toString().trim().toUpperCase()
       );
     }
   }
