@@ -57,7 +57,7 @@ export const MY_FORMATS = {
 })
 export class EventReportsComponent implements OnInit {
   public isLoading: boolean = false;
-  public date = new FormControl(moment());
+  // public date = new FormControl(moment());
   public maxDate: Date;
   public campaignOne: FormGroup;
   public campaignTwo: FormGroup;
@@ -180,17 +180,17 @@ export class EventReportsComponent implements OnInit {
       this.isLoading = true;
       this._g12Events
         .getTransactionsReports({
-          date_init: `${moment(this.date.value).format(
-            'YYYY'
-          )}-01-01T00:00:00.000`,
-          ...filters,
-          date_finish: `${moment(this.date.value).format(
-            'YYYY'
-          )}-12-31T23:59:00.000`,
+          // date_init: `${moment(this.date.value).format(
+          //   'YYYY'
+          // )}-01-01T00:00:00.000`,
+          // date_finish: `${moment(this.date.value).format(
+          //   'YYYY'
+          // )}-12-31T23:59:00.000`,
           platform: 'EVENTOSG12',
           event_id:
             this.event_selected.value != 0 ? this.event_selected.value.id : '',
           type,
+          ...filters,
         })
         .subscribe(
           (res: any) => {
@@ -353,7 +353,6 @@ export class EventReportsComponent implements OnInit {
   }
 
   validatePaymentMethod(payment_method) {
-    
     if (payment_method.toLowerCase() == 'credit') {
       return 'Tarjeta de credito';
     } else if (payment_method.toLowerCase() == 'pse') {
@@ -369,8 +368,8 @@ export class EventReportsComponent implements OnInit {
     }
   }
 
-  chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
-    datepicker.close();
-    this.date.setValue(normalizedYear);
-  }
+  // chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
+  //   datepicker.close();
+  //   this.date.setValue(normalizedYear);
+  // }
 }

@@ -19,7 +19,6 @@ import { EditUserComponent } from '../edit-user/edit-user.component';
 import { UserRolesComponent } from '../user-roles/user-roles.component';
 import { AdminRolesService } from 'src/app/modules/administration/_services/admin-roles.service';
 import { AddBoxUserComponent } from '../add-box-user/add-box-user.component';
-import { StorageService } from 'src/app/modules/auth/_services/storage.service';
 
 @Component({
   selector: 'app-users-table',
