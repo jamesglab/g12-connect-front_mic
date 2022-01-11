@@ -103,112 +103,138 @@ export class ExportService {
   async exportConsolidateWithStyles(json, excelFileName) {
     //CREAMOS EL LIBRO DE EXCEL
     const workbook = new ExcelJS.Workbook();
-
-    console.log(Object.keys(json));
     //MAPEAMOS LOS OBJETOS
-    Object.keys(json).map((key) => {
+    Object.keys(json).map((key, i) => {
       //   //CREAMOS LA HOJA DE CADA CONSULTA
       const sheet = workbook.addWorksheet(key, {});
+      //RECORREMOS EL PRIMER OBJETO PARA ACCEDER A LAS CABECERAS DEL OBJETO
       Object.keys(json[key][0]).map((headerStyle, i) => {
-        // //ESTILOS DE LAS CABECERAS
-        sheet.getCell(`${this.createCeld(i + 1)}1`).fill = {
+        //ACCEDEMOS A LAS CABECERAS
+        const headers_styles = sheet.getCell(`${this.createCeld(i + 1)}1`);
+        //ESTILOS DE COLORES EN CABECERAS
+        headers_styles.fill = {
           type: 'pattern',
           pattern: 'darkVertical',
           fgColor: { argb: 'dbf4f9' },
         };
-        //ESTILOS DE DE
-        sheet.getCell(`${this.createCeld(i + 1)}1`).font = {
+
+        //ESTILOS DE FUENTES EN CABECERAS
+        headers_styles.font = {
           family: 4,
           size: 12,
           bold: true,
         };
-
-        sheet.getCell(`${this.createCeld(i + 1)}1`).border = {
+        //ESTILOS DE BORDES EN CABECERAS
+        headers_styles.border = {
           top: { style: 'thin' },
           left: { style: 'thin' },
           bottom: { style: 'thin' },
           right: { style: 'thin' },
         };
-
-        // for (let column = 0; column < json[key].length; column++) {
-        //   console.log('Columna', column)
-        //   for (let row = 0; row < Object.keys(json[key][0]).length; row++) {
-        //     if (json[key][column][headerStyle]) {
-        //       sheet.getCell(`${this.createCeld(column + 1)}${row + 1}`).border = {
-        //         top: { style: 'thin' },
-        //         left: { style: 'thin' },
-        //         bottom: { style: 'thin' },
-        //         right: { style: 'thin' },
-        //       };
-        //     }
-        //   }
-
-        // if (json[key][index]) {
-        //   console.log(`${this.createCeld(index + 1)}${index + 1}`);
-        //   sheet.getCell(`${this.createCeld(index + 1)}${index + 1}`).border =
-        //     {
-        //       top: { style: 'thin' },
-        //       left: { style: 'thin' },
-        //       bottom: { style: 'thin' },
-        //       right: { style: 'thin' },
-        //     };
-        // }
-        // }
       });
-      //CREAMOS LOS HEADERS
+
+      //CREAMOS LOS HEADERS POR OBJETO
       const uniqueHeaders = [
         ...new Set(
           json[key].reduce((prev, next) => [...prev, ...Object.keys(next)], [])
         ),
       ];
+
       //AGREGAMOS LAS COLUMNAS DE LA TABLA
       sheet.columns = uniqueHeaders.map((x) => ({
         header: x,
         key: x,
         width: 30,
       }));
-      console.log;
-
-      json[key].forEach((jsonRow, i) => {
+      //MAPEAMOS CADA OBJETO EN UNA HOJA DE EXCEL
+      json[key].map((jsonRow, i) => {
         let cellValues = { ...jsonRow };
-        uniqueHeaders.forEach((header, j) => {
-          if (Array.isArray(jsonRow[`${header}`])) {
-            cellValues[`${header}`] = '';
-          }
-        });
+        //AGREGAMOS LOS OBJETOS
         sheet.addRow(cellValues);
-        uniqueHeaders.forEach((header, j) => {
-          if (Array.isArray(jsonRow[`${header}`])) {
-            const jsonDropdown = jsonRow[`${header}`];
-            sheet.getCell(
-              this.getSpreadSheetCellNumber(i + 1, j)
-            ).dataValidation = {
-              type: 'list',
-              formulae: [`"${jsonDropdown.join(',')}"`],
+      });
+
+      // CRECION DE ESTILOS POR CELDA
+
+      // RECORREMOS TODO EL OBJETO GENERAL DE LA CONSULTA EJE X
+      json[key].map((jsonRow, x) => {
+        //RECORREMOS LAS FILAS EJE Y
+        Object.keys(jsonRow).map((keyObject, y) => {
+          //VALIDAMOS SI LA CELDA ES UN NUMERO Y SI EXISTE EL VALOR
+          if (typeof jsonRow[keyObject] == 'number' || jsonRow[keyObject]) {
+            //ACCEDEMOS A LA CELDA POR VALOR X + 2 POR QUE EL 1 ES LA CABECERA
+            const cell = sheet.getCell(`${this.createCeld(y + 1)}${x + 2}`);
+            cell.border = {
+              top: { style: 'thin' },
+              left: { style: 'thin' },
+              bottom: { style: 'thin' },
+              right: { style: 'thin' },
             };
+            if (
+              jsonRow[keyObject].toString().toUpperCase() == 'TOTAL' ||
+              jsonRow[keyObject].toString().trim().toUpperCase() ==
+                'SUB TOTAL PASTORES BOGOTA' ||
+              jsonRow[keyObject].toString().trim().toUpperCase() ==
+                'SUB TOTAL ELIEMERSON Y JOHANNA CASTELLANOS'
+            ) {
+              //RECORREMOS DEL TOTAL HASTA EL FINAL DE LAS FILAS
+              for (
+                let total_row = y;
+                total_row < Object.keys(jsonRow).length;
+                total_row++
+              ) {
+                //CREAMOS LA CELDA
+                const cell = sheet.getCell(
+                  `${this.createCeld(total_row + 1)}${x + 2}`
+                );
+                //ANEXAMOS LOS ESTILOS
+                cell.font = {
+                  family: 4,
+                  size: 12,
+                  bold: true,
+                };
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'darkVertical',
+                  fgColor: { argb: 'b7bdb9' },
+                };
+              }
+              // cell.font = {
+              //   family: 4,
+              //   size: 12,
+              //   bold: true,
+              // };
+              // cell.fill = {
+              //   type: 'pattern',
+              //   pattern: 'darkVertical',
+              //   fgColor: { argb: 'b7bdb9' },
+              // };
+            }
+          } else {
+            //VALIDAMOS LOS TITULOS CORRESPONDIENTES ACCEDIENTO A LA SIGUIENTE POSICION (3) VALOR DE CELDA
+            const cell = sheet.getCell(`${this.createCeld(y + 1)}${x + 3}`);
+            //VALIDAMOS SI LA CELDA TIENE VALORES
+            if (cell.value) {
+              //CREAMOS LOS ESTILOS DE APARIENCIA Y FUENTE
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'darkVertical',
+                fgColor: { argb: 'dbf4f9' },
+              };
+              cell.font = {
+                family: 4,
+                size: 12,
+                bold: true,
+              };
+            }
           }
         });
       });
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
-    this.saveAsExcelFile(buffer, excelFileName);
-  }
 
-  private getSpreadSheetCellNumber(row, column) {
-    let result = '';
-
-    // Get spreadsheet column letter
-    let n = column;
-    while (n >= 0) {
-      result = String.fromCharCode((n % 26) + 65) + result;
-      n = Math.floor(n / 26) - 1;
-    }
-
-    // Get spreadsheet row number
-    result += `${row + 1}`;
-
-    return result;
+    const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
+    FileSaver.saveAs(data, excelFileName + EXCEL_EXTENSION);
   }
 
   private createCeld(position) {
