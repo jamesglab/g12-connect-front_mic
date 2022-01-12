@@ -258,6 +258,7 @@ export class EventReportsComponent implements OnInit {
             Genero: item.user?.gender
               ? item.user.gender.toString().toUpperCase()
               : 'N/A',
+            Idioma: item.user?.language ? this.validateLanguage(item.user.language) : 'N/A',
             Telefono: item.user?.phone ? item.user.phone : 'N/A',
             'E-mail': item.user?.email ? item.user.email : 'N/A',
             Pais: item.user?.country
@@ -365,6 +366,29 @@ export class EventReportsComponent implements OnInit {
     } else if (payment_method.toLowerCase() == 'cajas mci') {
       return 'Caja MCI';
     }
+  }
+
+
+  validateLanguage(language) {
+    let return_lanugage = 'N/A';
+    switch (language.toString().toUpperCase()) {
+      case 'ES':
+        return_lanugage = 'Español';
+        break;
+
+      case 'EN':
+        return_lanugage = 'Ingles';
+        break;
+
+      case 'PT':
+        return_lanugage = 'Portugues';
+        break;
+
+      default:
+        break;
+    }
+
+    return return_lanugage;
   }
 
   // chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
