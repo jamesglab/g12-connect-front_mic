@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
+import * as moment from 'moment';
 const EXCEL_TYPE =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
@@ -234,7 +235,7 @@ export class ExportService {
     const buffer = await workbook.xlsx.writeBuffer();
 
     const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
-    FileSaver.saveAs(data, excelFileName + EXCEL_EXTENSION);
+    FileSaver.saveAs(data, moment().format("DD_MM_YYYY_h_mm_") +excelFileName.replace(" ","_") + EXCEL_EXTENSION);
   }
 
   private createCeld(position) {

@@ -20,6 +20,7 @@ import { resolve } from 'dns';
 import { rejects } from 'assert';
 import { ExportService } from 'src/app/modules/_services/export.service';
 import Swal from 'sweetalert2';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-events-table',
