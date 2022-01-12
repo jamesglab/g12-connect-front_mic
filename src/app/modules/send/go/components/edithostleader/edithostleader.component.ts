@@ -63,12 +63,6 @@ export class EdithostleaderComponent implements OnInit {
     if (this.editLeaderForm.invalid) {
       return
     }
-    //const { name, lastName, email, movil, phone, address } = this.editLeaderForm.getRawValue();
-    // console.log("Antes de irse", this.editLeaderForm.getRawValue())
-    // editHostLeader({
-    //   ...this.leaderItem,
-    //   ...this.editLeaderForm.getRawValue()
-    //    })
     const updateGoSubscr = this._leadersService
       .updateHostLeader(editHostLeader({
         ...this.leaderItem,

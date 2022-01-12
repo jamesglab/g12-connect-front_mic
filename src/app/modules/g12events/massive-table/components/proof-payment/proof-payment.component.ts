@@ -43,7 +43,6 @@ export class ProofPaymentComponent implements OnInit {
 
   //VALIDAMOS EL METODO DE CON EL QUE SE REALIZO LA DONACION
   validatePaymentMethod(payment_method) {
-    console.log('validaremos metodo de pago',payment_method)
     if (payment_method.toLowerCase() == 'credit') {
       return 'Tarjeta de credito'
     } else if (payment_method.toLowerCase() == 'pse') {

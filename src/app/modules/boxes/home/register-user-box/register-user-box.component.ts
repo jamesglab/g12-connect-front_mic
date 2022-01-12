@@ -275,7 +275,6 @@ export class RegisterUserBoxComponent implements OnInit {
 
   //CONSULTAMOS LAS IGLESIAS
   getChurchs() {
-    console.log('this.assistant_value', this.assistant_value);
     this.userService
       .getPlaces({
         country: this.assistant_value.country.toUpperCase(),

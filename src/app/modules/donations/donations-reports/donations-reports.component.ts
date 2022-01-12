@@ -120,7 +120,6 @@ export class DonationsReportsComponent implements OnInit {
         page: paginator.pageIndex ? paginator.pageIndex + 1 : 1,
       })
       .subscribe((res: any) => {
-        console.log('tenemos la respuesta', res);
         this.countHours = res.count;
         res.transactions.map((item, i) => {
           res.transactions[i].transaction.status = this.validateStatus(

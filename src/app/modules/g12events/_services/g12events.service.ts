@@ -182,7 +182,6 @@ export class G12eventsService {
   }
 
   getFormUpdate(data: sendDonation, updoadImage): FormData {
-    console.log('llego data');
     const send_data = new FormData();
     if (updoadImage) {
       send_data.append('image', data.transaction_info.image);
@@ -194,7 +193,6 @@ export class G12eventsService {
   }
 
   create(data: sendDonation): Observable<any> {
-    console.log('evento creado', data);
     //DEFINE THE RESPONSE
     data.transaction_info.init_date = moment(data.transaction_info.init_date);
     data.transaction_info.finish_date = moment(
@@ -230,7 +228,6 @@ export class G12eventsService {
   }
 
   update(data: sendDonation, updateImage) {
-    console.log('ejecutamos data', data);
     return this.http
       .put<any>(
         `${environment.apiUrlG12Connect.donations}`,

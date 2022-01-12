@@ -72,7 +72,6 @@ export const toInsertHour = (date: { hour: number, minute: number, second: numbe
 export const notificationConfig = (type: number, message?: string): MatSnackBarConfig => {
 
     let _configType = { 1: "alert-success", 2: "alert-warning", 3: "alert-danger" };
-    // console.log("typpee", type)
     return {
         panelClass: ["alert", _configType[type], "fade", "show"],
         data: { message: (type === 3) ? (message) ? message : "Nuestro servidor presenta problemas, intentalo nuevamente" : message },

@@ -59,8 +59,6 @@ export class EditUserMinistryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('hey ther', this.user)
-    // this.getProfileUser();
     this.buildForm(this.user);
   }
 

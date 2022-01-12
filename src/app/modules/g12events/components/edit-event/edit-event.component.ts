@@ -146,7 +146,6 @@ export class EditEventComponent implements OnInit {
       )
         .subscribe(
           (res: any) => {
-            console.log('UPDATEDDDDDD', res);
             this.showMessage(
               1,
               `El evento ${this.form.name.value} ha sido actualizado correctamente!`

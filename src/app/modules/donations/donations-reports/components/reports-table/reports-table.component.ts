@@ -36,7 +36,6 @@ export class ReportsTableComponent implements OnInit {
 
   ngOnInit(): void {
     setTimeout(() => {
-      console.log('dat source ', this.dataSource.data)
     }, 1000);
   }
   filter() {

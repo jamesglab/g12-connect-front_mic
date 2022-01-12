@@ -232,7 +232,6 @@ export class AddUserMassiveComponent implements OnInit {
 
       this.userService.getUserInfo(filters).subscribe(
         (res) => {
-          console.log('user', res);
           this.add_user.get('id').setValue(res['id']);
           this.find_user = true;
         },

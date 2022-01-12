@@ -94,7 +94,6 @@ export class ToWinReportsMainComponent implements OnInit {
       })
       .subscribe((res: Response) => {
         this.isLoading = false;
-        console.log("RESPONSE", res);
         // if (res.result) {
         //   let header = {
         //     pastor: "PASTOR", leader: "LIDER 12", host: "ANFITRION",
