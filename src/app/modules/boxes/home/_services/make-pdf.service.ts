@@ -347,11 +347,11 @@ export class MakePdfService {
         {
           columns: [
             {
-              width: 380,
+              width: 350,
               text: '',
             },
             {
-              width: 420,
+              width: 400,
               style: 'bold',
               text: `TOTAL A DONAR : ${this.formatPrice(
                 donor.transaction.currency,
@@ -365,7 +365,7 @@ export class MakePdfService {
           style: 'parrafo',
           columns: [
             {
-              width: 420,
+              width: 380,
               text: 'FECHA Y HORA DE IMPRESIÓN',
             },
             {
@@ -414,7 +414,9 @@ export class MakePdfService {
       ],
     ];
 
+    
     transactions.map((tr) => {
+      console.log('tenemos pastor',tr)
       if (tr.isAssistant) {
         table.push([
           tr.user.identification ? tr.user.identification : 'INTERNACIONAL',
@@ -424,7 +426,7 @@ export class MakePdfService {
               tr.user.last_name.toString().toUpperCase()
             : '',
           tr.donation.name ? tr.donation.name.toString().toUpperCase() : '',
-          tr.pastor.name ? tr.pastor.name.toString().toUpperCase() : '' + tr.pastor.last_name ? tr.pastor.last_name.toString().toUpperCase() : '',
+          (tr.pastor.name ? tr.pastor.name.toString().toUpperCase() : '') + " " +(tr.pastor.last_name ? tr?.pastor?.last_name.toString().toUpperCase() : ''),
           tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
             ? this.formatPrice(
                 tr.transaction.currency.toString().toLowerCase(),
@@ -438,7 +440,7 @@ export class MakePdfService {
   }
 
   formatPrice(currency, value) {
-    return new Intl.NumberFormat('en-IN', {
+    return new Intl.NumberFormat('es', {
       style: 'currency',
       currency,
       minimumFractionDigits: 0,
