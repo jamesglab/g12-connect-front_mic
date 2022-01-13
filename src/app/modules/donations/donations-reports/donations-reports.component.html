@@ -26,7 +26,7 @@
               </mat-select>
             </mat-form-field>
           </div>
-   
+
           <div class="ml-md-6">
             <mat-form-field appearance="fill">
               <mat-label>Seleccione un rango de fechas</mat-label>
@@ -70,20 +70,38 @@
                 class="btn exportExcel btn-search"
                 matTooltip="Descargar"
                 (click)="exportFile()"
+                [disabled]="isLoader"
               >
-                <mat-icon style="font-size: 25px">cloud_download</mat-icon>
+                <mat-icon style="font-size: 25px" *ngIf="!isLoader"
+                  >cloud_download</mat-icon
+                >
+                <div class="spinner-border" role="status" *ngIf="isLoader">
+                  <span class="sr-only">Loading...</span>
+                </div>
               </button>
             </div>
           </div>
-
         </div>
         <div>
           <app-reports-table
+            *ngIf="dataSource?.data.length > 0"
             [dataSource]="dataSource"
             [count]="count"
             (emitPage)="getTransactions($event)"
           >
           </app-reports-table>
+        </div>
+        <div
+          *ngIf="dataSource?.data.length == 0"
+          class="d-flex"
+          style="
+            height: 24rem;
+            align-items: center;
+            color: #d0d0d0;
+            justify-content: center;
+          "
+        >
+          NO SE ENCONTRARON DONACIONES PARA LAS FECHAS SELECCIONADAS
         </div>
       </div>
     </div>
