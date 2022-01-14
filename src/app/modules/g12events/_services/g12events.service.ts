@@ -500,7 +500,7 @@ export class G12eventsService {
   addUser(payload) {
     return this.http
       .post<any>(
-        `${environment.apiUrlG12Connect.donations}/add-user-massive`,
+        `${environment.apiUrlG12Connect.paymentsv3}/add-user-massive`,
         payload,
         {
           headers: headerFile,
@@ -540,11 +540,14 @@ export class G12eventsService {
   //ENDPOINTS REPORT CONSOLIDATE
   getMassiveReportConsolidate(event_id) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/masivos`, {
-        params :{
-          event_id
+      .get<any>(
+        `${environment.apiUrlG12Connect.reports}/consolidates/masivos`,
+        {
+          params: {
+            event_id,
+          },
         }
-      })
+      )
       .pipe(
         map((res: any) => {
           return res;
@@ -556,11 +559,14 @@ export class G12eventsService {
   //TOTAL NACIONALES REPORTES
   totalNationalReport(event_id) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/total-nacional`,{
-        params :{
-          event_id
+      .get<any>(
+        `${environment.apiUrlG12Connect.reports}/consolidates/total-nacional`,
+        {
+          params: {
+            event_id,
+          },
         }
-      })
+      )
       .pipe(
         map((res: any) => {
           return res;
@@ -571,11 +577,14 @@ export class G12eventsService {
 
   totalBogota(event_id) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/total-bogota`,{
-        params :{
-          event_id
+      .get<any>(
+        `${environment.apiUrlG12Connect.reports}/consolidates/total-bogota`,
+        {
+          params: {
+            event_id,
+          },
         }
-      })
+      )
       .pipe(
         map((res: any) => {
           return res;
@@ -586,11 +595,14 @@ export class G12eventsService {
 
   totalOtherG12(event_id) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/total-g12-otras`,{
-        params :{
-          event_id
+      .get<any>(
+        `${environment.apiUrlG12Connect.reports}/consolidates/total-g12-otras`,
+        {
+          params: {
+            event_id,
+          },
         }
-      })
+      )
       .pipe(
         map((res: any) => {
           return res;
@@ -601,11 +613,14 @@ export class G12eventsService {
 
   reportsNationals(event_id) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/nacional`,{
-        params :{
-          event_id
+      .get<any>(
+        `${environment.apiUrlG12Connect.reports}/consolidates/nacional`,
+        {
+          params: {
+            event_id,
+          },
         }
-      })
+      )
       .pipe(
         map((res: any) => {
           return res;
@@ -616,11 +631,14 @@ export class G12eventsService {
 
   reportsInternationalMCI(event_id) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/internacional-mci`,{
-        params :{
-          event_id
+      .get<any>(
+        `${environment.apiUrlG12Connect.reports}/consolidates/internacional-mci`,
+        {
+          params: {
+            event_id,
+          },
         }
-      })
+      )
       .pipe(
         map((res: any) => {
           return res;
@@ -631,11 +649,14 @@ export class G12eventsService {
 
   reportsInternationalOthers(event_id) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/internacional-g12-otras`,{
-        params :{
-          event_id
+      .get<any>(
+        `${environment.apiUrlG12Connect.reports}/consolidates/internacional-g12-otras`,
+        {
+          params: {
+            event_id,
+          },
         }
-      })
+      )
       .pipe(
         map((res: any) => {
           return res;
@@ -644,13 +665,16 @@ export class G12eventsService {
       );
   }
 
-  reportsDetailBogota(event_id){
+  reportsDetailBogota(event_id) {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/detail-bogota-reports`,{
-        params :{
-          event_id
+      .get<any>(
+        `${environment.apiUrlG12Connect.reports}/consolidates/detail-bogota-reports`,
+        {
+          params: {
+            event_id,
+          },
         }
-      })
+      )
       .pipe(
         map((res: any) => {
           return res;
@@ -659,18 +683,21 @@ export class G12eventsService {
       );
   }
 
-  reportsConsolidate(event_id){
+  reportsConsolidate(event_id) {
     return this.http
-    .get<any>(`${environment.apiUrlG12Connect.reports}/consolidates/consolidate`,{
-      params :{
-        event_id
-      }
-    })
-    .pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
+      .get<any>(
+        `${environment.apiUrlG12Connect.reports}/consolidates/consolidate`,
+        {
+          params: {
+            event_id,
+          },
+        }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 }
