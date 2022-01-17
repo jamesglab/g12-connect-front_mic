@@ -258,7 +258,7 @@ export class EventReportsComponent implements OnInit {
             Genero: item.user?.gender
               ? item.user.gender.toString().toUpperCase()
               : 'N/A',
-            Idioma: item.user?.language ? this.validateLanguage(item.user.language) : 'N/A',
+            Idioma: this.validateLanguage(item.user),
             Telefono: item.user?.phone ? item.user.phone : 'N/A',
             'E-mail': item.user?.email ? item.user.email : 'N/A',
             Pais: item.user?.country
@@ -368,10 +368,9 @@ export class EventReportsComponent implements OnInit {
     }
   }
 
-
-  validateLanguage(language) {
+  validateLanguage(user) {
     let return_lanugage = 'N/A';
-    switch (language.toString().toUpperCase()) {
+    switch (user?.language?.toString().toUpperCase()) {
       case 'ES':
         return_lanugage = 'Español';
         break;
@@ -383,16 +382,12 @@ export class EventReportsComponent implements OnInit {
       case 'PT':
         return_lanugage = 'Portugues';
         break;
-
       default:
+        if (user?.country?.toString().toUpperCase() == 'COLOMBIA') {
+          return_lanugage = 'Español';
+        }
         break;
     }
-
     return return_lanugage;
   }
-
-  // chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
-  //   datepicker.close();
-  //   this.date.setValue(normalizedYear);
-  // }
 }

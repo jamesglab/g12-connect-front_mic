@@ -15,12 +15,8 @@ import { Donation } from '../../_models/donation.model';
 import { EditEventComponent } from '../edit-event/edit-event.component';
 import { GenerateCodesComponent } from '../generate-codes/generate-codes.component';
 import { EmailEventComponent } from '../../email-event/email-event.component';
-import { report } from 'process';
-import { resolve } from 'dns';
-import { rejects } from 'assert';
 import { ExportService } from 'src/app/modules/_services/export.service';
 import Swal from 'sweetalert2';
-import * as moment from 'moment';
 
 @Component({
   selector: 'app-events-table',
@@ -331,6 +327,7 @@ export class EventsTableComponent implements OnInit {
         : 'N/A',
       Telefono: item.user?.phone ? item.user.phone : 'N/A',
       'E-mail': item.user?.email ? item.user.email : 'N/A',
+      Idioma: this.validateLanguage(item.user),
       Pais: item.user?.country
         ? item.user.country.toString().toUpperCase()
         : 'N/A',
@@ -382,6 +379,29 @@ export class EventsTableComponent implements OnInit {
   //VALIDAMOS EL ERROR DE LA IMAGEN Y ANEXAMOS LA IMAGEN DE CONEXION
   handleErrorImage($event: any) {
     $event.target.src = 'assets/media/logos/logoConexion12.png';
+  }
+
+  validateLanguage(user) {
+    let return_lanugage = 'N/A';
+    switch (user?.language?.toString().toUpperCase()) {
+      case 'ES':
+        return_lanugage = 'Español';
+        break;
+
+      case 'EN':
+        return_lanugage = 'Ingles';
+        break;
+
+      case 'PT':
+        return_lanugage = 'Portugues';
+        break;
+      default:
+        if (user?.country?.toString().toUpperCase() == 'COLOMBIA') {
+          return_lanugage = 'Español';
+        }
+        break;
+    }
+    return return_lanugage;
   }
 
   //APLICAMOS EL FILTRO DE ANGULAR MATERIAL
