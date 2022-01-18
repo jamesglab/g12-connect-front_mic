@@ -199,16 +199,6 @@ export class ExportService {
                   fgColor: { argb: 'b7bdb9' },
                 };
               }
-              // cell.font = {
-              //   family: 4,
-              //   size: 12,
-              //   bold: true,
-              // };
-              // cell.fill = {
-              //   type: 'pattern',
-              //   pattern: 'darkVertical',
-              //   fgColor: { argb: 'b7bdb9' },
-              // };
             }
           } else {
             //VALIDAMOS LOS TITULOS CORRESPONDIENTES ACCEDIENTO A LA SIGUIENTE POSICION (3) VALOR DE CELDA

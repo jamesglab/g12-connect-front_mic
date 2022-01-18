@@ -101,16 +101,8 @@ export class EventReportsComponent implements OnInit {
   ngOnInit(): void {
     this.getEvents();
     this.search.disable();
-    // this.getPastor();
+
   }
-
-  // PARA FILTROS POR PASTOR
-  // getPastor() {
-  //   this._g12Events.getLeadersOrPastors({ userCode: '01', church: '1' }).subscribe(res => {
-  //     this.pastores = res;
-  //   });
-  // }
-
   //CONSULTAMOS LOSO EVENTOS Y FILTRAMOS POR G12_EVENT
   getEvents() {
     this._g12Events.getAll({ type: 'G12_EVENT' }).subscribe((res) => {
@@ -220,7 +212,7 @@ export class EventReportsComponent implements OnInit {
     this.cutSelected = cut;
     this._g12Events
       .getTransactionsForCut({
-        cut_id: cut._id,
+        cut_id: cut?._id,
         page: paginator ? paginator.pageIndex + 1 : 1,
         per_page: paginator ? paginator.pageSize : 5,
       })
@@ -369,25 +361,60 @@ export class EventReportsComponent implements OnInit {
   }
 
   validateLanguage(user) {
-    let return_lanugage = 'N/A';
-    switch (user?.language?.toString().toUpperCase()) {
-      case 'ES':
-        return_lanugage = 'Español';
-        break;
-
-      case 'EN':
-        return_lanugage = 'Ingles';
-        break;
-
-      case 'PT':
-        return_lanugage = 'Portugues';
-        break;
-      default:
-        if (user?.country?.toString().toUpperCase() == 'COLOMBIA') {
-          return_lanugage = 'Español';
+    if (user?.language) {
+      switch (user?.language?.toString().toUpperCase()) {
+        case 'ES': {
+          return 'Español';
         }
-        break;
+        case 'EN': {
+          return 'Ingles';
+        }
+        case 'PT': {
+          return 'Portugues';
+        }
+
+        case 'FR': {
+          return 'Frances';
+        }
+        case 'RS': {
+          return 'Ruso';
+        }
+        default: {
+          return 'N/A';
+        }
+      }
+    } else {
+      const ingles = [
+        'ALEMANIA',
+        'CANADÁ',
+        'SUDÁFRICA',
+        'SINGAPUR',
+        'SAMOA',
+        'REINO UNIDO',
+        'IRLANDA',
+        'ESTADOS UNIDOS DE AMÉRICA',
+        'ESTADOS UNIDOS',
+      ];
+      const portugues = ['BRASIL'];
+      const frances = ['CONGO(BRAZZAVILLE)', 'FRANCIA'];
+      const ruso = [
+        'EMIRATOS ÁRABES UNIDOS',
+        'SUECIA',
+        'RUSIA',
+        'PAÍSES BAJOS',
+      ];
+
+      if (ingles.includes(user?.country?.toString().toUpperCase())) {
+        return 'Ingles';
+      } else if (portugues.includes(user?.country?.toString().toUpperCase())) {
+        return 'Portugues';
+      } else if (frances.includes(user?.country?.toString().toUpperCase())) {
+        return 'Frances';
+      } else if (ruso.includes(user?.country?.toString().toUpperCase())) {
+        return 'Ruso';
+      } else {
+        return 'Español';
+      }
     }
-    return return_lanugage;
   }
 }
