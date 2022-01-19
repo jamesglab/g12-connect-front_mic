@@ -115,7 +115,7 @@ export class MakePdfService {
         { text: 'NIT 800195397-7', style: 'cont_ministerial' },
 
         {
-          text: `Usuario : ${
+          text: `USUARIO : ${
             donor.user.name.toString().toUpperCase() +
             ' ' +
             donor.user.last_name.toString().toUpperCase()
@@ -311,7 +311,7 @@ export class MakePdfService {
         { text: 'NIT 800195397-7', style: 'cont_ministerial' },
 
         {
-          text: `Usuario : ${
+          text: `USUARIO : ${
             donor.user.name.toString().toUpperCase() +
             ' ' +
             donor.user.last_name.toString().toUpperCase()
