@@ -122,6 +122,14 @@ export class MakePdfService {
           }`,
           style: 'parrafo',
         },
+        {
+          text: `TIPO DE TRANSACCIÓN : ${
+            donor.description_of_change
+            ? 'DATAFONO'
+            : 'EFECTIVO'
+          }`,
+          style: 'parrafo',
+        },
 
         {
           style: 'parrafo',
@@ -310,7 +318,14 @@ export class MakePdfService {
           }`,
           style: 'parrafo',
         },
-
+        {
+          text: `TIPO DE TRANSACIÓN : ${
+            donor.description_of_change
+            ? 'DATAFONO'
+            : 'EFECTIVO'
+          }`,
+          style: 'parrafo',
+        },
         {
           style: 'parrafo',
           //CREACION DE COLUMNAS ESPECIFICAMOS UN ARRAY QUE LEERA OBJETOS DE POSICIONES
