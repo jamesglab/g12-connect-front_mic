@@ -267,18 +267,16 @@ export class EventReportsComponent implements OnInit {
               ? item.church.name.toString().toUpperCase()
               : 'N/A',
             Pastor: item.pastor?.name
-              ? `${item.pastor.name} ${
-                  item.pastor.last_name ? item.pastor.last_name : ''
+              ? `${item.pastor.name} ${item.pastor.last_name ? item.pastor.last_name : ''
                 }`
-                  .toString()
-                  .toUpperCase()
+                .toString()
+                .toUpperCase()
               : 'N/A',
             'Lider Doce': item.leader?.name
-              ? `${item.leader.name} ${
-                  item.leader.last_name ? item.leader.last_name : ''
+              ? `${item.leader.name} ${item.leader.last_name ? item.leader.last_name : ''
                 }`
-                  .toString()
-                  .toUpperCase()
+                .toString()
+                .toUpperCase()
               : 'N/A',
             // 'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
             'Fecha de Donación': new Date(item.created_at),
@@ -297,12 +295,12 @@ export class EventReportsComponent implements OnInit {
               : 'N/A',
             Estado: item.transaction.status
               ? this.validateStatus(item.transaction.status)
-                  .toString()
-                  .toUpperCase()
+                .toString()
+                .toUpperCase()
               : 'N/A',
             Costo:
               item.cut.prices[
-                item.transaction.currency?.toString().toLowerCase()
+              item.transaction.currency?.toString().toLowerCase()
               ],
             Moneda: item.transaction.currency
               ? item.transaction.currency.toString().toUpperCase()
@@ -315,9 +313,7 @@ export class EventReportsComponent implements OnInit {
         });
         this.exportService.exportAsExcelFile(
           dataToExport,
-          !this.downloadPastor
-            ? 'EVENTOSG12'
-            : `${this.pastor_selected.value.name}_EVENTOSG12`
+          this.event_selected.value.name.toString().replace(" ","").replace(" ","")
         );
         this.isLoading = false;
         this.cdr.detectChanges();
