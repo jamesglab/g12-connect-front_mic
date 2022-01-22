@@ -45,11 +45,17 @@
               <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>Corte*</mat-label>
                 <mat-select type="select" formControlName="financial_cut">
-                  <mat-option
-                    *ngFor="let cut of financial_cuts"
-                    [value]="cut"
-                    >{{ cut.name || (COP cut.prices["cop"]) || (USD cut.prices["usd"]) }}</mat-option
-                  >
+                  <mat-option *ngFor="let cut of financial_cuts" [value]="cut">
+                    {{
+                      cut.name +
+                        " | " +
+                        "COP " +
+                        cut?.prices["cop"] +
+                        " | " +
+                        "USD " +
+                        cut?.prices["usd"]
+                    }}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
