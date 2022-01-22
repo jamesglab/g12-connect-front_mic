@@ -81,7 +81,6 @@ export class ObjectsTypesTableComponent implements OnInit {
       keyboard: true,
       centered: true
     })
-    console.log("OBJECTTTT TYPEEE", element);
     MODAL.componentInstance.objectType = element;
     MODAL.result.then((data) => {
       if (data == "success") {

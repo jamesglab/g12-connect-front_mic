@@ -82,7 +82,6 @@ export class TypesTableComponent implements OnInit {
       keyboard: true,
       centered: true
     })
-    console.log("USER TYPE", element);
     MODAL.componentInstance.userType = element;
     MODAL.result.then((data) => {
       if (data == "success") {

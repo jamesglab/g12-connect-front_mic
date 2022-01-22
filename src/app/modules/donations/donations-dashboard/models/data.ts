@@ -68,11 +68,16 @@ export const chartWithDataTime = (
   };
 };
 
+//RECIBIMOS LAS SERIES
 export const validateChartValues = (allSeries) => {
+  //CONTADOR DE SERIES
   var serie = 0;
+  //MAPEAMOS LAS SERIES
   allSeries.map((seri) => {
+    //AGREGAMOS LOS VALORES DE LAS SERIES
     serie = serie + seri;
   });
+  //VALIDAMOS SI EXISTEN DATOS EN LAS SERIES MAPEADAS
   if (serie > 0) {
     return true;
   } else {

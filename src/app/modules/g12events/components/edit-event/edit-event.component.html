@@ -402,6 +402,7 @@
             <div class="col-xl-6 col-sm-12 mt-5">
               <button
                 ngbAutofocus
+                [disabled]="isLoading"
                 class="
                   btn btn-sm btn-light-primary
                   font-weight-bolder
@@ -410,7 +411,12 @@
                   cursor-pointer
                 "
               >
+              <div *ngIf="!isLoading">
                 Guardar
+              </div>
+              <div class="spinner-border" role="status" *ngIf="isLoading">
+                <span class="sr-only">Loading...</span>
+              </div>
               </button>
             </div>
             <div class="col-xl-6 col-sm-12 mt-5">

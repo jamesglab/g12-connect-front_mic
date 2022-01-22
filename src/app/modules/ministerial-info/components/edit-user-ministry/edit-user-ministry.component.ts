@@ -4,7 +4,6 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
 import { UserService } from 'src/app/modules/_services/user.service';
-import { UpdatePasswordComponent } from 'src/app/pages/profile/components/update-password/update-password.component';
 import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
 import Swal from 'sweetalert2';
 
@@ -60,8 +59,6 @@ export class EditUserMinistryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('hey ther', this.user)
-    // this.getProfileUser();
     this.buildForm(this.user);
   }
 
@@ -80,24 +77,24 @@ export class EditUserMinistryComponent implements OnInit {
       // RENDERIZAMOS LA INFORMACION PERSONAL PARA ACCEDER POR EL FORMGROUPNAME EN EL FORMULARIO REACTIVO
 
       user: this.fb.group({
-        id: [user.id],
-        verify:[user.verify],
-        document_type: [user.document_type],
-        identification: [user.identification],
-        name: [user.name],
-        last_name: [user.last_name],
-        gender: [user.gender],
-        phone: [user.phone],
-        birth_date: [new Date(user.birth_date)],
+        id: [user?.id],
+        verify:[user?.verify],
+        document_type: [user?.document_type],
+        identification: [user?.identification],
+        name: [user?.name],
+        last_name: [user?.last_name],
+        gender: [user?.gender],
+        phone: [user?.phone],
+        birth_date: [new Date(user?.birth_date)],
       }),
       contact_information: this.fb.group({
-        address: [user.address],
-        phone: [user.phone],
-        email: [{ value: user.email, disabled: true }],
+        address: [user?.address],
+        phone: [user?.phone],
+        email: [{ value: user?.email, disabled: true }],
       }),
       ministerialInfo: this.fb.group({
-        country: [user.country.toLowerCase()], //RENDERIZAMOS EL PAIS QUE SELECCIONO
-        network: [user.network], //RENDERIZAMOS LA INFORMACION DE LA RED A LA QUE PERTENECE
+        country: [user?.country.toLowerCase()], //RENDERIZAMOS EL PAIS QUE SELECCIONO
+        network: [user?.network], //RENDERIZAMOS LA INFORMACION DE LA RED A LA QUE PERTENECE
         leader: [],
         headquarter: [],
         pastor: [],

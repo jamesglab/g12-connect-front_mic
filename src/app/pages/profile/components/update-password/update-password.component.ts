@@ -56,7 +56,6 @@ export class UpdatePasswordComponent implements OnInit {
     if (this.changePasswordForm.invalid) {
       return;
     }
-    // console.log("Se fue", this.changePasswordForm.getRawValue())
     this.changePassword();
   }
 

@@ -101,7 +101,6 @@ export class NewassistantreportgoformComponent implements OnInit {
         DocumentNumber: this.form.documentNumber.value, Email: null, Phone: null
       })
       .subscribe((res: Response) => {
-        // console.log("RESPONSE USER", res);
         this.newAssistantForm.patchValue({
           email: res.entity[0].email,
           name: res.entity[0].names,
@@ -118,7 +117,6 @@ export class NewassistantreportgoformComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log("Entra al submit")
     this.submitted = true;
     this.validateTerms();
     this.setDefaultValues();

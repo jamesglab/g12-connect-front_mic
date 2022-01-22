@@ -365,7 +365,6 @@ export class AddAssistantComponent implements OnInit {
 
   validateFormErrors(validate) {
     let errorText = '';
-    console.log('errorsss', this.assistantForm.controls);
     Object.keys(this.assistantForm.controls).forEach((key) => {
       const controlErrors: ValidationErrors =
         this.assistantForm.get(key).errors;

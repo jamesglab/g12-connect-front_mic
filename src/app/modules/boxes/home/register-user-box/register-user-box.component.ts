@@ -225,7 +225,7 @@ export class RegisterUserBoxComponent implements OnInit {
     this.assistant_control.get('pastor').disable();
     this.userService
       .getLeadersOrPastors({
-        userCode: user_code,
+        userCode: user_code,  
         church: user ? user.church_id : this.assistant_value?.church?.id,
       })
       .subscribe(
@@ -275,7 +275,6 @@ export class RegisterUserBoxComponent implements OnInit {
 
   //CONSULTAMOS LAS IGLESIAS
   getChurchs() {
-    console.log('this.assistant_value', this.assistant_value);
     this.userService
       .getPlaces({
         country: this.assistant_value.country.toUpperCase(),

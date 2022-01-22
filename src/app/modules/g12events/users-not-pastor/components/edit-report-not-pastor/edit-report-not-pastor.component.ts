@@ -46,9 +46,7 @@ export class EditReportNotPastorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log('report not pastor to edit', this.report)
     this.getChurchTypes();
-
     this.buildForm();
   }
 
@@ -108,7 +106,6 @@ export class EditReportNotPastorComponent implements OnInit {
   getPlaces(setvalue?) {
     var filter = "national";
     const { country } = this.form.user.value;
-    // console.log("COUNTRYYYYY", country);
     if (!country) {
       filter = "national";
     } else {
@@ -156,7 +153,6 @@ export class EditReportNotPastorComponent implements OnInit {
     // this.isLoading.leaders = true;
     const getLeadersSubscr = this.eventsService
       .getLeadersOrPastors({ userCode: pastor.user_code, church: this.form.headquarter.value.id }).subscribe(async (res: any) => {
-        // console.log("LEADERS OR PASTORS", res);
         this.leadersObject = await parseToObjectOtherObject(res, 'id');
         this.leaders = res || [];
         if (valid) {
@@ -197,7 +193,6 @@ export class EditReportNotPastorComponent implements OnInit {
     let { country } = this.form.user.value;
     if (!country) this.form.country.setValue("colombia");
 
-    // console.log("SE fueeee", { ...this.editUserForm.getRawValue(), ...{ pastor, leader, church } });
     const typeChurch = this.churchTypes.find(ch => ch.idDetailMaster == this.editUserForm.getRawValue().typeChurch);
     console.log(typeChurch)
     const updateUserSubscr = this.eventsService
@@ -208,7 +203,6 @@ export class EditReportNotPastorComponent implements OnInit {
       .subscribe((res) => {
         this.isLoading = false;
         Swal.fire('Usuario Actualizado', '', 'success')
-        // console.log("THE USER WAS UPDATED", res);
         this.closeModal("success");
       }, err => { this.isLoading = false; throw err; });
     this.unsubscribe.push(updateUserSubscr);

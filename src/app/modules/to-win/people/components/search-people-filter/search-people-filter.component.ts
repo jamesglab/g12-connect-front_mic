@@ -34,7 +34,6 @@ export class SearchPeopleFilterComponent implements OnInit {
   }
 
   ngOnChanges() {
-    // console.log("DOCUMENTS TYPES", this.documentTypes);
   }
 
   buildForm() {
@@ -109,7 +108,6 @@ export class SearchPeopleFilterComponent implements OnInit {
   }
 
   onSubmit() {
-    // console.log("Entra")
     this.validateFields();
     if (this.searchUserForm.invalid) {
       return;

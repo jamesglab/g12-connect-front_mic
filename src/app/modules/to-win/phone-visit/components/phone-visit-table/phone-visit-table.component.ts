@@ -36,7 +36,6 @@ export class PhoneVisitTableComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // console.log("Changes??",changes)
     if (!changes.phoneVisitData?.firstChange) {
       this.getPhoneVisitInfo();
     }

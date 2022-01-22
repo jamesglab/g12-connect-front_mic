@@ -39,8 +39,6 @@ export const decrypt = (keys, value) => {
     var iv = CryptoJS.enc.Utf8.parse(keys);
     var decrypted = CryptoJS.AES.decrypt(value, key, {
     });
-
-    console.log('decrypted',decrypted)
     return decrypted.toString(CryptoJS.enc.Utf8);
 }
 // export const encryptDataConection = async (

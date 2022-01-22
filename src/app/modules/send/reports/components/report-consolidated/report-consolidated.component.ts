@@ -120,7 +120,6 @@ export class ReportConsolidatedComponent implements OnInit {
 
   getReportConsolidated() {
     this.isLoading$ = true;
-    // console.log("Antes de irse", this.getReportForm.getRawValue())
     const reportConsolidatedSubscr = this._reportsService
       .getReportConsolidated(this.getInsert())
       .subscribe((res: Response) => {

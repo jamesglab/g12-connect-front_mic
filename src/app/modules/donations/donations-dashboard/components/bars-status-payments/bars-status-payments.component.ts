@@ -25,13 +25,18 @@ export class BarsStatusPaymentsComponent implements OnInit {
   ngOnInit(): void {
     this.getTransactionsFilter();
   }
+
   getTransactionsFilter() {
+    //CREAMOS LOS FILTROS
     const filter_date = this.filter.value;
     const method_payment = this.payment_mehtod.value;
     
+    //CONSULTAMOS EL ENDPOINT
     this._donationsServices.getTransactionMethodPayment({ filter_date, method_payment}).subscribe(res => {
+      //VALIDAMOS LA CHART
       this.showChart = validateChartValues(res['series']);
       if (this.showChart){
+        //CREAMOS LA CHART CON LAS SERIES U LOS LABELS
         this.createBarsChart(res['series'], res['labels'])
       }
       this.cdr.detectChanges();

@@ -29,28 +29,8 @@ export class AssistantslistreportgoformComponent implements OnInit {
   ngOnChanges(){
     setTimeout(()=>{this._cdr.detectChanges();})
   }
-
-  // getAssistants(){
-  //   console.log("Pero que pasa", this.goId)
-  //   const assistantsListSubscr = this._goService
-  //     .getAssistantsList({ id: this.goId }).subscribe((res: Response) => {
-  //       if (res.result) {
-  //         this.assistants = res.entity;
-  //         this._cdr.detectChanges();
-  //       } else {
-  //        //show notification 
-  //       }
-  //     });
-  //   this.unsubscribe.push(assistantsListSubscr);
-  // }
-
   handleTakeList(element, checked: boolean){
     const { idMember } = element; 
     this.handleAssistants.emit({ member: { idMember }, status: !checked });
   }
-  
-  // ngOnDestroy() {
-  //   this.unsubscribe.forEach((sb) => sb.unsubscribe());
-  // }
-
 }

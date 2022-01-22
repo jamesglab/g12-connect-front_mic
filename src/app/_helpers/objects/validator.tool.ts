@@ -66,11 +66,6 @@ export const validateCardFlag = (number: string) => {
 }
 
 export const getJSONPaymentType = (formFields, eventName: string, assistants: number): any => {
-    console.log('form', formFields);
-    console.log('event', formFields);
-    console.log('event', assistants)
-
-
     switch (formFields.paymentType) {
         case 'PSE':
             return {
@@ -92,7 +87,6 @@ export const getJSONPaymentType = (formFields, eventName: string, assistants: nu
                 }
             }
         case 'TC':
-            console.log("CURRENCY", formFields.currency)
             return {
                 "customer": getCustomer(formFields),
                 "payment": {

@@ -94,7 +94,6 @@ export class ManagePersonComponent implements OnInit {
   }
 
   renderData() {
-    console.log("person", this.person)
     this.managePersonForm.patchValue(renderUpdatePerson(this.person));
   }
 

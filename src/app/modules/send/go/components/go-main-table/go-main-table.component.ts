@@ -114,10 +114,8 @@ export class GoMainTableComponent implements OnInit {
     // })
     // MODAL.result.then((data) => {
     //   // on close
-    //   console.log("Closeee", data)
     //   this.getGoData();
     // }, (reason) => {
-    //   console.log("Reason", reason)
     //   // on dismiss
     // });
   }

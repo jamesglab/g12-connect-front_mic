@@ -66,12 +66,13 @@ export class MakePdfService {
     //CREAMOS LA TABLA CON LOS USUARIOS DEL MASIVO
     const table = await this.createUsersTableMassive(transactions);
 
-    //OBJETO DE CREACION DEL PDF  
+    //OBJETO DE CREACION DEL PDF
     let pdf = {
       //DEFINIMOS LOS ESTILOS QUE USARA NUESTRO PDF
       styles: {
         parrafo: {
-          margin: [0, 10, 0, 0],
+          margin: [0, 0, 0, 0],
+          fontSize: 8,
         },
         bold: {
           bold: true,
@@ -83,12 +84,12 @@ export class MakePdfService {
           margin: [0, 10, 0, 0],
         },
         header: {
-          fontSize: 18,
+          fontSize: 10,
           bold: true,
           margin: [0, 0, 0, 10],
         },
         subheader: {
-          fontSize: 14,
+          fontSize: 8,
           bold: true,
           margin: [0, 15, 0, 5],
         },
@@ -97,7 +98,7 @@ export class MakePdfService {
         },
         tableHeader: {
           bold: true,
-          fontSize: 11,
+          fontSize: 10,
           color: 'black',
         },
       },
@@ -115,10 +116,16 @@ export class MakePdfService {
         { text: 'NIT 800195397-7', style: 'cont_ministerial' },
 
         {
-          text: `Usuario : ${
+          text: `USUARIO : ${
             donor.user.name.toString().toUpperCase() +
             ' ' +
             donor.user.last_name.toString().toUpperCase()
+          }`,
+          style: 'parrafo',
+        },
+        {
+          text: `TIPO DE TRANSACCIÓN : ${
+            donor.description_of_change ? 'DATAFONO' : 'EFECTIVO'
           }`,
           style: 'parrafo',
         },
@@ -240,9 +247,6 @@ export class MakePdfService {
     return table;
   }
 
-
-
-
   //PDF DE USUARIOS DE COMPRAS NO MASIVAS
   private async createPdfNotMassive(transactions, box) {
     let donor;
@@ -260,6 +264,7 @@ export class MakePdfService {
       styles: {
         parrafo: {
           margin: [0, 10, 0, 0],
+          fontSize: 8,
         },
         bold: {
           bold: true,
@@ -271,12 +276,12 @@ export class MakePdfService {
           margin: [0, 10, 0, 0],
         },
         header: {
-          fontSize: 18,
+          fontSize: 10,
           bold: true,
           margin: [0, 0, 0, 10],
         },
         subheader: {
-          fontSize: 14,
+          fontSize: 8,
           bold: true,
           margin: [0, 15, 0, 5],
         },
@@ -285,7 +290,7 @@ export class MakePdfService {
         },
         tableHeader: {
           bold: true,
-          fontSize: 11,
+          fontSize: 10,
           color: 'black',
         },
       },
@@ -303,14 +308,19 @@ export class MakePdfService {
         { text: 'NIT 800195397-7', style: 'cont_ministerial' },
 
         {
-          text: `Usuario : ${
+          text: `USUARIO : ${
             donor.user.name.toString().toUpperCase() +
             ' ' +
             donor.user.last_name.toString().toUpperCase()
           }`,
           style: 'parrafo',
         },
-
+        {
+          text: `TIPO DE TRANSACIÓN : ${
+            donor.description_of_change ? 'DATAFONO' : 'EFECTIVO'
+          }`,
+          style: 'parrafo',
+        },
         {
           style: 'parrafo',
           //CREACION DE COLUMNAS ESPECIFICAMOS UN ARRAY QUE LEERA OBJETOS DE POSICIONES
@@ -347,11 +357,11 @@ export class MakePdfService {
         {
           columns: [
             {
-              width: 380,
+              width: 350,
               text: '',
             },
             {
-              width: 420,
+              width: 400,
               style: 'bold',
               text: `TOTAL A DONAR : ${this.formatPrice(
                 donor.transaction.currency,
@@ -365,7 +375,7 @@ export class MakePdfService {
           style: 'parrafo',
           columns: [
             {
-              width: 420,
+              width: 380,
               text: 'FECHA Y HORA DE IMPRESIÓN',
             },
             {
@@ -415,6 +425,7 @@ export class MakePdfService {
     ];
 
     transactions.map((tr) => {
+      console.log('tenemos pastor', tr);
       if (tr.isAssistant) {
         table.push([
           tr.user.identification ? tr.user.identification : 'INTERNACIONAL',
@@ -424,7 +435,11 @@ export class MakePdfService {
               tr.user.last_name.toString().toUpperCase()
             : '',
           tr.donation.name ? tr.donation.name.toString().toUpperCase() : '',
-          tr.pastor.name ? tr.pastor.name.toString().toUpperCase() : '' + tr.pastor.last_name ? tr.pastor.last_name.toString().toUpperCase() : '',
+          (tr.pastor.name ? tr.pastor.name.toString().toUpperCase() : '') +
+            ' ' +
+            (tr.pastor.last_name
+              ? tr?.pastor?.last_name.toString().toUpperCase()
+              : ''),
           tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
             ? this.formatPrice(
                 tr.transaction.currency.toString().toLowerCase(),
@@ -438,7 +453,7 @@ export class MakePdfService {
   }
 
   formatPrice(currency, value) {
-    return new Intl.NumberFormat('en-IN', {
+    return new Intl.NumberFormat('es', {
       style: 'currency',
       currency,
       minimumFractionDigits: 0,

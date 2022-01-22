@@ -57,7 +57,7 @@ export const MY_FORMATS = {
 })
 export class EventReportsComponent implements OnInit {
   public isLoading: boolean = false;
-  public date = new FormControl(moment());
+  // public date = new FormControl(moment());
   public maxDate: Date;
   public campaignOne: FormGroup;
   public campaignTwo: FormGroup;
@@ -101,16 +101,8 @@ export class EventReportsComponent implements OnInit {
   ngOnInit(): void {
     this.getEvents();
     this.search.disable();
-    // this.getPastor();
+
   }
-
-  // PARA FILTROS POR PASTOR
-  // getPastor() {
-  //   this._g12Events.getLeadersOrPastors({ userCode: '01', church: '1' }).subscribe(res => {
-  //     this.pastores = res;
-  //   });
-  // }
-
   //CONSULTAMOS LOSO EVENTOS Y FILTRAMOS POR G12_EVENT
   getEvents() {
     this._g12Events.getAll({ type: 'G12_EVENT' }).subscribe((res) => {
@@ -180,17 +172,17 @@ export class EventReportsComponent implements OnInit {
       this.isLoading = true;
       this._g12Events
         .getTransactionsReports({
-          date_init: `${moment(this.date.value).format(
-            'YYYY'
-          )}-01-01T00:00:00.000`,
-          ...filters,
-          date_finish: `${moment(this.date.value).format(
-            'YYYY'
-          )}-12-31T23:59:00.000`,
+          // date_init: `${moment(this.date.value).format(
+          //   'YYYY'
+          // )}-01-01T00:00:00.000`,
+          // date_finish: `${moment(this.date.value).format(
+          //   'YYYY'
+          // )}-12-31T23:59:00.000`,
           platform: 'EVENTOSG12',
           event_id:
             this.event_selected.value != 0 ? this.event_selected.value.id : '',
           type,
+          ...filters,
         })
         .subscribe(
           (res: any) => {
@@ -220,13 +212,12 @@ export class EventReportsComponent implements OnInit {
     this.cutSelected = cut;
     this._g12Events
       .getTransactionsForCut({
-        cut_id: cut._id,
+        cut_id: cut?._id,
         page: paginator ? paginator.pageIndex + 1 : 1,
         per_page: paginator ? paginator.pageSize : 5,
       })
       .subscribe((res: any) => {
         this.countsCutTable = res.count;
-        console.log('cortes', res);
         if (!this.data_cut_table) {
           this.data_cut_table = new MatTableDataSource<any[]>(res.reports);
           this.cdr.detectChanges();
@@ -259,6 +250,7 @@ export class EventReportsComponent implements OnInit {
             Genero: item.user?.gender
               ? item.user.gender.toString().toUpperCase()
               : 'N/A',
+            Idioma: this.validateLanguage(item.user),
             Telefono: item.user?.phone ? item.user.phone : 'N/A',
             'E-mail': item.user?.email ? item.user.email : 'N/A',
             Pais: item.user?.country
@@ -275,18 +267,16 @@ export class EventReportsComponent implements OnInit {
               ? item.church.name.toString().toUpperCase()
               : 'N/A',
             Pastor: item.pastor?.name
-              ? `${item.pastor.name} ${
-                  item.pastor.last_name ? item.pastor.last_name : ''
+              ? `${item.pastor.name} ${item.pastor.last_name ? item.pastor.last_name : ''
                 }`
-                  .toString()
-                  .toUpperCase()
+                .toString()
+                .toUpperCase()
               : 'N/A',
             'Lider Doce': item.leader?.name
-              ? `${item.leader.name} ${
-                  item.leader.last_name ? item.leader.last_name : ''
+              ? `${item.leader.name} ${item.leader.last_name ? item.leader.last_name : ''
                 }`
-                  .toString()
-                  .toUpperCase()
+                .toString()
+                .toUpperCase()
               : 'N/A',
             // 'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
             'Fecha de Donación': new Date(item.created_at),
@@ -305,12 +295,12 @@ export class EventReportsComponent implements OnInit {
               : 'N/A',
             Estado: item.transaction.status
               ? this.validateStatus(item.transaction.status)
-                  .toString()
-                  .toUpperCase()
+                .toString()
+                .toUpperCase()
               : 'N/A',
             Costo:
               item.cut.prices[
-                item.transaction.currency?.toString().toLowerCase()
+              item.transaction.currency?.toString().toLowerCase()
               ],
             Moneda: item.transaction.currency
               ? item.transaction.currency.toString().toUpperCase()
@@ -323,9 +313,7 @@ export class EventReportsComponent implements OnInit {
         });
         this.exportService.exportAsExcelFile(
           dataToExport,
-          !this.downloadPastor
-            ? 'EVENTOSG12'
-            : `${this.pastor_selected.value.name}_EVENTOSG12`
+          this.event_selected.value.name.toString().replace(" ","").replace(" ","")
         );
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -353,7 +341,6 @@ export class EventReportsComponent implements OnInit {
   }
 
   validatePaymentMethod(payment_method) {
-    
     if (payment_method.toLowerCase() == 'credit') {
       return 'Tarjeta de credito';
     } else if (payment_method.toLowerCase() == 'pse') {
@@ -369,8 +356,61 @@ export class EventReportsComponent implements OnInit {
     }
   }
 
-  chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
-    datepicker.close();
-    this.date.setValue(normalizedYear);
+  validateLanguage(user) {
+    if (user?.language) {
+      switch (user?.language?.toString().toUpperCase()) {
+        case 'ES': {
+          return 'Español';
+        }
+        case 'EN': {
+          return 'Ingles';
+        }
+        case 'PT': {
+          return 'Portugues';
+        }
+
+        case 'FR': {
+          return 'Frances';
+        }
+        case 'RS': {
+          return 'Ruso';
+        }
+        default: {
+          return 'N/A';
+        }
+      }
+    } else {
+      const ingles = [
+        'ALEMANIA',
+        'CANADÁ',
+        'SUDÁFRICA',
+        'SINGAPUR',
+        'SAMOA',
+        'REINO UNIDO',
+        'IRLANDA',
+        'ESTADOS UNIDOS DE AMÉRICA',
+        'ESTADOS UNIDOS',
+      ];
+      const portugues = ['BRASIL'];
+      const frances = ['CONGO(BRAZZAVILLE)', 'FRANCIA'];
+      const ruso = [
+        'EMIRATOS ÁRABES UNIDOS',
+        'SUECIA',
+        'RUSIA',
+        'PAÍSES BAJOS',
+      ];
+
+      if (ingles.includes(user?.country?.toString().toUpperCase())) {
+        return 'Ingles';
+      } else if (portugues.includes(user?.country?.toString().toUpperCase())) {
+        return 'Portugues';
+      } else if (frances.includes(user?.country?.toString().toUpperCase())) {
+        return 'Frances';
+      } else if (ruso.includes(user?.country?.toString().toUpperCase())) {
+        return 'Ruso';
+      } else {
+        return 'Español';
+      }
+    }
   }
 }

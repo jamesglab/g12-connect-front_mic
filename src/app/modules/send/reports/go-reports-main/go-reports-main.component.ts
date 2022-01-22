@@ -41,7 +41,6 @@ export class GoReportsMainComponent implements OnInit {
   // }
 
   export(){
-    console.log("clicked component");
     let data = [{
       Pastor: "Pepe",
       Lider: "Otro pepe",

@@ -15,9 +15,6 @@ import { Donation } from '../../_models/donation.model';
 import { EditEventComponent } from '../edit-event/edit-event.component';
 import { GenerateCodesComponent } from '../generate-codes/generate-codes.component';
 import { EmailEventComponent } from '../../email-event/email-event.component';
-import { report } from 'process';
-import { resolve } from 'dns';
-import { rejects } from 'assert';
 import { ExportService } from 'src/app/modules/_services/export.service';
 import Swal from 'sweetalert2';
 
@@ -148,7 +145,7 @@ export class EventsTableComponent implements OnInit {
       );
     } else {
       Swal.fire(
-        'Estamos procesando la informacion',
+        'Estamos procesando la información',
         'esto puede tardar un momento',
         'info'
       );
@@ -281,7 +278,7 @@ export class EventsTableComponent implements OnInit {
 
       this.exportService.exportConsolidateWithStyles(
         constructor_reports,
-        'Export'
+        donation.name.toString().trim().toUpperCase()
       );
     }
   }
@@ -330,6 +327,7 @@ export class EventsTableComponent implements OnInit {
         : 'N/A',
       Telefono: item.user?.phone ? item.user.phone : 'N/A',
       'E-mail': item.user?.email ? item.user.email : 'N/A',
+      Idioma: this.validateLanguage(item.user),
       Pais: item.user?.country
         ? item.user.country.toString().toUpperCase()
         : 'N/A',
@@ -381,6 +379,64 @@ export class EventsTableComponent implements OnInit {
   //VALIDAMOS EL ERROR DE LA IMAGEN Y ANEXAMOS LA IMAGEN DE CONEXION
   handleErrorImage($event: any) {
     $event.target.src = 'assets/media/logos/logoConexion12.png';
+  }
+
+  validateLanguage(user) {
+    if (user?.language) {
+      switch (user?.language?.toString().toUpperCase()) {
+        case 'ES': {
+          return 'Español';
+        }
+        case 'EN': {
+          return 'Ingles';
+        }
+        case 'PT': {
+          return 'Portugues';
+        }
+
+        case 'FR': {
+          return 'Frances';
+        }
+        case 'RS': {
+          return 'Ruso';
+        }
+        default: {
+          return 'N/A';
+        }
+      }
+    } else {
+      const ingles = [
+        'ALEMANIA',
+        'CANADÁ',
+        'SUDÁFRICA',
+        'SINGAPUR',
+        'SAMOA',
+        'REINO UNIDO',
+        'IRLANDA',
+        'ESTADOS UNIDOS DE AMÉRICA',
+        'ESTADOS UNIDOS',
+      ];
+      const portugues = ['BRASIL'];
+      const frances = ['CONGO(BRAZZAVILLE)', 'FRANCIA'];
+      const ruso = [
+        'EMIRATOS ÁRABES UNIDOS',
+        'SUECIA',
+        'RUSIA',
+        'PAÍSES BAJOS',
+      ];
+
+      if (ingles.includes(user?.country?.toString().toUpperCase())) {
+        return 'Ingles';
+      } else if (portugues.includes(user?.country?.toString().toUpperCase())) {
+        return 'Portugues';
+      } else if (frances.includes(user?.country?.toString().toUpperCase())) {
+        return 'Frances';
+      } else if (ruso.includes(user?.country?.toString().toUpperCase())) {
+        return 'Ruso';
+      } else {
+        return 'Español';
+      }
+    }
   }
 
   //APLICAMOS EL FILTRO DE ANGULAR MATERIAL

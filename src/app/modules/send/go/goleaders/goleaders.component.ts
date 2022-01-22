@@ -38,10 +38,8 @@ export class GoleadersComponent implements OnInit {
     })
     MODAL.result.then((data) => {
       // on close
-      // console.log("Closeee", data)
       // this.getHostLeaders();
     }, (reason) => {
-      console.log("Reason", reason)
       // on dismiss
     });
   }
