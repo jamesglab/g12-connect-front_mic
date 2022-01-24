@@ -1,50 +1,43 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import {
   FormGroup,
   FormControl,
-  FormGroupDirective,
-  NgForm,
-  Validators,
-} from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
-import { ExportService } from 'src/app/modules/_services/export.service';
-import { G12eventsService } from '../_services/g12events.service';
-import { ErrorStateMatcher } from '@angular/material/core';
-import * as moment from 'moment';
-import { Moment } from 'moment';
-import { MatDatepicker } from '@angular/material/datepicker';
-import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
+} from "@angular/forms";
+import { MatTableDataSource } from "@angular/material/table";
+import { ExportService } from "src/app/modules/_services/export.service";
+import { G12eventsService } from "../_services/g12events.service";
+import { notificationConfig } from "src/app/_helpers/tools/utils.tool";
 import {
   DateAdapter,
   MAT_DATE_FORMATS,
   MAT_DATE_LOCALE,
-} from '@angular/material/core';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
+} from "@angular/material/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { NotificationComponent } from "src/app/pages/_layout/components/notification/notification.component";
 import {
   MomentDateAdapter,
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
-} from '@angular/material-moment-adapter';
-import Swal from 'sweetalert2';
+} from "@angular/material-moment-adapter";
+import Swal from "sweetalert2";
+import { createObjectReportByEvent, validatePaymentMethod, validateStatus } from "./moks/reports.moks";
 
 // FORMATO DE LAS FECHAS QUE SSE VERAN EN EL ANGULAR MATERIAL
 export const MY_FORMATS = {
   parse: {
-    dateInput: 'YYYY',
+    dateInput: "YYYY",
   },
   display: {
-    dateInput: 'YYYY',
-    monthYearLabel: 'YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'YYYY',
+    dateInput: "YYYY",
+    monthYearLabel: "YYYY",
+    dateA11yLabel: "LL",
+    monthYearA11yLabel: "YYYY",
   },
 };
 
 @Component({
-  selector: 'app-event-reports',
-  templateUrl: './event-reports.component.html',
-  styleUrls: ['./event-reports.component.scss'],
+  selector: "app-event-reports",
+  templateUrl: "./event-reports.component.html",
+  styleUrls: ["./event-reports.component.scss"],
   providers: [
     //CREAMOS EL FORMATO DE LOS PIQUERS
     {
@@ -76,17 +69,17 @@ export class EventReportsComponent implements OnInit {
   public pastor_selected = new FormControl(0, []);
   public payments_method = new FormControl(0, []);
   public displayedColumns: string[] = [
-    'created_at',
-    'event',
-    'status',
-    'identification',
-    'name',
-    'last_name',
-    'email',
+    "created_at",
+    "event",
+    "status",
+    "identification",
+    "name",
+    "last_name",
+    "email",
   ];
   public dataSource: any;
   public downloadPastor: boolean = false;
-  public search = new FormControl('', []);
+  public search = new FormControl("", []);
   public data_cut_table: any;
   public info_users_count: any;
   constructor(
@@ -101,11 +94,10 @@ export class EventReportsComponent implements OnInit {
   ngOnInit(): void {
     this.getEvents();
     this.search.disable();
-
   }
   //CONSULTAMOS LOSO EVENTOS Y FILTRAMOS POR G12_EVENT
   getEvents() {
-    this._g12Events.getAll({ type: 'G12_EVENT' }).subscribe((res) => {
+    this._g12Events.getAll({ type: "G12_EVENT" }).subscribe((res) => {
       this.events = res;
     });
   }
@@ -125,22 +117,22 @@ export class EventReportsComponent implements OnInit {
     if (!paginator) {
       this.info_users_count = {};
       // CONSULTAMOS LOS CONTADORES DEL EVENTO
-      this.getTransactionsMongo('counts').then((counts) => {
+      this.getTransactionsMongo("counts").then((counts) => {
         this.info_users_count = counts;
       });
       // CONSULTAMOS LOS CORTES DEL EVENTO
-      this.getTransactionsMongo('cuts').then((cuts) => {
+      this.getTransactionsMongo("cuts").then((cuts) => {
         this.cutTransactions = cuts;
       });
     }
     if (this.search.value) {
-      filtered['filter'] = `${this.search.value}`;
+      filtered["filter"] = `${this.search.value}`;
     }
     // CONSULTAMOS LAS TRANSACCIONES Y PASAMOS EL TYPE EN PAGINATE
     this.search.disable();
 
     this.getTransactionsMongo(
-      this.search.value ? 'filter' : 'paginate',
+      this.search.value ? "filter" : "paginate",
       filtered
     ).then((res: { count: number; reports: [any] }) => {
       this.count = res.count;
@@ -148,10 +140,10 @@ export class EventReportsComponent implements OnInit {
 
       //VALIDAREMOS EL ESTADO Y EL METODO DE PAGO DE LA TRANSACCION
       res.reports.map((item, i) => {
-        res.reports[i].transaction.status = this.validateStatus(
+        res.reports[i].transaction.status = validateStatus(
           item.transaction.status
         );
-        res.reports[i].transaction.payment_method = this.validatePaymentMethod(
+        res.reports[i].transaction.payment_method = validatePaymentMethod(
           item.transaction.payment_method
         );
       });
@@ -178,9 +170,9 @@ export class EventReportsComponent implements OnInit {
           // date_finish: `${moment(this.date.value).format(
           //   'YYYY'
           // )}-12-31T23:59:00.000`,
-          platform: 'EVENTOSG12',
+          platform: "EVENTOSG12",
           event_id:
-            this.event_selected.value != 0 ? this.event_selected.value.id : '',
+            this.event_selected.value != 0 ? this.event_selected.value.id : "",
           type,
           ...filters,
         })
@@ -193,9 +185,9 @@ export class EventReportsComponent implements OnInit {
             this.isLoading = false;
             reject(err);
             Swal.fire(
-              'Error',
-              'no pudimos cargar los reportes vuelve a intenterlo mas tarde',
-              'error'
+              "Error",
+              "no pudimos cargar los reportes vuelve a intenterlo mas tarde",
+              "error"
             );
           }
         );
@@ -231,95 +223,23 @@ export class EventReportsComponent implements OnInit {
   exportFile() {
     //VALIDAREMOS LOS DATOS EXPORTADOS
     if (this.dataSource?.data.length > 0) {
-      this.getTransactionsMongo('download').then((res: [any]) => {
+      this.getTransactionsMongo("download").then((res: [any]) => {
         const dataToExport = [];
-        res.map((item) => {
-          const newData = {
-            Nombre: item.user?.name
-              ? item.user.name.toString().toUpperCase()
-              : 'N/A',
-            Apellido: item.user?.last_name
-              ? item.user.last_name.toString().toUpperCase()
-              : 'N/A',
-            'No. Documento': item.user?.identification
-              ? item.user.identification
-              : 'N/A',
-            'Fecha Nacimiento': item.user?.birth_date
-              ? new Date(item.user.birth_date)
-              : 'N/A',
-            Genero: item.user?.gender
-              ? item.user.gender.toString().toUpperCase()
-              : 'N/A',
-            Idioma: this.validateLanguage(item.user),
-            Telefono: item.user?.phone ? item.user.phone : 'N/A',
-            'E-mail': item.user?.email ? item.user.email : 'N/A',
-            Pais: item.user?.country
-              ? item.user.country.toString().toUpperCase()
-              : 'N/A',
-            Departamento: item.user?.departament
-              ? item.user.departament.toString().toUpperCase()
-              : 'N/A',
-            Municipio: item.user?.city ? item.user.city : 'N/A',
-            'Tipo de Iglesia': item?.user?.type_church
-              ? item?.user?.type_church.toString().toUpperCase()
-              : 'N/A',
-            Sede: item.church?.name
-              ? item.church.name.toString().toUpperCase()
-              : 'N/A',
-            Pastor: item.pastor?.name
-              ? `${item.pastor.name} ${item.pastor.last_name ? item.pastor.last_name : ''
-                }`
-                .toString()
-                .toUpperCase()
-              : 'N/A',
-            'Lider Doce': item.leader?.name
-              ? `${item.leader.name} ${item.leader.last_name ? item.leader.last_name : ''
-                }`
-                .toString()
-                .toUpperCase()
-              : 'N/A',
-            // 'Pastor de Sede': item.pastor_church ? `${item.pastor_church.name} ${item.pastor_church.last_name ? item.pastor_church.last_name : ''}` : 'N/A',
-            'Fecha de Donación': new Date(item.created_at),
-            'Referencia Transaccion': item.transaction.payment_ref
-              ? item.transaction.payment_ref
-              : 'N/A',
-            Codigo: item.transaction.code ? item.transaction.code : 'N/A',
-            'Metodo de pago': item.transaction.payment_method
-              ? item.transaction.payment_method
-              : 'N/A',
-            'Nombre evento': item.donation?.name
-              ? item.donation?.name.toString().toUpperCase()
-              : 'N/A',
-            'Nombre corte': item.cut?.name
-              ? item.cut?.name.toString().toUpperCase()
-              : 'N/A',
-            Estado: item.transaction.status
-              ? this.validateStatus(item.transaction.status)
-                .toString()
-                .toUpperCase()
-              : 'N/A',
-            Costo:
-              item.cut.prices[
-              item.transaction.currency?.toString().toLowerCase()
-              ],
-            Moneda: item.transaction.currency
-              ? item.transaction.currency.toString().toUpperCase()
-              : 'N/A',
-            'Descripcion de Cambio': item.description_of_change
-              ? item.description_of_change.toString().toUpperCase()
-              : 'N/A',
-          };
-          dataToExport.push(newData);
+        res.map((item, i) => {
+          dataToExport.push(createObjectReportByEvent(item, i));
         });
         this.exportService.exportAsExcelFile(
           dataToExport,
-          this.event_selected.value.name.toString().replace(" ","").replace(" ","")
+          this.event_selected.value.name
+            .toString()
+            .replace(" ", "")
+            .replace(" ", "")
         );
         this.isLoading = false;
         this.cdr.detectChanges();
       });
     } else {
-      this.showMessage(2, 'No hay datos por exportar');
+      this.showMessage(2, "No hay datos por exportar");
     }
   }
 
@@ -330,87 +250,4 @@ export class EventReportsComponent implements OnInit {
     );
   }
 
-  validateStatus(status) {
-    if (parseInt(status) == 1) {
-      return 'Aprobado';
-    } else if (parseInt(status) == 2) {
-      return 'En proceso';
-    } else if (parseInt(status) == 3) {
-      return 'Cancelado/Declinado';
-    }
-  }
-
-  validatePaymentMethod(payment_method) {
-    if (payment_method.toLowerCase() == 'credit') {
-      return 'Tarjeta de credito';
-    } else if (payment_method.toLowerCase() == 'pse') {
-      return 'PSE';
-    } else if (payment_method.toLowerCase() == 'cash') {
-      return 'Efectivo';
-    } else if (payment_method.toLowerCase() == 'administration') {
-      return 'Administración';
-    } else if (payment_method.toLowerCase() == 'code') {
-      return 'Codigo';
-    } else if (payment_method.toLowerCase() == 'cajas mci') {
-      return 'Caja MCI';
-    }
-  }
-
-  validateLanguage(user) {
-    if (user?.language) {
-      switch (user?.language?.toString().toUpperCase()) {
-        case 'ES': {
-          return 'Español';
-        }
-        case 'EN': {
-          return 'Ingles';
-        }
-        case 'PT': {
-          return 'Portugues';
-        }
-
-        case 'FR': {
-          return 'Frances';
-        }
-        case 'RS': {
-          return 'Ruso';
-        }
-        default: {
-          return 'N/A';
-        }
-      }
-    } else {
-      const ingles = [
-        'ALEMANIA',
-        'CANADÁ',
-        'SUDÁFRICA',
-        'SINGAPUR',
-        'SAMOA',
-        'REINO UNIDO',
-        'IRLANDA',
-        'ESTADOS UNIDOS DE AMÉRICA',
-        'ESTADOS UNIDOS',
-      ];
-      const portugues = ['BRASIL'];
-      const frances = ['CONGO(BRAZZAVILLE)', 'FRANCIA'];
-      const ruso = [
-        'EMIRATOS ÁRABES UNIDOS',
-        'SUECIA',
-        'RUSIA',
-        'PAÍSES BAJOS',
-      ];
-
-      if (ingles.includes(user?.country?.toString().toUpperCase())) {
-        return 'Ingles';
-      } else if (portugues.includes(user?.country?.toString().toUpperCase())) {
-        return 'Portugues';
-      } else if (frances.includes(user?.country?.toString().toUpperCase())) {
-        return 'Frances';
-      } else if (ruso.includes(user?.country?.toString().toUpperCase())) {
-        return 'Ruso';
-      } else {
-        return 'Español';
-      }
-    }
-  }
 }
