@@ -117,15 +117,15 @@ export class MakePdfService {
 
         {
           text: `USUARIO : ${
-            donor.user.name.toString().toUpperCase() +
+            donor?.user?.name.toString().toUpperCase() +
             ' ' +
-            donor.user.last_name.toString().toUpperCase()
+            donor?.user?.last_name.toString().toUpperCase()
           }`,
           style: 'parrafo',
         },
         {
           text: `TIPO DE TRANSACCIÓN : ${
-            donor.description_of_change ? 'DATAFONO' : 'EFECTIVO'
+            donor?.description_of_change ? 'DATAFONO' : 'EFECTIVO'
           }`,
           style: 'parrafo',
         },
@@ -138,13 +138,13 @@ export class MakePdfService {
               //TAMAÑO DE LA COLUMNA
               width: 380,
               //TEXTO
-              text: `REFERENCIA : ${donor.transaction.payment_ref}`,
+              text: `REFERENCIA : ${donor?.transaction?.payment_ref}`,
             },
             {
               //TAMAÑO DE LA COLUMNA
               width: 400,
               //TEXTO
-              text: `FECHA: ${moment(donor.transaction.created_at).format(
+              text: `FECHA: ${moment(donor?.transaction?.created_at).format(
                 'YYYY/MM/DD - h:mm a'
               )}`,
             },
@@ -173,8 +173,8 @@ export class MakePdfService {
               width: 420,
               style: 'bold',
               text: `TOTAL A DONAR : ${this.formatPrice(
-                donor.transaction.currency,
-                donor.transaction.amount
+                donor?.transaction.currency,
+                donor?.transaction.amount
               )}`,
             },
           ],
@@ -309,15 +309,15 @@ export class MakePdfService {
 
         {
           text: `USUARIO : ${
-            donor.user.name.toString().toUpperCase() +
+            donor?.user.name.toString().toUpperCase() +
             ' ' +
-            donor.user.last_name.toString().toUpperCase()
+            donor?.user.last_name.toString().toUpperCase()
           }`,
           style: 'parrafo',
         },
         {
           text: `TIPO DE TRANSACIÓN : ${
-            donor.description_of_change ? 'DATAFONO' : 'EFECTIVO'
+            donor?.description_of_change ? 'DATAFONO' : 'EFECTIVO'
           }`,
           style: 'parrafo',
         },
