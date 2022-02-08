@@ -48,7 +48,7 @@ export class EventsTableComponent implements OnInit {
     private modalService: NgbModal,
     private exportService: ExportService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getAllEvents();
@@ -271,42 +271,45 @@ export class EventsTableComponent implements OnInit {
 
   //EDITAMOS UN EVENTO
   handleToEdit(element: Donation) {
-    //CONSUMIMOS EL ENDPOINT DE DETALLE DE UN EVENTO
-    this.eventsService.getById({ id: element.id }).subscribe((res) => {
-      //CREAMOE EL MODAL Y ABRIMOS EL COMPONENTE DE EditEventComponent
-      const MODAL = this.modalService.open(EditEventComponent, {
-        size: "lg", //TAMAÑO DEL MODAL
-        centered: true, // CENTRAMOS EL MODAL
-      });
-      MODAL.componentInstance.event = res; //AGREGAMOS EL EVENTO A LA VARIABLE 'event' DEL COMPONENTE EditEventComponent
-      MODAL.result.then((data) => {
-        //CONSULTAMOS LA RESPUESTA DEL MODAL
-        if (data == "success") {
-          //SI LA DATA ES SUCCESS
-          this.getAllEvents(); //CONSULTAMOS LOS EVENTOS
-        }
-      });
+
+    const MODAL = this.modalService.open(EditEventComponent, {
+      size: "lg", //TAMAÑO DEL MODAL
+      centered: true, // CENTRAMOS EL MODAL
     });
+    MODAL.componentInstance.event = element; //AGREGAMOS EL EVENTO A LA VARIABLE 'event' DEL COMPONENTE EditEventComponent
+    MODAL.result.then((data) => {
+      //CONSULTAMOS LA RESPUESTA DEL MODAL
+      if (data == "success") {
+        //SI LA DATA ES SUCCESS
+        this.getAllEvents(); //CONSULTAMOS LOS EVENTOS
+      }
+    });
+    //CONSUMIMOS EL ENDPOINT DE DETALLE DE UN EVENTO
+    // this.eventsService.getById({ id: element.id }).subscribe((res) => {
+    //   //CREAMOE EL MODAL Y ABRIMOS EL COMPONENTE DE EditEventComponent
+
+    // });
   }
   //MODAL DE CREACION DE CODIGOS POR EVENTO
   handleToCreateCodes(element) {
     //CONSULTAMOS EL EVENTO PO EL ID
-    this.eventsService.getById({ id: element.id }).subscribe((res) => {
-      const MODAL = this.modalService.open(GenerateCodesComponent, {
-        windowClass: "fadeIn",
-        size: "lg",
-        backdrop: true,
-        keyboard: true,
-        centered: true,
-      });
-      //AGREGAMOS EL EVENTO A LA INTANCIA DEL COMPONENTE EVENT
-      MODAL.componentInstance.event = res;
-      MODAL.result.then((data) => {
-        if (data == "success") {
-          this.getAllEvents();
-        }
-      });
+    const MODAL = this.modalService.open(GenerateCodesComponent, {
+      windowClass: "fadeIn",
+      size: "lg",
+      backdrop: true,
+      keyboard: true,
+      centered: true,
     });
+    //AGREGAMOS EL EVENTO A LA INTANCIA DEL COMPONENTE EVENT
+    MODAL.componentInstance.event = element;
+    MODAL.result.then((data) => {
+      if (data == "success") {
+        this.getAllEvents();
+      }
+    });
+    // this.eventsService.getById({ id: element.id }).subscribe((res) => {
+
+    // });
   }
   //MODAL DE CREACION DE EMAIL EN EL EVENTO
   handleEmailEvent(event) {

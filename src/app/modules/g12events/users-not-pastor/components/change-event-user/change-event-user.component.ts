@@ -10,18 +10,18 @@ import { G12eventsService } from "../../../_services/g12events.service";
   styleUrls: ["./change-event-user.component.scss"],
 })
 export class changeEventUserComponent implements OnInit {
-  public report;
-  public events;
+
+  public report: any = null;
+  public events: any[] = [];
   public editEventReport: FormGroup;
-  public loader: boolean;
-  constructor(
-    private fb: FormBuilder,
-    private _g12Events: G12eventsService,
-    public modal: NgbActiveModal
-  ) {}
+  public loader: boolean = false;
+
+  constructor(private fb: FormBuilder, private _g12Events: G12eventsService,
+    public modal: NgbActiveModal) { }
 
   ngOnInit(): void {
     this.buildForm();
+    this.report.transaction.payment_method = this.formatPaymentMethod(this.report.transaction.payment_method);
   }
 
   buildForm() {
@@ -32,6 +32,18 @@ export class changeEventUserComponent implements OnInit {
       transaction: [this.report.transaction.id],
     });
   }
+
+  formatPaymentMethod(type: string): string {
+    let payments = {
+      "credit": "Tarjeta de crédito",
+      "pse": "PSE",
+      "cash": "Efectivo",
+      "administration": "Administración",
+      "box": "Caja"
+    };
+    return payments[type.toLocaleLowerCase() || ''];
+  }
+
   onSubmit() {
     if (this.editEventReport.valid) {
       this.loader = true;
@@ -58,4 +70,5 @@ export class changeEventUserComponent implements OnInit {
       Swal.fire("Valida los campos", "", "warning");
     }
   }
+
 }

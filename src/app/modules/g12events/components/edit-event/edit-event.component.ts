@@ -17,6 +17,7 @@ import { getBase64 } from 'src/app/_helpers/tools/utils.tool';
 import { G12eventsService } from '../../_services/g12events.service';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-edit-event',
@@ -26,6 +27,7 @@ import Swal from 'sweetalert2';
 export class EditEventComponent implements OnInit {
   private unsubscribe: Subscription[] = [];
   private uploadImage: boolean;
+  private validateChangeDate: boolean = false;
 
   public editEventForm: FormGroup = null;
   public event = null;
@@ -40,7 +42,7 @@ export class EditEventComponent implements OnInit {
     private eventsService: G12eventsService,
     private router: Router,
     public modal: NgbActiveModal
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getCategories();
@@ -67,6 +69,9 @@ export class EditEventComponent implements OnInit {
       location: [],
       massive_pay: [this.event.massive_pay],
       status: [this.event.status],
+      view_hubilo: [this.event.view_hubilo || false],
+      event_id_hubilo: [this.event.event_id_hubilo || null],
+      code_modify: [null]
     });
     //VALIDAMOS LA IMAGEN DEL EVENTO Y LA SETEAMOS EN BASE64
     if (this.event.image.url != '' && this.event.image.url) {
@@ -80,6 +85,22 @@ export class EditEventComponent implements OnInit {
     this.minDate = new Date(this.event.init_date);
   }
 
+  //CONSULTAMOS LAS CATEFORIAS DEL EVENTO
+  getCategories() {
+    this.eventsService.getCategories().subscribe(
+      (res: any) => {
+        this.categories = res;
+      },
+      (err) => {
+        console.log('tenemos error', err);
+      }
+    );
+  }
+
+  get form() {
+    return this.editEventForm.controls;
+  }
+
   //METODO PARA CREAR LOS CORTES EN EL FORMULARIO
   setCuts() {
     //RECORREMOS LOS CORTES QUE ESTAN EN 'financialCut' DEL EVENTO
@@ -91,29 +112,31 @@ export class EditEventComponent implements OnInit {
   }
 
   addCute(cut?) {
-    this.cuts.push(
-      new FormGroup({
-        id: new FormControl(cut?.id ? cut.id : null),
-        name: new FormControl(cut ? cut.name : null),
-        cop: new FormControl(cut ? cut.prices.cop : null),
-        usd: new FormControl(cut ? cut.prices.usd : null),
-        quantity: new FormControl(cut ? cut.quantity : null),
-        date_init: new FormControl(cut ? cut.date_init : null),
-        date_finish: new FormControl(cut ? cut.date_finish : null),
-        is_active: new FormControl(cut ? (cut.is_active ? true : false) : null),
-        price_group_selected: new FormControl(cut ? cut.is_group : false),
-        price_group_usd: new FormControl(cut ? cut.price_group?.usd : null),
-        price_group_cop: new FormControl(cut ? cut.price_group?.cop : null),
-        quantity_register_max: new FormControl(
-          cut ? cut.quantity_register_max : 1
-        ),
-        quantity_register_min: new FormControl(
-          cut ? cut.quantity_register_min : 1
-        ),
-        description: new FormControl(cut ? cut.description : null),
-        massive_pay: new FormControl(cut ? cut.massive_pay : null),
-      })
-    );
+    if (cut) {
+      this.cuts.push(
+        new FormGroup({
+          id: new FormControl(cut.id || null),
+          name: new FormControl(cut.name || null),
+          cop: new FormControl(cut.prices.cop || null),
+          usd: new FormControl(cut.prices.usd || null),
+          quantity: new FormControl(cut.quantity || null),
+          date_init: new FormControl(cut.date_init || null),
+          date_finish: new FormControl(cut.date_finish || null),
+          is_active: new FormControl(cut.is_active ? cut.is_active : false),
+          price_group_selected: new FormControl(cut.is_group ? cut.is_group : false),
+          price_group_usd: new FormControl(cut.price_group?.usd || null),
+          price_group_cop: new FormControl(cut.price_group?.cop || null),
+          quantity_register_max: new FormControl(cut.quantity_register_max || 1),
+          quantity_register_min: new FormControl(cut.quantity_register_min || 1),
+          description: new FormControl(cut.description || null),
+          massive_pay: new FormControl(cut.massive_pay || null),
+          see_events: new FormControl(cut.module_flags?.see_events || null),
+          see_box: new FormControl(cut.module_flags?.see_box || null),
+          see_massive: new FormControl(cut.module_flags?.see_massive || null)
+        })
+      );
+    }
+
   }
 
   async fileChangeEvent(image) {
@@ -127,55 +150,8 @@ export class EditEventComponent implements OnInit {
       'https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj';
   }
 
-  onSubmit() {
-    if (this.editEventForm.invalid) {
-      return;
-    }
-
-    let cont_quantity = 0;
-    this.cuts.value.map((cute) => {
-      cont_quantity = cont_quantity + parseInt(cute.quantity);
-    });
-    delete this.editEventForm.getRawValue().categorieAdd;
-    const { visibility } = this.editEventForm.getRawValue();
-    this.form.visibility.setValue([visibility]);
-
-    if (cont_quantity < parseInt(this.editEventForm.value.limit)) {
-    }
-
-    let cuts = this.cutsToSend();
-    if (cuts) {
-      const sendData = this.editEventForm.getRawValue();
-      delete sendData.categorieAdd;
-      this.isLoading = true;
-      const addEventSubscr = this.eventsService
-        .update(
-          { transaction_info: sendData, cuts, image: this.event.image },
-          this.uploadImage
-        )
-        .subscribe(
-          (res: any) => {
-            this.showMessage(
-              1,
-              `El evento ${this.form.name.value} ha sido actualizado correctamente!`
-            );
-            this.modal.close('success');
-            this.router.navigate(['g12events']);
-          },
-          (err) => {
-            this.isLoading = false;
-            Swal.fire(
-              err.error.error ? err.error.error : 'error inesperado',
-              '',
-              'error'
-            );
-            throw err;
-          }
-        );
-      this.unsubscribe.push(addEventSubscr);
-    } else {
-      this.showMessage(2, 'Hay campos vacios requeridos en los cortes');
-    }
+  changeCutDate($event: MatDatepickerInputEvent<any>) {
+    this.validateChangeDate = true;
   }
 
   cutsToSend() {
@@ -207,6 +183,11 @@ export class EditEventComponent implements OnInit {
               cop: cut.price_group_cop,
               usd: cut.price_group_usd != '' ? cut.price_group_usd : 0,
             },
+            module_flags: {
+              see_box: cut.see_box,
+              see_events: cut.see_events,
+              see_massive: cut.see_massive
+            },
             quantity_register_max: cut.quantity_register_max,
             quantity_register_min: cut.quantity_register_min,
             is_group: cut.price_group_selected,
@@ -237,6 +218,11 @@ export class EditEventComponent implements OnInit {
             quantity_register_max: cut.quantity_register_max,
             quantity_register_min: cut.quantity_register_min,
             is_group: cut.price_group_selected,
+            module_flags: {
+              see_box: cut.see_box,
+              see_events: cut.see_events,
+              see_massive: cut.see_massive
+            },
             description: cut.description,
             massive_pay: cut.massive_pay,
           });
@@ -253,25 +239,6 @@ export class EditEventComponent implements OnInit {
     }
   }
 
-  deleteCute(i) {
-    console.log(this.cuts.controls[i]);
-
-    // this.cuts.removeAt(i);
-  }
-  showMessage(type: number, message?: string) {
-    this.snackBar.openFromComponent(
-      NotificationComponent,
-      notificationConfig(type, message)
-    );
-  }
-
-  drop(event: CdkDragDrop<[]>) {
-    moveItemInArray(
-      this.editEventForm.get('category').value,
-      event.previousIndex,
-      event.currentIndex
-    );
-  }
   pushCategorie() {
     let found = false;
     this.editEventForm.get('category').value.map((item) => {
@@ -287,23 +254,127 @@ export class EditEventComponent implements OnInit {
     }
   }
 
-  //CONSULTAMOS LAS CATEFORIAS DEL EVENTO
-  getCategories() {
-    this.eventsService.getCategories().subscribe(
-      (res: any) => {
-        this.categories = res;
-      },
-      (err) => {
-        console.log('tenemos error', err);
-      }
+  deleteCute(i) {
+    // this.cuts.removeAt(i);
+  }
+
+  drop(event: CdkDragDrop<[]>) {
+    moveItemInArray(
+      this.editEventForm.get('category').value,
+      event.previousIndex,
+      event.currentIndex
     );
   }
 
-  get form() {
-    return this.editEventForm.controls;
+  async onSubmit() {
+    if (this.editEventForm.invalid) {
+      return;
+    }
+    this.isLoading = true;
+
+    if (this.validateChangeDate) {
+
+      const { isConfirmed, isDenied } = await Swal.fire({
+        title: 'Has cambiado las fechas en alguno de los cortes',
+        text: '¿Tienes el código de confirmación ?',
+        showConfirmButton: true,
+        confirmButtonText: "SI",
+        showDenyButton: true,
+        denyButtonText: "NO"
+      })
+
+      if (isConfirmed) {
+        this.showSwal('');
+      } else if (isDenied) {
+        const generateCodeSusbcr = this.eventsService.generateCodeModify()
+          .subscribe((res) => {
+            this.showSwal('Hemos envíado un código de verificación a tesorería. Ingresalo aquí abajo');
+          }, (err) => { 
+            this.isLoading = false;
+            throw err;
+          });
+        this.unsubscribe.push(generateCodeSusbcr);
+
+      } else {
+        return;
+      }
+
+    } else {
+
+      this.onUpdate();
+    }
+
+  }
+
+  async showSwal(titleText: string) {
+    const { value: code } = await Swal.fire({
+      title: 'Ingresa tu código de verificación',
+      titleText,
+      input: 'text',
+      inputLabel: 'Código',
+      inputAutoTrim: true,
+      inputValidator: result => !result && 'Ingresa un código'
+    });
+
+    if (code) {
+      this.form.code_modify.setValue(code);
+      this.onUpdate();
+    }
+  }
+
+  async onUpdate() {
+
+    // let cont_quantity = 0;
+    // this.cuts.value.map((cute) => { cont_quantity = cont_quantity + parseInt(cute.quantity); });
+
+    const { visibility } = this.editEventForm.getRawValue();
+    this.form.visibility.setValue([visibility]);
+
+    // if (cont_quantity < parseInt(this.editEventForm.value.limit)) {  }
+
+    let cuts = this.cutsToSend();
+    if (cuts) {
+
+      var { code_modify } = this.editEventForm.getRawValue();
+      const transaction_info = this.editEventForm.getRawValue();
+      delete transaction_info.categorieAdd;
+      delete transaction_info.code_modify;
+
+      const addEventSubscr = this.eventsService
+        .update({ transaction_info, cuts, image: this.event.image, code_modify }, this.uploadImage)
+        .subscribe((res: any) => {
+          this.showMessage(
+            1,
+            `El evento ${this.form.name.value} ha sido actualizado correctamente!`
+          );
+          this.modal.close('success');
+          this.router.navigate(['g12events']);
+        }, (err) => {
+          this.isLoading = false;
+          Swal.fire(
+            err.error.error ? err.error.error : 'error inesperado',
+            '',
+            'error'
+          );
+          throw err;
+        }
+        );
+      this.unsubscribe.push(addEventSubscr);
+    } else {
+      this.isLoading = false;
+      this.showMessage(2, 'Hay campos vacios requeridos en los cortes');
+    }
+  }
+
+  showMessage(type: number, message?: string) {
+    this.snackBar.openFromComponent(
+      NotificationComponent,
+      notificationConfig(type, message)
+    );
   }
 
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
+
 }

@@ -185,6 +185,7 @@ export class CreateMassiveComponent implements OnInit {
   getEvents() {
     this._eventService.getEventsMassive().subscribe(
       (res) => {
+        console.log(res)
         this.events = res; //AGREGAMOS LOS EVENTOS
       },
       (err) => {
