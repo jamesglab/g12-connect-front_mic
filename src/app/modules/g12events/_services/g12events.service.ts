@@ -8,7 +8,7 @@ import {
   headerFile,
 } from 'src/app/_helpers/tools/header.tool';
 import { environment } from 'src/environments/environment';
-import { sendDonation } from '../_models/donation.model';
+import { SendDonation } from '../_models/donation.model';
 import * as moment from 'moment';
 
 @Injectable({
@@ -43,6 +43,7 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
+
   getCities() {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.users}/church/city`, {
@@ -55,6 +56,7 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
+
   getTransactionsEvents(params?): Observable<any> {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.reports}/transactions/event`, {
@@ -167,9 +169,7 @@ export class G12eventsService {
       );
   }
 
-  getOne() {}
-
-  getFormData(data: sendDonation, uploadImage?): FormData {
+  getFormData(data: SendDonation, uploadImage?): FormData {
     const send_data = new FormData();
     if (data.transaction_info.image && uploadImage) {
       send_data.append('image', data.transaction_info.image);
@@ -181,7 +181,7 @@ export class G12eventsService {
     return send_data;
   }
 
-  getFormUpdate(data: sendDonation, updoadImage): FormData {
+  getFormUpdate(data: SendDonation, updoadImage): FormData {
     const send_data = new FormData();
     if (updoadImage) {
       send_data.append('image', data.transaction_info.image);
@@ -192,7 +192,7 @@ export class G12eventsService {
     return send_data;
   }
 
-  create(data: sendDonation): Observable<any> {
+  create(data: SendDonation): Observable<any> {
     //DEFINE THE RESPONSE
     data.transaction_info.init_date = moment(data.transaction_info.init_date);
     data.transaction_info.finish_date = moment(
@@ -227,7 +227,7 @@ export class G12eventsService {
       );
   }
 
-  update(data: sendDonation, updateImage) {
+  update(data: SendDonation, updateImage) {
     return this.http
       .put<any>(
         `${environment.apiUrlG12Connect.donations}`,
@@ -241,9 +241,7 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
-  delete() {}
 
-  /// query Mongo
   getTransactionsReports(params) {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.reports}/reports-mongo`, {
@@ -272,7 +270,6 @@ export class G12eventsService {
       );
   }
 
-  ///EDIT USERSSS EVENT
   getDataByFilter(filter: any) {
     //IS FOR GET INFO USERS NOT PASTORS
     return this.http
@@ -318,13 +315,6 @@ export class G12eventsService {
   }
 
   getChurchTypes(): Observable<any> {
-    // return this.http.post<any>(
-    //   `${environment.apiUrlConexion12}MasterDetail/Get`, JSON.stringify({ "CodeMaster": "T14", "IdCountry": 240 }), { headers: header }).pipe(
-    //     map((res: any) => {
-    //       return res;
-    //     }),
-    //     catchError(this.handleError)
-    //   );
     return new Observable((obs) => {
       obs.next({
         result: true,
@@ -377,6 +367,12 @@ export class G12eventsService {
       );
   }
 
+  generateCodeModify() {
+    return this.http.get<any>(`${environment.apiUrlG12Connect.donations}/generate-code-modify`, 
+    { headers: header }).pipe(map((res: Response) => { return res; }),
+    catchError(handleError))
+  }
+
   updateUser(user: any): Observable<any> {
     return this.http
       .put<any>(
@@ -391,8 +387,6 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
-
-  ///EDIT USERSSS EVENT
 
   getTransactionUserNotPastor(params) {
     return this.http
@@ -513,6 +507,7 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
+
   getTransactionInfo(transaction_id: string) {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/detail-payment`, {
@@ -537,7 +532,6 @@ export class G12eventsService {
       );
   }
 
-  //ENDPOINTS REPORT CONSOLIDATE
   getMassiveReportConsolidate(event_id) {
     return this.http
       .get<any>(
@@ -556,7 +550,6 @@ export class G12eventsService {
       );
   }
 
-  //TOTAL NACIONALES REPORTES
   totalNationalReport(event_id) {
     return this.http
       .get<any>(
@@ -700,4 +693,5 @@ export class G12eventsService {
         catchError(handleError)
       );
   }
+
 }

@@ -10,6 +10,7 @@ import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { MatSnackBar } from "@angular/material/snack-bar";
+
 import { NotificationComponent } from "src/app/pages/_layout/components/notification/notification.component";
 import { notificationConfig } from "src/app/_helpers/tools/utils.tool";
 import { G12eventsService } from "../_services/g12events.service";
@@ -23,14 +24,16 @@ import Swal from "sweetalert2";
   styleUrls: ["./add-event.component.scss"],
 })
 export class AddEventComponent implements OnInit {
+
   public addEventForm: FormGroup = null;
   public isLoading: boolean = false;
   private unsubscribe: Subscription[] = [];
   public select_cut = new FormControl(true);
-  cuts = new FormArray([]);
+  public cuts = new FormArray([]);
   public minDate: Date;
   public maxDate: Date;
   categories = [];
+
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
@@ -55,7 +58,6 @@ export class AddEventComponent implements OnInit {
       massive_pay: [null],
       category: [[]],
       categorieAdd: [""],
-
       init_date: [],
       finish_date: [],
       // hour: ['', [Validators.required, hourValidation.bind(this)]],
@@ -66,7 +68,161 @@ export class AddEventComponent implements OnInit {
       visibility: [null],
       limit: [null],
       location: [],
+      view_hubilo: [null],
+      event_id_hubilo: [null],
     });
+  }
+
+  //CONSULTAMOS LAS CATEGORIAS DE LOS EVENTOS DISPONIBLES
+  getCategories() {
+    this.eventsService.getCategories().subscribe((res: any) => {
+      this.categories = res;
+    }, err => { throw err; });
+  }
+
+  //ACCEDEMOS A LOS CONTROLES DEL FOMULARIO
+  get form() {
+    return this.addEventForm.controls;
+  }
+
+  //CREAMO LA IMAGEN QUE VIENE DEL INPUT
+  fileChangeEvent(image) {
+    this.form.image.setValue(image.target.files[0]);
+  }
+
+  //VAMIDAMOS LOS CORTES QUE SERAN CREADOS
+  cutsToSend() {
+    let newCuts = [];
+    let error = false;
+
+    this.cuts.value.map((cut) => {
+      if (cut.price_group_selected) {
+        if (
+          cut.name != "" &&
+          cut.cop != "" &&
+          cut.quantity != "" &&
+          cut.date_init != "" &&
+          cut.date_finish &&
+          cut.price_group_cop != "" &&
+          cut.price_group_usd != "" &&
+          cut.quantity_register_max != "" &&
+          cut.quantity_register_min != "" &&
+          cut.description != ""
+        ) {
+          newCuts.push({
+            massive_pay: cut.massive_pay,
+            name: cut.name,
+            prices: { cop: cut.cop, usd: cut.usd != "" ? cut.usd : null },
+            quantity: cut.quantity,
+            date_init: moment(cut.date_init),
+            date_finish: moment(cut.date_finish),
+            price_group: {
+              cop: cut.price_group_cop,
+              usd: cut.price_group_usd != "" ? cut.price_group_usd : null,
+            },
+            module_flags: {
+              see_box: cut.see_box,
+              see_events: cut.see_events,
+              see_massive: cut.see_massive
+            },
+            quantity_register_max: cut.quantity_register_max,
+            quantity_register_min: cut.quantity_register_min,
+            is_group: cut.price_group_selected,
+            description: cut.description,
+          });
+        } else {
+          error = true;
+        }
+      } else {
+        if (
+          cut.name != "" &&
+          cut.cop != "" &&
+          cut.quantity != "" &&
+          cut.date_init != "" &&
+          cut.date_finish &&
+          cut.quantity_register_max != "" &&
+          cut.quantity_register_min != "" &&
+          cut.description != ""
+        ) {
+          newCuts.push({
+            name: cut.name,
+            prices: { cop: cut.cop, usd: cut.usd != "" ? cut.usd : null },
+            quantity: cut.quantity,
+            date_init: moment(cut.date_init),
+            date_finish: moment(cut.date_finish),
+            quantity_register_max: cut.quantity_register_max,
+            quantity_register_min: cut.quantity_register_min,
+            is_group: cut.price_group_selected,
+            module_flags: {
+              see_box: cut.see_box,
+              see_events: cut.see_events,
+              see_massive: cut.see_massive
+            },
+            description: cut.description,
+            massive_pay: cut.massive_pay,
+          });
+        } else {
+          error = true;
+        }
+      }
+    });
+
+    if (error) {
+      return false;
+    } else {
+      return newCuts;
+    }
+  }
+
+  //MÉTODO PARA AGEGA UN NUEVO CORTE CON LOS CONTROLADORES NECESARIOS
+  addCute() {
+    this.cuts.push(
+      new FormGroup({
+        name: new FormControl(""),
+        cop: new FormControl(""),
+        usd: new FormControl(""),
+        quantity: new FormControl(""),
+        date_init: new FormControl(""),
+        price_group_selected: new FormControl(false),
+        price_group_usd: new FormControl(""),
+        price_group_cop: new FormControl(""),
+        date_finish: new FormControl(""),
+        massive_pay: new FormControl(""),
+        quantity_register_max: new FormControl(1),
+        quantity_register_min: new FormControl(1),
+        description: new FormControl(""),
+        see_events: new FormControl(false),
+        see_box: new FormControl(false),
+        see_massive: new FormControl(false)
+      })
+    );
+  }
+
+  deleteCute(i) {
+    this.cuts.removeAt(i);
+  }
+
+  pushCategorie() {
+    let found = false;
+    this.addEventForm.get("category").value.map((item) => {
+      if (item == this.addEventForm.get("categorieAdd").value) {
+        found = true;
+      }
+    });
+    if (!found) {
+      this.addEventForm
+        .get("category")
+        .value.push(this.addEventForm.get("categorieAdd").value);
+      this.addEventForm.get("categorieAdd").setValue("");
+    }
+  }
+
+  drop(event: CdkDragDrop<[]>) {
+    moveItemInArray(
+      this.addEventForm.get("category").value,
+      event.previousIndex,
+      event.currentIndex
+    );
   }
 
   //CREACION DEL EVENTO
@@ -122,148 +278,7 @@ export class AddEventComponent implements OnInit {
       this.showMessage(2, "Verifica la capacidad de los cortes");
     }
   }
-  //CONSULTAMOS LAS CATEGORIAS DE LOS EVENTOS DISPONIBLES
-  getCategories() {
-    this.eventsService.getCategories().subscribe((res: any) => {
-      this.categories = res;
-    });
-  }
 
-  //VAMIDAMOS LOS CORTES QUE SERAN CREADOS
-  cutsToSend() {
-    let newCuts = [];
-    let error = false;
-
-    this.cuts.value.map((cut) => {
-      if (cut.price_group_selected) {
-        if (
-          cut.name != "" &&
-          cut.cop != "" &&
-          cut.quantity != "" &&
-          cut.date_init != "" &&
-          cut.date_finish &&
-          cut.price_group_cop != "" &&
-          cut.price_group_usd != "" &&
-          cut.quantity_register_max != "" &&
-          cut.quantity_register_min != "" &&
-          cut.description != ""
-        ) {
-          newCuts.push({
-            massive_pay: cut.massive_pay,
-            name: cut.name,
-            prices: { cop: cut.cop, usd: cut.usd != "" ? cut.usd : null },
-            quantity: cut.quantity,
-            date_init: moment(cut.date_init),
-            date_finish: moment(cut.date_finish),
-            price_group: {
-              cop: cut.price_group_cop,
-              usd: cut.price_group_usd != "" ? cut.price_group_usd : null,
-            },
-            quantity_register_max: cut.quantity_register_max,
-            quantity_register_min: cut.quantity_register_min,
-            is_group: cut.price_group_selected,
-            description: cut.description,
-          });
-        } else {
-          error = true;
-        }
-      } else {
-        if (
-          cut.name != "" &&
-          cut.cop != "" &&
-          cut.quantity != "" &&
-          cut.date_init != "" &&
-          cut.date_finish &&
-          cut.quantity_register_max != "" &&
-          cut.quantity_register_min != "" &&
-          cut.description != ""
-        ) {
-          newCuts.push({
-            name: cut.name,
-            prices: { cop: cut.cop, usd: cut.usd != "" ? cut.usd : null },
-            quantity: cut.quantity,
-            date_init: moment(cut.date_init),
-            date_finish: moment(cut.date_finish),
-            quantity_register_max: cut.quantity_register_max,
-            quantity_register_min: cut.quantity_register_min,
-            is_group: cut.price_group_selected,
-            description: cut.description,
-            massive_pay: cut.massive_pay,
-          });
-        } else {
-          error = true;
-        }
-      }
-    });
-
-    if (error) {
-      return false;
-    } else {
-      return newCuts;
-    }
-  }
-
-  //MTODO PARA AGEGA UN NUEVO CORTE CON LOS CONTROLADORES NECESARIOS
-  addCute() {
-    this.cuts.push(
-      new FormGroup({
-        name: new FormControl(""),
-        cop: new FormControl(""),
-        usd: new FormControl(""),
-        quantity: new FormControl(""),
-        date_init: new FormControl(""),
-        price_group_selected: new FormControl(false),
-        price_group_usd: new FormControl(""),
-        price_group_cop: new FormControl(""),
-        date_finish: new FormControl(""),
-        massive_pay: new FormControl(""),
-        quantity_register_max: new FormControl(1),
-        quantity_register_min: new FormControl(1),
-        description: new FormControl(""),
-      })
-    );
-  }
-  deleteCute(i) {
-    this.cuts.removeAt(i);
-  }
-
-  pushCategorie() {
-    let found = false;
-    this.addEventForm.get("category").value.map((item) => {
-      if (item == this.addEventForm.get("categorieAdd").value) {
-        found = true;
-      }
-    });
-    if (!found) {
-      this.addEventForm
-        .get("category")
-        .value.push(this.addEventForm.get("categorieAdd").value);
-      this.addEventForm.get("categorieAdd").setValue("");
-    }
-  }
-
-  drop(event: CdkDragDrop<[]>) {
-    moveItemInArray(
-      this.addEventForm.get("category").value,
-      event.previousIndex,
-      event.currentIndex
-    );
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe.forEach((sb) => sb.unsubscribe());
-  }
-
-  //TOOLS
-
-  //ACCEDEMOS A LOS CONTROLES DEL FOMULARIO
-  get form() {
-    return this.addEventForm.controls;
-  }
-  //CREAMO LA IMAGEN QUE VIENE DEL INPUT
-  fileChangeEvent(image) {
-    this.form.image.setValue(image.target.files[0]);
-  }
   //PODEMOS MOSTRAR UN MENSAJE
   showMessage(type: number, message?: string) {
     this.snackBar.openFromComponent(
@@ -271,4 +286,9 @@ export class AddEventComponent implements OnInit {
       notificationConfig(type, message)
     );
   }
+
+  ngOnDestroy() {
+    this.unsubscribe.forEach((sb) => sb.unsubscribe());
+  }
+
 }

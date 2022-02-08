@@ -30,8 +30,9 @@ export interface Donation { //AN EVENT IS A DONATION
     status: boolean
 }
 
-export interface sendDonation {
+export interface SendDonation {
     transaction_info: Donation,
     cuts: any[],
+    code_modify?: string
     image?: Image
 }
