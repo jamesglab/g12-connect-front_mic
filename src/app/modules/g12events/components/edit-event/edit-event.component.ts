@@ -111,32 +111,29 @@ export class EditEventComponent implements OnInit {
     });
   }
 
-  addCute(cut?) {
-    if (cut) {
+  addCute(cut?) { //ESTE METODO SE USA EN EL .HTML POR ESO LA VALIDACION DE CUT?
       this.cuts.push(
         new FormGroup({
-          id: new FormControl(cut.id || null),
-          name: new FormControl(cut.name || null),
-          cop: new FormControl(cut.prices.cop || null),
-          usd: new FormControl(cut.prices.usd || null),
-          quantity: new FormControl(cut.quantity || null),
-          date_init: new FormControl(cut.date_init || null),
-          date_finish: new FormControl(cut.date_finish || null),
-          is_active: new FormControl(cut.is_active ? cut.is_active : false),
-          price_group_selected: new FormControl(cut.is_group ? cut.is_group : false),
-          price_group_usd: new FormControl(cut.price_group?.usd || null),
-          price_group_cop: new FormControl(cut.price_group?.cop || null),
-          quantity_register_max: new FormControl(cut.quantity_register_max || 1),
-          quantity_register_min: new FormControl(cut.quantity_register_min || 1),
-          description: new FormControl(cut.description || null),
-          massive_pay: new FormControl(cut.massive_pay || null),
-          see_events: new FormControl(cut.module_flags?.see_events || null),
-          see_box: new FormControl(cut.module_flags?.see_box || null),
-          see_massive: new FormControl(cut.module_flags?.see_massive || null)
+          id: new FormControl(cut?.id || null),
+          name: new FormControl(cut?.name || null),
+          cop: new FormControl(cut?.prices.cop || null),
+          usd: new FormControl(cut?.prices.usd || null),
+          quantity: new FormControl(cut?.quantity || null),
+          date_init: new FormControl(cut?.date_init || null),
+          date_finish: new FormControl(cut?.date_finish || null),
+          is_active: new FormControl(cut?.is_active ? cut.is_active : false),
+          price_group_selected: new FormControl(cut?.is_group ? cut.is_group : false),
+          price_group_usd: new FormControl(cut?.price_group?.usd || null),
+          price_group_cop: new FormControl(cut?.price_group?.cop || null),
+          quantity_register_max: new FormControl(cut?.quantity_register_max || 1),
+          quantity_register_min: new FormControl(cut?.quantity_register_min || 1),
+          description: new FormControl(cut?.description || null),
+          massive_pay: new FormControl(cut?.massive_pay || null),
+          see_events: new FormControl(cut?.module_flags?.see_events || false),
+          see_box: new FormControl(cut?.module_flags?.see_box || false),
+          see_massive: new FormControl(cut?.module_flags?.see_massive || false)
         })
       );
-    }
-
   }
 
   async fileChangeEvent(image) {
