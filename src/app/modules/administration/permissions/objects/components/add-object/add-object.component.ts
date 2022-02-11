@@ -1,15 +1,12 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
 import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
-
 import { Response } from 'src/app/modules/auth/_models/auth.model';
-import { StorageService } from 'src/app/modules/auth/_services/storage.service';
-import { AdminObjectsService } from '../../../../_services/admin-objects.service';
+import { AdminRolesService } from 'src/app/modules/administration/_services/admin-roles.service';
 
 @Component({
   selector: 'app-add-object',
@@ -18,62 +15,51 @@ import { AdminObjectsService } from '../../../../_services/admin-objects.service
 })
 export class AddObjectComponent implements OnInit {
 
-  private currentUser: any = this._storageService.getItem("user");
-  
   public createObjectForm: FormGroup;
-  // public objectTypes: any[] = [];
-
   public isLoading: boolean = false;
   private unsubscribe: Subscription[] = [];
 
   constructor(public modal: NgbActiveModal, private snackBar: MatSnackBar,
-    public fb: FormBuilder, private cdr: ChangeDetectorRef,
-    private _adminObjectsService: AdminObjectsService, private _storageService: StorageService) { }
+    public fb: FormBuilder, private _adminObjectsService: AdminRolesService) { }
 
   ngOnInit(): void {
     this.buildForm();
-    // this.getObjectTypes();
   }
 
+  // CREAMOS EL FOMULARIO
   buildForm() {
+    // CREAMOS EL FOMULARIO REACTIVO Y ANEXAMOS LOS VALIDADORES CORRESPONDIENTES
     this.createObjectForm = this.fb.group({
       value: [null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9+óÓííéÉáÁ ]+$/)]],
-      type: [null],
       description: [null, [Validators.pattern(/^[a-zA-Z0-9+óÓííéÉáÁ ]+$/)]],
       status: [true]
     });
   }
 
-  get form() {
-    return this.createObjectForm.controls;
-  }
-
-  // getObjectTypes() {
-  //   const getUserTypesSubscr = this._adminObjectsService
-  //     .getObjectTypes().subscribe((res: Response) => {
-  //       if (res.result) {
-  //         this.objectTypes = res.entity;
-  //         this.cdr.detectChanges();
-  //       }
-  //     }, err => { throw err; });
-  //   this.unsubscribe.push(getUserTypesSubscr);
-  // }
-
+  //ENVIAMOS LA SOLICITUD
   onSubmit() {
-
+    //VALIDAMOS QUE LOS CAMPOS DEL FORMULARIO ESTEN CORRECTOS
     if (this.createObjectForm.invalid) {
       return;
     }
+    //MOSTRAMOS EL LOADER
     this.isLoading = true;
-    this.form.type.setValue('objectRoles');
-
+    // CONSUMIMOS EL ENDPOPINT DE CREACION DE PERMISO
     const createRoleSubscr = this._adminObjectsService
-      .createObject(this.createObjectForm.getRawValue()).subscribe((res: Response) => {
+      //ENVIAMOS LOS DATOS DEL FORMULARIO
+      .ceratePermission(this.createObjectForm.getRawValue()).subscribe((res: Response) => {
+        //OCULTMOS EL LOADER
         this.isLoading = false;
-        this.showMessage(1,"¡El nuevo objeto ha sido creado con exito!");
+        //MOSTRAMOS EL LOADER
+        this.showMessage(1, "¡El nuevo objeto ha sido creado con exito!");
         this.modal.close('success');
-      }, err =>{ this.isLoading = false; this.showMessage(3,err.error.message); throw err; });
+      }, err => { this.isLoading = false; this.showMessage(3, err.error.message); throw err; });
     this.unsubscribe.push(createRoleSubscr);
+  }
+
+  // ACCEDEMOS A LOS CONTROLES DEL FORMULARIO
+  get form() {
+    return this.createObjectForm.controls;
   }
 
   showMessage(type: number, message?: string) {

@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-xl-12 col-sm-12">
+    <div class="card card-custom example example-compact gutter-b">
+      <div class="card-header d-flex">
+        <div class="w-75">
+          <div class="card-title d-block pb-2">
+            <h3 class="pt-4 pb-4">Actualizar caja</h3>
+          </div>
+        </div>
+        <div class="card-toolbar">
+          <div class="example-tools justify-content-center"></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Nombre*</mat-label>
+          <input matInput autocomplete="off" [formControl]="name" />
+        </mat-form-field>
+
+        <mat-slide-toggle [formControl]="status">{{
+          status.value ? "Activo" : "Inactivo"
+        }}</mat-slide-toggle>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          ngbAutofocus
+          class="btn btn-secondary"
+          (click)="modal.close('canceled')"
+        >
+          Cancelar
+        </button>
+        <button
+          class="btn btn-primary"
+          (click)="submit()"
+          [disabled]="isLoading"
+        >
+          <div *ngIf="!isLoading">Guardar</div>
+          <div class="spinner-border" role="status" *ngIf="isLoading">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

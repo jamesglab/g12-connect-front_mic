@@ -18,6 +18,9 @@
     "paths": {
       "exceljs": [
       "../node_modules/exceljs/dist/es5/exceljs.browser"
+      ],
+      "crypto":[
+        "../../node_modules/crypto-js"
       ]
   }
   },

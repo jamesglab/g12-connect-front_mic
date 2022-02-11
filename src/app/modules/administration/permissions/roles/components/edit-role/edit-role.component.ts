@@ -18,7 +18,6 @@ import { AdminRolesService } from '../../../../_services/admin-roles.service';
 })
 export class EditRoleComponent implements OnInit {
 
-  private currentUser: any = this._storageService.getItem("user");
   public role: any = null;
   public editRoleForm: FormGroup;
   public isLoading: boolean = false;
@@ -26,41 +25,50 @@ export class EditRoleComponent implements OnInit {
   private unsubscribe: Subscription[] = [];
 
   constructor(public modal: NgbActiveModal, private snackBar: MatSnackBar,
-    public fb: FormBuilder, private cdr: ChangeDetectorRef,
-    private _adminRolesService: AdminRolesService, private _storageService: StorageService) { }
+    public fb: FormBuilder,
+    private _adminRolesService: AdminRolesService) { }
 
   ngOnInit(): void {
     this.buildForm();
   }
 
+  // CREAMOS EL FORMULARIO Y LE PASAMOS LOS DATOS A EDITAR DEL ROL
   buildForm() {
+    // CREAMOS EL FORMULARIO Y ANEXAMOS LOS VALIDADORES
     this.editRoleForm = this.fb.group({
       id: [this.role.id, Validators.required],
       name: [this.role.name, [Validators.required, Validators.pattern(/^[a-zA-Z+óÓííéÉáÁ0-9 ]+$/)]],
       description: [this.role.description, [Validators.pattern(/^[a-zA-Z+óÓííéÉáÁ0-9 ]+$/)]],
-      status: [this.role.status.toString()]
+      status: [this.role.status]
     });
   }
 
-  get form() {
-    return this.editRoleForm.controls;
-  }
 
+  // ENVIAMOS LA PETICION
   onSubmit() {
-
+    //VALIDAMOS LOS CAMPOS DEL FORMULARIO
     if (this.editRoleForm.invalid) {
       return;
     }
+    //MOSTRAMOS EL LOADER
     this.isLoading = true;
-    this.form.status.setValue((this.form.status.value) == "true");
-
+    //CONSUMIMOS EL ENDPOINT DE ACTUALIZAR EL ROL
     const editRoleSubscr = this._adminRolesService
       .editRole(this.editRoleForm.getRawValue()).subscribe((res: Response) => {
+        //OCULTAMOS EL LOADER
         this.isLoading = false;
+        //MOSTRAMOS MENSAJE DE ACTUALIZADO
         this.showMessage(1, "¡El rol ha sido modificado con exito!");
         this.modal.close('success');
+        //VALIDAMOS EL ERROR QUE PUEDA GENERAL EL BACKEND
       }, err => { this.isLoading = false; this.showMessage(3, err.error.message); throw err; });
     this.unsubscribe.push(editRoleSubscr);
+  }
+
+
+  //ACCEDEMOS A LOS CONTROLES DEL FORMULARIO
+  get form() {
+    return this.editRoleForm.controls;
   }
 
   showMessage(type: number, message?: string) {

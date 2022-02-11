@@ -1,0 +1,39 @@
+.image-profile {
+  width: 8rem;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cont-count {
+  background: #e1f0ff;
+  border-radius: 10px;
+  margin: 9px;
+  color: #419fff;
+  min-width: 100%
+}
+
+.cont-count-celula{
+  background: #ebeae7;
+  margin: 9px;
+  color: #000000;
+  border-radius: 10px;
+  min-width: 100%;
+}
+
+
+.cont-img {
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: none;
+  width: 150px;
+  justify-content: center;
+  align-items: center;
+  font-size: 65px;
+  background-color: #C9F7F5;
+  color: #1BC5BD;
+}

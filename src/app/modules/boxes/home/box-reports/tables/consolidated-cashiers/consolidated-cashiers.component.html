@@ -1,0 +1,214 @@
+<div class="row">
+  <div class="col-xl-12 col-sm-12">
+    <div class="card card-custom example example-compact gutter-b">
+      <div class="card-header d-flex">
+        <div class="w-75">
+          <div class="card-title d-block pb-2">
+            <h3 class="pt-4 pb-4">CONSOLIDADO CAJEROS</h3>
+          </div>
+        </div>
+        <div class="card-toolbar">
+          <div class="example-tools justify-content-center">
+            <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214)"
+              >book</mat-icon
+            >
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div>
+            <mat-form-field appearance="fill">
+              <mat-label>Seleccióna una fechas</mat-label>
+              <input
+                matInput
+                [matDatepicker]="dp3"
+                [formControl]="date_filter"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="dp3"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #dp3 disabled="false"></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="d-flex">
+            <div class="ml-sm-3">
+              <button
+                mat-mini-fab
+                style="background: #1e6d41"
+                matTooltip="Consolidado Cajeros"
+                (click)="exportFiles()"
+                m
+              >
+                <span
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                  matTooltip="Descargar datos"
+                  *ngIf="isLoading"
+                ></span>
+                <span *ngIf="!isLoading">
+                  <i class="fas fa-file-excel" style="color: white"></i>
+                </span>
+              </button>
+            </div>
+            <div class="ml-3">
+              <button
+                mat-mini-fab
+                matTooltip="Consolidado Bunker"
+                style="background: #07508b"
+                (click)="downloadConsolidatedBunker()"
+              >
+                <span
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                  matTooltip="Consolidado"
+                  *ngIf="isLoading"
+                ></span>
+                <span *ngIf="!isLoading">
+                  <i
+                    class="fas fa-file-signature"
+                    style="color: white; margin-left: 4px"
+                  ></i>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="name_event">
+              <mat-header-cell *matHeaderCellDef> Evento </mat-header-cell>
+              <mat-cell *matCellDef="let row" data-label="Evento">
+                {{ row.name_event }}
+              </mat-cell>
+              <mat-footer-cell *matFooterCellDef>TOTAL</mat-footer-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity_users">
+              <mat-header-cell *matHeaderCellDef>
+                Cantidad de Usuarios
+              </mat-header-cell>
+              <mat-cell *matCellDef="let row" data-label="Cantidad de Usuarios">
+                {{ row.quantity_users }}
+              </mat-cell>
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Cantidad de Usuarios :</div>
+                {{
+                  calculate_position(dataSource, "quantity_users")
+                }}</mat-footer-cell
+              >
+            </ng-container>
+
+            <ng-container matColumnDef="diner_cash_cop">
+              <mat-header-cell *matHeaderCellDef>
+                Dinero Efectivo COP
+              </mat-header-cell>
+              <mat-cell *matCellDef="let row" data-label="Dinero Efectivo COP">
+                {{ row.diner_cash_cop | currency: "COP":"symbol":"1.0-0" }}
+              </mat-cell>
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Dinero Efectivo COP :</div>
+                {{
+                  calculate_position(dataSource, "diner_cash_cop")
+                    | currency: "COP":"symbol":"1.0-0"
+                }}</mat-footer-cell
+              >
+            </ng-container>
+
+            <ng-container matColumnDef="diner_cash_usd">
+              <mat-header-cell *matHeaderCellDef>
+                Dinero Efectivo USD
+              </mat-header-cell>
+              <mat-cell *matCellDef="let row" data-label="Dinero Efectivo USD">
+                {{ row.diner_cash_usd + " $" }}
+              </mat-cell>
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Dinero Efectivo USD :</div>
+                {{
+                  calculate_position(dataSource, "diner_cash_usd") + " $"
+                }}</mat-footer-cell
+              >
+            </ng-container>
+
+            <ng-container matColumnDef="diner_dathaphone_cop">
+              <mat-header-cell *matHeaderCellDef>
+                Dinero Datafono COP
+              </mat-header-cell>
+              <mat-cell *matCellDef="let row" data-label="Dinero Datafono COP">
+                {{
+                  row.diner_dathaphone_cop | currency: "COP":"symbol":"1.0-0"
+                }}
+              </mat-cell>
+
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Dinero Datafono COP :</div>
+                {{
+                  calculate_position(dataSource, "diner_dathaphone_cop")
+                    | currency: "COP":"symbol":"1.0-0"
+                }}</mat-footer-cell
+              >
+            </ng-container>
+
+            <ng-container matColumnDef="diner_dathaphone_usd">
+              <mat-header-cell *matHeaderCellDef>
+                Dinero Datafono USD
+              </mat-header-cell>
+              <mat-cell *matCellDef="let row" data-label="Dinero Datafono USD">
+                {{ row.diner_dathaphone_usd + " $" }}
+              </mat-cell>
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Dinero Datafono USD :</div>
+                {{
+                  calculate_position(dataSource, "diner_dathaphone_usd") + " $"
+                }}</mat-footer-cell
+              >
+            </ng-container>
+
+            <ng-container matColumnDef="total_cop">
+              <mat-header-cell *matHeaderCellDef> Total COP </mat-header-cell>
+              <mat-cell *matCellDef="let row" data-label="Total COP">
+                {{ row.total_cop | currency: "COP":"symbol":"1.0-0" }}
+              </mat-cell>
+
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Total COP :</div>
+                {{
+                  calculate_position(dataSource, "total_cop")
+                    | currency: "COP":"symbol":"1.0-0"
+                }}</mat-footer-cell
+              >
+            </ng-container>
+
+            <ng-container matColumnDef="total_usd">
+              <mat-header-cell *matHeaderCellDef> Total USD </mat-header-cell>
+              <mat-cell *matCellDef="let row" data-label="Total USD">
+                {{ row.total_usd + " $" }}
+              </mat-cell>
+              <mat-footer-cell *matFooterCellDef>
+                <div class="show-footer">Total USD</div>
+                {{
+                  calculate_position(dataSource, "total_usd") + " $"
+                }}</mat-footer-cell
+              >
+            </ng-container>
+
+            <mat-header-row
+              *matHeaderRowDef="displayedColumns"
+            ></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"> </mat-row>
+
+            <!-- Rows -->
+
+            <mat-footer-row
+              class="sticky-footer"
+              *matFooterRowDef="displayedColumns"
+            ></mat-footer-row>
+          </mat-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

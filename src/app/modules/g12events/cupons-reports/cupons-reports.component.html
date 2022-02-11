@@ -1,0 +1,67 @@
+<div class="row">
+  <div class="col-xl-12 col-sm-12">
+    <div class="card card-custom example example-compact gutter-b">
+      <div class="card-header d-flex">
+        <div class="w-75">
+          <div class="card-title d-block pb-2">
+            <h3 class="card-label pt-4 pb-4">Cupones</h3>
+          </div>
+        </div>
+        <div class="card-toolbar">
+          <div class="example-tools justify-content-center">
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="col-xl-9 col-sm-12">
+          <mat-form-field appearance="fill">
+            <mat-label>Selecciona Evento</mat-label>
+            <mat-select type="select" [formControl]="event">
+              <mat-option [value]="'all'">Todos</mat-option>
+              <mat-option *ngFor="let event of events" [value]="event.id">{{ event.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button *ngIf="!isLoading"  type="submit" (click)="getCupons(null,'paginate')"
+            class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+            Buscar
+          </button>
+
+          <button *ngIf="!isLoadingExport" [disabled]="event.invalid" type="submit"
+            (click)="getCupons(null,'download')"
+            class="btn btn-sm btn-light-success font-weight-bolder py-2 px-5 ml-5 cursor-pointer">
+            Descargar
+          </button>
+
+
+          <div *ngIf="isLoading || isLoadingExport" class="spinner-border text-primary ml-5" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <div>
+          <mat-form-field class="example-full-width">
+            <input matInput placeholder="Buscar..." [formControl]="search" />
+          </mat-form-field>
+        </div>
+
+      </div>
+      <div>
+        <div class="row center">
+          <div class="col-9 mt-2" *ngIf="dataReports.length>0">
+            <app-cupons-table [dataSource]="dataReports" [count]="countReports" (paginator)="getCupons($event,'paginate')">
+            </app-cupons-table>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="dataReports.length ==0" class="center not-found">
+
+        <h5 *ngIf="!isLoading">No se encontraron datos filtra por otro evento</h5>
+        <div *ngIf="isLoading" class="spinner-border text-primary ml-5" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

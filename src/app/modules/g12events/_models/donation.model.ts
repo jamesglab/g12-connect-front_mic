@@ -1,3 +1,5 @@
+import { Moment } from "moment"
+
 type Prices = {
     cop: string;
     usd?: string;
@@ -20,13 +22,17 @@ export interface Donation { //AN EVENT IS A DONATION
     prices: Prices;
     limit?: number;
     location?: [number],
-    visibility?: [string],
+    visibility?: any,
+    init_date: Moment,
+    finish_date: Moment,
     created_at?: string,
     updated_at?: string,
     status: boolean
 }
 
-export interface sendDonation {
-    transaction_info : Donation,
-    cuts : any[]
+export interface SendDonation {
+    transaction_info: Donation,
+    cuts: any[],
+    code_modify?: string
+    image?: Image
 }

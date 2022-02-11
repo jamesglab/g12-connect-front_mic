@@ -1,0 +1,90 @@
+<div class="p-6">
+  <div class="row">
+    <div class="col-12">
+      <h3>Usuario</h3>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col">
+      <h6>Email </h6>
+      <p>{{transaction.user.email}}</p>
+    </div>
+
+    <div class="col">
+      <h6>Nombre </h6>
+      <p>{{transaction.user.name}}</p>
+    </div>
+    <div class="col">
+      <h6>Apellido </h6>
+      <p>{{transaction.user.last_name}}</p>
+    </div>
+    <div class="col">
+      <h6>Identificación</h6>
+      <p>{{transaction.user.identification}}</p>
+    </div>
+    <div class="col">
+      <h6>Telefono </h6>
+      <p>{{transaction.user.phone}}</p>
+    </div>
+    <div class="col">
+      <h6>País</h6>
+      <p>{{transaction.user.city}}</p>
+    </div>
+    <div class="col">
+      <h6>Ciudad</h6>
+      <p>{{transaction.user.city}}</p>
+    </div>
+  </div>
+  <hr>
+  <div class="row mt-4">
+    <div class="col-12">
+      <h3>Donación</h3>
+    </div>
+  </div>
+
+
+  <div class="row mt-4">
+    <div class="col">
+      <h6>Tipo </h6>
+      <p>{{transaction.donation.name}}</p>
+    </div>
+
+    <div class="col">
+      <h6>Fecha </h6>
+      <p>{{transaction.donation.created_at | date}}</p>
+    </div>
+    <div class="col">
+      <h6>Moneda</h6>
+      <p>{{transaction.transaction.currency | uppercase}}</p>
+    </div>
+    <div class="col">
+      <h6>Precio</h6>
+      <p>{{transaction.transaction.amount}}</p>
+    </div>
+
+    <div class="col">
+      <h6>Pasarela </h6>
+      <p>{{transaction.transaction.payment_gateway}}</p>
+    </div>
+    <div class="col">
+      <h6>Metodo de pago </h6>
+      <p>{{transaction.transaction.payment_method}}</p>
+    </div>
+    <div class="col">
+      <h6>Estado</h6>
+      <p>{{transaction.transaction.status}}</p>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <h3>Petición</h3>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="p-5">
+      <p><em>{{transaction.transaction.petition}}</em></p>
+    </div>
+  </div>
+</div>

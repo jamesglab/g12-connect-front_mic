@@ -10,15 +10,16 @@ import { AdminRolesService } from '../../../_services/admin-roles.service';
 })
 export class MainRolesComponent implements OnInit {
 
-  constructor(private modalService: NgbModal, private adminRolesService: AdminRolesService, 
+  constructor(private modalService: NgbModal, private adminRolesService: AdminRolesService,
     private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
   }
 
-  handleCreate(event: any){
+  //CREAMOS UN ROL
+  handleCreate(event: any) {
     event.preventDefault();
-    const MODAL = this.modalService.open(AddRoleComponent,{
+    const MODAL = this.modalService.open(AddRoleComponent, {
       windowClass: 'fadeIn',
       size: 'sm',
       backdrop: true,
@@ -27,13 +28,11 @@ export class MainRolesComponent implements OnInit {
     })
     // MODAL.componentInstance.leaderItem = element;
     MODAL.result.then((data) => {
-      if(data == 'success'){
+      if (data == 'success') {
+        //RECARGAMOS LOS DATOS DE LA TABLA
         this.adminRolesService.handleReload();
         this.cdr.detectChanges();
       }
-    }, (reason) => {
-      console.log("Reason", reason)
-      // on dismiss
     });
   }
 

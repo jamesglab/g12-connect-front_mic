@@ -18,6 +18,12 @@ import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [],
@@ -40,7 +46,12 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatTooltipModule,
     MatPaginatorModule,
     MatRadioModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatDatepickerModule,
+    MatDialogModule,
+    MatExpansionModule,
+    MatTabsModule,
+    MatProgressSpinnerModule
   ],
   exports:[
     MatIconModule,
@@ -60,10 +71,19 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatTooltipModule,
     MatPaginatorModule,
     MatRadioModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatDialogModule,
+    MatExpansionModule,
+    MatTabsModule,
+    MatProgressSpinnerModule
+    
   ],
   providers:[
-    MatIconRegistry
+    MatIconRegistry,
+    { provide: MAT_DATE_LOCALE, useValue: 'es-CO' }
+
   ]
 })
 export class SharedModule { }

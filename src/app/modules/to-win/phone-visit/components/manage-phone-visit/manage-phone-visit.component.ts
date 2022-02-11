@@ -78,7 +78,6 @@ export class ManagePhoneVisitComponent implements OnInit {
 
   getPhoneVisitData(data: any) {
     this.isLoading = true;
-    console.log("SE FUE A RECARGAR")
     const getDataSubscr = this._phoneVisitService
       .getPhoneVisitData(data).subscribe((res: Response) => {
         this.isLoading = false;

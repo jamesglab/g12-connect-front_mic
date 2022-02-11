@@ -16,22 +16,23 @@
       <div class="card-body">
         <div class="container">
           <div class="row">
-            <div class="col">
-              <mat-form-field appearance="fill">
+            <!-- FILTRO POR FECHAS -->
+            <!-- <div class="col-sm-3 col">
+              <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>Seleccione un año</mat-label>
-                <input matInput [matDatepicker]="dp" [formControl]="date"  [max]="maxDate">
+                <input matInput [matDatepicker]="dp" [formControl]="date" [max]="maxDate">
                 <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
                 <mat-datepicker #dp startView="multi-year" (yearSelected)="chosenYearHandler($event, dp)"
                   panelClass="example-month-picker">
                 </mat-datepicker>
               </mat-form-field>
-            </div>
+            </div> -->
             <div class="col">
-              <mat-form-field appearance="fill">
+              <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>Seleccióna un evento</mat-label>
                 <mat-select [formControl]="event_selected">
                   <mat-option [value]="0">Todos</mat-option>
-                  <mat-option [value]="event" *ngFor="let event of events">{{event.name}}</mat-option>
+                  <mat-option [value]="event" *ngFor="let event of events">{{event.name |uppercase}}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
@@ -56,27 +57,48 @@
               </mat-form-field>
             </div> -->
             <div class="ml-6">
-              <button type="button" class="btn exportExcel btn-search" matTooltip="descargar" (click)="exportFile()">
-                <mat-icon style="font-size: 25px;">cloud_download</mat-icon>
+              <button type="button" class="btn exportExcel btn-search" matTooltip="descargar" (click)="exportFile()"
+                [disabled]="isLoading">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  *ngIf="isLoading"></span>
+                <mat-icon style="font-size: 25px;" *ngIf="!isLoading">cloud_download</mat-icon>
               </button>
             </div>
-            <div class="ml-5">
-              <button type="button" class="btn btn-primary btn-search" matTooltip="Buscar" [disabled]="false"
-                (click)="getTransactionsMongo()">
-                <mat-icon style="font-size: 25px;">search</mat-icon>
+            <div class="ml-5 d-flex justify-content-center aling-items-center">
+              <button type="button" class="btn btn-primary btn-search" matTooltip="Buscar" [disabled]="isLoading"
+                (click)="getTransactionsPaginate()">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  *ngIf="isLoading"></span>
+                <mat-icon style="font-size: 25px;" *ngIf="!isLoading">
+                  search
+                </mat-icon>
               </button>
             </div>
           </div>
           <app-show-users-counts [info_users_count]='info_users_count'></app-show-users-counts>
         </div>
         <div class="">
-          <app-table-reports [dataSource]='dataSource'></app-table-reports>
+
+          <div class="d-flex justify-content-center" *ngIf="isLoading">
+            <div class="spinner-grow" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+
+          <div>
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Buscar..." [formControl]="search" />
+            </mat-form-field>
+          </div>
+
+          <app-table-reports *ngIf="!isLoading" [dataSource]='dataSource' (paginator)="getTransactionsPaginate($event)" [count]="count">
+          </app-table-reports>
         </div>
       </div>
     </div>
   </div>
 </div>
-<div class="row">
+<div class="row" *ngIf="cutTransactions">
   <div class="col-xl-12 col-sm-12">
     <div class="card card-custom example example-compact gutter-b">
       <div class="card-header d-flex">
@@ -93,10 +115,19 @@
       </div>
       <div class="card-body">
         <div class="container mt-5">
-          <app-show-cut-counts [cuts]="cutTransactions" (send_data)="data_cut_table = this.getObjetcsToTable($event) ">
+          <app-show-cut-counts [cuts]="cutTransactions" (send_data)="filterCut($event)">
           </app-show-cut-counts>
-          <div class="">
-            <app-table-cut [dataSource]="data_cut_table"></app-table-cut>
+          <div class="mt-5">
+            <div class="d-flex justify-content-center" *ngIf="!data_cut_table">
+              <div class="spinner-grow" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            
+            <app-table-reports *ngIf="data_cut_table" [dataSource]='data_cut_table'
+              (paginator)="filterCut(cutSelected,$event)" [count]="countsCutTable">
+            </app-table-reports>
+            <!-- <app-table-cut [dataSource]="data_cut_table" [reports]></app-table-cut> -->
           </div>
         </div>
       </div>

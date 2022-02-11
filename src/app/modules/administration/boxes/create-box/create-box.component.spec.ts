@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TableCutComponent } from './table-cut.component';
+import { CreateBoxComponent } from './create-box.component';
 
-describe('TableCutComponent', () => {
-  let component: TableCutComponent;
-  let fixture: ComponentFixture<TableCutComponent>;
+describe('CreateBoxComponent', () => {
+  let component: CreateBoxComponent;
+  let fixture: ComponentFixture<CreateBoxComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableCutComponent ]
+      declarations: [ CreateBoxComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TableCutComponent);
+    fixture = TestBed.createComponent(CreateBoxComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

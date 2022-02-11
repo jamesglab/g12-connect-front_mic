@@ -1,157 +1,178 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+} from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationComponent } from 'src/app/pages/_layout/components/notification/notification.component';
 import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
-
-import { StorageService } from 'src/app/modules/auth/_services/storage.service';
 import { AdminUsersService } from '../../../../_services/admin-users.service';
-import { Response } from 'src/app/modules/auth/_models/auth.model';
-import { ListUser, User } from '../../../../_models/user.model';
-
+import { ListUser } from '../../../../_models/user.model';
 import { EditUserComponent } from '../edit-user/edit-user.component';
-import { UserObjectsComponent } from '../user-objects/user-objects.component';
 import { UserRolesComponent } from '../user-roles/user-roles.component';
-import { DeleteItemComponent } from '../../../delete-item/delete-item.component';
+import { AdminRolesService } from 'src/app/modules/administration/_services/admin-roles.service';
+import { AddBoxUserComponent } from '../add-box-user/add-box-user.component';
 
 @Component({
   selector: 'app-users-table',
   templateUrl: './users-table.component.html',
-  styleUrls: ['./users-table.component.scss']
+  styleUrls: ['./users-table.component.scss'],
 })
 export class UsersTableComponent implements OnInit {
-
-  private currentUser: any = this._storageService.getItem("user");
-
-  @Input() public search: String = "";
+  @Input() public search: String = '';
   @Output() public endLoading: EventEmitter<boolean> = new EventEmitter();
 
-  // public isLoading: boolean;
   private unsubscribe: Subscription[] = [];
+  private roles: [] = [];
+  private boxes: [] = [];
 
-  public displayedColumns: String[] = ['idUser', 'name', 'email', 'country', 'status', 'actions'];
+  public displayedColumns: String[] = [
+    'idUser',
+    'name',
+    'email',
+    'country',
+    'status',
+    'actions',
+  ];
+
   public dataSource: MatTableDataSource<any[]>;
+  
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private modalService: NgbModal, private snackBar: MatSnackBar, 
-    private _adminUsersService: AdminUsersService, private _storageService: StorageService) { }
+  constructor(
+    private modalService: NgbModal,
+    private snackBar: MatSnackBar,
+    private _adminUsersService: AdminUsersService,
+    
+    private _roleService: AdminRolesService
+  ) {}
 
   ngOnInit(): void {
-    // this.getUsers();
     this.subscribeToChanges();
+    this.getRoles();
+    this.getBoxes();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.search) {
-      if (!changes.search.firstChange) {
-        this.applyFilter();
-      }
-    }
-  }
-
+  //NOS SUBSCRIBIMOS A LOS CAMBIOS QUE TENGA EL RELIAD PARA RENDERIZAR LOS USUARIOS
   subscribeToChanges() {
-    const subscr = this._adminUsersService.reload.subscribe((res) => this.getUsers());
+    const subscr = this._adminUsersService.reload.subscribe((res) =>
+      this.getUsers()
+    );
+    //GUARDAMOS LA SUBSCRIPCION
     this.unsubscribe.push(subscr);
   }
 
+  //CONSULTAMOS LOS USUARIOS EL FILTRO SE ENCUENTRA EN EL SERVICIO DE AdminUsersService
   getUsers() {
-    const getUserTypesSubscr = this._adminUsersService
-      .getUsers().subscribe((res: any) => {
+    const getUserTypesSubscr = this._adminUsersService.getUsers().subscribe(
+      (res: any) => {
         if (res[0]) {
-          res.reverse();
+          //CREAMOS EL DATASOURCE DE LA TABLA DE ANGULAR MATERIAL
           if (!this.dataSource) {
+            //ANEXAMOS EL NUEVO OBJETO DE ANGULAR MATERIAL
             this.dataSource = new MatTableDataSource<ListUser[]>(res);
+            //PONEMOS EL PAGINADOR DE ANGULAR MATERIAL
             this.dataSource.paginator = this.paginator;
           } else {
+            //ANEXAMOS LA RESPUESTA DE A LA PROPIEDAD DATA DE LA TABLA DE ANGULAR MATERIAL
             this.dataSource.data = res;
           }
-        }else{
-          this.showMessage(3, "Lo sentimos, no hemos encontrado usuarios.")
+        } else {
+          //MOSTRAMOS MENSAJE CUANDO NO ENCONTRAMOS USUARIOS
+          this.showMessage(3, 'Lo sentimos, no hemos encontrado usuarios.');
         }
+        // EMITIMOS EL LOADER EN FALSE=
         this.endLoading.emit(false);
-      }, err => { throw err; });
+      },
+      (err) => {
+        throw err;
+      }
+    );
     this.unsubscribe.push(getUserTypesSubscr);
   }
 
-  applyFilter() {
-    this.dataSource.filter = this.search.trim().toLowerCase();
-    if (this.dataSource.paginator) { this.dataSource.paginator.firstPage(); }
+  //CONSULTAMOS LOS ROLES DISPONIBLES EN LA PLATAFORMA
+  getRoles() {
+    this._roleService.getRoles().subscribe((res) => {
+      //AGRAGAMOS LA RESPUESTA QUE VIENE EN FORMATO ARRAY A LOS ROLES
+      this.roles = res;
+    });
   }
 
-  // handleAddObjects(element: ListUser) {
-  //   const MODAL = this.modalService.open(UserObjectsComponent, {
-  //     windowClass: 'fadeIn',
-  //     size: 'lg',
-  //     backdrop: true,
-  //     keyboard: true,
-  //     centered: true
-  //   })
-  //   MODAL.componentInstance.user = element;
-  //   MODAL.result.then((data) => {
-  //     if (data == "success") {}
-  //   });
-  // }
-
+  //ABRIMOS EL MODAL PARA EL CRUD DE ROLES EN EL USUARIO
   handleAddRole(element: ListUser) {
+    //CREAMOS EL MODAL Y ABRIMOS EL COMPONENTE DE UserRolesComponent
     const MODAL = this.modalService.open(UserRolesComponent, {
-      windowClass: 'fadeIn',
-      size: 'lg',
-      backdrop: true,
-      keyboard: true,
-      centered: true
-    })
-    MODAL.componentInstance.user = element;
-    MODAL.result.then((data) => {
-      if (data == "success") { }
+      size: 'lg', //TAMAÑO DEL MODAL
+      centered: true, //CENTRAMOS EL MODAL
+    });
+    MODAL.componentInstance.user = element; //AGREGAMOS A LA VARIABLE USER DEL COMPONENTE UserRolesComponent EL USUARIO A EDITAR
+    MODAL.componentInstance.roles = this.roles; //AGREGAMOS LOS ROLES QUE SE CONSULTARO
+    MODAL?.result?.then((data) => {
+      //NOS SUBSCRIBIMOS A LA RESPUESTA DE LOS ROLES
+      this.getUsers(); //CONSULTAMOS LOS USUARIOS
     });
   }
 
+  //ABRIMOS MODAL PARA EDITAR EL USUARIO
   handleEdit(element: ListUser) {
+    //CREAMOS EL MODAL Y ABRIMOS EL COMPONENTE DE EditUserComponent
     const MODAL = this.modalService.open(EditUserComponent, {
-      windowClass: 'fadeIn',
-      size: 'xl',
-      backdrop: true,
-      keyboard: true,
-      centered: true
-    })
-    MODAL.componentInstance.user = element;
+      size: 'lg', //TAMAÑO DEL MODAL
+      centered: true, //CENTRAMOS EL MODAL
+    });
+    MODAL.componentInstance.user = element; //AGREGAMOS A LA VARIABLE USER DEL COMPONENTE UserRolesComponent EL USUARIO A EDITAR
     MODAL.result.then((data) => {
-      if (data == "success") {
+      if (data == 'success') {
         this.getUsers();
       }
     });
   }
 
-  handleClose(element: ListUser) {
-    const MODAL = this.modalService.open(DeleteItemComponent, {
-      windowClass: 'fadeIn',
-      size: 'sm',
-      backdrop: true,
-      keyboard: true,
-      centered: true
-    })
-    MODAL.componentInstance.item = {
-      type: "usuario", method: "deleteUser", service: "_adminUsersService",
-      payload: { id: element.id }
-    }
+  handleBox(element) {
+    //CREAMOS EL MODAL Y ABRIMOS EL COMPONENTE DE EditUserComponent
+    const MODAL = this.modalService.open(AddBoxUserComponent, {
+      size: 'md', //TAMAÑO DEL MODAL
+      centered: true, //CENTRAMOS EL MODAL
+    });
+    MODAL.componentInstance.user = element; //AGREGAMOS A LA VARIABLE USER DEL COMPONENTE UserRolesComponent EL USUARIO A EDITAR
+    MODAL.componentInstance.boxes = this.boxes; //AGREGAMOS A LA VARIABLE USER DEL COMPONENTE UserRolesComponent EL USUARIO A EDITAR
     MODAL.result.then((data) => {
-      if (data == "success") {
+      if (data == 'success') {
         this.getUsers();
       }
-    }, err => { });
+    });
   }
 
+  //MOSTRAMOS MENSAJES
   showMessage(type: number, message?: string) {
-    this.snackBar.openFromComponent(NotificationComponent, notificationConfig(type, message));
+    this.snackBar.openFromComponent(
+      NotificationComponent,
+      notificationConfig(type, message)
+    );
   }
 
+  //CONSULTAMOS LAS CAJAS EN EL SISTEMAS PARA AGREGARLAS A UN USUARIO
+  getBoxes() {
+    this._adminUsersService.getBoxes().subscribe(
+      (res: any) => {
+        this.boxes = res;
+      },
+      (err) => {
+        throw err;
+      }
+    );
+  }
+  //DESTRUIMOS LAS SUBSCRIPCIONES
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
-
 }

@@ -54,7 +54,7 @@ export class DynamicHeaderMenuService {
     this.setMenu(DynamicHeaderMenuConfig);
   }
 
-  private setMenu(menuConfig) {
+  public  setMenu(menuConfig) {
     this.menuConfigSubject.next(menuConfig);
   }
 

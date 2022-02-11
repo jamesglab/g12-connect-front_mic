@@ -1,0 +1,27 @@
+<!-- se consume la estructura de estados que vienen del back -->
+<!-- | number :'1.2-2' es el pipe que utilizamos para no mostrar todos los numeros si no solo 4 en los porcentajes -->
+<hr>
+<div>
+  <h3 class="h3">{{total_transacitons?.approved.text }}</h3>
+  <h3 class="h2">{{total_transacitons?.approved.quantity}}</h3>
+  <p>PORCENTAJE : {{total_transacitons?.approved.percentage | number : '1.2-2'}}</p>
+</div>
+<hr>
+<div>
+  <h3 class="h3">{{total_transacitons?.cancel.text}}</h3>
+  <h3 class="h2">{{total_transacitons?.cancel.quantity}}</h3>
+  <p>PORCENTAJE : {{total_transacitons?.cancel.percentage | number : '1.2-2'}}</p>
+</div>
+<hr>
+<div>
+  <h3 class="h3">{{total_transacitons?.pending.text}}</h3>
+  <h3 class="h2">{{total_transacitons?.pending.quantity}}</h3>
+  <p>PORCENTAJE : {{total_transacitons?.pending.percentage| number : '1.2-2'}}</p>
+</div>
+<hr>
+<div>
+  <h3 class="h3">{{total_transacitons?.total.text}}</h3>
+  <h3 class="h2">{{total_transacitons?.total.quantity}}</h3>
+  <p>PORCENTAJE : {{total_transacitons?.total.percentage| number : '1.2-2'}}</p>
+</div>
+<hr>

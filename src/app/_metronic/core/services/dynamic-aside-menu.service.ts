@@ -1,8 +1,12 @@
-import { Injectable } from '@angular/core';
+
 import { BehaviorSubject, Observable } from 'rxjs';
-import { DynamicAsideMenuConfig } from '../../configs/dynamic-aside-menu.config';
-import { validatePermission } from 'src/app/_helpers/tools/permission.tool';
+import { DynamicAsideMenuConfigOriginal } from '../../configs/dynamic-aside-menu.config';
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { map, catchError } from 'rxjs/operators';
+import { handleError, header } from 'src/app/_helpers/tools/header.tool';
+import { environment } from 'src/environments/environment';
 
 const emptyMenuConfig = {
   items: []
@@ -14,52 +18,76 @@ const emptyMenuConfig = {
 export class DynamicAsideMenuService {
   private menuConfigSubject = new BehaviorSubject<any>(emptyMenuConfig);
   menuConfig$: Observable<any>;
-  constructor(private storage: StorageService) {
+  constructor(private storage: StorageService, private http: HttpClient) {
     this.menuConfig$ = this.menuConfigSubject.asObservable();
     this.loadMenu();
   }
 
   // Here you able to load your menu from server/data-base/localStorage
   // Default => from DynamicAsideMenuConfig
-  private loadMenu() {
-    const { permissions } = this.storage.getItem("auth");
-    DynamicAsideMenuConfig.items.map((item: any) => {
-      let validate = validatePermission(permissions, item.code);
-      if (!validate) {
-        item.show = false;
-      } else {
+  public loadMenu() {
+
+    this.getPermissionsUser().subscribe(res => {
+
+      const DynamicAsideMenuConfig = DynamicAsideMenuConfigOriginal;
+      this.storage.setItem('permissions',res)
+      // ASIGNAMOS LOS VALORES DEL OBJETO EN UN ARRAY
+      let permissionsArray = Object.keys(res);
+      // RECORREMOS LOS MODULOS PRINCIPALES
+      DynamicAsideMenuConfig.items.map((item: any) => {
+        // VALIDAMOS QUE EL PERMISO PARA ACCEDER AL MODULO SE ENCUENTRE 
+        item.show = permissionsArray.find(permission => item.code == permission) ? true : false;
+        // VALIDAMOS LOS OBJETOS EN EL SUBMENU SEGUNDO NIVEL
         if (item.submenu) {
-          item.submenu.map(subitem => {
-            if(subitem.code){
-              let validate = validatePermission(permissions, subitem.code);
-              if(!validate){
-                subitem.show = false;
-              }else{
-                if(subitem.submenu){
-                  subitem.submenu.map(lastItem => {
-                    if(lastItem.code){
-                      let validate = validatePermission(permissions, lastItem.code);
-                      if(!validate){
-                        lastItem.show = false;
-                      }
-                    }
-                  })
-                }
-              }  
+          // RECORREMOS LOS OBJETOS DEL SEGUNDO NIVEL
+          item.submenu.map(submenu2Lvl => {
+            // SI EL PERMISO SE ENCUENTRA EN EL MODULO LO RENDERIZA
+            submenu2Lvl.show = permissionsArray.find(permission => submenu2Lvl.code == permission) ? true : false;
+            // VALIDAMOS EL TERCER NIVEL
+            if (submenu2Lvl.submenu) {
+              // RECORREMOS LOS OBJETOS DEL TERCER NIVEL
+              submenu2Lvl.submenu.map(submenu3Lvl => {
+                // VALIDAMOS QUE EL OBJETO SE ENCUENTRE EN LOS PERMISOS 
+                submenu3Lvl.show = permissionsArray.find(permission => submenu3Lvl.code == permission) ? true : false
+              });
             }
-          })
+          });
         }
+      });
+
+
+      this.setMenu(DynamicAsideMenuConfig);
+
+    }, err => {
+      if (err.status == 401) {
+        console.log('aqui hacemos el refresh token')
       }
     });
-    this.setMenu(DynamicAsideMenuConfig);
+
+
   }
 
 
-  private setMenu(menuConfig) {
+  getPermissionsUser(): Observable<any> {
+    return this.http
+      .get<any>(`${environment.apiUrlG12Connect.users}/permissions`)
+      .pipe(
+        map((res) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  public setMenu(menuConfig) {
+
+    // if (this.menuConfigSubject.value){
+    // this.menuConfigSubject.unsubscribe();
+    // }
     this.menuConfigSubject.next(menuConfig);
   }
 
-  private getMenu(): any {
+  public getMenu(): any {
     return this.menuConfigSubject.value;
   }
 }

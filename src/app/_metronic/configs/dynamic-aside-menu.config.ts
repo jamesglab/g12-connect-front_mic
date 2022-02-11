@@ -1,10 +1,10 @@
-export const DynamicAsideMenuConfig = {
+export let DynamicAsideMenuConfigOriginal = {
   items: [
     {
       title: 'Tablero',
       root: true,
-      show: true,
-      code: "DB000",
+      show: false,
+      code: 'DB000',
       svg: './assets/media/svg/icons/Design/PenAndRuller.svg',
       page: '/dashboard',
       translate: 'MENU.DASHBOARD',
@@ -13,8 +13,8 @@ export const DynamicAsideMenuConfig = {
     {
       title: 'Administración',
       root: true,
-      show: true,
-      code: "ADM000",
+      show: false,
+      code: 'ADM1000',
       icon: 'flaticon2-architecture-and-city',
       svg: './assets/media/svg/icons/General/Settings-2.svg',
       bullet: 'dot',
@@ -23,99 +23,185 @@ export const DynamicAsideMenuConfig = {
         {
           title: 'Gestión Permisos',
           bullet: 'dot',
-          show: true,
-          code: "ADM010",
+          show: false,
+          code: 'ADM1100',
           submenu: [
             {
               title: 'Usuarios',
               root: true,
-              show: true,
+              show: false,
               bullet: 'dot',
-              code: "ADM011",
-              page: '/admin/permisses/users'
+              code: 'ADM1110',
+              page: '/admin/permisses/users',
             },
             {
               title: 'Roles',
               root: true,
-              show: true,
+              show: false,
               bullet: 'dot',
-              code: "ADM012",
-              page: '/admin/permisses/roles'
+              code: 'ADM1120',
+              page: '/admin/permisses/roles',
             },
             {
               title: 'Objetos',
               root: true,
-              show: true,
+              show: false,
               bullet: 'dot',
-              code: "ADM013",
-              page: '/admin/permisses/objects'
-            }
-          ]
+              code: 'ADM1130',
+              page: '/admin/permisses/objects',
+            },
+          ],
         },
-      ]
+      ],
     },
     {
       title: 'Donaciones MCI',
       root: true,
-      code: "DO000",
+      code: 'DO1000',
       alignment: 'left',
       svg: './assets/media/svg/icons/Shopping/Dollar.svg',
       page: '/donations',
-      show: true,
+      show: false,
       submenu: [
         {
           title: 'Dashboard',
           root: true,
-          show: true,
+          show: false,
           bullet: 'dot',
-          code: "DO010",
-          page: '/donations/dashboard'
+          code: 'DO1100',
+          page: '/donations/dashboard',
         },
         {
           title: 'Reportes',
           root: true,
-          show: true,
+          show: false,
           bullet: 'dot',
-          code: "DO020",
-          page: '/donations/reports'
-        }
-      ]
+          code: 'DO1200',
+          page: '/donations/reports',
+        },
+      ],
     },
     {
       title: 'Eventos G12',
       root: true,
-      code: "EVT000",
+      code: 'EVT1000',
       alignment: 'left',
       svg: './assets/media/svg/icons/Shopping/Ticket.svg',
       page: '/g12events',
-      show: true,
+      show: false,
       submenu: [
         {
           title: 'Inicio',
           root: true,
-          show: true,
+          show: false,
           bullet: 'dot',
-          code: "EVT010",
-          page: '/g12events/home'
+          code: 'EVT1100',
+          page: '/g12events/home',
         },
         {
           title: 'Nuevo Evento',
           root: true,
-          show: true,
+          show: false,
           bullet: 'dot',
-          code: "EVT020",
-          page: '/g12events/add'
+          code: 'EVT1200',
+          page: '/g12events/add',
         },
         {
           title: 'Reportes',
           root: true,
-          show: true,
+          show: false,
           bullet: 'dot',
-          code: "EVT030",
-          page: '/g12events/reports'
-        }
-      ]
+          code: 'EVT1300',
+          page: '/g12events/reports',
+        },
+        {
+          title: 'Usuarios',
+          root: true,
+          show: false,
+          bullet: 'dot',
+          code: 'EVT1400',
+          page: '/g12events/users',
+        },
+        {
+          title: 'Masivos',
+          root: true,
+          show: false,
+          bullet: 'dot',
+          code: 'EVT1500',
+          submenu: [
+            {
+              title: 'Mis Masivos',
+              root: true,
+              show: false,
+              bullet: 'dot',
+              code: 'EVT1510',
+              page: '/g12events/massive',
+            },
+            {
+              title: 'Crear Masivo',
+              root: true,
+              show: false,
+              bullet: 'dot',
+              code: 'EVT1520',
+              page: '/g12events/create-massive',
+            },
+            {
+              title: 'Reporte de Masivos',
+              root: true,
+              show: false,
+              bullet: 'dot',
+              code: 'EVT1530',
+              page: '/g12events/report-massive',
+            },
+          ],
+        },
+      ],
     },
+
+    {
+      title: 'Cajas',
+      bullet: 'dot',
+      svg: './assets/media/svg/icons/Communication/Clipboard-check.svg',
+      show: false,
+      code: 'CJ1000',
+      submenu: [
+        {
+          title: 'Cajas en el sistema',
+          root: true,
+          show: false,
+          bullet: 'dot',
+          code: 'CJ1100',
+          page: '/admin/boxes',
+        },
+        {
+          title: 'Mi caja',
+          root: true,
+          show: false,
+          bullet: 'dot',
+          code: 'CJ1200',
+          page: 'boxes/home',
+        },
+        {
+          title: 'Reportes',
+          root: true,
+          show: false,
+          bullet: 'dot',
+          code: 'CJ1300',
+          page: 'boxes/reports',
+        }
+      ],
+    },
+
+    {
+      title: 'Emails',
+      bullet: 'dot',
+      svg: './assets/media/svg/icons/Communication/Mail.svg',
+      show: false,
+      page: 'emails',
+      code: 'EML1000',
+      
+    },
+
     // {
     //   title: 'Mi perfil',
     //   root: true,
@@ -127,8 +213,8 @@ export const DynamicAsideMenuConfig = {
     {
       title: 'Ganar',
       root: true,
-      show: true,
-      code: "G000",
+      show: false,
+      code: 'G000',
       bullet: 'dot',
       page: '/to-win',
       svg: './assets/media/svg/icons/Design/Cap-3.svg',
@@ -136,46 +222,46 @@ export const DynamicAsideMenuConfig = {
         {
           title: 'Personas',
           bullet: 'dot',
-          show: true,
-          code: "G010",
+          show: false,
+          code: 'G010',
           submenu: [
             {
               title: 'Registrar Nueva',
               page: '/to-win/people/new',
-              show: true,
-              code: "G011",
+              show: false,
+              code: 'G011',
             },
             {
               title: 'Buscar Persona',
               page: '/to-win/people/search',
-              show: true,
-              code: "G012"
-            }
-          ]
+              show: false,
+              code: 'G012',
+            },
+          ],
         },
         {
           title: 'Fono Visita',
           root: true,
-          show: true,
-          code: "G020",
+          show: false,
+          code: 'G020',
           bullet: 'dot',
-          page: '/to-win/phone-visit'
+          page: '/to-win/phone-visit',
         },
         {
           title: 'Reportes Ganar',
           root: true,
-          show: true,
-          code: "G030",
+          show: false,
+          code: 'G030',
           bullet: 'dot',
           page: '/to-win/reports',
-        }
-      ]
+        },
+      ],
     },
     {
       title: 'Enviar',
       root: true,
-      show: true,
-      code: "ENV000",
+      show: false,
+      code: 'ENV000',
       bullet: 'dot',
       page: '/send',
       icon: 'flaticon2-browser-2',
@@ -184,39 +270,46 @@ export const DynamicAsideMenuConfig = {
         {
           title: 'Gestión Célula',
           bullet: 'dot',
-          show: true,
-          code: "ENV010",
+          show: false,
+          code: 'ENV010',
           submenu: [
             {
               title: 'Lideres',
               page: '/send/go/leaders',
-              show: true,
-              code: "ENV011"
+              show: false,
+              code: 'ENV011',
             },
             {
               title: 'Nueva Célula',
               page: '/send/go/new',
-              show: true,
-              code: "ENV012"
+              show: false,
+              code: 'ENV012',
             },
             {
               title: 'Seguimiento Semanal',
               page: '/send/go/home',
-              show: true,
-              code: "ENV013"
-            }
-          ]
+              show: false,
+              code: 'ENV013',
+            },
+          ],
         },
         {
           title: 'Reportes Célula',
           root: true,
           bullet: 'dot',
           page: '/send/report/home',
-          show: true,
-          code: "ENV020"
-        }
-
-      ]
-    }
-  ]
+          show: false,
+          code: 'ENV020',
+        },
+      ],
+    },
+    // {
+    //   title: 'Usuarios',
+    //   root: true,
+    //   code: "EVT000",
+    //   alignment: 'left',
+    //   page: '/ministerial-info',
+    //   show: false,
+    // }
+  ],
 };

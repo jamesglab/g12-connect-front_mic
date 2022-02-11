@@ -1,88 +1,109 @@
 <div class="row">
   <div class="col-xl-12 col-sm-12">
-
     <div class="card card-custom example example-compact gutter-b">
       <div class="card-header">
         <div class="card-title d-block pb-2">
-          <h3 class="card-label pt-4 pb-4">Reportes Donaciones</h3>
-          <h6 style="font-size: small; color: rgb(163, 163, 163);">
-          </h6>
+          <h3 class="card-label pt-4 pb-4">Reportes Donaciones por estado</h3>
+          <h6 style="font-size: small; color: rgb(163, 163, 163)"></h6>
         </div>
         <div class="card-toolbar">
           <div class="example-tools justify-content-center">
-            <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">perm_data_setting</mat-icon>
+            <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214)"
+              >perm_data_setting</mat-icon
+            >
           </div>
         </div>
       </div>
-      <div class="card-body ">
-        <div class="d-flex">
+      <div class="card-body">
+        <div class="btns-flex">
           <div>
-            <mat-form-field appearance="fill">
-              <mat-label>Seleccione un rango de fechas</mat-label>
-              <mat-date-range-input [formGroup]="range" [rangePicker]="picker" [max]="maxDate">
-                <input matStartDate formControlName="start" placeholder="Fecha inicial">
-                <input matEndDate formControlName="end" placeholder="Fecha final">
-              </mat-date-range-input>
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
-          </div>
-          <div class="ml-6">
             <mat-form-field appearance="fill">
               <mat-label>Estado</mat-label>
               <mat-select [formControl]="status">
-                <mat-option [value]="0">Todas</mat-option>
                 <mat-option [value]="1">Aprobado</mat-option>
                 <mat-option [value]="2">En Proceso</mat-option>
                 <mat-option [value]="3">Cancelado/Declinado</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="ml-6">
+
+          <div class="ml-md-6">
             <mat-form-field appearance="fill">
-              <mat-label>Metodo de pago</mat-label>
-              <mat-select [formControl]="payment_method">
-                <mat-option [value]="0">Todas</mat-option>
-                <mat-option [value]="'cash'">Efectivo</mat-option>
-                <mat-option [value]="'credit'">Tarjeta de credito</mat-option>
-                <mat-option [value]="'pse'">Transferenica bancaria</mat-option>
-              </mat-select>
+              <mat-label>Seleccione un rango de fechas</mat-label>
+              <mat-date-range-input
+                [formGroup]="range"
+                [rangePicker]="picker"
+                [max]="maxDate"
+              >
+                <input
+                  matStartDate
+                  formControlName="start"
+                  placeholder="Fecha inicial"
+                />
+                <input
+                  matEndDate
+                  formControlName="end"
+                  placeholder="Fecha final"
+                />
+              </mat-date-range-input>
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
             </mat-form-field>
           </div>
-          <div class="ml-6">
-            <button type="button" class="btn btn-primary btn-search" matTooltip="Buscar"
-              (click)="getTransactionsMongo()">
-              <mat-icon style="font-size: 25px;">search</mat-icon>
-            </button>
-          </div>
-          <div class="ml-6">
-
-            <button type="button" class="btn exportExcel btn-search" matTooltip="Buscar" (click)="exportFile()">
-              <mat-icon style="font-size: 25px;">cloud_download</mat-icon>
-            </button>
+          <div class="d-flex">
+            <div class="ml-md-6">
+              <button
+                type="button"
+                class="btn btn-primary btn-search"
+                matTooltip="Buscar"
+                (click)="getTransactions(paginator)"
+              >
+                <mat-icon style="font-size: 25px">search</mat-icon>
+              </button>
+            </div>
+            <div class="ml-6">
+              <button
+                type="button"
+                class="btn exportExcel btn-search"
+                matTooltip="Descargar"
+                (click)="exportFile()"
+                [disabled]="isLoader"
+              >
+                <mat-icon style="font-size: 25px" *ngIf="!isLoader"
+                  >cloud_download</mat-icon
+                >
+                <div class="spinner-border" role="status" *ngIf="isLoader">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
         <div>
-          <app-reports-table [dataSource]="dataSource"></app-reports-table>
+          <app-reports-table
+            *ngIf="dataSource?.data.length > 0"
+            [dataSource]="dataSource"
+            [count]="count"
+            (emitPage)="getTransactions($event)"
+          >
+          </app-reports-table>
+        </div>
+        <div
+          *ngIf="dataSource?.data.length == 0"
+          class="d-flex"
+          style="
+            height: 24rem;
+            align-items: center;
+            color: #d0d0d0;
+            justify-content: center;
+          "
+        >
+          NO SE ENCONTRARON DONACIONES PARA LAS FECHAS SELECCIONADAS
         </div>
       </div>
     </div>
-    <!-- 
-    <div class="card card-custom example example-compact gutter-b">
-      <div class="card-header">
-        <div class="card-title">
-          <h3 class="card-label">Reporte por pasarela</h3>
-        </div>
-        <div class="card-toolbar">
-          <div class="example-tools justify-content-center">
-            <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">perm_data_setting</mat-icon>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <p>!Reporte por pasarela</p>
-      </div>
-    </div> -->
-
   </div>
 </div>

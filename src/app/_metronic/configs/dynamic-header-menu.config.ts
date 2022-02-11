@@ -6,7 +6,7 @@ export const DynamicHeaderMenuConfig = {
       alignment: 'left',
       page: '/dashboard',
       code: "DB000",
-      show: true,
+      show: false,
       translate: 'MENU.DASHBOARD'
     },
     {
@@ -15,24 +15,24 @@ export const DynamicHeaderMenuConfig = {
       code: "ADM000",
       alignment: 'left',
       page: '/administration',
-      show: true,
+      show: false,
       submenu: [
         {
           title: 'Gestión Permisos',
           bullet: 'dot',
-          show: true,
+          show: false,
           code: "ADM010",
           submenu: [
             {
               title: 'Usuarios',
-              show: true,
+              show: false,
               bullet: 'dot',
               code: "ADM011",
               page: '/admin/permissions/users'
             },
             {
               title: 'Roles',
-              show: true,
+              show: false,
               bullet: 'dot',
               code: "ADM012",
               page: '/admin/permissions/roles'
@@ -47,12 +47,12 @@ export const DynamicHeaderMenuConfig = {
       code: "DO000",
       alignment: 'left',
       page: '/donations',
-      show: true,
+      show: false,
       submenu: [
         {
           title: 'Dashboard',
           root: true,
-          show: true,
+          show: false,
           bullet: 'dot',
           code: "DO010",
           page: '/donations/dashboard'
@@ -60,7 +60,7 @@ export const DynamicHeaderMenuConfig = {
         {
           title: 'Reportes',
           root: true,
-          show: true,
+          show: false,
           bullet: 'dot',
           code: "DO020",
           page: '/donations/reports'
@@ -73,12 +73,12 @@ export const DynamicHeaderMenuConfig = {
       code: "EVT000",
       alignment: 'left',
       page: '/g12events',
-      show: true,
+      show: false,
       submenu: [
         {
           title: 'Inicio',
           root: true,
-          show: true,
+          show: false,
           bullet: 'dot',
           code: "EVT010",
           page: '/g12events/home'
@@ -86,7 +86,7 @@ export const DynamicHeaderMenuConfig = {
         {
           title: 'Nuevo Evento',
           root: true,
-          show: true,
+          show: false,
           bullet: 'dot',
           code: "EVT020",
           page: '/g12events/add'
@@ -94,7 +94,7 @@ export const DynamicHeaderMenuConfig = {
         {
           title: 'Reportes',
           root: true,
-          show: true,
+          show: false,
           bullet: 'dot',
           code: "EVT030",
           page: '/g12events/reports'

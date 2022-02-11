@@ -2,79 +2,131 @@ import { FormControl } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 
 export function MustMatch(controlName: string, matchingControlName: string) {
-    return (formGroup: FormGroup) => {
-        const control = formGroup.controls[controlName];
-        const matchingControl = formGroup.controls[matchingControlName];
+  return (formGroup: FormGroup) => {
+    const control = formGroup.controls[controlName];
+    const matchingControl = formGroup.controls[matchingControlName];
 
-        if (matchingControl.errors && !matchingControl.errors.mustMatch) {
-            // return if another validator has already found an error on the matchingControl
-            return;
-        }
+    if (matchingControl.errors && !matchingControl.errors.mustMatch) {
+      // return if another validator has already found an error on the matchingControl
+      return;
+    }
 
-        // set error on matchingControl if validation fails
-        if (control.value !== matchingControl.value) {
-            matchingControl.setErrors({ mustMatch: true });
-        } else {
-            matchingControl.setErrors(null);
-        }
-    };
+    // set error on matchingControl if validation fails
+    if (control.value !== matchingControl.value) {
+      matchingControl.setErrors({ mustMatch: true });
+    } else {
+      matchingControl.setErrors(null);
+    }
+  };
 }
 
 export const hourValidation = (control: FormControl) => {
-    const value = control.value;
+  const value = control.value;
 
-    if (!value) {
-        return null;
-    }
-
-    if (value.hour < 4) {
-        return { tooEarly: true };
-    }
-
-    if (value.hour > 22) {
-        return { tooLate: true };
-    }
-
+  if (!value) {
     return null;
-}
+  }
+
+  if (value.hour < 4) {
+    return { tooEarly: true };
+  }
+
+  if (value.hour > 22) {
+    return { tooLate: true };
+  }
+
+  return null;
+};
 
 export const numberOnly = (event): boolean => {
-    const charCode = (event.which) ? event.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-        return false;
-    }
-    return true;
-}
+  const charCode = event.which ? event.which : event.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    return false;
+  }
+  return true;
+};
 
 //INSERT PERSON (TO-WIN MODULE)
 
 // FOR GET POSITION OF CONTROL (LIKE A STEP)
 const getStep = (controlName: string): number => {
-
-    let controls = [
-        ["idDocumentType","documentNumber","names","surNames","birthDate","gender","idCivilStatus"],
-        ["phone","email","address","mobile","neighborhoods","idZone"],
-        ["idPastor","idLeader","personInvites","idMeeting","petition"],
-        ["Date","Code","Description","IdResultPhoneVisit"]
-    ];
-    let _step: number = 0; // step of material
-    controls.map((step, i)=>{ // for obtain index of aoa
-        step.map((control) => {
-            if(control.toLowerCase() === controlName.toLowerCase()){
-                _step = i;
-            }
-        })
-    })
-    return _step;
-}
-// FOR GET CONTROL NAME AND OBTAIN THEM POSITION 
+  let controls = [
+    [
+      'idDocumentType',
+      'documentNumber',
+      'names',
+      'surNames',
+      'birthDate',
+      'gender',
+      'idCivilStatus',
+    ],
+    ['phone', 'email', 'address', 'mobile', 'neighborhoods', 'idZone'],
+    ['idPastor', 'idLeader', 'personInvites', 'idMeeting', 'petition'],
+    ['Date', 'Code', 'Description', 'IdResultPhoneVisit'],
+  ];
+  let _step: number = 0; // step of material
+  controls.map((step, i) => {
+    // for obtain index of aoa
+    step.map((control) => {
+      if (control.toLowerCase() === controlName.toLowerCase()) {
+        _step = i;
+      }
+    });
+  });
+  return _step;
+};
+// FOR GET CONTROL NAME AND OBTAIN THEM POSITION
 export const toFailedStep = (controls: any): number => {
-    let step = 0;
-    for(let i in controls){
-        if(controls[i].errors){
-            step = getStep(i);
-        }
+  let step = 0;
+  for (let i in controls) {
+    if (controls[i].errors) {
+      step = getStep(i);
     }
-    return step;
-}
+  }
+  return step;
+};
 
+export const parseToObjectOtherObject = (
+  array: any[],
+  key: string
+): Promise<{ [key: string]: any }> => {
+  return new Promise(async (resolve, reject) => {
+    let object = {};
+    const iterateArray = async () => {
+      return Promise.all(
+        array.map((item) => {
+          object[item[key]] = item;
+          return Promise.resolve('ok');
+        })
+      );
+    };
+    await iterateArray();
+    resolve(object);
+  });
+};
+
+export const validateStatus = (status) => {
+  if (parseInt(status) == 1) {
+    return 'Aprobado';
+  } else if (parseInt(status) == 2) {
+    return 'En proceso';
+  } else if (parseInt(status) == 3) {
+    return 'Cancelado/Declinado';
+  }
+};
+
+export const validatePaymentMethod = (payment_method) => {
+  if (payment_method.toLowerCase() == 'credit') {
+    return 'Tarjeta de credito';
+  } else if (payment_method.toLowerCase() == 'pse') {
+    return 'PSE';
+  } else if (payment_method.toLowerCase() == 'cash') {
+    return 'Efectivo';
+  } else if (payment_method.toLowerCase() == 'administration') {
+    return 'Administración';
+  } else if (payment_method.toLowerCase() == 'code') {
+    return 'Codigo';
+  } else if (payment_method.toLowerCase() == 'paypal') {
+    return 'Paypal';
+  }
+};

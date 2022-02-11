@@ -11,6 +11,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { ProfileComponent } from './profile.component';
 import { UpdatePasswordComponent } from './components/update-password/update-password.component';
+import { CoreModule } from 'src/app/_metronic/core';
+import { SharedModule } from 'src/app/modules/shared/shared.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { Interceptor } from '../../modules/_services/interceptors/interceptor.service';
 
 
 @NgModule({
@@ -27,6 +31,8 @@ import { UpdatePasswordComponent } from './components/update-password/update-pas
     MatSelectModule,
     MatIconModule,
     MatSnackBarModule,
+    CoreModule,
+    SharedModule,
     RouterModule.forChild([
       {
         path: '',
@@ -34,6 +40,12 @@ import { UpdatePasswordComponent } from './components/update-password/update-pas
       },
     ]),
   ],
-  providers:[MatIconRegistry]
+  providers: [MatIconRegistry,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: Interceptor,
+      multi: true
+    },
+   ]
 })
 export class ProfileModule { }

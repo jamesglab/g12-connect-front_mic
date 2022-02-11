@@ -1,0 +1,25 @@
+.price {
+  border-radius: 1px solid red;
+  border: 2px solid #45a1ff;
+  width: 14rem;
+  height: 39px;
+  border-radius: 12px;
+  justify-content: center;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.img-cont {
+  width: auto;
+  object-fit: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img-event {
+  width: 20rem;
+}

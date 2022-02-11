@@ -69,7 +69,6 @@ export class AddUserComponent implements OnInit {
     const getDocTypesSubscr = this._mainService
       .getDocumentTypes().subscribe((res: Response) => {
         if (res.result) {
-          console.log("DOCUMENTS", res.entity)
           this.documentTypes = res.entity;
           this.cdr.detectChanges();
         }
@@ -98,7 +97,6 @@ export class AddUserComponent implements OnInit {
       })
       .subscribe((res: Response) => {
         // console.log("RESPONSE USER", res);
-        console.log("xdxdxd", res.entity[0])
         this.createUserForm.patchValue({
           IdWin: res.entity[0].idWin,
           Nickname: res.entity[0].email,

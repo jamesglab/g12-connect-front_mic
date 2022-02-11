@@ -1,6 +1,7 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModaleTransactionComponent } from '../modale-transaction/modale-transaction.component';
 
 @Component({
   selector: 'app-reports-table',
@@ -11,21 +12,53 @@ export class ReportsTableComponent implements OnInit {
 
 
   @Input() dataSource: any;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @Input() count: any;
+
+
+  @Output() emitPage = new EventEmitter<any>()
   public search = new FormControl('', []);
-  public displayedColumns: string[] = ['created_at', 'amount', 'payment_method', 'status', 'identification', 'name', 'last_name', 'email'];
-  constructor() { }
+  public displayedColumns: string[] = [
+    'reference',
+    'document',
+    'phone',
+    'email',
+    'offering_value',
+    'offering_type',
+    'payment',
+    'created_at',
+    'country',
+    'actions'
+  ];
+  constructor(
+    private modalService: NgbModal
+
+  ) { }
 
   ngOnInit(): void {
-  }
-  ngOnChanges() {
-    if (this.dataSource) {
-      this.dataSource.paginator = this.paginator;
-    }
+    setTimeout(() => {
+    }, 1000);
   }
   filter() {
-    this.dataSource.filter = this.search.value.trim().toLowerCase();
+    // this.dataSource.filter = this.search.value.trim().toLowerCase();
   }
   pageChanged(event) {
+  }
+
+  emitPageData(paginator) {
+    this.emitPage.emit(paginator)
+  }
+
+
+  openModaleCheck(element) {
+    
+    const MODAL = this.modalService.open(ModaleTransactionComponent, {
+      windowClass: 'fadeIn',
+      size: 'lg',
+      backdrop: true,
+      keyboard: true,
+      centered: true
+    })
+    MODAL.componentInstance.transaction = element.transaction;
+
   }
 }

@@ -1,0 +1,47 @@
+
+  <mat-table #table [dataSource]="dataSource">
+    <ng-container matColumnDef="position">
+      <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+      <mat-cell
+        class="cursor-pointer"
+        data-label="No."
+        *matCellDef="let element; let i = index"
+        >{{ i + 1 }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name_event">
+      <mat-header-cell *matHeaderCellDef> Nombre Evento </mat-header-cell>
+      <mat-cell
+        class="cursor-pointer"
+        data-label="Nombre Evento "
+        *matCellDef="let element"
+        >{{ element.name_event }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="cupo">
+      <mat-header-cell *matHeaderCellDef> Cupo</mat-header-cell>
+      <mat-cell
+        *matCellDef="let element"
+        class="cursor-pointer"
+        data-label="Cupo"
+      >
+        {{ element.cupo }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="availability">
+      <mat-header-cell *matHeaderCellDef> Disponibilidad </mat-header-cell>
+      <mat-cell
+        *matCellDef="let element"
+        class="cursor-pointer"
+        data-label="Disponibilidad"
+      >
+        {{ element.availability }}
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>

@@ -6,6 +6,7 @@ import { UserModel } from '../_models/user.model';
 import { Response } from '../_models/auth.model';
 import { AuthService } from '../_services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +26,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   hasError: boolean;
   returnUrl: string;
-  isLoading$: Observable<boolean>;
+  isLoading$: boolean;
 
   // private fields
   private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
@@ -34,9 +35,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {
-    this.isLoading$ = this.authService.isLoading$;
+    // this.isLoading$ = this.authService.isLoading$;
     // redirect to home if already logged in
     if (this.authService.currentUserValue) {
       this.router.navigate(['/']);
@@ -79,12 +81,25 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   submit() {
     this.hasError = false;
+    this.isLoading$ = true;
     const loginSubscr = this.authService
       .login(this.form.email.value.trim(), this.form.password.value.trim())
       .subscribe((res: any) => {
+        if (res.user.verify) {
+          this.isLoading$ = false;
           this.authService.getUserByToken();
           this.router.navigate([this.returnUrl]);
-      }, err => { this.hasError = true; throw err });
+        } else {
+          this.isLoading$ = false;
+          Swal.fire('Usuario no verificado', '', 'warning')
+        }
+
+      }, err => {
+        this.hasError = true;
+        this.isLoading$ = false;
+        this.cdr.detectChanges();
+         throw err;
+      });
     this.unsubscribe.push(loginSubscr);
   }
 

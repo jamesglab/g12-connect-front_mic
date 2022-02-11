@@ -1,0 +1,85 @@
+<div class="row">
+  <div class="col-sm-12 col-sm-12">
+    <div class="card card-custom example example-compact gutter-b">
+      <div class="card-header d-flex">
+        <div class="w-75">
+          <div class="card-title d-block pb-2">
+            <h3 class="card-label pt-4 pb-4">Comprobante de pago</h3>
+            <h6 style="font-size: small; color: rgb(163, 163, 163)">
+              En esta sección podrás ver el comprobante de pago del masivo
+            </h6>
+          </div>
+        </div>
+        <div class="card-toolbar">
+          <div class="example-tools justify-content-center">
+            <img src="assets/media/svg/icons/Shopping/Ticket.svg" alt="" />
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        
+          <div class="row" *ngIf="proof">
+            <div class="col-sm-12 col-12" >
+              <div class="mt-5">
+                <h4 class="h4">Datos del Donante</h4>
+                                <div class="row mt-3">
+                  <div class="col-sm-6 col-12">
+                    <div class="payment"><strong>Nombre:</strong> {{ proof?.user?.name ? proof?.user?.name : proof?.name  }}</div>
+                  </div>
+                  <div class="col-sm-6 col-12">
+                    <div class="payment"><strong>Apellido:</strong> {{ proof?.user?.last_name ? proof?.user?.last_name : proof?.last_name }}</div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-6 col-12">
+                    <div class="payment"><strong>Email:</strong> {{ proof?.user?.email ?proof?.user?.email : proof?.email }}</div>
+                 
+                  </div>
+                  <div class="col-sm-6 col-12">
+                    <div class="payment"><strong>Telefono:</strong> {{ proof?.user?.phone ? proof?.user?.phone : proof?.phone }}</div>
+                  </div>
+                </div>
+                <div class="payment"><strong>Pais:</strong> {{ proof?.user?.country ? proof?.user?.country : proof?.country }}</div>
+              </div>
+            </div>
+
+            <div class="col-sm-12 col-12 mt-7" >
+              <div class="row">
+                <div class="col-12 ">
+                  <h4 class="h4">Informacion de Donación</h4>
+           
+                </div>
+              </div>
+              <div class="row mt-">
+                <div class="col-sm-6 col-12">
+                  <div class="payment"><strong>Moneda:</strong> {{ proof?.transaction?.currency ? proof?.transaction?.currency : proof?.donation?.currency | uppercase }}</div>
+       
+                </div>
+                <div class="col-sm-6 col-12">
+                  <!-- VALIDAMOS EL VALOR DE LA TRANSACCION -->
+                  <div class="payment" *ngIf="proof?.transaction?.currency"><strong>Valor:</strong> {{ (proof.transaction.currency == 'USD') ? proof.transaction.amount / 100 :  proof.transaction.amount }}</div>
+                  <div class="payment" *ngIf="proof?.donation?.currency" ><strong>Valor:</strong> {{ (proof.donation.currency == 'USD') ? proof.donation.amount / 100 :  proof.donation.amount }}</div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 col-12">
+                <div class="payment" *ngIf="proof?.transaction?.payment_method" ><strong>Metodo de pago:</strong> {{ validatePaymentMethod(proof.transaction.payment_method)  }}</div>
+                <div class="payment"  *ngIf="proof?.donation?.payment_method"><strong>Metodo de pago:</strong> {{ proof.donation.payment_method  }}</div>
+                </div>
+                <div class="col-sm-6 col-12">
+                <div class="payment"><strong>Referencia:</strong> {{ proof?.transaction?.payment_ref ? proof.transaction.payment_ref : proof.donation.reference }}</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                <div class="payment"><strong>Estado:</strong> {{ validateStatus(proof?.transaction?.status) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

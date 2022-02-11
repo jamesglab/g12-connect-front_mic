@@ -1,0 +1,113 @@
+<div class="row">
+  <div class="col-xl-12 col-sm-12">
+    <div class="card card-custom example example-compact gutter-b">
+      <div class="card-header d-flex">
+        <div class="w-75">
+          <div class="card-title d-block pb-2">
+            <h3 class="pt-4 pb-4">Gestion de cajas</h3>
+          </div>
+        </div>
+        <div class="card-toolbar">
+          <div class="example-tools justify-content-center"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="col-xl-1 col-sm-1">
+          <button
+            type="button"
+            class="btn btn-primary"
+            matTooltip="Nueva Caja"
+            (click)="handleCreateBox()"
+            *ngIf="permissions['CJ1101']"
+          >
+            <i class="fas fa-box-open fa-lg"></i>
+          </button>
+        </div>
+
+        <mat-table #table [dataSource]="dataSource">
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
+            <mat-cell
+              *matCellDef="let element"
+              class="cursor-pointer"
+              data-label="Nombre"
+            >
+              {{ element.name }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="user">
+            <mat-header-cell *matHeaderCellDef> Usuario </mat-header-cell>
+            <mat-cell
+              *matCellDef="let element"
+              class="cursor-pointer"
+              data-label="Usuario "
+            >
+              {{
+                element.user
+                  ? (element.user.name + " " + element.user.last_name
+                    | uppercase)
+                  : "USUARIO NO ASIGNADO"
+              }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <mat-header-cell *matHeaderCellDef> Email</mat-header-cell>
+            <mat-cell
+              *matCellDef="let element"
+              class="cursor-pointer"
+              data-label="Email"
+            >
+              {{ element.user ? element.user.email : "USUARIO NO ASIGNADO" }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
+            <mat-cell
+              *matCellDef="let element"
+              class="cursor-pointer"
+              data-label="Estado"
+            >
+              {{ element.status ? "Activo" : "Inactivo" }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="options">
+            <mat-header-cell *matHeaderCellDef>Opciónes</mat-header-cell>
+            <mat-cell
+              *matCellDef="let element; let i = index"
+              data-label="Opciónes"
+            >
+              <a
+                class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
+                (click)="handleEdit(element)"
+                *ngIf="permissions['CJ1102']"
+              >
+                <span
+                  [inlineSVG]="
+                    './assets/media/svg/icons/Communication/Write.svg'
+                  "
+                  class="svg-icon svg-icon-md svg-icon-primary"
+                ></span>
+              </a>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        </mat-table>
+
+        <mat-paginator
+          class="mat-elevation-z0"
+          #paginator
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 20]"
+          [showFirstLastButtons]="true"
+        >
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

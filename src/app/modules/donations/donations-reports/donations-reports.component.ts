@@ -7,126 +7,227 @@ import { DonationsServices } from '../_services/donations.service';
 import { notificationConfig } from 'src/app/_helpers/tools/utils.tool';
 import { MatTableDataSource } from '@angular/material/table';
 import { ExportService } from '../../_services/export.service';
+import {
+  validatePaymentMethod,
+  validateStatus,
+} from 'src/app/_helpers/tools/validators.tool';
 
 @Component({
   selector: 'app-donations-reports',
   templateUrl: './donations-reports.component.html',
-  styleUrls: ['./donations-reports.component.scss']
+  styleUrls: ['./donations-reports.component.scss'],
 })
 export class DonationsReportsComponent implements OnInit {
-
+  //CONTROLES DE FORMULARIOS
+  public status = new FormControl(1, []);
+  public statusHours = new FormControl(1, []);
   public range = new FormGroup({
-    start: new FormControl(),
-    end: new FormControl()
+    start: new FormControl(moment()),
+    end: new FormControl(moment()),
   });
-  public maxDate: Date;
-  public dataSource: any;
-  public status = new FormControl(0, []);
+
   public payment_method = new FormControl(0, []);
-  public info_to_export = [];
-  constructor(public readonly _donations: DonationsServices, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef, private exportService: ExportService,) {
+
+  public dataSource: any;
+  public dataSourceHours: any;
+
+  //OBJECTS
+  public paginator = {
+    pageSize: 10,
+    pageIndex: 0,
+  };
+
+  //NUMBERS
+  public count: number = 0;
+  public countHours: number = 0;
+
+  //DATES
+  public maxDate: Date;
+
+  //BOOLEANS
+  public isLoader: boolean = false;
+
+  constructor(
+    public readonly _donations: DonationsServices,
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef,
+    private exportService: ExportService
+  ) {
+    //INICIALIZAMOS EL MAXIMO DE LA FECHA AL DIA ACTUAL
     this.maxDate = new Date();
   }
 
   ngOnInit(): void {
+    //CONSULTAMOS LAS TRANSACCIONES
+    this.getTransactions(this.paginator);
   }
 
-
-  getTransactionsMongo() {
-
-    if (this.range.get('end').value) {
-      this._donations.getTransactionsReports({
-        date_init: moment(this.range.get('start').value).format(),
-        date_finish: `${moment(this.range.get('end').value).format("YYYY-MM-DD")}T23:59:00.000`,
-        platform: "DONATION_MCI",
-        transaction_status: (this.status.value != 0) ? this.status.value : '',
-        transaction_payment_method: (this.payment_method.value != 0) ? this.payment_method.value : '',
-      }).subscribe((res: any,) => {
-        res.map((item, i) => { res[i].transaction.status = this.validateStatus(item.transaction.status); res[i].transaction.payment_method = this.validatePaymentMethod(item.transaction.payment_method) })
+  getTransactions(event?) {
+    //AGREGAMOS EL PAGINADOR
+    this.paginator = event;
+    //CONSULTAMOS EL ENDPOINT CRANDO EL OBJETO DE LOS FILTROS(makeObjectFilters)
+    this._donations
+      .getTransaccionsDonations(this.makeObjectFilters(event))
+      .subscribe((res: any) => {
+        //AGREAMOS LOS CONTADORES DE LA TABLA
+        this.count = res.count;
+        //VALIDAMOS SI NO EXISTE EL DATASOURCE
         if (!this.dataSource) {
-          this.dataSource = new MatTableDataSource<any[]>(this.getObjetcsToTable(res));
-          this.info_to_export = res;
+          //CREAMOS LOS OBJETOS DE LA TABLA
+          this.dataSource = new MatTableDataSource<any[]>(
+            this.getObjetcsToTable(res.transactions)
+          );
           this.cdr.detectChanges();
         } else {
-          this.dataSource.data = this.getObjetcsToTable(res);
-          this.info_to_export = res;
+          //CREAMOS LOS OBJETOS DE LA TABLA
+          this.dataSource.data = this.getObjetcsToTable(res.transactions);
+          this.cdr.detectChanges();
         }
-      })
-    } else {
-      this.showMessage(2, 'Selecciona un filtro de fechas');
-    }
-
+      });
   }
 
+  //METODO PARA MAQUETAR LOS OBJETOS QUE SE MOSTRARAN EN LA TABLA
   getObjetcsToTable(data) {
-
+    //CREAMOS VARIABLE DE LOS REPORTES
     let newReports = [];
-    data.map(element => {
+    //MAPEAMOS LOS REPORTES DE LA CONSULTA
+    data.map((element) => {
+      //CREAMOS EL OBJETO QUE SE ANEXARA AL REPORTE
       const newReport = {
-        payment_method: element.transaction.payment_method,
-        created_at: element.created_at,
-        status: element.transaction.status,
-        identification: element.user.identification,
-        name: element.user.name,
-        last_name: element.user.last_name,
-        email: element.user.email,
-        amount: element.transaction.amount
-      }
+        reference: element.transaction.payment_ref
+          ? element.transaction.payment_ref
+          : '',
+        name: element.user.name ? element.user.name : '',
+        last_name: element.user.last_name ? element.user.last_name : '',
+        document: element.user.identification
+          ? element.user.identification
+          : '',
+        phone: element.user.phone ? element.user.phone : '',
+        email: element.user.email ? element.user.email : '',
+        offering_value:
+          element?.transaction.payment_gateway.toString().toUpperCase() ==
+          'STRIPE'
+            ? element.transaction.amount / 100
+            : element.transaction.amount,
+        offering_type: element.donation.name ? element.donation.name : '',
+        created_at: moment(element.transaction.created_at).format(
+          'DD/MM/YYYY hh:MM a'
+        ),
+        petition: element.donation.petition ? element.donation.petition : '',
+        country: element.user.country ? element.user.country : '',
+        transaction: element,
+        payment: validatePaymentMethod(element.transaction.payment_method),
+      };
+      //AGREGAMOS EL OBJETO AL REPORTE
       newReports.push(newReport);
     });
-    return newReports
-  }
-
-  showMessage(type: number, message?: string) {
-    this.snackBar.openFromComponent(NotificationComponent, notificationConfig(type, message));
-  }
-
-  validateStatus(status) {
-    if (parseInt(status) == 1) {
-      return 'Aprobado'
-    } else if (parseInt(status) == 2) {
-      return 'En proceso'
-    } else if (parseInt(status) == 3) {
-      return 'Cancelado/Declinado'
-    }
-  }
-
-  validatePaymentMethod(payment_method) {
-    if (payment_method == 'credit') {
-      return 'Tarjeta de credito'
-    } else if (payment_method == 'pse') {
-      return 'Transferenica bancaria'
-    } else if (payment_method == 'cash') {
-      return 'Efectivo'
-    }
+    //RETORNAMOS LA DATA DEL REPORTE
+    return newReports;
   }
 
   exportFile() {
-    if (this.info_to_export.length > 0) {
-      const dataToExport = [];
-      this.info_to_export.map(item => {
-        const newData = {
-          fecha: new Date(item.created_at),
-          'methodo de pago': item.transaction.payment_method,
-          estado: item.transaction.status,
-          costo: item.transaction.amount,
-          moneda: item.transaction.currency,
-          identificación: item.user.identification,
-          nombre: item.user.name,
-          apellido: item.user.last_name,
-          email: item.user.email,
-          telefono: item.user.phone,
-          pais: item.user.country,
-          ciudad: item.user.city,
-          departamento: item.user.departament,
-          genero: item.user.gender
-        }
-        dataToExport.push(newData)
-      });
-      this.exportService.exportAsExcelFile(dataToExport, 'DONACIONES_MCI');
-    } else {
-      this.showMessage(2, 'No hay datos por exportar');
+    try {
+      //VALIDAMOS SI LA TABLA NO TIENE DATOS
+      if (this.dataSource.data.length == 0) {
+        throw new Error('No hay datos por descargar');
+      }
+
+      this.isLoader = true;
+      this._donations
+        .downloadReportDonations(this.makeObjectFilters())
+        .subscribe(
+          (res: any) => {
+            this.isLoader = false;
+
+            if (res.length > 0) {
+              const dataToExport = [];
+              res.map((item) => {
+                //CREAMOS EL OBJETO DE LA DESCARGA
+                const newData = {
+                  Referencia: item.transaction.payment_ref,
+                  Nombre: item.user.name.toUpperCase(),
+                  Apellido: item.user.last_name.toUpperCase(),
+                  Identificación: item.user.identification,
+                  Telefono: item.user.phone,
+                  Email: item.user.email.toLowerCase(),
+                  'Tipo de donacion': item.donation.name.toUpperCase(),
+                  Total:
+                    item?.transaction.payment_gateway
+                      .toString()
+                      .toUpperCase() == 'STRIPE'
+                      ? item.transaction.amount / 100
+                      : item.transaction.amount,
+                  Modena: item.transaction.currency.toUpperCase(),
+                  'Metodo de pago':
+                    item.transaction.payment_method.toUpperCase(),
+                  'Pasarela de pago':
+                    item.transaction.payment_gateway.toUpperCase(),
+                  Fecha: moment(item.transaction.created_at).format(
+                    'DD/MM/YYYY hh:MM a'
+                  ),
+                  Estado: validateStatus(item.transaction.status),
+                  Peticion: item.transaction.petition,
+                  Pais: item.user.country,
+                };
+                //AGREGAMOS EL OBJETO A LA DATA DE LA DESCARGA
+                dataToExport.push(newData);
+              });
+              //VALIDAMOS EL DETECTOR CHANGUE
+              this.cdr.detectChanges();
+              this.exportService.exportAsExcelFile(
+                dataToExport,
+                'DONACIONES_MCI'
+              );
+            } else {
+              throw new Error('No se Encontraron Datos');
+            }
+          },
+          (err) => {
+            throw new Error(err);
+          }
+        );
+    } catch (error) {
+      this.showMessage(3, error.message);
+    }
+  }
+
+  ///////
+  //TOOLS
+  ///////
+  makeObjectFilters(paginator?) {
+    const objetc_filter = {
+      init_date: this.range.get('start').value
+        ? new Date(
+            `${moment(this.range.get('start').value).format(
+              'YYYY-MM-DD'
+            )}T00:00:00.000`
+          ).getTime()
+        : null,
+      finish_date: this.range.get('end').value
+        ? new Date(
+            `${moment(this.range.get('end').value).format(
+              'YYYY-MM-DD'
+            )}T23:59:00.000`
+          ).getTime()
+        : null,
+      status: this.status.value != 0 ? this.status.value : '',
+    };
+    //VALIDAMOS SI EL OBJETO NECESITA SER PAGINADO
+    if (paginator) {
+      objetc_filter['quantity_page'] = paginator.pageSize
+        ? paginator.pageSize
+        : 10;
+      objetc_filter['page'] = paginator.pageIndex ? paginator.pageIndex + 1 : 1;
     }
 
+    return objetc_filter;
+  }
+
+  //METODO PARA MOSTRAR MENSAJES
+  showMessage(type: number, message?: string) {
+    this.snackBar.openFromComponent(
+      NotificationComponent,
+      notificationConfig(type, message)
+    );
   }
 }

@@ -10,26 +10,15 @@ export class ShowCutCountsComponent implements OnInit {
   @Input() cuts: any;
   @Output() send_data = new EventEmitter<any>();
   public selected_cut: any;
-  public cuts_show = [];
+
   constructor() { }
   ngOnInit(): void {
-  }
-  ngOnChanges() {
-    this.cuts_show = [];
-    if (this.cuts) {
-      Object.keys(this.cuts).map(async (element, i) => {
-        if (!this.selected_cut && i == 0) {
-          this.sendtable(element);
-        }
-        this.cuts_show.push(element);
-      });
-    }
-
+    this.sendtable(this.cuts[0])
   }
 
   sendtable(cut) {
     this.selected_cut = cut;
-    this.send_data.emit(this.cuts[cut]);
+    this.send_data.emit(cut);
   }
 
 }

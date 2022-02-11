@@ -84,7 +84,6 @@ export class AddgoComponent implements OnInit {
     this.hasError = false;
     const goTypesSubscr = this._goService
       .getGoTypes().subscribe((res: Response) => {
-        console.log("RESPUESTA",res)
         if (res.result) {
           res.entity.map(item => {
             if(item.idType == 5 || item.idType == 4){
@@ -115,7 +114,6 @@ export class AddgoComponent implements OnInit {
 
   getHostLeadersX(idLeader: string) {
     this.hasError = false;
-    // console.log("Id leader mi fafa", idLeader);
     const leaderHostDataSubscr = this._leadersService
       .getHostLeadersX({ idLeader: parseInt(idLeader) }).subscribe((res: Response) => {
         this.hostLeaders = res.entity || [];

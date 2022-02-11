@@ -1,0 +1,10 @@
+.show-footer{
+  display: none;
+}
+
+@media screen and (max-width: 960px) {
+
+  .show-footer{
+    display: flex;
+  }
+}

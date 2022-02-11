@@ -1,0 +1,172 @@
+<div class="row">
+  <div class="col-sm-12 col-sm-12">
+
+    <div class="card card-custom example example-compact gutter-b">
+
+      <div class="card-header d-flex">
+
+        <div class="w-75">
+
+          <div class="card-title d-block pb-2">
+            <h3 class="card-label pt-4 pb-4">Cambiar evento en el reporte</h3>
+            <h6 style="font-size: small; color: rgb(163, 163, 163);">
+              En esta sección podrás editar la información del evento.
+            </h6>
+          </div>
+
+        </div>
+
+        <div class="card-toolbar">
+          <div class="example-tools justify-content-center">
+            <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">settings</mat-icon>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-body">
+
+        <div class="row">
+          <div class="col-xl-12 col-md-12 col-sm-12">
+            <div>
+              <h5>Evento</h5>
+            </div>
+            <p>{{report?.donation?.name}}</p>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <div class="col-xl-3 col-md-3 col-sm-12">
+            <div>
+              <h5>
+                Corte
+              </h5>
+              <p> {{report?.cut?.name}}</p>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-3 col-sm-12">
+            <div>
+              <h5>
+                Monto
+              </h5>
+            </div>
+            <p>{{report?.transaction?.amount}}</p>
+          </div>
+
+          <div class="col-xl-3 col-md-3 col-sm-12">
+            <div>
+              <h5>
+                Fecha
+              </h5>
+            </div>
+            <p>{{report?.transaction?.created_at | date }}</p>
+          </div>
+
+          <div class="col-xl-3 col-md-3 col-sm-12">
+            <div>
+              <h5>
+                Referencia
+              </h5>
+            </div>
+            <p>{{ report?.transaction?.payment_ref || '' }}</p>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <div class="col-xl-3 col-md-3 col-sm-12">
+            <div>
+              <h5>
+                Método de pago
+              </h5>
+            </div>
+            <p>{{ report?.transaction?.payment_method || '' }}</p>
+          </div>
+
+          <div class="col-xl-3 col-md-3 col-sm-12">
+            <div>
+              <h5>
+                Pasarela de pago
+              </h5>
+            </div>
+            <p>{{ report?.transaction?.payment_gateway || '' }}</p>
+          </div>
+
+          <div class="col-xl-3 col-md-3 col-sm-12">
+            <div>
+              <h5>
+                Moneda
+              </h5>
+            </div>
+            <p>{{ report?.transaction?.currency || '' }}</p>
+          </div>
+
+          <div class="col-xl-3 col-md-3 col-sm-12">
+            <div>
+              <h5>
+                Estado
+              </h5>
+            </div>
+            <p>{{ report?.transaction?.status || '' }}</p>
+          </div>
+
+
+
+        </div>
+
+        <form [formGroup]="editEventReport" class="mt-5">
+          <div class="row">
+            <div class="col">
+              <mat-form-field appearance="fill" class="ml-sm-0 ml-xl-3">
+                <mat-label>Selecciona Evento</mat-label>
+                <mat-select type="select" formControlName="donation">
+                  <mat-option *ngFor="let event of events" [value]="event">{{ event.name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field appearance="fill" class="">
+                <mat-label>Selecciona el Corte</mat-label>
+                <mat-select type="select" formControlName="financial_cut">
+                  <mat-option *ngFor="let cut of editEventReport?.value?.donation?.financialCut" [value]="cut">
+                    {{ cut.name + ' | ' + (report.transaction.currency | uppercase) + ' ' +
+                    cut?.prices[report.transaction.currency] }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-12">
+              <mat-form-field appearance="fill" class="col-12">
+                <mat-label>Describe el motivo del cambio</mat-label>
+                <textarea matInput placeholder="" formControlName="description"> </textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+
+      <div class="card-footer">
+
+        <button class="button btn btn-primary" (click)="onSubmit()" [disabled]="loader">
+          <div class="spinner-border" role="status" *ngIf="loader">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <div *ngIf="!loader">
+            Actualizar
+          </div>
+        </button>
+
+        <button class="button btn btn-danger mx-2" (click)="modal.close()" [disabled]="loader"
+          ngbAutofocus>Cancelar</button>
+      </div>
+    </div>
+
+  </div>
+</div>

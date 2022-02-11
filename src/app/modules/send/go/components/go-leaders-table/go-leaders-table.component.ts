@@ -81,7 +81,6 @@ export class GoLeadersTableComponent implements OnInit {
         this.getHostLeaders();
       }
     }, (reason) => {
-      console.log("Reason", reason)
       // on dismiss
     });
   }

@@ -1,0 +1,65 @@
+<div class="row">
+  <div class="col">
+    <mat-form-field appearance="fill">
+      <mat-label>Filtro</mat-label>
+      <mat-select [formControl]="type_filter">
+        <mat-option [value]="1">Tipo de Donacion </mat-option>
+        <mat-option [value]="2">Tipo de Pago</mat-option>
+        <mat-option [value]="3">Pasarela</mat-option>
+
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="col" *ngIf="type_filter.value == 1">
+    <mat-form-field appearance="fill">
+      <mat-label>Donación</mat-label>
+      <mat-select  [formControl]="selectedDonation" (ngModelChange)="getData()">
+        <mat-option *ngFor="let donation of donations" [value]="donation">{{donation.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="col" *ngIf="type_filter.value == 2">
+    <mat-form-field appearance="fill">
+      <mat-label>Filtro</mat-label>
+      <mat-select [formControl]="payment_method" (ngModelChange)="getData()">
+        <mat-option [value]="'cash'">EFECTIVO</mat-option>
+        <mat-option [value]="'pse'">PSE</mat-option>
+        <mat-option [value]="'paypal'">PAYPAL</mat-option>
+        <mat-option [value]="'credit_epayco'">TARJETA DE CREDITO EPAYCO</mat-option>
+        <mat-option [value]="'credit_stripe'">TARJETA DE CREDITO STRIPE</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="col" *ngIf="type_filter.value == 3">
+    <mat-form-field appearance="fill">
+      <mat-label>Filtro</mat-label>
+      <mat-select [formControl]="payment_method" (ngModelChange)="getData()">
+        <mat-option [value]="'stripe'">STRIPE</mat-option>
+        <mat-option [value]="'epayco'">EPAYCO</mat-option>
+        <mat-option [value]="'paypal'">PAYPAL</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="col">
+    <mat-form-field appearance="fill" style="max-width: 8rem;">
+      <mat-label>Moneda</mat-label>
+      <mat-select [formControl]="currency" (ngModelChange)="getData()">
+        <mat-option [value]="'COP'">COP</mat-option>
+        <mat-option [value]="'USD'">USD</mat-option>
+        <mat-option [value]="'MXN'">MXN</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+<div *ngIf="showChart">
+  <apx-chart class="apex-charts" dir="ltr" [series]="linewithDataChart.series" [chart]="linewithDataChart.chart"
+    [colors]="linewithDataChart.colors" [stroke]="linewithDataChart.stroke" [dataLabels]="linewithDataChart.dataLabels"
+    [title]="linewithDataChart.title" [responsive]="linewithDataChart.responsive" [legend]="linewithDataChart.legend"
+    [xaxis]="linewithDataChart.xaxis" [yaxis]="linewithDataChart.yaxis" [stroke]="linewithDataChart.stroke"
+    [markers]="linewithDataChart.markers">
+  </apx-chart>
+</div>
+
+<div *ngIf="!showChart">
+  <app-not-found-chart></app-not-found-chart>
+</div>

@@ -1,0 +1,148 @@
+<div class="row">
+  <div class="col-xl-12 col-sm-12">
+    <div class="card card-custom example example-compact gutter-b">
+      <div class="card-header d-flex">
+        <div class="w-75">
+          <div class="card-title d-block pb-2">
+            <h3 class="card-label pt-4 pb-4">Masivos</h3>
+          </div>
+        </div>
+        <div class="card-toolbar">
+          <div class="example-tools justify-content-center">
+            <img src="assets/media/svg/icons/Shopping/Ticket.svg" alt="" />
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-xl-1 col-sm-1">
+            <!-- PERMISO DE CREAR MASIVO -->
+            <!--  -->
+            <button
+              type="button"
+              class="btn btn-primary"
+              matTooltip="Crear Masivos"
+              *ngIf="permissions && permissions['EVT1511']"
+              [routerLink]="['/g12events/create-massive']"
+            >
+              <mat-icon style="font-size: 25px">library_books</mat-icon>
+            </button>
+          </div>
+          <div class="col-xl-6 col-sm-6">
+            <mat-form-field class="example-full-width">
+              <mat-icon class="mr-2" color="primary" matPrefix>search</mat-icon>
+              <input
+                matInput
+                type="search"
+                autocomplete="off"
+                placeholder="Buscar..."
+                [formControl]="search"
+                (ngModelChange)="applyFilter()"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <mat-table #table [dataSource]="dataSource">
+            <ng-container matColumnDef="event">
+              <mat-header-cell *matHeaderCellDef> Evento </mat-header-cell>
+              <mat-cell
+                *matCellDef="let element"
+                class="cursor-pointer"
+                data-label="Evento"
+              >
+                {{ element.donation?.name }}
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity_tickets">
+              <mat-header-cell *matHeaderCellDef> Tiquetes </mat-header-cell>
+              <mat-cell
+                *matCellDef="let element"
+                class="cursor-pointer"
+                data-label="Tiquetes"
+              >
+                {{ element.transaction.quantity_tickets }}
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="availability_tickets">
+              <mat-header-cell *matHeaderCellDef>
+                Cupos disponibles</mat-header-cell
+              >
+              <mat-cell
+                *matCellDef="let element"
+                class="cursor-pointer"
+                data-label="Cupos disponibles"
+              >
+                {{ element.transaction.availability_tickets }}
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="cut">
+              <mat-header-cell *matHeaderCellDef> Corte </mat-header-cell>
+              <mat-cell
+                *matCellDef="let element"
+                class="cursor-pointer"
+                data-label="Corte"
+              >
+                {{ element.cut.name }}
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
+              <mat-cell
+                *matCellDef="let element"
+                class="cursor-pointer"
+                data-label="Estado"
+              >
+                {{ validateStatus(element.transaction.status) }}
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="detail">
+              <mat-header-cell *matHeaderCellDef>Opciónes</mat-header-cell>
+              <mat-cell
+                *matCellDef="let element; let i = index"
+                data-label="Opciónes"
+              >
+                <a
+                  class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
+                  (click)="addUser(element)"
+                  *ngIf="permissions && permissions['EVT1512']"
+                >
+                  <span><i class="fas fa-user-plus"></i></span>
+                </a>
+                <!-- PERMISSION -->
+                <!--  -->
+                <a
+                  class="btn btn-icon btn-light btn-sm mx-3 cursor-pointer"
+                  (click)="proofPayment(element)"
+                  *ngIf="permissions && permissions['EVT1513']"
+                >
+                  <span><i class="fas fa-ticket-alt"></i></span>
+                </a>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row
+              *matHeaderRowDef="displayedColumns"
+            ></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+          </mat-table>
+        </div>
+
+        <mat-paginator
+          class="mat-elevation-z0"
+          #paginator
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 20]"
+          [showFirstLastButtons]="true"
+        >
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

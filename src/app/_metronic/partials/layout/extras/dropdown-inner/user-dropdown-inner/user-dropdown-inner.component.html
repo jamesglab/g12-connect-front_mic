@@ -1,19 +1,18 @@
 <ng-container *ngIf="user$ | async as _user">
-    <ng-container *ngIf="extrasUserDropdownStyle === 'light'">
-        <!--begin::Header-->
-        <div class="d-flex align-items-center p-8 rounded-top">
-            <!--begin::Symbol-->
-            <div class="symbol symbol-md bg-light-primary mr-3 flex-shrink-0">
-                <img src="./assets/media/users/300_21.png" alt="" />
-            </div>
-            <!--end::Symbol-->
+  <ng-container *ngIf="extrasUserDropdownStyle === 'light'">
+    <!--begin::Header-->
+    <div class="d-flex align-items-center p-8 rounded-top">
+      <!--begin::Symbol-->
+      <div class="symbol symbol-md bg-light-primary mr-3 flex-shrink-0">
+        <img src="./assets/media/users/300_21.png" alt="" />
+      </div>
+      <!--end::Symbol-->
 
-            <!--begin::Text-->
-            <div class="text-dark m-0 flex-grow-1 mr-3 font-size-h5">
-                {{ _user.name }} {{ _user.lastName }}
-            </div>
-            <span class="label label-light-success label-lg font-weight-bold label-inline">Conexión 12</span
-      >
+      <!--begin::Text-->
+      <div class="text-dark m-0 flex-grow-1 mr-3 font-size-h5">
+        {{ _user.name }} {{ _user.lastName }}
+      </div>
+      <span class="label label-light-success label-lg font-weight-bold label-inline">Conexión 12</span>
       <!--end::Text-->
     </div>
     <div class="separator separator-solid"></div>
@@ -24,8 +23,7 @@
     <!--begin::Header-->
     <div
       class="d-flex align-items-center justify-content-between flex-wrap p-8 bgi-size-cover bgi-no-repeat rounded-top"
-      style="background-image: url('./assets/media/misc/bg-1.jpg');"
-    >
+      style="background-image: url('./assets/media/misc/bg-1.jpg');">
       <div class="d-flex align-items-center mr-2">
         <!--begin::Symbol-->
         <!-- <div class="symbol bg-white-o-15 mr-3">
@@ -36,40 +34,44 @@
         <!--end::Symbol-->
 
         <div class="symbol symbol-100 mr-5">
-            <div class="symbol-label" style="background-image: url('./assets/media/users/300_21.png'); height: 60px; width: 60px;"></div>
-            <i class="symbol-badge bg-success"></i>
+          <div class="symbol-label"
+            style="background-image: url('./assets/media/users/300_21.png'); height: 60px; width: 60px;"></div>
+          <i class="symbol-badge bg-success"></i>
         </div>
 
         <!--begin::Text-->
         <div class="text-white m-0 flex-grow-1 mr-3 font-size-h5">
-            {{ _user.name }} {{ _user.last_name }}
+          {{ _user.name }} {{ _user.last_name }}
         </div>
         <!--end::Text-->
-        </div>
-        <!-- <span class="label label-success label-lg font-weight-bold label-inline"
+      </div>
+      <!-- <span class="label label-success label-lg font-weight-bold label-inline"
         >Conexión 12</span> -->
+    </div>
+    <!--end::Header-->
+  </ng-container>
+
+  <!--begin::Nav-->
+  <div class="navi navi-spacer-x-0 pt-5">
+    <!--begin::Item-->
+
+    <!--HEREEEEE (click)="toUpdate();"-->
+    <a class="navi-item px-8 cursor-pointer">
+      <div class="navi-link">
+        <div class="navi-icon mr-2">
+          <i class="flaticon2-calendar-3 text-success"></i>
         </div>
-        <!--end::Header-->
-    </ng-container>
-
-    <!--begin::Nav-->
-    <div class="navi navi-spacer-x-0 pt-5">
-        <!--begin::Item-->
-
-        <!--HEREEEEE (click)="toUpdate();"-->
-        <a class="navi-item px-8 cursor-pointer">
-            <div class="navi-link">
-                <div class="navi-icon mr-2">
-                    <i class="flaticon2-calendar-3 text-success"></i>
-                </div>
-                <div class="navi-text">
-                    <div class="font-weight-bold">
-                        Mi perfil
-                    </div>
-                    <div class="text-muted">
-                        Configuraciones de la cuenta
-                        <span class="label label-light-danger label-inline font-weight-bold">Actualizar</span
-            >
+        <div class="navi-text">
+          <div class="font-weight-bold" (click)="toUpdate()">
+            Mi perfil
+          </div>
+          <div class="text-muted">
+            Configuraciones de la cuenta
+            <a (click)="toUpdate()">
+              <span class="label label-light-danger label-inline font-weight-bold">
+                Actualizar
+              </span ></a>
+            
           </div>
         </div>
       </div>
@@ -135,11 +137,7 @@
     <!--begin::Footer-->
     <div class="navi-separator mt-3"></div>
     <div class="navi-footer px-8 py-5">
-      <a
-        class="btn btn-light-primary font-weight-bold cursor-pointer"
-        (click)="logout()"
-        >SALIR</a
-      >
+      <a class="btn btn-light-primary font-weight-bold cursor-pointer" (click)="logout()">SALIR</a>
       <!-- <a class="btn btn-clean font-weight-bold cursor-pointer">Upgrade Plan</a> -->
     </div>
     <!--end::Footer-->

@@ -1,34 +1,30 @@
-<ng-container *ngIf="_user">
-  <form>
-
+<ng-container *ngIf="editUserForm">
+  <form [formGroup]="editUserForm">
     <div class="row">
-
       <div class="col-xl-3 col-sm-12">
         <div class="card card-custom card-stretch gutter-b">
-
           <div class="card-header border-0 mt-4 d-flex justify-content-center">
-
-            <div class="symbol symbol-100 mr-5 pt-4">
-              <div class="symbol-label"
-                style="background-image: url('./assets/media/users/300_21.png'); border-radius: 50%;"></div>
+            <div class="symbol symbol-100">
+              <div class="cont-img symbol-light-success">
+                <div>
+                  {{ user.name | firstLetter | uppercase }}
+                </div>
+              </div>
             </div>
-
-
-            <h3 class="card-title align-items-center flex-column">
-              <span class="card-label font-weight-bolder text-dark">{{ _user.leader }}</span>
-              <span class="text-muted mt-3 font-weight-bold font-size-sm">Administrador</span>
-            </h3>
-
           </div>
           <!-- Body -->
           <div class="card-body pt-8">
             <div class="d-flex justify-content-center">
-              <a class="btn btn-sm btn-light-success font-weight-bolder py-2 px-5 cursor-pointer"
-                (click)="onChangePassword();">Cambiar contraseña</a>
+              <a class="
+                  btn btn-sm btn-light-success
+                  font-weight-bolder
+                  py-2
+                  px-5
+                  cursor-pointer
+                " (click)="onChangePassword()">{{ "Cambiar contraseña" | uppercase }}</a>
             </div>
           </div>
         </div>
-
       </div>
 
       <div class="col-xl-9 col-sm-12">
@@ -39,90 +35,58 @@
             </div>
             <div class="card-toolbar">
               <div class="example-tools justify-content-center">
-                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">person</mat-icon>
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214)">person</mat-icon>
               </div>
             </div>
           </div>
           <div class="card-body">
-            <div>
+            <div formGroupName="user">
               <div class="row">
                 <div class="col-xl-6 col-sm-12">
-
-                  <!-- <mat-form-field appearance="fill" class="example-full-width">
-                                  <mat-label>Tipo GO</mat-label>
-                                  <mat-select type="select">
-                                      <mat-option *ngFor="let item of goTypes" value="{{item.ticeId}}" [title]="item.ticeDescripcion">
-                                          {{item.ticeCodigo}}</mat-option>
-                                          <mat-option value="one">one</mat-option>
-                                  </mat-select>
-                                  <mat-error *ngIf="form.typeGo.errors?.required">El tipo es requerido
-                                  </mat-error>
-                              </mat-form-field> -->
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Tipo de documento</mat-label>
-                    <input matInput autocomplete="off">
-                    <!-- <mat-error *ngIf="form.theme.errors?.required">
-                                    El tema es requerido
-                                </mat-error>
-                                <mat-error *ngIf="form.theme.errors?.pattern">
-                                    El tema no es valido
-                                </mat-error> -->
+                  <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Tipo de documento *</mat-label>
+                    <mat-select type="select" formControlName="document_type">
+                      <mat-option *ngFor="let type of document_types" [value]="type">
+                        {{ type }}
+                      </mat-option>
+                    </mat-select>
                   </mat-form-field>
                   <mat-form-field class="example-full-width" appearance="fill">
                     <mat-label>Nombre</mat-label>
-                    <input matInput autocomplete="off">
-                    <!-- <mat-error *ngIf="form.theme.errors?.required">
-                                  El tema es requerido
-                              </mat-error>
-                              <mat-error *ngIf="form.theme.errors?.pattern">
-                                  El tema no es valido
-                              </mat-error> -->
+                    <input matInput autocomplete="off" formControlName="name" />
                   </mat-form-field>
 
-                  <mat-form-field class="example-full-width" appearance="fill">
+                  <mat-form-field appearance="fill" class="w-100">
                     <mat-label>Genero</mat-label>
-                    <input matInput autocomplete="off">
-                    <!-- <mat-error *ngIf="form.theme.errors?.required">
-                                    El tema es requerido
-                                </mat-error>
-                                <mat-error *ngIf="form.theme.errors?.pattern">
-                                    El tema no es valido
-                                </mat-error> -->
+                    <mat-select type="select" formControlName="gender" (selectionChange)="getPastors()">
+                      <mat-option value="M">Hombre</mat-option>
+                      <mat-option value="F">Mujer</mat-option>
+                    </mat-select>
                   </mat-form-field>
-
                 </div>
                 <div class="col-xl-6 col-sm-12">
-
                   <mat-form-field class="example-full-width" appearance="fill">
                     <mat-label>Número de documento</mat-label>
-                    <input matInput autocomplete="off">
-
+                    <input matInput autocomplete="off" formControlName="identification" />
                   </mat-form-field>
-
-
                   <mat-form-field class="example-full-width" appearance="fill">
                     <mat-label>Apellido</mat-label>
-                    <input matInput autocomplete="off">
-
+                    <input matInput autocomplete="off" formControlName="last_name" />
                   </mat-form-field>
-
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Estado Civil</mat-label>
-                    <input matInput autocomplete="off">
+                  <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Fecha de nacimiento</mat-label>
+                    <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="bornDate"
+                      formControlName="birth_date" />
+                    <mat-datepicker-toggle matSuffix [for]="bornDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #bornDate disabled="false"></mat-datepicker>
                   </mat-form-field>
-
                 </div>
               </div>
-
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
 
     <div class="row">
@@ -134,83 +98,37 @@
             </div>
             <div class="card-toolbar">
               <div class="example-tools justify-content-center">
-                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">person</mat-icon>
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214)">person</mat-icon>
               </div>
             </div>
           </div>
           <div class="card-body">
-            <div>
-
-
+            <div formGroupName="contact_information">
               <div class="row">
-                <div class="col-xl-6 col-sm-12">
-
-                  <!-- <mat-form-field appearance="fill" class="example-full-width">
-                                <mat-label>Tipo GO</mat-label>
-                                <mat-select type="select">
-                                    <mat-option *ngFor="let item of goTypes" value="{{item.ticeId}}" [title]="item.ticeDescripcion">
-                                        {{item.ticeCodigo}}</mat-option>
-                                        <mat-option value="one">one</mat-option>
-                                </mat-select>
-                                <mat-error *ngIf="form.typeGo.errors?.required">El tipo es requerido
-                                </mat-error>
-                            </mat-form-field> -->
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Direccion</mat-label>
-                    <input matInput autocomplete="off">
-                    <!-- <mat-error *ngIf="form.theme.errors?.required">
-                                  El tema es requerido
-                              </mat-error>
-                              <mat-error *ngIf="form.theme.errors?.pattern">
-                                  El tema no es valido
-                              </mat-error> -->
-                  </mat-form-field>
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Barrio</mat-label>
-                    <input matInput autocomplete="off">
-                    <!-- <mat-error *ngIf="form.theme.errors?.required">
-                                El tema es requerido
-                            </mat-error>
-                            <mat-error *ngIf="form.theme.errors?.pattern">
-                                El tema no es valido
-                            </mat-error> -->
-                  </mat-form-field>
-
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Localidad</mat-label>
-                    <input matInput autocomplete="off">
-                    <!-- <mat-error *ngIf="form.theme.errors?.required">
-                                  El tema es requerido
-                              </mat-error>
-                              <mat-error *ngIf="form.theme.errors?.pattern">
-                                  El tema no es valido
-                              </mat-error> -->
-                  </mat-form-field>
-
-                </div>
-                <div class="col-xl-6 col-sm-12">
-
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Teléfono</mat-label>
-                    <input matInput autocomplete="off">
-
-                  </mat-form-field>
-
-
+                <div class="col-xl-12 col-sm-12">
                   <mat-form-field class="example-full-width" appearance="fill">
                     <mat-label>Correo</mat-label>
-                    <input matInput autocomplete="off">
-
+                    <input matInput autocomplete="off" formControlName="email" />
                   </mat-form-field>
-
                 </div>
               </div>
 
-
+              <div class="row">
+                <div class="col-xl-6 col-sm-12">
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Direccion</mat-label>
+                    <input matInput autocomplete="off" formControlName="address" />
+                  </mat-form-field>
+                </div>
+                <div class="col-xl-6 col-sm-12">
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput autocomplete="off" formControlName="phone" />
+                  </mat-form-field>
+                </div>
+              </div>
             </div>
-
           </div>
-
         </div>
       </div>
       <div class="col-xl-6 col-sm-6">
@@ -221,91 +139,120 @@
             </div>
             <div class="card-toolbar">
               <div class="example-tools justify-content-center">
-                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214);">person</mat-icon>
+                <mat-icon style="font-size: xx-large; color: rgb(218, 214, 214)">person</mat-icon>
               </div>
             </div>
           </div>
-          <div class="card-body">
+          <div class="card-body" formGroupName="ministerialInfo">
             <div>
-
-
               <div class="row">
                 <div class="col-xl-6 col-sm-12">
-
-                  <!-- <mat-form-field appearance="fill" class="example-full-width">
-                                <mat-label>Tipo GO</mat-label>
-                                <mat-select type="select">
-                                    <mat-option *ngFor="let item of goTypes" value="{{item.ticeId}}" [title]="item.ticeDescripcion">
-                                        {{item.ticeCodigo}}</mat-option>
-                                        <mat-option value="one">one</mat-option>
-                                </mat-select>
-                                <mat-error *ngIf="form.typeGo.errors?.required">El tipo es requerido
-                                </mat-error>
-                            </mat-form-field> -->
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Red</mat-label>
-                    <input matInput autocomplete="off">
-                    <!-- <mat-error *ngIf="form.theme.errors?.required">
-                                  El tema es requerido
-                              </mat-error>
-                              <mat-error *ngIf="form.theme.errors?.pattern">
-                                  El tema no es valido
-                              </mat-error> -->
+                  <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>País *</mat-label>
+                    <mat-select type="select" formControlName="country" (selectionChange)="getPlaces()">
+                      <mat-option [value]="null" disabled>SELECCIONA PAIS</mat-option>
+                      <mat-option *ngFor="let country of countries" value="{{ country.name.toLowerCase() }}">
+                        {{ country.name }}</mat-option>
+                    </mat-select>
                   </mat-form-field>
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Pastor Principal</mat-label>
-                    <input matInput autocomplete="off">
-                    <!-- <mat-error *ngIf="form.theme.errors?.required">
-                                El tema es requerido
-                            </mat-error>
-                            <mat-error *ngIf="form.theme.errors?.pattern">
-                                El tema no es valido
-                            </mat-error> -->
-                  </mat-form-field>
-
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Lider</mat-label>
-                    <input matInput autocomplete="off">
-                    <!-- <mat-error *ngIf="form.theme.errors?.required">
-                                  El tema es requerido
-                              </mat-error>
-                              <mat-error *ngIf="form.theme.errors?.pattern">
-                                  El tema no es valido
-                              </mat-error> -->
-                  </mat-form-field>
-
                 </div>
                 <div class="col-xl-6 col-sm-12">
-
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Invitado por</mat-label>
-                    <input matInput autocomplete="off">
-
+                  <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Iglesia *</mat-label>
+                    <mat-select type="select" formControlName="type_church" (selectionChange)="getPlaces()">
+                      <mat-option *ngFor="let type of churchTypes" [value]="type.idDetailMaster">
+                        {{ type.description }}
+                      </mat-option>
+                    </mat-select>
                   </mat-form-field>
-
-
-                  <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Peticion</mat-label>
-                    <input matInput autocomplete="off">
-
-                  </mat-form-field>
-
                 </div>
               </div>
+
+              <!-- INFORMACION MINISTERIAL DE IGLESIAS MCI -->
+              <ng-container *ngIf="ministerialInfo.type_church == '88'">
+                <div class="row">
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field appearance="fill" class="w-100">
+                      <mat-label>Sede *</mat-label>
+                      <mat-select type="select" formControlName="headquarter" (selectionChange)="getPastors()">
+                        <mat-option *ngFor="let place of places" [value]="place">
+                          {{ place.name }} | {{ place.city }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field appearance="fill" class="w-100">
+                      <mat-label>Red *</mat-label>
+                      <mat-select type="select" formControlName="network" (selectionChange)="getPastors()">
+                        <mat-option value="01">Hombres</mat-option>
+                        <mat-option value="02">Mujeres</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field appearance="fill" class="w-100">
+                      <mat-label>Pastor/Lider principal *</mat-label>
+                      <mat-select type="select" formControlName="pastor" (selectionChange)="getLeaders($event.value)">
+                        <mat-option *ngFor="let pastor of pastors; let i = index" [value]="pastor">{{ pastor.name }}
+                          {{ pastor.last_name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field appearance="fill" class="w-100">
+                      <mat-label>Lider *</mat-label>
+                      <mat-select type="select" formControlName="leader">
+                        <mat-option *ngFor="let leader of leaders" [value]="leader">{{ leader.name }}
+                          {{ leader.last_name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="
+                  ministerialInfo.type_church != '88' &&
+                  ministerialInfo.type_church
+                ">
+                <div class="row">
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field class="w-100" appearance="fill">
+                      <mat-label>Nombre de la iglesia *</mat-label>
+                      <input matInput autocomplete="off" formControlName="name_church" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-xl-6 col-sm-12">
+                    <mat-form-field class="w-100" appearance="fill">
+                      <mat-label>Nombre del pastor principal *</mat-label>
+                      <input matInput autocomplete="off" formControlName="name_pastor" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </ng-container>
               <div class="row">
                 <div class="col-xl-12 col-sm-12">
-                  <button
-                    class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5 cursor-pointer">Actualizar</button>
+                  <button class="btn btn-primary
+                  font-weight-bolder
+                  py-2
+                  px-5
+                  cursor-pointer" type="button" [disabled]="isLoading" (click)="updateUser()">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                      *ngIf="isLoading"></span>
+                    {{isLoading ? 'Actualizando...' : 'Actualizar'}}
+                  </button>
                 </div>
               </div>
-
             </div>
-
           </div>
-
         </div>
       </div>
     </div>
-    
   </form>
 </ng-container>
