@@ -10,7 +10,7 @@ export const environment = {
   apiUrl: 'http://51.79.78.171:7003/', //.NETAPI
   // dev.apiUrlG12Connect: 'https://dev.api.g12connect.com/dev.api/v2/',
   apiUrlG12Connect: {
-    donations: 'https://b061-2800-484-3690-6500-3068-eb39-7381-2bbc.ngrok.io/api/v2/donations',
+    donations: 'https://dev-api.g12connect.com/api/v2/donations',
     managment: 'https://dev-api.g12connect.com/api/v2/managment',
     users: 'https://dev-api.g12connect.com/api/v2/users',
     payments: 'https://dev-api.g12connect.com/api/v2/payments',
