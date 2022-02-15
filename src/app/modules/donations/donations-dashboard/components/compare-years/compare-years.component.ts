@@ -50,7 +50,7 @@ export class CompareYearsComponent implements OnInit {
     //FILTRO DE TIPO DE MONEDA
     const currency = this.currency.value;
 
-    //VALIDAMOS EL TIPO DE GRAFICA QUE NECESITAMOS FILTRAR 
+    //VALIDAMOS EL TIPO DE GRAFICA QUE NECESITAMOS FILTRAR
     if (this.page == 1) {
       //CONSUTLAMOS EL ENDPONT DE TOTAL DE VALORES
       this._donationsServices
@@ -82,13 +82,12 @@ export class CompareYearsComponent implements OnInit {
     }
   }
 
-  
   createBarsChart(series, labels, currency) {
     this.barsColumns = createBars(
       [
         //CREAMOS LAS SERIES
         {
-          name: 'total', //PONEMOS TOTAL COMO DEFECTO DE LAS BARRAS QUE ESTAMOS USANDO
+          name: `Año-${new Date().getFullYear()}`, //PONEMOS TOTAL COMO DEFECTO DE LAS BARRAS QUE ESTAMOS USANDO
           data: series, //ENVIAMOS LAS SERIES QUE SE CONSULTARON
         },
       ],
@@ -117,7 +116,7 @@ export class CompareYearsComponent implements OnInit {
         labels: {
           formatter: function (value) {
             //FORMATEAMOS EL VALOR A LA MONEDA SELECCIONADA
-            return new Intl.NumberFormat('jp-JP', {
+            return new Intl.NumberFormat('es-co', {
               style: 'currency',
               currency,
               minimumFractionDigits: 2,
