@@ -109,11 +109,13 @@ export class DonationsReportsComponent implements OnInit {
           'STRIPE'
             ? element.transaction.amount / 100
             : element.transaction.amount,
-        offering_type: element.donation.name ? element.donation.name : '',
+        // offering_type: element.donation.name ? element.donation.name : '',
         created_at: moment(element.transaction.created_at).format(
           'DD/MM/YYYY hh:MM a'
         ),
-        petition: element.donation.petition ? element.donation.petition : '',
+        petition: element.transaction.petition
+          ? element.transaction.petition
+          : '',
         country: element.user.country ? element.user.country : '',
         transaction: element,
         payment: validatePaymentMethod(element.transaction.payment_method),
@@ -150,7 +152,7 @@ export class DonationsReportsComponent implements OnInit {
                   Identificación: item.user.identification,
                   Telefono: item.user.phone,
                   Email: item.user.email.toLowerCase(),
-                  'Tipo de donacion': item.donation.name.toUpperCase(),
+                  'Tipo de donacion': item.donation?.name.toUpperCase(),
                   Total:
                     item?.transaction.payment_gateway
                       .toString()
@@ -158,10 +160,8 @@ export class DonationsReportsComponent implements OnInit {
                       ? item.transaction.amount / 100
                       : item.transaction.amount,
                   Modena: item.transaction.currency.toUpperCase(),
-                  'Metodo de pago':
-                    item.transaction.payment_method.toUpperCase(),
-                  'Pasarela de pago':
-                    item.transaction.payment_gateway.toUpperCase(),
+                  'Metodo de pago': item.transaction.payment_method.toUpperCase(),
+                  'Pasarela de pago': item.transaction.payment_gateway.toUpperCase(),
                   Fecha: moment(item.transaction.created_at).format(
                     'DD/MM/YYYY hh:MM a'
                   ),

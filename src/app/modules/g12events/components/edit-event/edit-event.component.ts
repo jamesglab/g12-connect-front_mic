@@ -42,7 +42,7 @@ export class EditEventComponent implements OnInit {
     private eventsService: G12eventsService,
     private router: Router,
     public modal: NgbActiveModal
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.getCategories();
@@ -64,6 +64,11 @@ export class EditEventComponent implements OnInit {
       base64: [],
       init_date: [this.event.init_date],
       finish_date: [this.event.finish_date],
+      is_translator: [this.event.is_translator],
+      translators: this.fb.group({
+        cop: [this.event.translators?.cop],
+        usd: [this.event.translators?.usd],
+      }),
       visibility: [this.event.visibility[0]],
       limit: [this.event.limit],
       location: [],
@@ -71,7 +76,7 @@ export class EditEventComponent implements OnInit {
       status: [this.event.status],
       view_hubilo: [this.event.view_hubilo || false],
       event_id_hubilo: [this.event.event_id_hubilo || null],
-      code_modify: [null]
+      code_modify: [null],
     });
     //VALIDAMOS LA IMAGEN DEL EVENTO Y LA SETEAMOS EN BASE64
     if (this.event.image.url != '' && this.event.image.url) {
@@ -112,31 +117,31 @@ export class EditEventComponent implements OnInit {
   }
 
   addCute(cut?) {
-    if (cut) {
-      this.cuts.push(
-        new FormGroup({
-          id: new FormControl(cut.id || null),
-          name: new FormControl(cut.name || null),
-          cop: new FormControl(cut.prices.cop || null),
-          usd: new FormControl(cut.prices.usd || null),
-          quantity: new FormControl(cut.quantity || null),
-          date_init: new FormControl(cut.date_init || null),
-          date_finish: new FormControl(cut.date_finish || null),
-          is_active: new FormControl(cut.is_active ? cut.is_active : false),
-          price_group_selected: new FormControl(cut.is_group ? cut.is_group : false),
-          price_group_usd: new FormControl(cut.price_group?.usd || null),
-          price_group_cop: new FormControl(cut.price_group?.cop || null),
-          quantity_register_max: new FormControl(cut.quantity_register_max || 1),
-          quantity_register_min: new FormControl(cut.quantity_register_min || 1),
-          description: new FormControl(cut.description || null),
-          massive_pay: new FormControl(cut.massive_pay || null),
-          see_events: new FormControl(cut.module_flags?.see_events || null),
-          see_box: new FormControl(cut.module_flags?.see_box || null),
-          see_massive: new FormControl(cut.module_flags?.see_massive || null)
-        })
-      );
-    }
-
+    //ESTE METODO SE USA EN EL .HTML POR ESO LA VALIDACION DE CUT?
+    this.cuts.push(
+      new FormGroup({
+        id: new FormControl(cut?.id || null),
+        name: new FormControl(cut?.name || null),
+        cop: new FormControl(cut?.prices.cop || null),
+        usd: new FormControl(cut?.prices.usd || null),
+        quantity: new FormControl(cut?.quantity || null),
+        date_init: new FormControl(cut?.date_init || null),
+        date_finish: new FormControl(cut?.date_finish || null),
+        is_active: new FormControl(cut?.is_active ? cut.is_active : false),
+        price_group_selected: new FormControl(
+          cut?.is_group ? cut.is_group : false
+        ),
+        price_group_usd: new FormControl(cut?.price_group?.usd || null),
+        price_group_cop: new FormControl(cut?.price_group?.cop || null),
+        quantity_register_max: new FormControl(cut?.quantity_register_max || 1),
+        quantity_register_min: new FormControl(cut?.quantity_register_min || 1),
+        description: new FormControl(cut?.description || null),
+        massive_pay: new FormControl(cut?.massive_pay || null),
+        see_events: new FormControl(cut?.module_flags?.see_events || false),
+        see_box: new FormControl(cut?.module_flags?.see_box || false),
+        see_massive: new FormControl(cut?.module_flags?.see_massive || false),
+      })
+    );
   }
 
   async fileChangeEvent(image) {
@@ -186,7 +191,7 @@ export class EditEventComponent implements OnInit {
             module_flags: {
               see_box: cut.see_box,
               see_events: cut.see_events,
-              see_massive: cut.see_massive
+              see_massive: cut.see_massive,
             },
             quantity_register_max: cut.quantity_register_max,
             quantity_register_min: cut.quantity_register_min,
@@ -221,7 +226,7 @@ export class EditEventComponent implements OnInit {
             module_flags: {
               see_box: cut.see_box,
               see_events: cut.see_events,
-              see_massive: cut.see_massive
+              see_massive: cut.see_massive,
             },
             description: cut.description,
             massive_pay: cut.massive_pay,
@@ -266,6 +271,74 @@ export class EditEventComponent implements OnInit {
     );
   }
 
+  formatNumber(n) {
+    return n.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  formatCurrency(input: any, blur: string) {
+    // get input value
+    var input_val = input.target.value;
+
+    // don't validate empty input
+    if (input_val === '') {
+      return;
+    }
+
+    // original length
+    var original_len = input_val.length;
+
+    // initial caret position
+    var caret_pos = input.target.selectionStart;
+
+    // check for decimal
+    if (input_val.indexOf('.') >= 0) {
+      // get position of first decimal
+      // this prevents multiple decimals from
+      // being entered
+      var decimal_pos = input_val.indexOf('.');
+
+      // split number by decimal point
+      var left_side = input_val.substring(0, decimal_pos);
+      var right_side = input_val.substring(decimal_pos);
+
+      // add commas to left side of number
+      left_side = this.formatNumber(left_side);
+
+      // validate right side
+      right_side = this.formatNumber(right_side);
+
+      // On blur make sure 2 numbers after decimal
+      if (blur === 'blur') {
+        right_side += '00';
+      }
+
+      // Limit decimal to only 2 digits
+      right_side = right_side.substring(0, 2);
+
+      // join number by .
+      input_val = '$' + left_side + '.' + right_side;
+    } else {
+      // no decimal entered
+      // add commas to number
+      // remove all non-digits
+      input_val = this.formatNumber(input_val);
+      input_val = '$' + input_val;
+
+      // final formatting
+      if (blur === 'blur') {
+        input_val += '.00';
+      }
+    }
+
+    // send updated string to input
+    input.target.value = input_val;
+
+    // put caret back in the right position
+    var updated_len = input_val.length;
+    caret_pos = updated_len - original_len + caret_pos;
+    input.target.setSelectionRange(caret_pos, caret_pos);
+  }
+
   async onSubmit() {
     if (this.editEventForm.invalid) {
       return;
@@ -273,37 +346,38 @@ export class EditEventComponent implements OnInit {
     this.isLoading = true;
 
     if (this.validateChangeDate) {
-
       const { isConfirmed, isDenied } = await Swal.fire({
         title: 'Has cambiado las fechas en alguno de los cortes',
         text: '¿Tienes el código de confirmación ?',
         showConfirmButton: true,
-        confirmButtonText: "SI",
+        confirmButtonText: 'SI',
         showDenyButton: true,
-        denyButtonText: "NO"
-      })
+        denyButtonText: 'NO',
+      });
 
       if (isConfirmed) {
         this.showSwal('');
       } else if (isDenied) {
-        const generateCodeSusbcr = this.eventsService.generateCodeModify()
-          .subscribe((res) => {
-            this.showSwal('Hemos envíado un código de verificación a tesorería. Ingresalo aquí abajo');
-          }, (err) => { 
-            this.isLoading = false;
-            throw err;
-          });
+        const generateCodeSusbcr = this.eventsService
+          .generateCodeModify()
+          .subscribe(
+            (res) => {
+              this.showSwal(
+                'Hemos envíado un código de verificación a tesorería. Ingresalo aquí abajo'
+              );
+            },
+            (err) => {
+              this.isLoading = false;
+              throw err;
+            }
+          );
         this.unsubscribe.push(generateCodeSusbcr);
-
       } else {
         return;
       }
-
     } else {
-
       this.onUpdate();
     }
-
   }
 
   async showSwal(titleText: string) {
@@ -313,7 +387,7 @@ export class EditEventComponent implements OnInit {
       input: 'text',
       inputLabel: 'Código',
       inputAutoTrim: true,
-      inputValidator: result => !result && 'Ingresa un código'
+      inputValidator: (result) => !result && 'Ingresa un código',
     });
 
     if (code) {
@@ -323,7 +397,6 @@ export class EditEventComponent implements OnInit {
   }
 
   async onUpdate() {
-
     // let cont_quantity = 0;
     // this.cuts.value.map((cute) => { cont_quantity = cont_quantity + parseInt(cute.quantity); });
 
@@ -334,30 +407,39 @@ export class EditEventComponent implements OnInit {
 
     let cuts = this.cutsToSend();
     if (cuts) {
-
       var { code_modify } = this.editEventForm.getRawValue();
-      const transaction_info = this.editEventForm.getRawValue();
+      var transaction_info = this.editEventForm.getRawValue();
       delete transaction_info.categorieAdd;
       delete transaction_info.code_modify;
 
+      var { translators } = this.editEventForm.getRawValue();
+      let cop = translators.cop.replace('$', '').replace(',', '');
+      let usd = translators.usd.replace('$', '').replace(',', '.');
+      transaction_info.translators = { cop, usd };
+
       const addEventSubscr = this.eventsService
-        .update({ transaction_info, cuts, image: this.event.image, code_modify }, this.uploadImage)
-        .subscribe((res: any) => {
-          this.showMessage(
-            1,
-            `El evento ${this.form.name.value} ha sido actualizado correctamente!`
-          );
-          this.modal.close('success');
-          this.router.navigate(['g12events']);
-        }, (err) => {
-          this.isLoading = false;
-          Swal.fire(
-            err.error.error ? err.error.error : 'error inesperado',
-            '',
-            'error'
-          );
-          throw err;
-        }
+        .update(
+          { transaction_info, cuts, image: this.event.image, code_modify },
+          this.uploadImage
+        )
+        .subscribe(
+          (res: any) => {
+            this.showMessage(
+              1,
+              `El evento ${this.form.name.value} ha sido actualizado correctamente!`
+            );
+            this.modal.close('success');
+            this.router.navigate(['g12events']);
+          },
+          (err) => {
+            this.isLoading = false;
+            Swal.fire(
+              err.error.error ? err.error.error : 'error inesperado',
+              '',
+              'error'
+            );
+            throw err;
+          }
         );
       this.unsubscribe.push(addEventSubscr);
     } else {
@@ -376,5 +458,4 @@ export class EditEventComponent implements OnInit {
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
-
 }
