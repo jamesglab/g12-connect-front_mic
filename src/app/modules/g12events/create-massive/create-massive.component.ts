@@ -25,6 +25,7 @@ export class CreateMassiveComponent implements OnInit {
   public yearsCard: any[] = YEARS_CREDIT_CARD; //LISTADO DE AÑOS
   public pse_banks: [] = [];
   public financial_cuts: [] = [];
+  public price_translators: any = {};
 
   //CONDICIONALES
   public payment_type = 'card'; //TIPO DE PAGO
@@ -35,12 +36,13 @@ export class CreateMassiveComponent implements OnInit {
     public _eventService: G12eventsService,
     private cdr: ChangeDetectorRef,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.buildForm();
     this.getEvents();
     this.getPseBanks();
+    document.getElementById('checkTranslator').style.display = 'none';
   }
 
   buildForm() {
@@ -51,6 +53,7 @@ export class CreateMassiveComponent implements OnInit {
         event: [null, Validators.required],
         quantity_tickets: [1, Validators.required],
         cut: [null, Validators.required],
+        have_translator: [false]
       }),
       donor_information: this.fb.group({
         //INFORMACION DEL DONANTE
@@ -70,6 +73,7 @@ export class CreateMassiveComponent implements OnInit {
         //INFORMACION DE PAGO
         currency: [null, Validators.required],
         value: [null, Validators.required],
+        value_translator: [0],
         // NO ANEXAMOS LOS VALIDADORES PARA DESPUES VALIDAR POR METODO DE PAGO SELECCIONAFO
         card: this.fb.group({
           //PAGO CON TARJETA DE cardO
@@ -112,8 +116,11 @@ export class CreateMassiveComponent implements OnInit {
       .valueChanges.subscribe((event) => {
         this.payment_information_controls.get('value').reset();
         this.payment_information_controls.get('currency').reset();
+        this.event_information_controls.get('have_translator').reset();
         this.event_information_controls.get('cut').reset(); //REINICIAMOS EL CORTE SELECCIONADO
         this.financial_cuts = event.financialCut; //RENDERIZAMOS LOS CORTES SELECCIONADOS
+        this.price_translators = event.translators ? event.translators : {};
+        event.is_translator ? document.getElementById('checkTranslator').style.display = 'inline' : document.getElementById('checkTranslator').style.display = 'none';
       });
 
     // NOS SUBSCRIBIMOS A LOS CAMBIOS CUANDO SELECCIONEN EL CORTE
@@ -131,8 +138,25 @@ export class CreateMassiveComponent implements OnInit {
           (this.donor_information_value.country == 'Colombia'
             ? cut.prices['cop']
             : cut.prices['usd']) * //VALIDAMOS LA MONEDA A PAGAR POR EL PAIS SELECCIONADO
-            this.event_information_controls.get('quantity_tickets').value //MULTIPLICAMOS EL VALOR POR LA CANTIDAD DE CUPOS
+          this.event_information_controls.get('quantity_tickets').value //MULTIPLICAMOS EL VALOR POR LA CANTIDAD DE CUPOS
         );
+        this.event_information_controls.get('have_translator').setValue(this.event_information_controls.get('have_translator').value);
+      }
+    });
+
+    this.event_information_controls.get('have_translator').valueChanges.subscribe((have_translator) => {
+      // this.event_information_controls.get('have_translator').setValue(have_translator);
+      if (have_translator) {
+        //SETEAMOS EL VALOR DEL PAGO
+        this.payment_information_controls.get('value_translator').setValue(
+          (this.donor_information_value.country == 'Colombia'
+            ? parseInt(this.price_translators.cop)
+            : parseInt(this.price_translators.usd)) * //VALIDAMOS LA MONEDA A PAGAR POR EL PAIS SELECCIONADO
+          this.event_information_controls.get('quantity_tickets').value //MULTIPLICAMOS EL VALOR POR LA CANTIDAD DE CUPOS
+        );
+        this.payment_information_controls.get('currency').setValue(this.donor_information_value.country == 'Colombia' ? 'COP' : 'USD');
+      } else {
+        this.payment_information_controls.get('value_translator').setValue(0);
       }
     });
 
@@ -143,11 +167,24 @@ export class CreateMassiveComponent implements OnInit {
         this.payment_information_controls.get('value').setValue(
           this.event_information_value?.cut?.prices //VALIDAMOS SI EL CORTE TIENE PRECIOS
             ? (this.donor_information_value.country == 'Colombia'
-                ? this.event_information_value?.cut?.prices['cop']
-                : this.event_information_value?.cut?.prices['usd']) * //VALIDAMOS LA MONEDA A PAGAR POR EL PAIS SELECCIONADO
-                tickets
+              ? this.event_information_value?.cut?.prices['cop']
+              : this.event_information_value?.cut?.prices['usd']) * //VALIDAMOS LA MONEDA A PAGAR POR EL PAIS SELECCIONADO
+            tickets
             : 0 //MULTIPLICAMOS EL VALOR POR LA CANTIDAD DE CUPOS
         );
+
+        if (this.event_information_controls.get('have_translator').value) {
+          this.payment_information_controls.get('value_translator').setValue(
+            (this.donor_information_value.country == 'Colombia'
+              ? parseInt(this.price_translators.cop)
+              : parseInt(this.price_translators.usd)) * //VALIDAMOS LA MONEDA A PAGAR POR EL PAIS SELECCIONADO
+            tickets //MULTIPLICAMOS EL VALOR POR LA CANTIDAD DE CUPOS
+          );
+        } else {
+          this.payment_information_controls.get('value_translator').setValue(0)
+        }
+        this.event_information_controls.get('have_translator').setValue(this.event_information_controls.get('have_translator').value);
+        this.payment_information_controls.get('currency').setValue(this.donor_information_value.country == 'Colombia' ? 'COP' : 'USD');
       });
 
     //NOS SUBSCRIBIMOS A LOS VALORES DE EL PAIS QUE CAMBIEN
@@ -163,16 +200,27 @@ export class CreateMassiveComponent implements OnInit {
           Swal.fire('Precio del corte no disponible en dolares', '', 'info');
           return;
         }
+        this.event_information_controls.get('have_translator').setValue(this.event_information_controls.get('have_translator').value);
         this.payment_information_controls
           .get('currency')
           .setValue(country == 'Colombia' ? 'COP' : 'USD');
+        if (this.event_information_controls.get('have_translator').value) {
+          this.payment_information_controls.get('value_translator').setValue(
+            (country == 'Colombia'
+              ? parseInt(this.price_translators.cop)
+              : parseInt(this.price_translators.usd)) * //VALIDAMOS LA MONEDA A PAGAR POR EL PAIS SELECCIONADO
+            this.event_information_controls.get('quantity_tickets').value //MULTIPLICAMOS EL VALOR POR LA CANTIDAD DE CUPOS
+          );
+        } else {
+          this.payment_information_controls.get('value_translator').setValue(0)
+        }
         this.payment_information_controls
           .get('value')
           .setValue(
             (country == 'Colombia'
               ? this.event_information_value.cut.prices['cop']
               : this.event_information_value.cut.prices['usd']) *
-              this.event_information_value.quantity_tickets
+            this.event_information_controls.get('quantity_tickets').value
           );
       });
   }
@@ -185,7 +233,6 @@ export class CreateMassiveComponent implements OnInit {
   getEvents() {
     this._eventService.getEventsMassive().subscribe(
       (res) => {
-        console.log(res)
         this.events = res; //AGREGAMOS LOS EVENTOS
       },
       (err) => {
@@ -232,12 +279,14 @@ export class CreateMassiveComponent implements OnInit {
         }, //HACEMOS UN DESTRUCTING DE LA INFORMACION DEL USUARIO Y ENVIAMOS EL EMAIL COMO LOWECASE
         payment_information: {
           platform: 'G12CONNECT',
+          is_translator: this.event_information_controls.get('have_translator').value,
+          translator: parseInt(this.payment_information_controls.get('value_translator').value),
           //EN EL VALOR VALIDAMOS EM METODO DE PAGO Y SI ES POR CREDITO Y NACIONAL MULTIPLICAMOS EL VALOR POR CENTAVOS DE DOLAR Y SI NO ENVIAMOS EL VALOR NORMAL
           value:
             this.donor_information_value.country != 'Colombia' &&
-            this.payment_type == 'card'
-              ? this.payment_information_value.value * 100
-              : this.payment_information_value.value,
+              this.payment_type == 'card'
+              ? (this.payment_information_value.value * 100) + parseInt(this.payment_information_controls.get('value_translator').value) * 100
+              : this.payment_information_value.value + parseInt(this.payment_information_controls.get('value_translator').value),
           currency: this.payment_information_value.currency,
           url_response: environment.url_response,
           payment_type:

@@ -71,6 +71,10 @@
                           />
                         </mat-form-field>
                       </div>
+                      <div id="checkTranslator">
+                        <input type="checkbox" formControlName="have_translator" style="margin-left: 15px; align-items: center;">
+                        <label for="have_translator" style="margin-left: 10px;">Agregar traductor</label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -218,7 +222,10 @@
                         : " ") +
                         " " +
                         (payment_information_value?.value
-                          ? payment_information_value?.value
+                          ? payment_information_value?.value +
+                            (payment_information_value?.value_translator
+                              ? payment_information_value?.value_translator
+                                : "")
                           : "")
                     }}
                   </h5>
