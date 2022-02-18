@@ -3,16 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { handleError } from 'src/app/_helpers/tools/header.tool';
 import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BoxService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  findBoxByUser() {
+  findBoxByUser(): Observable<any> {
     return this.http
-      .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/box/my-box  `)
+      .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/box/my-box`)
       .pipe(
         map((res: any) => {
           return res;
@@ -21,14 +22,13 @@ export class BoxService {
       );
   }
 
-  registerOneUser(payload) {
+  registerOneUser(payload: any): Observable<any> {
     return this.http
       .post<any>(
         `${environment.apiUrlG12Connect.paymentsv3}/box/payment`,
         payload,
         {}
-      )
-      .pipe(
+      ).pipe(
         map((res: any) => {
           return res;
         }),
@@ -36,7 +36,7 @@ export class BoxService {
       );
   }
 
-  getTransactionsByBox(box_id) {
+  getTransactionsByBox(box_id: any): Observable<any> {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/transaction/box`, {
         params: { box_id },
@@ -49,15 +49,12 @@ export class BoxService {
       );
   }
 
-  filterTransaction(params) {
+  filterTransaction(params: any): Observable<any> {
     return this.http
       .get<any>(
         `${environment.apiUrlG12Connect.paymentsv3}/box/filter_transactions`,
-        {
-          params,
-        }
-      )
-      .pipe(
+        { params }
+      ).pipe(
         map((res: any) => {
           return res;
         }),
@@ -65,12 +62,11 @@ export class BoxService {
       );
   }
 
-  filterTransactionByReference(params) {
+  filterTransactionByReference(params: any): Observable<any> {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/box/by-reference`, {
         params,
-      })
-      .pipe(
+      }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -78,15 +74,12 @@ export class BoxService {
       );
   }
 
-  getGrupalTransactionsBox(payment_ref, assistant) {
+  getGrupalTransactionsBox(payment_ref: any, assistant: any): Observable<any> {
     return this.http
       .get<any>(
         `${environment.apiUrlG12Connect.paymentsv3}/boxes/grupal_transactions-box`,
-        {
-          params: { payment_ref, assistant },
-        }
-      )
-      .pipe(
+        { params: { payment_ref, assistant }, }
+      ).pipe(
         map((res: any) => {
           return res;
         }),
@@ -94,13 +87,12 @@ export class BoxService {
       );
   }
 
-  updateTransactions(payload) {
+  updateTransactions(payload: any): Observable<any> {
     return this.http
       .put<any>(
         `${environment.apiUrlG12Connect.paymentsv3}/box/validate`,
         payload
-      )
-      .pipe(
+      ).pipe(
         map((res: any) => {
           return res;
         }),
@@ -108,13 +100,12 @@ export class BoxService {
       );
   }
 
-  cancelTransaction(payload) {
+  cancelTransaction(payload: any): Observable<any> {
     return this.http
       .put<any>(
         `${environment.apiUrlG12Connect.paymentsv3}/box/cancel-payment`,
         payload
-      )
-      .pipe(
+      ).pipe(
         map((res: any) => {
           return res;
         }),
@@ -122,7 +113,7 @@ export class BoxService {
       );
   }
 
-  getEventsBox() {
+  getEventsBox(): Observable<any> {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/box/event`)
       .pipe(
@@ -133,7 +124,7 @@ export class BoxService {
       );
   }
 
-  reportsMyBox(params) {
+  reportsMyBox(params: any): Observable<any> {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.reports}/box/my`, {
         params,
@@ -146,12 +137,11 @@ export class BoxService {
       );
   }
 
-  reportsAllBox(params) {
+  reportsAllBox(params: any): Observable<any> {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.reports}/box/all`, {
         params,
-      })
-      .pipe(
+      }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -159,12 +149,11 @@ export class BoxService {
       );
   }
 
-  reportsUsersBox(params) {
+  reportsUsersBox(params: any): Observable<any> {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.reports}/box/users-registers`, {
         params,
-      })
-      .pipe(
+      }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -172,12 +161,11 @@ export class BoxService {
       );
   }
 
-  consolidatedReports(params){
+  consolidatedReports(params: any): Observable<any> {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.reports}/box/consolidated`, {
         params,
-      })
-      .pipe(
+      }).pipe(
         map((res: any) => {
           return res;
         }),

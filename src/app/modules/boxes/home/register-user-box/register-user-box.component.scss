@@ -1,0 +1,10 @@
+.container-buttons-add {
+    display: flex;
+    justify-content: right;
+    .btn-light-danger {
+        margin-right: 10px;
+    }
+    .btn-light-success {
+        margin-left: 10px;
+    }
+}
