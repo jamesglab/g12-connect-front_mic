@@ -32,7 +32,7 @@ export class EditEventComponent implements OnInit {
   public editEventForm: FormGroup = null;
   public event = null;
   public isLoading: boolean = false;
-  public minDate: Date;
+  public minDate: Date = null;
   public categories = [];
   public cuts = new FormArray([]); //CREAMOS EL FORM ARRAY PARA RECORRER LOS FORMULARIOS REACTIVOS QUE SE CREEN
 
@@ -42,7 +42,7 @@ export class EditEventComponent implements OnInit {
     private eventsService: G12eventsService,
     private router: Router,
     public modal: NgbActiveModal
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getCategories();
@@ -53,41 +53,42 @@ export class EditEventComponent implements OnInit {
   // CREAMOS EL FORMULARIO REACTIVO
   buildForm() {
     //CREAMOS EL FORMULARIO REACTIVO CON SUS CORRESPONDIENTES VALIDADORES Y SETEAMOS LOS DATOS DEL FORMULARIO
-    this.editEventForm = this.fb.group({
-      id: [this.event.id],
-      type: ['G12_EVENT', [Validators.required]],
-      category: [this.event.category || [], Validators.required],
-      name: [this.event.name, [Validators.required]],
-      description: [this.event.description],
-      image: [this.event.image],
-      categorieAdd: [''],
-      base64: [],
-      init_date: [this.event.init_date],
-      finish_date: [this.event.finish_date],
-      is_translator: [this.event.is_translator],
-      translators: this.fb.group({
-        cop: [this.event.translators?.cop],
-        usd: [this.event.translators?.usd],
-      }),
-      visibility: [this.event.visibility[0]],
-      limit: [this.event.limit],
-      location: [],
-      massive_pay: [this.event.massive_pay],
-      status: [this.event.status],
-      view_hubilo: [this.event.view_hubilo || false],
-      event_id_hubilo: [this.event.event_id_hubilo || null],
-      code_modify: [null],
-    });
-    //VALIDAMOS LA IMAGEN DEL EVENTO Y LA SETEAMOS EN BASE64
-    if (this.event.image.url != '' && this.event.image.url) {
-      this.form.base64.setValue(this.event.image.url);
-    } else {
-      this.form.base64.setValue(
-        'https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj'
-      );
-    }
-    //ANEXAMOS EL MIN DATE PRA VALIDAR EL INICIO DEL EVENTO
-    this.minDate = new Date(this.event.init_date);
+      this.editEventForm = this.fb.group({
+        id: [this.event.id],
+        type: ['G12_EVENT', [Validators.required]],
+        category: [this.event.category || [], Validators.required],
+        name: [this.event.name, [Validators.required]],
+        description: [this.event.description],
+        image: [this.event.image],
+        categorieAdd: [''],
+        base64: [],
+        init_date: [new Date(this.event.init_date)],
+        finish_date: [new Date(this.event.finish_date)],
+        is_translator: [this.event.is_translator],
+        translators: this.fb.group({
+          cop: [this.event.translators?.cop],
+          usd: [this.event.translators?.usd],
+        }),
+        visibility: [this.event.visibility[0]],
+        limit: [this.event.limit],
+        location: [],
+        massive_pay: [this.event.massive_pay],
+        status: [this.event.status],
+        view_hubilo: [this.event.view_hubilo || false],
+        event_id_hubilo: [this.event.event_id_hubilo || null],
+        code_modify: [null],
+      });
+      //VALIDAMOS LA IMAGEN DEL EVENTO Y LA SETEAMOS EN BASE64
+      if (this.event.image.url != '' && this.event.image.url) {
+        this.form.base64.setValue(this.event.image.url);
+      } else {
+        this.form.base64.setValue(
+          'https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj'
+        );
+      }
+      //ANEXAMOS EL MIN DATE PRA VALIDAR EL INICIO DEL EVENTO
+      this.minDate = new Date(this.event.init_date);
+
   }
 
   //CONSULTAMOS LAS CATEFORIAS DEL EVENTO
@@ -155,8 +156,10 @@ export class EditEventComponent implements OnInit {
       'https://yt3.ggpht.com/ytc/AAUvwnjl325OZ-8UBHRf-8cmtxM2sXIznUWaoGxwcV4JGA=s900-c-k-c0x00ffffff-no-rj';
   }
 
-  changeCutDate($event: MatDatepickerInputEvent<any>) {
-    this.validateChangeDate = true;
+  changeCutDate($event: MatDatepickerInputEvent<any>, i: number) {
+    if (this.cuts.value[i].id) { //VERIFICAR QUE ES UN CORTE ANTIGUO
+      this.validateChangeDate = true;
+    }
   }
 
   cutsToSend() {

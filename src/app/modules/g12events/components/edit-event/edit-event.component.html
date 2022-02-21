@@ -265,7 +265,7 @@
                             [min]="editEventForm.get('init_date').value">
                             <input matStartDate placeholder="Fecha de inicio" formControlName="date_init" />
                             <input matEndDate placeholder="Fecga de fin" formControlName="date_finish"
-                              (dateChange)="changeCutDate($event)" />
+                              (dateChange)="changeCutDate($event, i)" />
                           </mat-date-range-input>
                           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                           <mat-date-range-picker #picker></mat-date-range-picker>
