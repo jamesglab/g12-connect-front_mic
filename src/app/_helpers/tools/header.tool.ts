@@ -9,13 +9,13 @@ export const header = new HttpHeaders({
 });
 
 export const headerFile = new HttpHeaders({
-  
+
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': '*',
   'Accept': 'application/json',
 });
 export const handleError = (error: HttpErrorResponse) => {
-  console.log('error',error)
+
   if (error.error instanceof ErrorEvent) {
     throw error.error.message;
   } else {

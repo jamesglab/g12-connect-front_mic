@@ -8,7 +8,9 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
+
 export class BoxService {
+
   constructor(private http: HttpClient) { }
 
   findBoxByUser(): Observable<any> {
@@ -22,13 +24,9 @@ export class BoxService {
       );
   }
 
-  registerOneUser(payload: any): Observable<any> {
-    return this.http
-      .post<any>(
-        `${environment.apiUrlG12Connect.paymentsv3}/box/payment`,
-        payload,
-        {}
-      ).pipe(
+  registerUsers(payload: any): Observable<any> {
+    return this.http.post<any>(
+      `${environment.apiUrlG12Connect.paymentsv3}/box/payment`, payload, {}).pipe(
         map((res: any) => {
           return res;
         }),
@@ -65,7 +63,7 @@ export class BoxService {
   filterTransactionByReference(params: any): Observable<any> {
     return this.http
       .get<any>(`${environment.apiUrlG12Connect.paymentsv3}/box/by-reference`, {
-        params,
+        params
       }).pipe(
         map((res: any) => {
           return res;

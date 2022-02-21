@@ -8,3 +8,13 @@
         margin-left: 10px;
     }
 }
+
+.container-prices {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    .item-price {
+        text-align: center;
+    }
+}

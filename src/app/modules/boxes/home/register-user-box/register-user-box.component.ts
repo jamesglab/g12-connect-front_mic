@@ -10,6 +10,8 @@ import { UserService } from 'src/app/modules/_services/user.service';
 import { MustMatch } from 'src/app/_helpers/tools/must-match.validators';
 import Swal from 'sweetalert2';
 import { BoxService } from '../_services/Boxes.service';
+import { insertUsers } from 'src/app/_helpers/tools/parsedata/parse-data-towin.tool';
+import { MakePdfService } from '../_services/make-pdf.service';
 
 @Component({
   selector: 'app-register-user-box',
@@ -24,7 +26,10 @@ export class RegisterUserBoxComponent implements OnInit {
   public events: any = [];
   public countries: any[] = COUNTRIES;
 
-  public totalPrices: any = { total_price_cop: 0, total_price_usd: 0 };
+  public totalPrices: any = { total_price_cop: 0, total_price_usd: 0, prices_translator_cop: 0, prices_translator_usd: 0, prices_event_cop: 0, prices_event_usd: 0 };
+  public box: any = {};
+
+  public isLoading: boolean = false;
 
   public filteredCountries: Observable<string[]>;
   public filteredCountriesUser: Observable<string[]>;
@@ -36,13 +41,12 @@ export class RegisterUserBoxComponent implements OnInit {
     public cdr: ChangeDetectorRef,
     private g12EventService: G12eventsService,
     private userService: UserService,
-    private boxService: BoxService
+    private boxService: BoxService,
+    private _makePdfService: MakePdfService
   ) { }
 
   ngOnInit(): void {
-    this.getEvents().then(() => {
-      this.buildForm();
-    });
+    this.getEvents().then(() => { this.buildForm(); });
   }
 
   buildForm() {
@@ -57,10 +61,9 @@ export class RegisterUserBoxComponent implements OnInit {
         currency: ['COP', [Validators.required]],
         payment_type: ['BOX', [Validators.required]],
         platform: ['G12CONNECT', [Validators.required]],
-        url_response: [environment.url_response],
-        payment_geteway: [null, [Validators.required]],
+        is_dataphone: [null, [Validators.required]],
         amount: [],
-        number_of_aprobation: [null]
+        description_of_change: [null]
       }),
       users: this.fb.array([])
     });
@@ -69,12 +72,12 @@ export class RegisterUserBoxComponent implements OnInit {
       if (res.name === 'COLOMBIA') {
         this.formRegisterUser.controls.payment_information['controls'].document.setErrors(null);
         this.formRegisterUser.controls.payment_information['controls'].document.setValidators(Validators.required);
-        this.formRegisterUser.controls.payment_information['controls'].number_of_aprobation.setErrors(null);
-        this.formRegisterUser.controls.payment_information['controls'].number_of_aprobation.setValidators(null);
+        this.formRegisterUser.controls.payment_information['controls'].description_of_change.setErrors(null);
+        this.formRegisterUser.controls.payment_information['controls'].description_of_change.setValidators(null);
       } else {
         this.formRegisterUser.controls.payment_information['controls'].document.setErrors(null);
         this.formRegisterUser.controls.payment_information['controls'].document.setValidators(null);
-        this.formRegisterUser.controls.payment_information['controls'].number_of_aprobation.setValidators(Validators.required);
+        this.formRegisterUser.controls.payment_information['controls'].description_of_change.setValidators(Validators.required);
       }
     });
     this.users().push(this.newUser());
@@ -164,7 +167,7 @@ export class RegisterUserBoxComponent implements OnInit {
         all_financial_cut: [],
         event: [null, Validators.required],
         financial_cut: [null, Validators.required],
-        translator: [false]
+        active_translator: [false]
       }),
       assistant: this.fb.group({
         id: [null],
@@ -229,11 +232,10 @@ export class RegisterUserBoxComponent implements OnInit {
       }
     });
 
-    user.controls.event_information['controls'].translator.valueChanges.subscribe((res) => {
-      if( user.controls.event_information['controls'].event.value){
-        user.controls.event_information['controls'].event.value.is_translator = res;
-        console.log("IS TRANSLATOR", user.controls.event_information['controls'].event.value.is_translator);
-        console.log("FINANCIAL CUT", user.controls.event_information['controls'].financial_cut.value);
+    user.controls.event_information['controls'].active_translator.valueChanges.subscribe((res) => {
+      if (user.controls.event_information['controls'].event.value) {
+        user.controls.event_information['controls'].event.value.active_translator = res;
+        this.cutClick();
       }
     });
 
@@ -243,27 +245,49 @@ export class RegisterUserBoxComponent implements OnInit {
         user.controls.event_information['controls'].financial_cut.setValue(null);
         this.cutClick();
       }
-    })
-
-    // user.controls.event_information['controls'].financial_cut.valueChanges.subscribe((res: any) => {
-    //   // this.calculationTotals();
-    // });
+    });
 
     this.filteredCountries = user.controls.assistant['controls'].country.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'countries')));
     this.filteredChurchs = user.controls.assistant['controls'].church.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'all_churchs')));
   }
 
   cutClick(): void {
+
+    let total_cop: number = 0;
+    let total_usd: number = 0;
+    let total_prices_translator_cop: number = 0;
+    let total_prices_translator_usd: number = 0;
+    let total_prices_event_cop: number = 0;
+    let total_prices_event_usd: number = 0;
+
     for (let index = 0; index < this.formRegisterUser.controls.users['controls'].length; index++) {
-      if (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].event.value.is_translator) {
-        console.log("SE DEBE SUMAR MÁS");
+
+      if (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].event.value?.active_translator) {
+        if (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value?.prices) {
+          total_cop += (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.cop + parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.cop));
+          total_prices_translator_cop += parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.cop);
+          total_usd += (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.usd + parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.usd));
+          total_prices_translator_usd += parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.usd);
+        }
       } else {
-        // console.log("CORTE: ", this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value);
-        if (this.formRegisterUser.controls.users['controls'][index].controls.event_information.controls.event.value) {
-          this.totalPrices.total_price_cop += this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.cop;
+        if (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value?.prices) {
+          total_cop += this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.cop;
+          total_usd += this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.usd;
         }
       }
+
+      total_prices_event_cop += this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.cop;
+      total_prices_event_usd += this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.usd;
+
     }
+
+    this.totalPrices.total_price_cop = total_cop;
+    this.totalPrices.total_price_usd = total_usd;
+    this.totalPrices.prices_translator_cop = total_prices_translator_cop;
+    this.totalPrices.prices_translator_usd = total_prices_translator_usd;
+    this.totalPrices.prices_event_cop = total_prices_event_cop;
+    this.totalPrices.prices_event_usd = total_prices_event_usd;
+
   }
 
   calculationTotals(): void {
@@ -322,20 +346,31 @@ export class RegisterUserBoxComponent implements OnInit {
     return data ? data.name : '';
   }
 
+  clickeddd() {
+    this._makePdfService.createPdf("219151", this.box);
+  }
+
   onSubmit(): void {
-    console.log("ON SUBMITTTT", this.formRegisterUser);
-    let payload = this.formRegisterUser.getRawValue();
-    console.log(payload);
+
+    let payload = insertUsers(this.formRegisterUser.getRawValue(), this.totalPrices, this.box);
+
     if (this.formRegisterUser.invalid) {
       Swal.fire('Asegurate de llenar el formulario correctamente.', '', 'info');
       return;
     }
 
+    this.isLoading = true;
 
-    this.boxService.registerOneUser({ ...payload })
+    this.boxService.registerUsers({ ...payload })
       .subscribe((res: any) => {
-        console.log("RESPONSE: ", res);
+        Swal.fire('El usuario ha sido registrado correctamente.', res.message, 'success').then(() => {
+          this._makePdfService.createPdf(res.ref, this.box);
+          this.modal.close();
+          this.isLoading = false;
+        });
       }, err => {
+        this.isLoading = false;
+        Swal.fire(err ? err : 'No se pudo registrar el usuario. Intenta de nuevo.', '', 'error');
         throw err;
       });
 
