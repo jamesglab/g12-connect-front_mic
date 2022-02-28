@@ -51,18 +51,18 @@ export class UserService {
       );
   }
 
-  getChurchById(filter){
+  getChurchById(filter) {
     return this.http
-    .get<any>(`${environment.apiUrlG12Connect.users}/church/detail`, {
-      headers: header,
-      params: filter,
-    })
-    .pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
+      .get<any>(`${environment.apiUrlG12Connect.users}/church/detail`, {
+        headers: header,
+        params: filter,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   getProfile() {
@@ -155,29 +155,28 @@ export class UserService {
       );
   }
 
-  filterMinistry(params){
+  filterMinistry(params) {
     return this.http
-    .get<any>(`${environment.apiUrlG12Connect.users}/filter-ministry`, {
-      params,
-    })
-    .pipe(
-      map((res: Response) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
+      .get<any>(`${environment.apiUrlG12Connect.users}/filter-ministry`, {
+        params,
+      })
+      .pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
-  getUserInfo(params){
+  getUserInfo(params) {
     return this.http
-    .get<any>(`${environment.apiUrlG12Connect.users}/find-user`, {
-      params,
-    })
-    .pipe(
-      map((res: Response) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
+      .get<any>(`${environment.apiUrlG12Connect.users}/find-user`, {
+        params
+      }).pipe(
+        map((res: Response) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 }

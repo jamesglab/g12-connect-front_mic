@@ -29,7 +29,6 @@ export class BoxesHomeComponent implements OnInit {
     this._boxService.findBoxByUser().subscribe((res: any) => {
       //ASIGNAMOS LA CAJA CONSULTADA DEL USUARIO
       this.box = res;
-      console.log(this.box);
       this.cdr.detectChanges();
     }, err => {
       //MOSTRAMOS EL ERROR DE QUE EL USUARIO NO TIENE LA CAJA

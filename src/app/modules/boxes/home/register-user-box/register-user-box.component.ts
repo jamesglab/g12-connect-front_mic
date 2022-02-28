@@ -4,7 +4,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { G12eventsService } from 'src/app/modules/g12events/_services/g12events.service';
-import { environment } from 'src/environments/environment';
 import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
 import { UserService } from 'src/app/modules/_services/user.service';
 import { MustMatch } from 'src/app/_helpers/tools/must-match.validators';
@@ -62,7 +61,7 @@ export class RegisterUserBoxComponent implements OnInit {
         payment_type: ['BOX', [Validators.required]],
         platform: ['G12CONNECT', [Validators.required]],
         is_dataphone: [null, [Validators.required]],
-        amount: [],
+        amount: [0],
         description_of_change: [null]
       }),
       users: this.fb.array([])
@@ -98,32 +97,45 @@ export class RegisterUserBoxComponent implements OnInit {
   }
 
   getChurchs(country: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.userService.getPlaces({
-        country: country.toUpperCase(),
-        type: country.toUpperCase() == 'COLOMBIA' ? 'national' : 'international',
-      }).subscribe((res: any) => {
-        resolve(res);
-      }, err => {
-        reject(err);
-        throw err;
+    if (country) {
+      return new Promise((resolve, reject) => {
+        this.userService.getPlaces({
+          country: country.toUpperCase(),
+          type: country.toUpperCase() == 'COLOMBIA' ? 'national' : 'international',
+        }).subscribe((res: any) => {
+          resolve(res);
+        }, err => {
+          reject(err);
+          throw err;
+        });
       });
+    }
+  }
+
+  getChurchById(id: string, position: number): void {
+    this.userService.getChurchById({ id }).subscribe((church: any) => {
+      this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].church.setValue(church);
+    }, err => {
+      throw err;
     });
   }
 
-  getLeaders(position: number, pastor: any): void {
-
+  getLeaders(position: number, pastor: any, user?: any): void {
     this.users().controls[position]['controls'].assistant['controls'].leader.reset();
-
     this.userService.getLeadersOrPastors({
       userCode: pastor.user_code,
       church: this.users().controls[position]['controls'].assistant['controls'].church.value.id,
     }).subscribe((res: any) => {
       this.users().controls[position]['controls'].assistant['controls'].all_leaders.setValue(res);
+      if (this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].all_leaders.value) {
+        let searchLeader = this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].all_leaders.value.filter(x => x.id === user.leader_id);
+        if (searchLeader && searchLeader.length > 0) {
+          this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].leader.setValue(searchLeader[0]);
+        }
+      }
     }, err => {
       throw err;
     });
-
   }
 
   getPastors(user_code: any, position: number, user?: any) {
@@ -138,6 +150,12 @@ export class RegisterUserBoxComponent implements OnInit {
         church: this.users().controls[position]['controls'].assistant['controls'].church.value.id,
       }).subscribe((res: any) => {
         this.users().controls[position]['controls'].assistant['controls'].all_pastors.setValue(res);
+        if (this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].all_pastors.value) {
+          let searchPastor = this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].all_pastors.value.filter(x => x.user_code === user.pastor_code);
+          if (searchPastor && searchPastor.length > 0) {
+            this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].pastor.setValue(searchPastor[0]);
+          }
+        }
       }, err => {
         throw err;
       });
@@ -205,10 +223,21 @@ export class RegisterUserBoxComponent implements OnInit {
   }
 
   subscribeToValidators(user: any) {
-    // console.log(user);
 
     user.controls.event_information['controls'].event.valueChanges.subscribe((event: any) => { // Cuando el usuario elija un evento
       user.controls.event_information['controls'].all_financial_cut.setValue(event.financialCut); // En el select de corte se van a pushear los ítems del ítem seleccionado en la posicion financialCUt
+    });
+
+    user.controls.assistant['controls'].email.valueChanges.subscribe((name: any) => {
+      if (!name || name == null || name == '') {
+        user.controls.assistant['controls'].id.setValue(null);
+      }
+    });
+
+    user.controls.assistant['controls'].email_confirmation.valueChanges.subscribe((name: any) => {
+      if (!name || name == null || name == '') {
+        user.controls.assistant['controls'].id.setValue(null);
+      }
     });
 
     user.controls.assistant['controls'].type_church.valueChanges.subscribe((res: any) => {
@@ -216,6 +245,15 @@ export class RegisterUserBoxComponent implements OnInit {
         this.getChurchs(user.controls.assistant['controls'].country.value?.name).then((res: any) => {
           user.controls.assistant['controls'].all_churchs.setValue(res);
         });
+      } else {
+        user.controls.assistant['controls'].network.setErrors(null);
+        user.controls.assistant['controls'].network.setValidators(null);
+        user.controls.assistant['controls'].church.setErrors(null);
+        user.controls.assistant['controls'].church.setValidators(null);
+        user.controls.assistant['controls'].pastor.setErrors(null);
+        user.controls.assistant['controls'].pastor.setValidators(null);
+        user.controls.assistant['controls'].leader.setErrors(null);
+        user.controls.assistant['controls'].leader.setValidators(null);
       }
     });
 
@@ -290,22 +328,124 @@ export class RegisterUserBoxComponent implements OnInit {
 
   }
 
-  calculationTotals(): void {
-    console.log(this.totalPrices);
-  }
-
-  resetMinisterialInfo(position: number, status?: boolean): void {
-    // console.log("STATUS: ", status);
+  resetMinisterialInfo(position: number): void {
     this.users().controls[position]['controls'].assistant['controls'].all_churchs.reset();
     this.users().controls[position]['controls'].assistant['controls'].all_pastors.reset();
     this.users().controls[position]['controls'].assistant['controls'].network.reset();
     this.users().controls[position]['controls'].assistant['controls'].church.reset();
     this.users().controls[position]['controls'].assistant['controls'].leader.reset();
-    // console.log("DATA", this.users().controls[position]['controls']);
   }
 
-  searchUser(data?: any): void {
-    console.log("SEARCH DATA: ", data);
+  searchUser(position?: number): void {
+
+    const filters: any = {};
+
+    if (position != null) {
+
+      if (this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].identification.value) {
+        filters['identification'] = this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].identification.value;
+      }
+
+      if (this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].email.value && this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].email.value == this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].email_confirmation.value) {
+        filters['email'] = this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].email.value;
+      }
+
+      if (this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].country.value) {
+        filters['country'] = this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].country.value?.name;
+      }
+
+      if (this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].document_type.value) {
+        filters['document_type'] = this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].document_type.value;
+      }
+
+    } else {
+
+      if (this.formRegisterUser.controls.payment_information['controls'].document_type.value && this.formRegisterUser.controls.payment_information['controls'].document_type.value) {
+
+        if (this.formRegisterUser.controls.payment_information['controls'].document.value) {
+          filters['identification'] = this.formRegisterUser.controls.payment_information['controls'].document.value;
+        }
+
+        if (this.formRegisterUser.controls.payment_information['controls'].email.value) {
+          filters['email'] = this.formRegisterUser.controls.payment_information['controls'].email.value;
+        }
+
+        if (this.formRegisterUser.controls.payment_information['controls'].country.value) {
+          filters['country'] = this.formRegisterUser.controls.payment_information['controls'].country.value.name;
+        }
+
+        if (this.formRegisterUser.controls.payment_information['controls'].document_type.value) {
+          filters['document_type'] = this.formRegisterUser.controls.payment_information['controls'].document_type.value;
+        }
+
+      }
+
+    }
+    if (filters) {
+      this.userService.getUserInfo(filters).subscribe((user: any) => {
+
+        if (position != null) {
+          this.setUserData(user, position);
+        } else {
+          this.formRegisterUser.controls.payment_information['controls'].name.setValue(user.name);
+          this.formRegisterUser.controls.payment_information['controls'].last_name.setValue(user.last_name);
+          this.formRegisterUser.controls.payment_information['controls'].email.setValue(user.email);
+          this.formRegisterUser.controls.payment_information['controls'].document.setValue(user.identification);
+          this.formRegisterUser.controls.payment_information['controls'].document_type.setValue(user.document_type);
+          let searchCountry = this.countries.filter(x => x.name === user.country);
+          if (searchCountry && searchCountry.length > 0) {
+            this.formRegisterUser.controls.payment_information['controls'].country.setValue(searchCountry[0]);
+          }
+        }
+
+      }, err => {
+        Swal.fire('', err ? err : 'Ocurrió un error, intenta buscando con otros parámetros.', 'warning');
+        throw err;
+      });
+    }
+
+  }
+
+  setUserData(user: any, position: number): void {
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].church.setValue({ id: user.church_id });
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].type_church.setValue(user.type_church);
+
+    switch (user?.type_church?.toString().toUpperCase()) {
+      case 'MCI':
+        this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].network.setValue(user.network);
+        this.getPastors(user.pastor_code, position, user);
+        this.getLeaders(position, { user_code: user.leader_code }, user);
+        this.getChurchById(user.church_id, position);
+        break;
+
+      case 'OT':
+      case 'G12': {
+        this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].name_church.setValue(user.name_church);
+        this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].name_pastor.setValue(user.name_pastor);
+        break;
+      }
+    }
+
+    let searchCountry = this.countries.filter(x => x.name === user.country);
+    if (searchCountry && searchCountry.length > 0) {
+      this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].country.setValue(searchCountry[0]);
+    }
+
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].email.setValue(user.email);
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].email_confirmation.setValue(user.email);
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].id.setValue(user.id);
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].gender.setValue(user.gender);
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].document_type.setValue(user.document_type);
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].identification.setValue(user.identification);
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].name.setValue(user.name);
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].last_name.setValue(user.last_name);
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].phone.setValue(user.phone);
+    this.formRegisterUser.controls.users['controls'][position].controls.assistant['controls'].pastor.setValue(user.pastor_code);
+
+  }
+
+  objectComparisonFunction(option: any, value: any): boolean {
+    return option.id === value?.id;
   }
 
   private _filter(value: any, array: string): string[] {
@@ -316,12 +456,6 @@ export class RegisterUserBoxComponent implements OnInit {
     } else {
       return this[array];
     }
-  }
-
-  private _dynamicFilter(value: any, array: string, position: number): string[] {
-    const filterValue = this._normalizeValue(value, array);
-    let filteredData;
-    return filteredData;
   }
 
   private _normalizeValue(value: any, array: any): string {
@@ -344,10 +478,6 @@ export class RegisterUserBoxComponent implements OnInit {
 
   displayFn(data: any) {
     return data ? data.name : '';
-  }
-
-  clickeddd() {
-    this._makePdfService.createPdf("219151", this.box);
   }
 
   onSubmit(): void {

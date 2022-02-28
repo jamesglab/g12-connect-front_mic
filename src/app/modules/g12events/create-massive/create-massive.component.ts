@@ -31,6 +31,8 @@ export class CreateMassiveComponent implements OnInit {
   public payment_type = 'card'; //TIPO DE PAGO
   public isLoading: boolean = false; //SPINNER DE LOADER
 
+  public isTranslator: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     public _eventService: G12eventsService,
@@ -42,7 +44,6 @@ export class CreateMassiveComponent implements OnInit {
     this.buildForm();
     this.getEvents();
     this.getPseBanks();
-    document.getElementById('checkTranslator').style.display = 'none';
   }
 
   buildForm() {
@@ -120,7 +121,7 @@ export class CreateMassiveComponent implements OnInit {
         this.event_information_controls.get('cut').reset(); //REINICIAMOS EL CORTE SELECCIONADO
         this.financial_cuts = event.financialCut; //RENDERIZAMOS LOS CORTES SELECCIONADOS
         this.price_translators = event.translators ? event.translators : {};
-        event.is_translator ? document.getElementById('checkTranslator').style.display = 'inline' : document.getElementById('checkTranslator').style.display = 'none';
+        this.isTranslator = event.is_translator;
       });
 
     // NOS SUBSCRIBIMOS A LOS CAMBIOS CUANDO SELECCIONEN EL CORTE
