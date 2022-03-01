@@ -7,8 +7,7 @@ import * as pdfMake from 'pdfmake/build/pdfmake';
   providedIn: 'root',
 })
 export class MakePdfService {
-
-  constructor(private _boxService: BoxService) { }
+  constructor(private _boxService: BoxService) {}
 
   //CREAMOS PDF DE LA TRANSACCION
   public async createPdf(payment_ref, box) {
@@ -21,10 +20,10 @@ export class MakePdfService {
      */
     this._boxService
       .filterTransactionByReference({
-        payment_ref
-      }).subscribe(
+        payment_ref,
+      })
+      .subscribe(
         async (res) => {
-
           //CREAMOS BANDERA PARA VALIDAR EL TIPO DE PDF A CREAR
           let find_user_massive = false;
           //CREAMOS ARRAY DE TRANSACCIONES
@@ -47,9 +46,11 @@ export class MakePdfService {
             //CREAMOS EL PDF DEL USUARIO MASIVO
             this.createPdfMassive(transactions, box);
           }
-        }, err => {
+        },
+        (err) => {
           throw new Error(err);
-        });
+        }
+      );
   }
 
   //PDF DE USUARIOS MASIVOSF
@@ -114,15 +115,17 @@ export class MakePdfService {
         { text: 'NIT 800195397-7', style: 'cont_ministerial' },
 
         {
-          text: `USUARIO : ${donor?.user?.name.toString().toUpperCase() +
+          text: `USUARIO : ${
+            donor?.user?.name.toString().toUpperCase() +
             ' ' +
             donor?.user?.last_name.toString().toUpperCase()
-            }`,
+          }`,
           style: 'parrafo',
         },
         {
-          text: `TIPO DE TRANSACCIÓN : ${donor?.description_of_change ? 'DATAFONO' : 'EFECTIVO'
-            }`,
+          text: `TIPO DE TRANSACCIÓN : ${
+            donor?.description_of_change ? 'DATAFONO' : 'EFECTIVO'
+          }`,
           style: 'parrafo',
         },
 
@@ -207,7 +210,8 @@ export class MakePdfService {
           style: 'parrafo',
           columns: [
             {
-              text: 'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
+              text:
+                'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
               style: 'bold',
             },
           ],
@@ -245,7 +249,6 @@ export class MakePdfService {
 
   //PDF DE USUARIOS DE COMPRAS NO MASIVAS
   private async createPdfNotMassive(transactions, box) {
-
     let donor;
 
     transactions.map((tr) => {
@@ -307,15 +310,17 @@ export class MakePdfService {
         { text: 'NIT 800195397-7', style: 'cont_ministerial' },
 
         {
-          text: `USUARIO : ${donor?.user.name.toString().toUpperCase() +
+          text: `USUARIO : ${
+            donor?.user.name.toString().toUpperCase() +
             ' ' +
             donor?.user.last_name.toString().toUpperCase()
-            }`,
+          }`,
           style: 'parrafo',
         },
         {
-          text: `TIPO DE TRANSACIÓN : ${donor?.description_of_change ? 'DATAFONO' : 'EFECTIVO'
-            }`,
+          text: `TIPO DE TRANSACIÓN : ${
+            donor?.description_of_change ? 'DATAFONO' : 'EFECTIVO'
+          }`,
           style: 'parrafo',
         },
         {
@@ -399,7 +404,8 @@ export class MakePdfService {
           style: 'parrafo',
           columns: [
             {
-              text: 'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
+              text:
+                'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
               style: 'bold',
             },
           ],
@@ -411,6 +417,7 @@ export class MakePdfService {
 
   //CREAMOS EL PDF DE USUARIOS NO MASIVOS
   private createUsersTableNotMassive(transactions) {
+    console.log(transactions);
     let table = [
       [
         { text: 'DOCUMENTO', style: 'tableHeader' },
@@ -422,25 +429,24 @@ export class MakePdfService {
     ];
 
     transactions.map((tr) => {
+      console.log(tr);
       if (tr.isAssistant) {
         table.push([
-          tr.user.identification ? tr.user.identification : 'INTERNACIONAL',
-          tr.user.name && tr.user.last_name
-            ? tr.user.name.toString().toUpperCase() +
-            ' ' +
-            tr.user.last_name.toString().toUpperCase()
+          tr.user?.identification ? tr.user.identification : 'INTERNACIONAL',
+          tr.user?.name && tr.user?.last_name
+            ? `${tr.user.name
+                .toString()
+                .toUpperCase()} ${tr.user.last_name.toString().toUpperCase()}`
             : '',
           tr.donation.name ? tr.donation.name.toString().toUpperCase() : '',
-          (tr.pastor.name ? tr.pastor.name.toString().toUpperCase() : '') +
-          ' ' +
-          (tr.pastor.last_name
-            ? tr?.pastor?.last_name.toString().toUpperCase()
-            : ''),
+          tr.user?.type_church?.toString().toUpperCase() === 'MCI'
+            ? `${tr.pastor?.name} ${tr.pastor?.last_name}`
+            : tr.user?.name_pastor,
           tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
             ? this.formatPrice(
-              tr.transaction.currency.toString().toLowerCase(),
-              tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
-            )
+                tr.transaction.currency.toString().toLowerCase(),
+                tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
+              )
             : '',
         ]);
       }
@@ -455,5 +461,4 @@ export class MakePdfService {
       minimumFractionDigits: 0,
     }).format(value);
   }
-
 }
