@@ -482,27 +482,38 @@ export class RegisterUserBoxComponent implements OnInit {
 
   onSubmit(): void {
 
-    let payload = insertUsers(this.formRegisterUser.getRawValue(), this.totalPrices, this.box);
-
     if (this.formRegisterUser.invalid) {
       Swal.fire('Asegurate de llenar el formulario correctamente.', '', 'info');
       return;
     }
 
-    this.isLoading = true;
+    Swal.fire({
+      title: '¿Deseas continuar con el registro?',
+      text: `Estás registrando (${this.users().controls.length}) usuarios y el monto total a pagar es: ${this.formRegisterUser.controls.payment_information['controls'].currency.value === 'COP' ? this.totalPrices.total_price_cop : this.totalPrices.total_price_usd}`,
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
 
-    this.boxService.registerUsers({ ...payload })
-      .subscribe((res: any) => {
-        Swal.fire('El usuario ha sido registrado correctamente.', res.message, 'success').then(() => {
-          this._makePdfService.createPdf(res.ref, this.box);
-          this.modal.close();
-          this.isLoading = false;
-        });
-      }, err => {
-        this.isLoading = false;
-        Swal.fire(err ? err : 'No se pudo registrar el usuario. Intenta de nuevo.', '', 'error');
-        throw err;
-      });
+      let payload = insertUsers(this.formRegisterUser.getRawValue(), this.totalPrices, this.box);
+
+      if (result.isConfirmed) {
+
+        this.isLoading = true;
+        this.boxService.registerUsers({ ...payload })
+          .subscribe((res: any) => {
+            Swal.fire('El usuario ha sido registrado correctamente.', res.message, 'success').then(() => {
+              this._makePdfService.createPdf(res.ref, this.box);
+              this.modal.close();
+              this.isLoading = false;
+            });
+          }, err => {
+            this.isLoading = false;
+            Swal.fire(err ? err : 'No se pudo registrar el usuario. Intenta de nuevo.', '', 'error');
+            throw err;
+          });
+      }
+    });
 
   }
 
