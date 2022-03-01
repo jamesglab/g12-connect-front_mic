@@ -20,6 +20,7 @@ import {
 } from "@angular/material-moment-adapter";
 import Swal from "sweetalert2";
 import { createObjectReportByEvent, validatePaymentMethod, validateStatus } from "./moks/reports.moks";
+import * as moment from "moment";
 
 // FORMATO DE LAS FECHAS QUE SSE VERAN EN EL ANGULAR MATERIAL
 export const MY_FORMATS = {
@@ -55,8 +56,8 @@ export class EventReportsComponent implements OnInit {
   public campaignOne: FormGroup;
   public campaignTwo: FormGroup;
   public range = new FormGroup({
-    init_date: new FormControl(),
-    finish_date: new FormControl(),
+    start: new FormControl(moment()),
+    end: new FormControl(moment()),
   });
   public events: [] = [];
   public cutTransactions: any;
@@ -82,6 +83,7 @@ export class EventReportsComponent implements OnInit {
   public search = new FormControl("", []);
   public data_cut_table: any;
   public info_users_count: any;
+
   constructor(
     private _g12Events: G12eventsService,
     private cdr: ChangeDetectorRef,
@@ -162,20 +164,33 @@ export class EventReportsComponent implements OnInit {
   getTransactionsMongo(type: any, filters?) {
     var promise = new Promise((resolve, reject) => {
       this.isLoading = true;
+      const filterDate = {
+        init_date: this.range.get('start').value
+          ? new Date(
+            `${moment(this.range.get('start').value).format(
+              'YYYY-MM-DD'
+            )}T00:00:00.000`
+          ).getTime()
+          : null,
+        finish_date: this.range.get('end').value
+          ? new Date(
+            `${moment(this.range.get('end').value).format(
+              'YYYY-MM-DD'
+            )}T23:59:00.000`
+          ).getTime()
+          : null
+      }
+      const data = {
+        platform: "EVENTOSG12",
+        event_id:
+          this.event_selected.value != 0 ? this.event_selected.value.id : "",
+        type,
+        ...filters,
+      }
+      this.event_selected.value === 0 ? data.init_date = filterDate?.init_date : null;
+      this.event_selected.value === 0 ? data.finish_date = filterDate?.finish_date : null;
       this._g12Events
-        .getTransactionsReports({
-          // date_init: `${moment(this.date.value).format(
-          //   'YYYY'
-          // )}-01-01T00:00:00.000`,
-          // date_finish: `${moment(this.date.value).format(
-          //   'YYYY'
-          // )}-12-31T23:59:00.000`,
-          platform: "EVENTOSG12",
-          event_id:
-            this.event_selected.value != 0 ? this.event_selected.value.id : "",
-          type,
-          ...filters,
-        })
+        .getTransactionsReports(data)
         .subscribe(
           (res: any) => {
             resolve(res);
@@ -223,21 +238,26 @@ export class EventReportsComponent implements OnInit {
   exportFile() {
     //VALIDAREMOS LOS DATOS EXPORTADOS
     if (this.dataSource?.data.length > 0) {
-      this.getTransactionsMongo("download").then((res: [any]) => {
-        const dataToExport = [];
-        res.map((item, i) => {
-          dataToExport.push(createObjectReportByEvent(item, i));
+      if (parseInt(this.info_users_count.total) < 6001) {
+        this.getTransactionsMongo("download").then((res: [any]) => {
+          const dataToExport = [];
+          res.map((item, i) => {
+            dataToExport.push(createObjectReportByEvent(item, i));
+          });
+          this.exportService.exportAsExcelFile(
+            dataToExport,
+            this.event_selected.value === 0 ? 'Todos' :
+              this.event_selected.value.name
+                .toString()
+                .replace(" ", "")
+                .replace(" ", "")
+          );
+          this.isLoading = false;
+          this.cdr.detectChanges();
         });
-        this.exportService.exportAsExcelFile(
-          dataToExport,
-          this.event_selected.value.name
-            .toString()
-            .replace(" ", "")
-            .replace(" ", "")
-        );
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      });
+      } else {
+        this.showMessage(2, "Excediste la cantidad de datos a exportar. Por favor intenta con un rango de filtro menor.");
+      }
     } else {
       this.showMessage(2, "No hay datos por exportar");
     }
