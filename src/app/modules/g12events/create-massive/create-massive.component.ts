@@ -262,13 +262,28 @@ export class CreateMassiveComponent implements OnInit {
       Swal.fire('Revisa los tiquetes que vas a comprar', '', 'info');
       return;
     }
-    if (
-      this.donor_information_controls.invalid ||
-      this.event_information_controls.invalid ||
-      this.payment_information_controls.get(this.payment_type).invalid
-    ) {
-      Swal.fire('Campos requeridos incompletos', '', 'info');
-      return;
+    if (this.donor_information_value.country === 'Colombia') {
+      if (
+        this.donor_information_controls.invalid ||
+        this.event_information_controls.invalid ||
+        this.payment_information_controls.get(this.payment_type).invalid
+      ) {
+        Swal.fire('Campos requeridos incompletos', '', 'info');
+        return;
+      }
+    }
+    if (this.donor_information_value.country != 'Colombia') {
+      if (
+        this.donor_information_controls.get('name').invalid ||
+        this.donor_information_controls.get('last_name').invalid ||
+        this.donor_information_controls.get('email').invalid ||
+        this.donor_information_controls.get('phone').invalid ||
+        this.event_information_controls.invalid ||
+        this.payment_information_controls.get(this.payment_type).invalid
+      ) {
+        Swal.fire('Campos requeridos incompletos', '', 'info');
+        return;
+      }
     }
     this.isLoading = true;
     this._eventService
