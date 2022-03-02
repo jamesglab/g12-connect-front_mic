@@ -108,8 +108,8 @@ export const insertUsers = (form: any, totalPrices: any, box: any): any => {
                 event_information: {
                     event: item.event_information.event,
                     financial_cut: item.event_information.financial_cut,
-                    is_translator: item.event_information.event.is_translator,
-                    translator: form.payment_information.currency === 'COP' ? parseInt(item.event_information.event.translators?.cop) : parseInt(item.event_information.translators.prices?.usd),
+                    is_translator: item.event_information.active_translator,
+                    translator: item.event_information.active_translator ? (form.payment_information.currency === 'COP' ? parseInt(item.event_information.event.translators?.cop) : parseInt(item.event_information.translators.prices?.usd)) : 0,
                 },
                 assistant: {
                     id: item.assistant.id,
