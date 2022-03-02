@@ -165,9 +165,7 @@ export class RegisterUserBoxComponent implements OnInit {
   }
 
   addField(): void {
-    // if (this.formRegisterUser.controls.users.valid) {
     this.users().push(this.newUser());
-    // }
   }
 
   users(): FormArray {
@@ -270,11 +268,8 @@ export class RegisterUserBoxComponent implements OnInit {
       }
     });
 
-    user.controls.event_information['controls'].active_translator.valueChanges.subscribe((res) => {
-      if (user.controls.event_information['controls'].event.value) {
-        user.controls.event_information['controls'].event.value.active_translator = res;
-        this.cutClick();
-      }
+    user.controls.event_information['controls'].active_translator.valueChanges.subscribe((res: boolean) => {
+      this.cutClick();
     });
 
     user.controls.event_information['controls'].event.valueChanges.subscribe((res: any) => {
@@ -293,20 +288,31 @@ export class RegisterUserBoxComponent implements OnInit {
 
     let total_cop: number = 0;
     let total_usd: number = 0;
+
     let total_prices_translator_cop: number = 0;
     let total_prices_translator_usd: number = 0;
+
     let total_prices_event_cop: number = 0;
     let total_prices_event_usd: number = 0;
 
     for (let index = 0; index < this.formRegisterUser.controls.users['controls'].length; index++) {
 
-      if (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].event.value?.active_translator) {
+      if (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].event?.value.is_translator) {
+
         if (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value?.prices) {
-          total_cop += (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.cop + parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.cop));
-          total_prices_translator_cop += parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.cop);
-          total_usd += (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.usd + parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.usd));
-          total_prices_translator_usd += parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.usd);
+
+          if (this.formRegisterUser.controls.users['controls'][index].controls.event_information.controls.active_translator.value) {
+            total_cop += (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.cop + parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.cop));
+            total_usd += (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.usd + parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.usd));
+            total_prices_translator_cop += parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.cop);
+            total_prices_translator_usd += parseInt(this.formRegisterUser.controls.users['controls'][index].controls.event_information.value.event.translators.usd);
+          } else {
+            total_cop += this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.cop;
+            total_usd += this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.usd;
+          }
+
         }
+
       } else {
         if (this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value?.prices) {
           total_cop += this.formRegisterUser.controls.users['controls'][index].controls.event_information['controls'].financial_cut.value.prices.cop;
@@ -321,8 +327,10 @@ export class RegisterUserBoxComponent implements OnInit {
 
     this.totalPrices.total_price_cop = total_cop;
     this.totalPrices.total_price_usd = total_usd;
+
     this.totalPrices.prices_translator_cop = total_prices_translator_cop;
     this.totalPrices.prices_translator_usd = total_prices_translator_usd;
+
     this.totalPrices.prices_event_cop = total_prices_event_cop;
     this.totalPrices.prices_event_usd = total_prices_event_usd;
 

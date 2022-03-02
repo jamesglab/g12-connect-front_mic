@@ -202,7 +202,8 @@
 
                   <ng-template ngbPanelHeader let-opened="opened">
 
-                    <div class="d-flex m-4 accordion-button custom-header justify-content-between" [class.collapsed]="!opened">
+                    <div class="d-flex m-4 accordion-button custom-header justify-content-between"
+                      [class.collapsed]="!opened">
                       <p class="m-0">Usuario #{{i_user + 1}}</p>
                       <button ngbPanelToggle class="btn btn-link p-0">{{ opened ? 'Cerrar' : 'Abrir' }}</button>
                     </div>
@@ -230,10 +231,12 @@
                           </mat-autocomplete>
                         </mat-form-field>
 
-                        <mat-slide-toggle class="example-margin" formControlName="active_translator"
+                        <ng-container
                           *ngIf="users().controls[i_user]['controls'].event_information['controls'].event.value?.is_translator">
-                          Traductor
-                        </mat-slide-toggle>
+                          <mat-slide-toggle class="example-margin" formControlName="active_translator">
+                            Traductor
+                          </mat-slide-toggle>
+                        </ng-container>
 
                       </div>
 
