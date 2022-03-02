@@ -424,7 +424,8 @@ export class MakePdfService {
         { text: 'NOMBRES Y APELLIDOS', style: 'tableHeader' },
         { text: 'NOMBRE DEL EVENTO', style: 'tableHeader' },
         { text: 'PASTOR PRINCIPAL', style: 'tableHeader' },
-        { text: 'VALOR', style: 'tableHeader' },
+        { text: 'TRADUCTOR', style: 'tableHeader' },
+        { text: 'VALOR EVENTO', style: 'tableHeader' },
       ],
     ];
 
@@ -442,6 +443,12 @@ export class MakePdfService {
           tr.user?.type_church?.toString().toUpperCase() === 'MCI'
             ? `${tr.pastor?.name} ${tr.pastor?.last_name}`
             : tr.user?.name_pastor,
+          tr.is_translator
+            ? this.formatPrice(
+                tr.transaction.currency.toString().toLowerCase(),
+                tr.price_translator
+              )
+            : 'N/A',
           tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
             ? this.formatPrice(
                 tr.transaction.currency.toString().toLowerCase(),

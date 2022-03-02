@@ -62,7 +62,7 @@ export const createObjectReportByEvent = (report, i) => {
       : 'N/A',
     Traductor: report.is_translator ? 'Si' : 'No',
     'Valor Traductor': report.is_translator ? report.price_translator : 'N/A',
-    Costo:
+    'Costo del Evento':
       report.cut.prices[report.transaction.currency?.toString().toLowerCase()],
     Moneda: report.transaction.currency
       ? report.transaction.currency.toString().toUpperCase()
