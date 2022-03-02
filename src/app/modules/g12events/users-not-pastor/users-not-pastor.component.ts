@@ -297,16 +297,15 @@ export class UsersNotPastorComponent implements OnInit {
     }
   }
 
-  validatePaymentMethod(payment_method) {
-    if (payment_method.toLowerCase() == 'credit') {
-      return 'Tarjeta de credito'
-    } else if (payment_method.toLowerCase() == 'pse') {
-      return 'PSE'
-    } else if (payment_method.toLowerCase() == 'cash') {
-      return 'Efectivo'
-    } else if (payment_method.toLowerCase() == 'administration') {
-      return 'Administración'
-    }
+  validatePaymentMethod(payment_method: string): string {
+    let payments = {
+      "credit": "Tarjeta de crédito",
+      "pse": "PSE",
+      "cash": "Efectivo",
+      "administration": "Administración",
+      "box": "Caja"
+    };
+    return payments[payment_method.toLowerCase() || 'Validar nuevo caso'];
   }
 
   chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
