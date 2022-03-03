@@ -67,7 +67,8 @@ export const createObjectReportByEvent = (report, i) => {
     Moneda: report.transaction.currency
       ? report.transaction.currency.toString().toUpperCase()
       : 'N/A',
-    Actualizado: report.user_update ? report.user_update.name : 'N/A',
+    'Actualizado por': report.user_update ? report.user_update.name : 'N/A',
+    'Motivo de cambio': report.description_of_change,
   };
 };
 
