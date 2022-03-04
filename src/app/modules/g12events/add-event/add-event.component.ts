@@ -60,7 +60,11 @@ export class AddEventComponent implements OnInit {
       categorieAdd: [""],
       init_date: [],
       finish_date: [],
-      // hour: ['', [Validators.required, hourValidation.bind(this)]],
+      is_translator: [false],
+      translators: this.fb.group({
+        cop: [""],
+        usd: [""]
+      }),
       prices: this.fb.group({
         cop: [""],
         usd: [""],
@@ -68,7 +72,7 @@ export class AddEventComponent implements OnInit {
       visibility: [null],
       limit: [null],
       location: [],
-      view_hubilo: [null],
+      view_hubilo: [false],
       event_id_hubilo: [null],
     });
   }
@@ -225,9 +229,79 @@ export class AddEventComponent implements OnInit {
     );
   }
 
+  formatNumber(n) {
+    return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  }
+
+  formatCurrency(input: any, blur: string) {
+
+    // get input value
+    var input_val = input.target.value;
+
+    // don't validate empty input
+    if (input_val === "") { return; }
+
+    // original length
+    var original_len = input_val.length;
+
+    // initial caret position 
+    var caret_pos = input.target.selectionStart;
+
+    // check for decimal
+    if (input_val.indexOf(".") >= 0) {
+
+      // get position of first decimal
+      // this prevents multiple decimals from
+      // being entered
+      var decimal_pos = input_val.indexOf(".");
+
+      // split number by decimal point
+      var left_side = input_val.substring(0, decimal_pos);
+      var right_side = input_val.substring(decimal_pos);
+
+      // add commas to left side of number
+      left_side = this.formatNumber(left_side);
+
+      // validate right side
+      right_side = this.formatNumber(right_side);
+
+      // On blur make sure 2 numbers after decimal
+      if (blur === "blur") {
+        right_side += "00";
+      }
+
+      // Limit decimal to only 2 digits
+      right_side = right_side.substring(0, 2);
+
+      // join number by .
+      input_val = "$" + left_side + "." + right_side;
+
+    } else {
+      // no decimal entered
+      // add commas to number
+      // remove all non-digits
+      input_val = this.formatNumber(input_val);
+      input_val = "$" + input_val;
+
+      // final formatting
+      if (blur === "blur") {
+        input_val += ".00";
+      }
+    }
+
+    // send updated string to input
+    input.target.value = input_val;
+
+    // put caret back in the right position
+    var updated_len = input_val.length;
+    caret_pos = updated_len - original_len + caret_pos;
+    input.target.setSelectionRange(caret_pos, caret_pos);
+  }
+
   //CREACION DEL EVENTO
   onSubmit() {
     //VALIDAMOS SI LOS CAMPOS EN EL FORMULARIO ESTAN COMPLETOS
+    this.isLoading = true;
     if (this.addEventForm.invalid) {
       return;
     }
@@ -238,6 +312,7 @@ export class AddEventComponent implements OnInit {
     this.cuts.value.map((cute) => {
       cont_quantity = cont_quantity + parseInt(cute.quantity);
     });
+
     //VALIDAMOS EL LIMITE DE USUARIOS POR A CANTIDAD DE LOS CORTES CREADOS
     if (cont_quantity <= parseInt(this.addEventForm.value.limit)) {
       //VALIDAMOS LA CREACION DE LOS CORTES
@@ -245,14 +320,21 @@ export class AddEventComponent implements OnInit {
       // VALIDAMOS QUE EXISTAN CORTES
       if (this.cuts.value.length == 0) {
         //MOSRAMOS EL ERROR DE LOS CORTES
+        this.isLoading = false;
         this.showMessage(2, "No has creado cortes");
       } else {
+
         if (cuts) {
           //CREAMOS EL EVENTO CON LOS DETALLES DEL EVENTO Y LOS CORTES
+          var { translators } = this.addEventForm.getRawValue();
+          let cop = translators.cop.replace("$", "").replace(",", "");
+          let usd = translators.usd.replace("$", "").replace(",", ".");
+
           const updateEventSubscr = this.eventsService
-            .create({ transaction_info: this.addEventForm.getRawValue(), cuts })
+            .create({ transaction_info: { ...this.addEventForm.getRawValue(), translators: { cop, usd } }, cuts })
             .subscribe(
               (res: any) => {
+                this.isLoading = false;
                 //MOSTRAMOS EL MENSAJE DE CREACION DEL EVENTO
                 this.showMessage(
                   1,
@@ -261,6 +343,7 @@ export class AddEventComponent implements OnInit {
                 this.router.navigate(["g12events"]);
               },
               (err) => {
+                this.isLoading = false;
                 //MOSTRAMOS EL ERROR DE NO CREACION DEL EVENTO
                 Swal.fire(
                   err ? err : "Ocurrio un error intenta mas tarde!",
@@ -271,12 +354,16 @@ export class AddEventComponent implements OnInit {
             );
           this.unsubscribe.push(updateEventSubscr);
         } else {
+          this.isLoading = false;
           this.showMessage(2, "Hay campos vacios requeridos en los cortes");
         }
+
       }
     } else {
+      this.isLoading = false;
       this.showMessage(2, "Verifica la capacidad de los cortes");
     }
+
   }
 
   //PODEMOS MOSTRAR UN MENSAJE

@@ -1,0 +1,28 @@
+.container-buttons-add {
+    display: flex;
+    justify-content: right;
+    .btn-light-danger {
+        margin-right: 10px;
+    }
+    .btn-light-success {
+        margin-left: 10px;
+    }
+}
+
+.container-prices {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    .item-price {
+        text-align: center;
+    }
+}
+
+.sticky-values {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 999999;
+    padding: 5px;
+}

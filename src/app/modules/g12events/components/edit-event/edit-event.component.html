@@ -78,7 +78,7 @@
                   </mat-slide-toggle>
                 </div>
               </div>
-              
+
               <ng-container *ngIf="editEventForm.get('view_hubilo').value">
                 <mat-form-field class="example-full-width" appearance="fill">
                   <mat-label>Ingresa código Hubilo</mat-label>
@@ -117,6 +117,37 @@
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-date-range-picker #picker></mat-date-range-picker>
               </mat-form-field>
+
+              <div class="row">
+
+                <div class="col-xl-12 col-md-12 col-sm-12">
+                  <mat-slide-toggle formControlName="is_translator">
+                    <h6>Servicio traductor</h6>
+                  </mat-slide-toggle>
+                </div>
+
+                <ng-container *ngIf="editEventForm.get('is_translator').value">
+
+                  <div formGroupName="translators">
+
+                    <mat-form-field class="example-full-width" appearance="fill">
+                      <mat-label>COP</mat-label>
+                      <input matInput autocomplete="off" formControlName="cop" type="text" data-type="currency"
+                        placeholder="Precio COP" (keyup)="formatCurrency($event,null)"
+                        (blur)="formatCurrency($event,'blur')" />
+                    </mat-form-field>
+
+                    <mat-form-field class="example-full-width" appearance="fill">
+                      <mat-label>USD</mat-label>
+                      <input matInput autocomplete="off" formControlName="usd" type="text" data-type="currency"
+                        placeholder="Precio USD" (keyup)="formatCurrency($event,null)"
+                        (blur)="formatCurrency($event,'blur')" />
+                    </mat-form-field>
+                  </div>
+
+                </ng-container>
+
+              </div>
 
             </div>
             <div class="col-xl-6 col-sm-12">
@@ -233,7 +264,8 @@
                           <mat-date-range-input [rangePicker]="picker" [max]="editEventForm.get('finish_date').value"
                             [min]="editEventForm.get('init_date').value">
                             <input matStartDate placeholder="Fecha de inicio" formControlName="date_init" />
-                            <input matEndDate placeholder="Fecga de fin" formControlName="date_finish" (dateChange)="changeCutDate($event)" />
+                            <input matEndDate placeholder="Fecga de fin" formControlName="date_finish"
+                              (dateChange)="changeCutDate($event, i)" />
                           </mat-date-range-input>
                           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                           <mat-date-range-picker #picker></mat-date-range-picker>

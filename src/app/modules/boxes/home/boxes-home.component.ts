@@ -8,44 +8,41 @@ import { BoxService } from './_services/Boxes.service';
   templateUrl: './boxes-home.component.html',
   styleUrls: ['./boxes-home.component.scss'],
 })
+
 export class BoxesHomeComponent implements OnInit {
-  public box;
-  public events = [];
+
+  public box: any;
+  public events: any = [];
+
   constructor(
     private _boxService: BoxService,
-    private cdr: ChangeDetectorRef,
-  ) {}
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
-    
     this.validateUserBox();
     this.getEventsBox();
   }
 
   //VALIDAMOS LA CAJA DEL USUARIO
   validateUserBox() {
-    this._boxService.findBoxByUser().subscribe(
-      (res) => {
-        //ASIGNAMOS LA CAJA CONSULTADA DEL USUARIO
-        this.box = res;
-        this.cdr.detectChanges();
-      },
-      (err) => {
-        //MOSTRAMOS EL ERROR DE QUE EL USUARIO NO TIENE LA CAJA
-        Swal.fire(err ? err : 'Usuario sin caja asignada', '', 'error');
-      }
-    );
+    this._boxService.findBoxByUser().subscribe((res: any) => {
+      //ASIGNAMOS LA CAJA CONSULTADA DEL USUARIO
+      this.box = res;
+      this.cdr.detectChanges();
+    }, err => {
+      //MOSTRAMOS EL ERROR DE QUE EL USUARIO NO TIENE LA CAJA
+      Swal.fire(err ? err : 'Usuario sin caja asignada', '', 'error');
+      throw err;
+    });
   }
 
   getEventsBox() {
-    this._boxService.getEventsBox().subscribe(
-      (res) => {
-        this.events = res;
-        this.cdr.detectChanges();
-      },
-      (err) => {
-        throw new Error('err');
-      }
-    );
+    this._boxService.getEventsBox().subscribe((res: any) => {
+      this.events = res;
+      this.cdr.detectChanges();
+    }, err => {
+      throw err;
+    });
   }
 }

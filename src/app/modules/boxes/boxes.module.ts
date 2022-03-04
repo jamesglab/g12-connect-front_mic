@@ -27,7 +27,7 @@ import { ConsolidatedBunkerComponent } from './home/box-reports/tables/consolida
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
-    InlineSVGModule,
+    InlineSVGModule
   ]
 })
 export class BoxesModule { }

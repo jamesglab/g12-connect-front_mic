@@ -1,11 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DetailRegisterComponent } from '../detail-register/detail-register.component';
@@ -16,17 +9,19 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { MakePdfService } from '../_services/make-pdf.service';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+
 @Component({
   selector: 'app-registered-users',
   templateUrl: './registered-users.component.html',
   styleUrls: ['./registered-users.component.scss'],
 })
+
 export class RegisteredUsersComponent implements OnInit {
+
   /**VARIABLES DE COMPONENTES PADRES */
-  @Input() box;
+  @Input() box: any;
 
   /**SALIDAS DEL COMPONENTE HIJO*/
-
   @Output() refresh_events = new EventEmitter<any>();
 
   /**
@@ -63,9 +58,9 @@ export class RegisteredUsersComponent implements OnInit {
     private _boxService: BoxService,
     private cdr: ChangeDetectorRef,
     private _makePdfService: MakePdfService
-  ) {}
+  ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   /**MODALES*/
 

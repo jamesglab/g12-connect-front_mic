@@ -21,7 +21,6 @@ export class changeEventUserComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
-    this.report.transaction.payment_method = this.formatPaymentMethod(this.report.transaction.payment_method);
   }
 
   buildForm() {
@@ -31,17 +30,6 @@ export class changeEventUserComponent implements OnInit {
       description: [null, Validators.required],
       transaction: [this.report.transaction.id],
     });
-  }
-
-  formatPaymentMethod(type: string): string {
-    let payments = {
-      "credit": "Tarjeta de crédito",
-      "pse": "PSE",
-      "cash": "Efectivo",
-      "administration": "Administración",
-      "box": "Caja"
-    };
-    return payments[type.toLocaleLowerCase() || ''];
   }
 
   onSubmit() {

@@ -105,19 +105,51 @@
               </mat-form-field>
 
               <div class="row">
+
+                <div class="col-xl-12 col-md-12 col-sm-12">
+                  <mat-slide-toggle formControlName="is_translator">
+                    <h6>Servicio traductor</h6>
+                  </mat-slide-toggle>
+                </div>
+
+                <ng-container *ngIf="addEventForm.get('is_translator').value">
+
+                  <div formGroupName="translators">
+
+                    <mat-form-field class="example-full-width" appearance="fill">
+                      <mat-label>COP</mat-label>
+                      <input matInput autocomplete="off" formControlName="cop" type="text"
+                       data-type="currency" placeholder="Precio COP"
+                       (keyup)="formatCurrency($event,null)" (blur)="formatCurrency($event,'blur')"/>
+                    </mat-form-field>
+
+                    <mat-form-field class="example-full-width" appearance="fill">
+                      <mat-label>USD</mat-label>
+                      <input matInput autocomplete="off" formControlName="usd" type="text"
+                       data-type="currency" placeholder="Precio USD" 
+                       (keyup)="formatCurrency($event,null)" (blur)="formatCurrency($event,'blur')"/>
+                    </mat-form-field>
+                  </div>
+                  
+                </ng-container>
+
+              </div>
+
+              <div class="row">
                 <div class="col-xl-12 col-md-12 col-sm-12">
                   <mat-slide-toggle formControlName="view_hubilo">
                     <h6>Ver en Hubilo</h6>
                   </mat-slide-toggle>
                 </div>
+
+                <ng-container *ngIf="addEventForm.get('view_hubilo').value">
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Ingresa código Hubilo</mat-label>
+                    <input matInput autocomplete="off" formControlName="event_id_hubilo" />
+                  </mat-form-field>
+                </ng-container>
               </div>
-              
-              <ng-container *ngIf="addEventForm.get('view_hubilo').value">
-                <mat-form-field class="example-full-width" appearance="fill">
-                  <mat-label>Ingresa código Hubilo</mat-label>
-                  <input matInput autocomplete="off" formControlName="event_id_hubilo" />
-                </mat-form-field>
-              </ng-container>
+
               <hr />
 
               <div formGroupName="prices">
@@ -243,7 +275,7 @@
                                   </mat-slide-toggle>
                                 </div>
                               </div>
-      
+
                               <div class="row mb-8">
                                 <div class="col-xl-12 col-md-12 col-sm-12">
                                   <mat-slide-toggle formControlName="see_box">
@@ -251,7 +283,7 @@
                                   </mat-slide-toggle>
                                 </div>
                               </div>
-      
+
                               <div class="row">
                                 <div class="col-xl-12 col-md-12 col-sm-12">
                                   <mat-slide-toggle formControlName="see_massive">

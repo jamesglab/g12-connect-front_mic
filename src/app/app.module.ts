@@ -60,13 +60,13 @@ export function getHighlightLanguages() {
     ClipboardModule,
     environment.isMockEnabled
       ? HttpClientInMemoryWebApiModule.forRoot(FakeAPIService, {
-          passThruUnknownUrl: true,
-          dataEncapsulation: false,
-        })
+        passThruUnknownUrl: true,
+        dataEncapsulation: false,
+      })
       : [],
     AppRoutingModule,
     InlineSVGModule.forRoot(),
-    NgbModule,
+    NgbModule
   ],
   providers: [
     // CREAMOS UN INTERCEPTOR EL CUAL VA A VALIDAR TODAS LAS SOLICITUDES HTTP QUE SE EJECUTEN
@@ -87,4 +87,4 @@ export function getHighlightLanguages() {
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

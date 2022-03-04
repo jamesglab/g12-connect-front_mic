@@ -5,39 +5,39 @@ import {
   ViewChild,
   SimpleChanges,
   ChangeDetectorRef,
-} from "@angular/core";
-import { MatTableDataSource } from "@angular/material/table";
-import { MatPaginator } from "@angular/material/paginator";
-import { Subscription } from "rxjs";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { G12eventsService } from "../../_services/g12events.service";
-import { Donation } from "../../_models/donation.model";
-import { EditEventComponent } from "../edit-event/edit-event.component";
-import { GenerateCodesComponent } from "../generate-codes/generate-codes.component";
-import { EmailEventComponent } from "../../email-event/email-event.component";
-import { ExportService } from "src/app/modules/_services/export.service";
-import Swal from "sweetalert2";
-import { createObjectReport } from "./moks/reports.mok";
+} from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { Subscription } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { G12eventsService } from '../../_services/g12events.service';
+import { Donation } from '../../_models/donation.model';
+import { EditEventComponent } from '../edit-event/edit-event.component';
+import { GenerateCodesComponent } from '../generate-codes/generate-codes.component';
+import { EmailEventComponent } from '../../email-event/email-event.component';
+import { ExportService } from 'src/app/modules/_services/export.service';
+import Swal from 'sweetalert2';
+import { createObjectReport } from './moks/reports.mok';
 
 @Component({
-  selector: "app-events-table",
-  templateUrl: "./events-table.component.html",
-  styleUrls: ["./events-table.component.scss"],
+  selector: 'app-events-table',
+  templateUrl: './events-table.component.html',
+  styleUrls: ['./events-table.component.scss'],
 })
 export class EventsTableComponent implements OnInit {
-  @Input() public search: String = "";
+  @Input() public search: String = '';
   public isLoading: boolean = false;
-  public export_excel = "";
+  public export_excel = '';
   private unsubscribe: Subscription[] = [];
   public email_image;
 
   public displayedColumns: String[] = [
-    "image",
-    "name",
-    "description",
-    "category",
-    "status",
-    "actions",
+    'image',
+    'name',
+    'description',
+    'category',
+    'status',
+    'actions',
   ];
   public dataSource: MatTableDataSource<Donation[]>;
 
@@ -48,7 +48,7 @@ export class EventsTableComponent implements OnInit {
     private modalService: NgbModal,
     private exportService: ExportService,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.getAllEvents();
@@ -67,7 +67,7 @@ export class EventsTableComponent implements OnInit {
   getAllEvents() {
     // CONSUMIMOS EL ENDPOINT PRA OBTENER LOS EVENTOS
     const goDataSubscr = this.eventsService
-      .getAll({ type: "G12_EVENT" })
+      .getAll({ type: 'G12_EVENT' })
       .subscribe(
         (res: any) => {
           //VALIDAMOS EL DATASOURCE
@@ -93,16 +93,16 @@ export class EventsTableComponent implements OnInit {
     //VALIDAMOS SI HAY UN REPORTE EJECUANDOSE
     if (this.export_excel) {
       Swal.fire(
-        "Se esta procesando tu solicitud",
-        "intenta mas tarde",
-        "warning"
+        'Se esta procesando tu solicitud',
+        'intenta mas tarde',
+        'warning'
       );
     } else {
       //MOSTRAMOS MENSAJE DE EJECUANDO EL REPORTE
       Swal.fire(
-        "Estamos procesando la información",
-        "esto puede tardar un momento",
-        "info"
+        'Estamos procesando la información',
+        'esto puede tardar un momento',
+        'info'
       );
       //AGREGAMOS EL ID DE LA DONACION A LA BANDERA DE REPORTE DE EXCEL
       this.export_excel = donation.id;
@@ -129,7 +129,7 @@ export class EventsTableComponent implements OnInit {
               res.reports.map((item, i) => {
                 total_donations.push(createObjectReport(item, i));
               });
-              resolve({ "Det. Total Don Nal": total_donations });
+              resolve({ 'Det. Total Don Nal': total_donations });
             },
             (err) => {
               reject(err);
@@ -145,7 +145,7 @@ export class EventsTableComponent implements OnInit {
               res.reports.map((item, i) => {
                 total_donations.push(createObjectReport(item, i));
               });
-              resolve({ "Det. Total Don Bog": total_donations });
+              resolve({ 'Det. Total Don Bog': total_donations });
             },
             (err) => {
               reject(err);
@@ -160,7 +160,7 @@ export class EventsTableComponent implements OnInit {
               res.reports.map((item, i) => {
                 total_donations.push(createObjectReport(item, i));
               });
-              resolve({ "Det.G12.Otras": total_donations });
+              resolve({ 'Det.G12.Otras': total_donations });
             },
             (err) => {
               reject(err);
@@ -182,7 +182,7 @@ export class EventsTableComponent implements OnInit {
         new Promise((resolve, reject) => {
           this.eventsService.reportsInternationalMCI(donation.id).subscribe(
             (res) => {
-              resolve({ "Int-MCI": res.reports });
+              resolve({ 'Int-MCI': res.reports });
             },
             (err) => {
               reject(err);
@@ -193,7 +193,7 @@ export class EventsTableComponent implements OnInit {
         new Promise((resolve, reject) => {
           this.eventsService.reportsInternationalOthers(donation.id).subscribe(
             (res) => {
-              resolve({ "Int-G12": res.reports });
+              resolve({ 'Int-G12': res.reports });
             },
             (err) => {
               reject(err);
@@ -204,7 +204,7 @@ export class EventsTableComponent implements OnInit {
         new Promise((resolve, reject) => {
           this.eventsService.reportsDetailBogota(donation.id).subscribe(
             (res) => {
-              resolve({ "Detalle bogota": res.reports });
+              resolve({ 'Detalle bogota': res.reports });
             },
             (err) => {
               reject(err);
@@ -227,7 +227,7 @@ export class EventsTableComponent implements OnInit {
       //REPORTE TOTAL
       let constructor_reports = {};
       //ABILITAMOS LA DESCARGA DE OTRO REPORTE
-      this.export_excel = "";
+      this.export_excel = '';
       //HACEMOS UN DETECTOR DE LOS CAMBIOS EN EL HTML
       this.cdr.detectChanges();
       //RECORREMOS LOS REPORTES
@@ -241,7 +241,7 @@ export class EventsTableComponent implements OnInit {
           }
         });
       });
-      //USAMOS EL SERVICIO PARA GENERAR EL REPORTE  
+      //USAMOS EL SERVICIO PARA GENERAR EL REPORTE
       this.exportService.exportConsolidateWithStyles(
         constructor_reports,
         donation.name.toString().trim().toUpperCase()
@@ -251,7 +251,7 @@ export class EventsTableComponent implements OnInit {
 
   //VALIDAMOS EL ERROR DE LA IMAGEN Y ANEXAMOS LA IMAGEN DE CONEXION
   handleErrorImage($event: any) {
-    $event.target.src = "assets/media/logos/logoConexion12.png";
+    $event.target.src = 'assets/media/logos/logoConexion12.png';
   }
 
   //APLICAMOS EL FILTRO DE ANGULAR MATERIAL
@@ -271,15 +271,14 @@ export class EventsTableComponent implements OnInit {
 
   //EDITAMOS UN EVENTO
   handleToEdit(element: Donation) {
-
     const MODAL = this.modalService.open(EditEventComponent, {
-      size: "lg", //TAMAÑO DEL MODAL
+      size: 'lg', //TAMAÑO DEL MODAL
       centered: true, // CENTRAMOS EL MODAL
     });
     MODAL.componentInstance.event = element; //AGREGAMOS EL EVENTO A LA VARIABLE 'event' DEL COMPONENTE EditEventComponent
     MODAL.result.then((data) => {
       //CONSULTAMOS LA RESPUESTA DEL MODAL
-      if (data == "success") {
+      if (data == 'success') {
         //SI LA DATA ES SUCCESS
         this.getAllEvents(); //CONSULTAMOS LOS EVENTOS
       }
@@ -294,8 +293,8 @@ export class EventsTableComponent implements OnInit {
   handleToCreateCodes(element) {
     //CONSULTAMOS EL EVENTO PO EL ID
     const MODAL = this.modalService.open(GenerateCodesComponent, {
-      windowClass: "fadeIn",
-      size: "lg",
+      windowClass: 'fadeIn',
+      size: 'lg',
       backdrop: true,
       keyboard: true,
       centered: true,
@@ -303,7 +302,7 @@ export class EventsTableComponent implements OnInit {
     //AGREGAMOS EL EVENTO A LA INTANCIA DEL COMPONENTE EVENT
     MODAL.componentInstance.event = element;
     MODAL.result.then((data) => {
-      if (data == "success") {
+      if (data == 'success') {
         this.getAllEvents();
       }
     });
@@ -314,8 +313,8 @@ export class EventsTableComponent implements OnInit {
   //MODAL DE CREACION DE EMAIL EN EL EVENTO
   handleEmailEvent(event) {
     const MODAL = this.modalService.open(EmailEventComponent, {
-      windowClass: "fadeIn",
-      size: "xl",
+      windowClass: 'fadeIn',
+      size: 'xl',
       backdrop: true,
       keyboard: true,
       centered: true,

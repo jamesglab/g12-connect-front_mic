@@ -1,17 +1,21 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
+  AbstractControl,
+  FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { map, startWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { G12eventsService } from 'src/app/modules/g12events/_services/g12events.service';
-import { UserService } from 'src/app/modules/_services/user.service';
 import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
-import { environment } from 'src/environments/environment';
+import { UserService } from 'src/app/modules/_services/user.service';
+import { MustMatch } from 'src/app/_helpers/tools/must-match.validators';
 import Swal from 'sweetalert2';
 import { BoxService } from '../_services/Boxes.service';
+import { insertUsers } from 'src/app/_helpers/tools/parsedata/parse-data-towin.tool';
 import { MakePdfService } from '../_services/make-pdf.service';
 
 @Component({
@@ -20,284 +24,144 @@ import { MakePdfService } from '../_services/make-pdf.service';
   styleUrls: ['./register-user-box.component.scss'],
 })
 export class RegisterUserBoxComponent implements OnInit {
-  //OBJETOS DEL USUARIO
-  public box;
+  public formRegisterUser: FormGroup;
 
-  //ARRAYS DE CONSULTAS
-  public leaders: [] = [];
-  public pastors: [] = [];
-  public churchs = [];
-  public countries: any[] = COUNTRIES; //LISTADO DE PAISES;
-  public events: [] = [];
-  public financial_cuts: [] = [];
+  public events: any = [];
+  public countries: any[] = COUNTRIES;
 
-  //FORMULARIO
+  public totalPrices: any = {
+    total_price_cop: 0,
+    total_price_usd: 0,
+    prices_translator_cop: 0,
+    prices_translator_usd: 0,
+    prices_event_cop: 0,
+    prices_event_usd: 0,
+  };
+  public box: any = {};
 
-  public register_user: FormGroup;
-  //CONTROLES EXTERNOS AL FORMULARIO
-  public description_of_changue = new FormControl('', Validators.required);
-  public select_payment_getway = new FormControl('', Validators.required);
-  public currency = new FormControl('', Validators.required);
-
-  public confirm_email = new FormControl(
-    null,
-    Validators.compose([Validators.required, Validators.email])
-  );
-
-  //BANDERAS BOOLEANAS
   public isLoading: boolean = false;
-  public find_user: boolean = false;
-  public disable_ministerial_info: boolean = false;
+
+  public filteredCountries: Observable<string[]>;
+  public filteredCountriesUser: Observable<string[]>;
+  public filteredChurchs: Observable<string[]>;
 
   constructor(
     private fb: FormBuilder,
     public modal: NgbActiveModal,
-    private g12EventService: G12eventsService,
     public cdr: ChangeDetectorRef,
+    private g12EventService: G12eventsService,
     private userService: UserService,
     private boxService: BoxService,
     private _makePdfService: MakePdfService
   ) {}
 
   ngOnInit(): void {
-    this.buildForm();
-    this.getEvents();
+    this.getEvents().then(() => {
+      this.buildForm();
+    });
   }
 
-  //*************************/
-  // OPCIONES DEL FORMULARIO
-  //************************/
-
-  // CREAMOS EL FORMULARIO
   buildForm() {
-    this.register_user = this.fb.group({
-      //EVENT INFORMATION
-      event_information: this.fb.group({
-        event: [null, Validators.required],
-        financial_cut: [null, Validators.required],
-        quantity_tickets: [1],
-      }),
-      //USER INFORMATION
-      assistant: this.fb.group({
-        id: [null],
-        country: [Validators.required],
-        identification: [
-          null,
-          Validators.compose([
-            Validators.required,
-            Validators.pattern(/^[0-9a-zA-Z\s,-]+$/),
-            Validators.minLength(6),
-            Validators.maxLength(13),
-          ]),
-        ],
-        language: [null, Validators.required],
-        document_type: [null, Validators.required],
-        name: [null, Validators.required],
-        last_name: [null, Validators.required],
-        gender: [null, Validators.required],
-        phone: [null, Validators.required],
-        email: [
-          null,
-          Validators.compose([Validators.required, Validators.email]),
-        ],
-        type_church: [null, Validators.required],
-        network: [null],
-        leader: [{ value: null, disabled: true }],
-        pastor: [{ value: null }],
-        church: [{ value: null }],
-        name_pastor: [null],
-        name_church: [null],
-      }),
+    this.formRegisterUser = this.fb.group({
       payment_information: this.fb.group({
-        currency: ['COP'],
-        payment_type: ['BOX'],
-        platform: ['G12CONNECT'],
-        url_response: [environment.url_response],
-        amount: [],
+        name: [null, [Validators.required]],
+        last_name: [null, [Validators.required]],
+        email: [null, [Validators.required, Validators.email]],
+        document: [null, [Validators.required]],
+        document_type: ['CC', [Validators.required]],
+        country: [{ id: 82, name: 'COLOMBIA' }, [Validators.required]],
+        currency: ['COP', [Validators.required]],
+        payment_type: ['BOX', [Validators.required]],
+        platform: ['G12CONNECT', [Validators.required]],
+        is_dataphone: [null, [Validators.required]],
+        amount: [0],
+        description_of_change: [null],
       }),
+      users: this.fb.array([]),
     });
-    this.subscribeSelectors();
-  }
-
-  /**
-   *SUBSCRIPCIONES DEL FORMULARIO
-   */
-
-  subscribeSelectors() {
-    // NOS SUBSCRIBIMOS A LOS CAMBIOS DEL EVENTO SELECCIONADO
-    this.event_information_controls
-      .get('event')
-      .valueChanges.subscribe((event) => {
-        this.event_information_controls.get('financial_cut').reset(); //REINICIAMOS EL CORTE SELECCIONADO
-        this.financial_cuts = event.financialCut; //RENDERIZAMOS LOS CORTES SELECCIONADOS
-      });
-
-    //NOS CAMBIAMOS A LOS CAMBIOS DEL CORTE SELECCIONADO
-    this.event_information_controls
-      .get('financial_cut')
-      .valueChanges.subscribe((f_c) => {
-        if (f_c?.prices) {
-          this.payment_information
-            .get('amount')
-            .setValue(
-              f_c.prices[
-                this.payment_information_value.currency.toString().toLowerCase()
-              ]
-            );
-        }
-      });
-    //NOS SUBSCRIBIMOS A LOS CAMBIOS DEL CURRENCY
-    this.payment_information
-      .get('currency')
-      .valueChanges.subscribe((currency) => {
-        if (this.event_information_value?.financial_cut?.id) {
-          this.payment_information
-            .get('amount')
-            .setValue(
-              this.event_information_value?.financial_cut?.prices[
-                currency.toString().toLowerCase()
-              ]
-            );
-        }
-      });
-
-    //NOS SUSCRIBIMOS AL CAMBIO DEL TIPO DE IGLESIA
-    this.assistant_control
-      .get('type_church')
-      .valueChanges.subscribe((type_churh) => {
-        if (type_churh == 'MCI' && this.assistant_value.country) {
-          this.getChurchs();
-        }
-      });
-
-    this.assistant_control.get('country').valueChanges.subscribe((country) => {
-      //VALIDAMOS EL CAMBIO DE PAIS
-      if (country.toString().toUpperCase() == 'COLOMBIA') {
-        //PARA CASO COLOMBIA EXIGIMOS EL NUMERO DE IDENTIFICACON CON LOS VALORES A REQUERIR
-        this.assistant_control
-          .get('identification')
-          .setValidators([
-            Validators.required,
-            Validators.pattern(/^[0-9a-zA-Z\s,-]+$/),
-            Validators.minLength(6),
-            Validators.maxLength(13),
-          ]);
-        //EXIGIMOS EL TIPO DE DOCUMENTO
-        this.assistant_control
-          .get('document_type')
-          .setValidators([Validators.required]);
+    this.filteredCountriesUser = this.formRegisterUser.controls.payment_information[
+      'controls'
+    ].country.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._filter(value, 'countries'))
+    );
+    this.formRegisterUser.controls.payment_information[
+      'controls'
+    ].country.valueChanges.subscribe((res: any) => {
+      if (res.name === 'COLOMBIA') {
+        this.formRegisterUser.controls.payment_information[
+          'controls'
+        ].document.setErrors(null);
+        this.formRegisterUser.controls.payment_information[
+          'controls'
+        ].document.setValidators(Validators.required);
+        this.formRegisterUser.controls.payment_information[
+          'controls'
+        ].description_of_change.setErrors(null);
+        this.formRegisterUser.controls.payment_information[
+          'controls'
+        ].description_of_change.setValidators(null);
       } else {
-        //ELIMINAMOS LOS ERRORES Y LOS VALIDADORES DE IDENTIFICACION Y TIPO DE DOCUMENTO
-        this.assistant_control.get('identification').setValidators(null);
-        this.assistant_control.get('identification').setErrors(null);
-        this.assistant_control.get('document_type').setValidators(null);
-        this.assistant_control.get('document_type').setErrors(null);
-      }
-
-      if (this.assistant_value.type_churh == 'MCI') {
-        this.getChurchs();
+        this.formRegisterUser.controls.payment_information[
+          'controls'
+        ].document.setErrors(null);
+        this.formRegisterUser.controls.payment_information[
+          'controls'
+        ].document.setValidators(null);
+        this.formRegisterUser.controls.payment_information[
+          'controls'
+        ].description_of_change.setValidators(Validators.required);
       }
     });
-
-    //NOS SUBSCRIBIMOS A LOS CAMBIOS DE LA RED PARA REINICIAR LOS VALORES DE LOS PASTORES
-    this.assistant_control.get('network').valueChanges.subscribe((net) => {
-      this.pastors = [];
-      this.leaders = [];
-      this.assistant_control.get('pastor').reset();
-      this.assistant_control.get('leader').reset();
-    });
+    this.users().push(this.newUser());
   }
 
-  /**CONSULTAS A LA BASE DE DATOS */
-
-  getEvents() {
-    //CONSULTAMOS LOS EVENTOS
-    this.g12EventService.getEventsFilter().subscribe((res) => {
-      this.events = res;
-    });
-  }
-
-  //CONSULTAMOS LOS PASTORES QUE PERTENECEN A UNA RED SEGUN LA IGLESIA
-  //NETWORK = RED ;USER = USUARIO ENCONTRADO
-  getPastors(user_code, user?) {
-    this.pastors = [];
-    this.assistant_control.get('leader').disable();
-    this.assistant_control.get('pastor').disable();
-    this.userService
-      .getLeadersOrPastors({
-        userCode: user_code,  
-        church: user ? user.church_id : this.assistant_value?.church?.id,
-      })
-      .subscribe(
-        (res) => {
-          this.pastors = res;
-          this.assistant_control.get('pastor').enable(); //INHABILITAMOS EL SELECTOR DEL PASTOR
-          if (user) {
-            this.assistant_control
-              .get('pastor')
-              .setValue(res.find((pt) => pt.user_code == user.pastor_code));
-            this.assistant_control.get('pastor').disable();
-          }
+  getEvents(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.g12EventService.getEventsFilter().subscribe(
+        (res: any) => {
+          this.events = res;
+          this.cdr.detectChanges();
+          resolve(this.events);
         },
         (err) => {
+          reject(err);
           throw err;
         }
       );
+    });
   }
 
-  // CONSULTAMOS LOS LIDERES QUE PERTENECEN A LA RED DEL PASTOR
-  getLeaders(pastor, user?) {
-    this.leaders = []; //REINICIAMOS LOS LIDERES QUE CAMBIAN DE UN PASTOR A OTRO
-    this.assistant_control.get('leader').reset();
-    this.userService
-      .getLeadersOrPastors({
-        userCode: pastor.user_code,
-        church: user ? user.church_id : this.assistant_value?.church?.id,
-      })
-      .subscribe(
-        (res) => {
-          this.leaders = res;
-          this.assistant_control.get('leader').enable(); //HABILITAMOS EL SELECTOR DEL LIDER
-
-          //VALIDAMOS LA RENDERIZACION DEL USUARIO
-          if (user) {
-            //SETEAMOS LOS VALORES DEL LIDER
-            this.assistant_control
-              .get('leader')
-              .setValue(res.find((ld) => ld.user_code == user.leader_code));
-          }
-        },
-        (err) => {
-          throw err;
-        }
-      );
-  }
-
-  //CONSULTAMOS LAS IGLESIAS
-  getChurchs() {
-    this.userService
-      .getPlaces({
-        country: this.assistant_value.country.toUpperCase(),
-        type:
-          this.assistant_value.country.toUpperCase() == 'COLOMBIA'
-            ? 'national'
-            : 'international',
-      })
-      .subscribe((res) => {
-        this.churchs = res;
+  getChurchs(country: string): Promise<any> {
+    if (country) {
+      return new Promise((resolve, reject) => {
+        this.userService
+          .getPlaces({
+            country: country.toUpperCase(),
+            type:
+              country.toUpperCase() == 'COLOMBIA'
+                ? 'national'
+                : 'international',
+          })
+          .subscribe(
+            (res: any) => {
+              resolve(res);
+            },
+            (err) => {
+              reject(err);
+              throw err;
+            }
+          );
       });
+    }
   }
 
-  //CONSULTAMOS LAS IGLESIA POR ID
-  getChurchById(id) {
+  getChurchById(id: string, position: number): void {
     this.userService.getChurchById({ id }).subscribe(
-      (res) => {
-        let city = [];
-        city.push(res);
-        this.assistant_control
-          .get('church')
-          .setValue(city.find((ch) => ch.id == id));
-        this.churchs = city;
+      (church: any) => {
+        this.formRegisterUser.controls.users['controls'][
+          position
+        ].controls.assistant['controls'].church.setValue(church);
       },
       (err) => {
         throw err;
@@ -305,325 +169,678 @@ export class RegisterUserBoxComponent implements OnInit {
     );
   }
 
-  //BUSCAMOS EL USUARIO
-  searchUser(autocomplete?) {
-    const filters = {};
-    console.log('crearemos filtros');
-    if (this.assistant_value.identification) {
-      filters['identification'] = this.assistant_value.identification.trim();
-    }
-
-    if (
-      this.confirm_email.value &&
-      this.assistant_value.email == this.confirm_email.value
-    ) {
-      filters['email'] = this.assistant_value.email.trim().toLowerCase();
-    }
-
-    //AGREGAMOS LOS FILTROS DEL USUARIO
-    if (Object.keys(filters).length > 0) {
-      this.userService.getUserInfo(filters).subscribe(
-        (res) => {
-          //PONEMOS EL TRUE DEL USUARIO
-          this.find_user = true;
-          //VALIDAMOS EL AUTOCOMPLETE DEL FORMULARIO
-          if (autocomplete) {
-            //AUTOCOMPLEMENTAMOS LOS DATOS DEL USUARIO ENCONTRADO
-            this.setUser(res);
-          } else {
-            //SI NO SE REQUIERE AUTOCOMPLEMENTAR LOS DATOS MANDAMOS LA CREACION DEL USUARIO Y SETEAMOS EL ID
-            this.assistant_control.get('id').setValue(res['id']);
-            //CREAMOS EL USUARIO
-            this.createUser();
+  getLeaders(position: number, pastor: any, user?: any): void {
+    this.users().controls[position]['controls'].assistant[
+      'controls'
+    ].leader.reset();
+    this.userService
+      .getLeadersOrPastors({
+        userCode: pastor.user_code,
+        church: this.users().controls[position]['controls'].assistant[
+          'controls'
+        ].church.value.id,
+      })
+      .subscribe(
+        (res: any) => {
+          this.users().controls[position]['controls'].assistant[
+            'controls'
+          ].all_leaders.setValue(res);
+          if (
+            this.formRegisterUser.controls.users['controls'][position].controls
+              .assistant['controls'].all_leaders.value
+          ) {
+            let searchLeader = this.formRegisterUser.controls.users['controls'][
+              position
+            ].controls.assistant['controls'].all_leaders.value.filter(
+              (x) => x.id === user.leader_id
+            );
+            if (searchLeader && searchLeader.length > 0) {
+              this.formRegisterUser.controls.users['controls'][
+                position
+              ].controls.assistant['controls'].leader.setValue(searchLeader[0]);
+            }
           }
         },
         (err) => {
-          if (autocomplete) {
-            this.disable_ministerial_info = false;
-            Swal.fire('No se encontro el usuario', '', 'info').then((res) => {
-              this.assistant_control.get('network').enable();
-              this.assistant_control.get('network').reset();
-              this.assistant_control.get('pastor').reset();
-              this.assistant_control.get('leader').reset();
-            });
-            throw err;
-          }
+          throw err;
         }
       );
+  }
+
+  getPastors(user_code: any, position: number, user?: any) {
+    this.users().controls[position]['controls'].assistant[
+      'controls'
+    ].all_pastors.reset();
+    this.users().controls[position]['controls'].assistant[
+      'controls'
+    ].pastor.reset();
+
+    if (
+      this.users().controls[position]['controls'].assistant['controls'].church
+        .value
+    ) {
+      this.userService
+        .getLeadersOrPastors({
+          userCode: user_code,
+          church: this.users().controls[position]['controls'].assistant[
+            'controls'
+          ].church.value.id,
+        })
+        .subscribe(
+          (res: any) => {
+            this.users().controls[position]['controls'].assistant[
+              'controls'
+            ].all_pastors.setValue(res);
+            if (
+              this.formRegisterUser.controls.users['controls'][position]
+                .controls.assistant['controls'].all_pastors.value
+            ) {
+              let searchPastor = this.formRegisterUser.controls.users[
+                'controls'
+              ][position].controls.assistant[
+                'controls'
+              ].all_pastors.value.filter(
+                (x) => x.user_code === user.pastor_code
+              );
+              if (searchPastor && searchPastor.length > 0) {
+                this.formRegisterUser.controls.users['controls'][
+                  position
+                ].controls.assistant['controls'].pastor.setValue(
+                  searchPastor[0]
+                );
+              }
+            }
+          },
+          (err) => {
+            throw err;
+          }
+        );
     }
   }
 
-  //SOLICITUD DE CREACION DE USUARIO
-  addUserSend() {
-    //VALIDAMOS LOS CAMPOS DEL USUARIO
-    if (
-      this.assistant_control.invalid ||
-      this.event_information_controls.invalid
-    ) {
-      Swal.fire('Datos incompletos', '', 'info');
-      return;
-    }
-    //CONFIRMAMOS EL EMAIL
-    if (this.assistant_control.value.email != this.confirm_email.value) {
-      Swal.fire('Los correos no coinciden', '', 'info');
-      return;
-    }
-    //MOSTRAMOS EL LOADER\
-    if (this.find_user) {
-      Swal.fire({
-        title: '¿Actualizar Usuario?',
-        icon: 'question',
-        text: 'El usuario que intentas registrar ya se encuentra en nuestro sistema. al continuar la información del usuario podria verse afectada',
-        confirmButtonText: 'Continuar',
-        cancelButtonText: 'Cancelar',
-        reverseButtons: true,
-        showCancelButton: true,
-        showCloseButton: true,
-      }).then((res) => {
-        if (res.isConfirmed) {
-          this.createUser();
+  addField(): void {
+    this.users().push(this.newUser());
+  }
+
+  users(): FormArray {
+    return this.formRegisterUser.get('users') as FormArray;
+  }
+
+  removeField(i: number) {
+    this.users().removeAt(i);
+  }
+
+  newUser(): FormGroup {
+    let user = this.fb.group({
+      event_information: this.fb.group({
+        all_event: [],
+        all_financial_cut: [],
+        event: [null, Validators.required],
+        financial_cut: [null, Validators.required],
+        active_translator: [false],
+      }),
+      assistant: this.fb.group(
+        {
+          id: [null],
+          country: [{ id: 82, name: 'COLOMBIA' }, [Validators.required]],
+          identification: [
+            null,
+            Validators.compose([
+              Validators.required,
+              Validators.pattern(/^[0-9a-zA-Z\s,-]+$/),
+              Validators.minLength(6),
+              Validators.maxLength(13),
+            ]),
+          ],
+          language: ['es', [Validators.required]],
+          document_type: ['CC', [Validators.required]],
+          name: [null, [Validators.required]],
+          last_name: [null, [Validators.required]],
+          gender: [null, [Validators.required]],
+          phone: [null, [Validators.required]],
+          email: [
+            null,
+            [Validators.compose([Validators.required, Validators.email])],
+          ],
+          email_confirmation: [null, [Validators.required, Validators.email]],
+          type_church: [null, Validators.required],
+          network: [null, [Validators.required]],
+          all_leaders: [[]],
+          leader: [null, [Validators.required]],
+          all_pastors: [[]],
+          pastor: [{ value: null }, [Validators.required]],
+          all_churchs: [[]],
+          church: [{ value: null }, [Validators.required]],
+          name_pastor: [null],
+          name_church: [null],
+        },
+        {
+          validator: MustMatch('email', 'email_confirmation'),
         }
-      });
-    } else {
-      //VALIDAMOS QUE EL USUARIO EXISTA
-      const filters = {};
-      if (this.assistant_value.identification) {
-        filters['identification'] = this.assistant_value.identification.trim();
+      ),
+    });
+    this.subscribeToValidators(user);
+    this.cdr.detectChanges();
+    return user;
+  }
+
+  static matches(form: AbstractControl) {
+    return form.get('email').value == form.get('emailConfirm').value
+      ? null
+      : { equals: true };
+  }
+
+  subscribeToValidators(user: any) {
+    user.controls.event_information['controls'].event.valueChanges.subscribe(
+      (event: any) => {
+        // Cuando el usuario elija un evento
+        user.controls.event_information['controls'].all_financial_cut.setValue(
+          event.financialCut
+        ); // En el select de corte se van a pushear los ítems del ítem seleccionado en la posicion financialCUt
+      }
+    );
+
+    user.controls.assistant['controls'].email.valueChanges.subscribe(
+      (name: any) => {
+        if (!name || name == null || name == '') {
+          user.controls.assistant['controls'].id.setValue(null);
+        }
+      }
+    );
+
+    user.controls.assistant[
+      'controls'
+    ].email_confirmation.valueChanges.subscribe((name: any) => {
+      if (!name || name == null || name == '') {
+        user.controls.assistant['controls'].id.setValue(null);
+      }
+    });
+
+    user.controls.assistant['controls'].type_church.valueChanges.subscribe(
+      (res: any) => {
+        if (res === 'MCI') {
+          this.getChurchs(
+            user.controls.assistant['controls'].country.value?.name
+          ).then((res: any) => {
+            user.controls.assistant['controls'].all_churchs.setValue(res);
+          });
+        } else {
+          user.controls.assistant['controls'].network.setErrors(null);
+          user.controls.assistant['controls'].network.setValidators(null);
+          user.controls.assistant['controls'].church.setErrors(null);
+          user.controls.assistant['controls'].church.setValidators(null);
+          user.controls.assistant['controls'].pastor.setErrors(null);
+          user.controls.assistant['controls'].pastor.setValidators(null);
+          user.controls.assistant['controls'].leader.setErrors(null);
+          user.controls.assistant['controls'].leader.setValidators(null);
+        }
+      }
+    );
+
+    user.controls.assistant['controls'].church.valueChanges.subscribe(
+      (church: any) => {
+        if (
+          church &&
+          user.controls.assistant['controls'].type_church.value &&
+          user.controls.assistant['controls'].network.value
+        ) {
+          this.userService
+            .getLeadersOrPastors({
+              userCode: user.controls.assistant['controls'].network.value,
+              church: church ? church.id : null,
+            })
+            .subscribe(
+              (res: any) => {
+                user.controls.assistant['controls'].all_pastors.setValue(res);
+              },
+              (err) => {
+                throw err;
+              }
+            );
+        }
+      }
+    );
+
+    user.controls.event_information[
+      'controls'
+    ].active_translator.valueChanges.subscribe((res: boolean) => {
+      this.cutClick();
+    });
+
+    user.controls.event_information['controls'].event.valueChanges.subscribe(
+      (res: any) => {
+        if (!res) {
+          this.totalPrices.total_price_cop = 0;
+          user.controls.event_information['controls'].financial_cut.setValue(
+            null
+          );
+          this.cutClick();
+        }
+      }
+    );
+
+    this.filteredCountries = user.controls.assistant[
+      'controls'
+    ].country.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._filter(value, 'countries'))
+    );
+    this.filteredChurchs = user.controls.assistant[
+      'controls'
+    ].church.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._filter(value, 'all_churchs'))
+    );
+  }
+
+  cutClick(): void {
+    let total_cop: number = 0;
+    let total_usd: number = 0;
+
+    let total_prices_translator_cop: number = 0;
+    let total_prices_translator_usd: number = 0;
+
+    let total_prices_event_cop: number = 0;
+    let total_prices_event_usd: number = 0;
+
+    for (
+      let index = 0;
+      index < this.formRegisterUser.controls.users['controls'].length;
+      index++
+    ) {
+      if (
+        this.formRegisterUser.controls.users['controls'][index].controls
+          .event_information['controls'].event?.value.is_translator
+      ) {
+        if (
+          this.formRegisterUser.controls.users['controls'][index].controls
+            .event_information['controls'].financial_cut.value?.prices
+        ) {
+          if (
+            this.formRegisterUser.controls.users['controls'][index].controls
+              .event_information.controls.active_translator.value
+          ) {
+            total_cop +=
+              this.formRegisterUser.controls.users['controls'][index].controls
+                .event_information['controls'].financial_cut.value.prices.cop +
+              parseInt(
+                this.formRegisterUser.controls.users['controls'][index].controls
+                  .event_information.value.event.translators.cop
+              );
+            total_usd +=
+              this.formRegisterUser.controls.users['controls'][index].controls
+                .event_information['controls'].financial_cut.value.prices.usd +
+              parseInt(
+                this.formRegisterUser.controls.users['controls'][index].controls
+                  .event_information.value.event.translators.usd
+              );
+            total_prices_translator_cop += parseInt(
+              this.formRegisterUser.controls.users['controls'][index].controls
+                .event_information.value.event.translators.cop
+            );
+            total_prices_translator_usd += parseInt(
+              this.formRegisterUser.controls.users['controls'][index].controls
+                .event_information.value.event.translators.usd
+            );
+          } else {
+            total_cop += this.formRegisterUser.controls.users['controls'][index]
+              .controls.event_information['controls'].financial_cut.value.prices
+              .cop;
+            total_usd += this.formRegisterUser.controls.users['controls'][index]
+              .controls.event_information['controls'].financial_cut.value.prices
+              .usd;
+          }
+        }
+      } else {
+        if (
+          this.formRegisterUser.controls.users['controls'][index].controls
+            .event_information['controls'].financial_cut.value?.prices
+        ) {
+          total_cop += this.formRegisterUser.controls.users['controls'][index]
+            .controls.event_information['controls'].financial_cut.value.prices
+            .cop;
+          total_usd += this.formRegisterUser.controls.users['controls'][index]
+            .controls.event_information['controls'].financial_cut.value.prices
+            .usd;
+        }
+      }
+
+      total_prices_event_cop += this.formRegisterUser.controls.users[
+        'controls'
+      ][index].controls.event_information['controls'].financial_cut.value.prices
+        .cop;
+      total_prices_event_usd += this.formRegisterUser.controls.users[
+        'controls'
+      ][index].controls.event_information['controls'].financial_cut.value.prices
+        .usd;
+    }
+
+    this.totalPrices.total_price_cop = total_cop;
+    this.totalPrices.total_price_usd = total_usd;
+
+    this.totalPrices.prices_translator_cop = total_prices_translator_cop;
+    this.totalPrices.prices_translator_usd = total_prices_translator_usd;
+
+    this.totalPrices.prices_event_cop = total_prices_event_cop;
+    this.totalPrices.prices_event_usd = total_prices_event_usd;
+  }
+
+  resetMinisterialInfo(position: number): void {
+    this.users().controls[position]['controls'].assistant[
+      'controls'
+    ].all_churchs.reset();
+    this.users().controls[position]['controls'].assistant[
+      'controls'
+    ].all_pastors.reset();
+    this.users().controls[position]['controls'].assistant[
+      'controls'
+    ].network.reset();
+    this.users().controls[position]['controls'].assistant[
+      'controls'
+    ].church.reset();
+    this.users().controls[position]['controls'].assistant[
+      'controls'
+    ].leader.reset();
+  }
+
+  searchUser(position?: number): void {
+    const filters: any = {};
+
+    if (position != null) {
+      if (
+        this.formRegisterUser.controls.users['controls'][position].controls
+          .assistant['controls'].identification.value
+      ) {
+        filters['identification'] = this.formRegisterUser.controls.users[
+          'controls'
+        ][position].controls.assistant['controls'].identification.value;
       }
 
       if (
-        this.confirm_email.value &&
-        this.assistant_value.email == this.assistant_value.confirm_email
+        this.formRegisterUser.controls.users['controls'][position].controls
+          .assistant['controls'].email.value &&
+        this.formRegisterUser.controls.users['controls'][position].controls
+          .assistant['controls'].email.value ==
+          this.formRegisterUser.controls.users['controls'][position].controls
+            .assistant['controls'].email_confirmation.value
       ) {
-        filters['email'] = this.assistant_value.email.trim().toLowerCase();
+        filters['email'] = this.formRegisterUser.controls.users['controls'][
+          position
+        ].controls.assistant['controls'].email.value;
       }
 
-      this.userService.getUserInfo(filters).subscribe(
-        (res) => {
-          this.assistant_control.get('id').setValue(res['id']);
-          this.find_user = true;
-        },
-        (err) => {
-          this.createUser();
-        }
-      );
-    }
-  }
-
-  createUser() {
-    // //EJECUTAMOS EL ENDPOINT CON LOS DATOS DEL USUARIO
-    try {
-      if (this.assistant_control.invalid) {
-        throw new Error('Información incompleta');
+      if (
+        this.formRegisterUser.controls.users['controls'][position].controls
+          .assistant['controls'].country.value
+      ) {
+        filters['country'] = this.formRegisterUser.controls.users['controls'][
+          position
+        ].controls.assistant['controls'].country.value?.name;
       }
 
-      if (this.event_information_controls.invalid) {
-        throw new Error('Información del evento incompleta ');
-      }
-      //CREAMOS UNA VARIABLE CON EL PAYLOAD
-      let payload = this.register_user.getRawValue();
-
-      //VALIDAREMOS LA INFORMACION MINISTERIAL
-      switch (payload.assistant.type_church) {
-        case 'MCI':
-          //CASO MCI VALIDAMOS PASTOR IGLESIA Y LIDER
-          if (
-            !payload.assistant.pastor?.id ||
-            !payload.assistant.church?.id ||
-            !payload.assistant.leader?.id
-          ) {
-            //GENERAMOS ERROR SI NO ENCONTRAMOS
-            throw new Error('Revisa la información ministerial');
-          }
-          break;
-
-        //CASOS G12 OT VALIDAMOS POR name_pastor name_church
-        case 'G12':
-        case 'OT': {
-          if (
-            !payload.assistant.name_pastor ||
-            !payload.assistant.name_church
-          ) {
-            throw new Error('Revisa la información ministerial');
-          } else {
-            payload.assistant.pastor = {
-              name: payload.assistant.name_pastor,
-            };
-
-            payload.assistant.church = {
-              name: payload.assistant.name_church,
-            };
-          }
-          break;
-        }
-        default: {
-          throw new Error('Este caso no existe');
-        }
-      }
-
-      //VALIDAMOS SI HAY UN METODO DE PAGO SELECCIONADO
-      if (!this.select_payment_getway.value) {
-        //CREAMOS UN ERROR DE INFORMACION DE PAGO INCOMPLETA
-        throw new Error('Selecciona una forma de pago');
-      }
-      //HACEMOS UN SWITCH DE LOS DIFERENTES METODOS QUE NECESITAREMOS VALIDAR
-      switch (this.select_payment_getway.value) {
-        //CASO CREDITO NECESITAMOS COMPLEMENTAR LA INFORMACION DE REFERENCIA
-        case 'CREDITO/':
-          //VALIDAMOS LA DESCRIPCION DEL PAGO
-          if (!this.description_of_changue.value) {
-            //CREAMOS UN ERROR DE REFERENCIA DE PAGO INCOMPLETA
-            throw new Error('Referencia de pago incompleta');
-          } else {
-            payload.payment_information.description_of_change =
-              this.description_of_changue.value;
-          }
-          break;
-      }
-
-      // MOSTRAMOS EL LOADER
-      this.isLoading = true;
-      this.boxService
-        .registerOneUser({
-          ...payload,
-          box: this.box,
-        })
-        .subscribe(
-          (res) => {
-            //OCULTAMOS EL LOADER
-            this.isLoading = false;
-            //MOSTRAMOS EL MENSAJE DE SUCCESS
-            Swal.fire('Usuario registrado', '', 'success').then(r=>{
-              this._makePdfService.createPdf(res.ref, this.box);
-              this.modal.close();
-            });
-            //CERRAMOS EL MODAL
-            
-          },
-          (err) => {
-            this.isLoading = false;
-            Swal.fire(
-              err ? err : 'No se pudo registrar el usuario',
-              '',
-              'error'
-            );
-          }
-        );
-    } catch (err) {
-      Swal.fire(
-        err.message ? err.message : 'No pudimos ejecutar la transacción',
-        '',
-        'info'
-      );
-    }
-  }
-
-  //****************************/
-  //CONTROLES DEL FORMULARIO
-  //****************************/
-
-  setUser(user) {
-    this.assistant_control.get('type_church').setValue(user.type_church);
-
-    if (user?.type_church) {
-      //INHABILITAMOS LA INFORMACION MINISTERIAL AL EDITAR
-      this.disable_ministerial_info = true;
-      switch (user?.type_church?.toString().toUpperCase()) {
-        case 'MCI':
-          //DISABLE INPUTS
-          this.assistant_control.get('church').disable();
-          this.assistant_control.get('network').disable();
-
-          //SETEAMOS LOS VALORES DE LA RED
-          this.assistant_control.get('network').setValue(user.network);
-
-          //CONSULTAMOS LOS DATOS MINISTERIALES PARA POSTERIORMENTE AUTOCOMPLEMENTARLOS
-          this.getPastors(user.pastor_code, user);
-          this.getLeaders({ user_code: user.leader_code }, user);
-          this.getChurchById(user.church_id);
-          break;
-
-        case 'OT':
-        case 'G12': {
-          this.assistant_control.get('name_pastor').setValue('name_pastor');
-          this.assistant_control.get('name_church').setValue('name_church');
-          break;
-        }
+      if (
+        this.formRegisterUser.controls.users['controls'][position].controls
+          .assistant['controls'].document_type.value
+      ) {
+        filters['document_type'] = this.formRegisterUser.controls.users[
+          'controls'
+        ][position].controls.assistant['controls'].document_type.value;
       }
     } else {
-      //HABILITAMOS LA INFORMACION MINISTERIAL PARA EDITARLA
-      this.disable_ministerial_info = false;
-    }
-    this.assistant_control.get('identification').disable();
-    //AUTOCOMPLETE DATA
+      if (
+        this.formRegisterUser.controls.payment_information['controls']
+          .document_type.value &&
+        this.formRegisterUser.controls.payment_information['controls']
+          .document_type.value
+      ) {
+        if (
+          this.formRegisterUser.controls.payment_information['controls']
+            .document.value
+        ) {
+          filters[
+            'identification'
+          ] = this.formRegisterUser.controls.payment_information[
+            'controls'
+          ].document.value;
+        }
 
-    this.assistant_control
-      .get('country')
-      .setValue(user.country?.toString().toUpperCase());
-    // this.assistant_control.get('country').disable();
-    this.assistant_control.get('id').setValue(user.id);
-    this.assistant_control.get('language').setValue(user.language);
-    this.assistant_control.get('name').setValue(user.name.toLowerCase());
-    this.assistant_control
-      .get('last_name')
-      .setValue(user.last_name.toLowerCase());
-    this.assistant_control.get('email').setValue(user.email);
-    this.confirm_email.setValue(user.email);
-    this.assistant_control.get('gender').setValue(user.gender);
-    this.assistant_control.get('phone').setValue(user.phone);
-    this.assistant_control.get('identification').setValue(user.identification);
-    this.assistant_control.get('document_type').setValue(user.document_type);
-    this.cdr.detectChanges();
+        if (
+          this.formRegisterUser.controls.payment_information['controls'].email
+            .value
+        ) {
+          filters['email'] = this.formRegisterUser.controls.payment_information[
+            'controls'
+          ].email.value;
+        }
+
+        if (
+          this.formRegisterUser.controls.payment_information['controls'].country
+            .value
+        ) {
+          filters[
+            'country'
+          ] = this.formRegisterUser.controls.payment_information[
+            'controls'
+          ].country.value.name;
+        }
+
+        if (
+          this.formRegisterUser.controls.payment_information['controls']
+            .document_type.value
+        ) {
+          filters[
+            'document_type'
+          ] = this.formRegisterUser.controls.payment_information[
+            'controls'
+          ].document_type.value;
+        }
+      }
+    }
+    if (filters) {
+      this.userService.getUserInfo(filters).subscribe(
+        (user: any) => {
+          if (position != null) {
+            this.setUserData(user, position);
+          } else {
+            this.formRegisterUser.controls.payment_information[
+              'controls'
+            ].name.setValue(user.name);
+            this.formRegisterUser.controls.payment_information[
+              'controls'
+            ].last_name.setValue(user.last_name);
+            this.formRegisterUser.controls.payment_information[
+              'controls'
+            ].email.setValue(user.email);
+            this.formRegisterUser.controls.payment_information[
+              'controls'
+            ].document.setValue(user.identification);
+            this.formRegisterUser.controls.payment_information[
+              'controls'
+            ].document_type.setValue(user.document_type);
+            let searchCountry = this.countries.filter(
+              (x) => x.name === user.country
+            );
+            if (searchCountry && searchCountry.length > 0) {
+              this.formRegisterUser.controls.payment_information[
+                'controls'
+              ].country.setValue(searchCountry[0]);
+            }
+          }
+        },
+        (err) => {
+          Swal.fire(
+            '',
+            err
+              ? err
+              : 'Ocurrió un error, intenta buscando con otros parámetros.',
+            'warning'
+          );
+          throw err;
+        }
+      );
+    }
   }
 
-  //VALIDAMOS LOS NUMEROS DE UN INPUT
-  validateNumber(e) {
+  setUserData(user: any, position: number): void {
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].church.setValue({ id: user.church_id });
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].type_church.setValue(user.type_church);
+
+    switch (user?.type_church?.toString().toUpperCase()) {
+      case 'MCI':
+        this.formRegisterUser.controls.users['controls'][
+          position
+        ].controls.assistant['controls'].network.setValue(user.network);
+        this.getPastors(user.pastor_code, position, user);
+        this.getLeaders(position, { user_code: user.leader_code }, user);
+        this.getChurchById(user.church_id, position);
+        break;
+
+      case 'OT':
+      case 'G12': {
+        this.formRegisterUser.controls.users['controls'][
+          position
+        ].controls.assistant['controls'].name_church.setValue(user.name_church);
+        this.formRegisterUser.controls.users['controls'][
+          position
+        ].controls.assistant['controls'].name_pastor.setValue(user.name_pastor);
+        break;
+      }
+    }
+
+    let searchCountry = this.countries.filter((x) => x.name === user.country);
+    if (searchCountry && searchCountry.length > 0) {
+      this.formRegisterUser.controls.users['controls'][
+        position
+      ].controls.assistant['controls'].country.setValue(searchCountry[0]);
+    }
+
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].email.setValue(user.email);
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].email_confirmation.setValue(user.email);
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].id.setValue(user.id);
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].gender.setValue(user.gender);
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].document_type.setValue(user.document_type);
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].identification.setValue(
+      user.identification
+    );
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].name.setValue(user.name);
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].last_name.setValue(user.last_name);
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].phone.setValue(user.phone);
+    this.formRegisterUser.controls.users['controls'][
+      position
+    ].controls.assistant['controls'].pastor.setValue(user.pastor_code);
+  }
+
+  objectComparisonFunction(option: any, value: any): boolean {
+    return option.id === value?.id;
+  }
+
+  private _filter(value: any, array: string): string[] {
+    const filterValue = this._normalizeValue(value, array);
+    let fileterdData = this[array].filter((option) =>
+      this._normalizeValue(option, array).includes(filterValue)
+    );
+    if (fileterdData.length > 0) {
+      return fileterdData;
+    } else {
+      return this[array];
+    }
+  }
+
+  private _normalizeValue(value: any, array: any): string {
+    if (value) {
+      if (typeof value === 'object') {
+        if (array === 'countries') {
+          return value.name.toLowerCase().replace(/\s/g, '');
+        }
+      } else {
+        return value.toLowerCase().replace(/\s/g, '');
+      }
+    }
+  }
+
+  validateNumber(e: any) {
     if (!e.key.match(/[0-9]/i)) {
       e.preventDefault();
     }
   }
 
-  resetMinisterialInfo(reset_type_church?: boolean) {
-    //REINICIAMOS LA INFORMACION MINISTERIAL DE TIPO MCI
-    if (reset_type_church) {
-      this.assistant_control.get('type_church').reset();
+  displayFn(data: any) {
+    return data ? data.name : '';
+  }
+
+  onSubmit(): void {
+    if (this.formRegisterUser.invalid) {
+      Swal.fire('Asegurate de llenar el formulario correctamente.', '', 'info');
+      return;
     }
-    this.assistant_control.get('network').reset();
-    this.assistant_control.get('church').reset();
-    this.assistant_control.get('pastor').reset();
-    this.assistant_control.get('leader').reset();
-    this.pastors = [];
-    this.churchs = [];
-    this.leaders = [];
 
-    //REINICIAMOS LA INFORMACION DE IGLESIAS NO MCI
-    this.assistant_control.get('name_pastor').reset();
-    this.assistant_control.get('name_church').reset();
-  }
-  //CONTROLES DEL USUARIO
-  get assistant_control() {
-    return this.register_user.get('assistant');
-  }
+    Swal.fire({
+      title: '¿Deseas continuar con el registro?',
+      text: `Estás registrando (${
+        this.users().controls.length
+      }) usuarios y el monto total a pagar es: ${
+        this.formRegisterUser.controls.payment_information['controls'].currency
+          .value === 'COP'
+          ? this.totalPrices.total_price_cop
+          : this.totalPrices.total_price_usd
+      }`,
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      let payload = insertUsers(
+        this.formRegisterUser.getRawValue(),
+        this.totalPrices,
+        this.box
+      );
 
-  //CONTROLES DEL EVENTO
-  get event_information_controls() {
-    return this.register_user.get('event_information');
-  }
-
-  get event_information_value() {
-    return this.register_user.get('event_information').value;
-  }
-
-  // VALORES DEL FORMULARIO
-  get assistant_value() {
-    return this.assistant_control.value;
-  }
-
-  get payment_information() {
-    return this.register_user.get('payment_information');
-  }
-
-  get payment_information_value() {
-    return this.register_user.get('payment_information').value;
+      if (result.isConfirmed) {
+        this.isLoading = true;
+        this.boxService.registerUsers({ ...payload }).subscribe(
+          (res: any) => {
+            Swal.fire(
+              'El usuario ha sido registrado correctamente.',
+              `Con la referencia ${res.ref}`,
+              'success'
+            ).then(() => {
+              this._makePdfService.createPdf(res.ref, this.box);
+              this.modal.close();
+              this.isLoading = false;
+            });
+          },
+          (err) => {
+            this.isLoading = false;
+            Swal.fire(
+              err ? err : 'No se pudo registrar el usuario. Intenta de nuevo.',
+              '',
+              'error'
+            );
+            throw err;
+          }
+        );
+      }
+    });
   }
 }

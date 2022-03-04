@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { BoxService } from './Boxes.service';
 import * as moment from 'moment';
 import * as pdfMake from 'pdfmake/build/pdfmake';
@@ -211,7 +210,8 @@ export class MakePdfService {
           style: 'parrafo',
           columns: [
             {
-              text: 'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
+              text:
+                'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
               style: 'bold',
             },
           ],
@@ -250,11 +250,13 @@ export class MakePdfService {
   //PDF DE USUARIOS DE COMPRAS NO MASIVAS
   private async createPdfNotMassive(transactions, box) {
     let donor;
+
     transactions.map((tr) => {
       if (!tr.isAssistant) {
         donor = tr;
       }
     });
+
     const table = await this.createUsersTableNotMassive(transactions);
 
     //AGREGAMOS RESPUESTA A LA TABLA DE USUARIOS
@@ -402,7 +404,8 @@ export class MakePdfService {
           style: 'parrafo',
           columns: [
             {
-              text: 'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
+              text:
+                'Nota: CON ESTE RECIBO PODRÁS REALIZAR CORRECCIONES O VALIDACIONES',
               style: 'bold',
             },
           ],
@@ -414,32 +417,38 @@ export class MakePdfService {
 
   //CREAMOS EL PDF DE USUARIOS NO MASIVOS
   private createUsersTableNotMassive(transactions) {
+    console.log(transactions);
     let table = [
       [
         { text: 'DOCUMENTO', style: 'tableHeader' },
         { text: 'NOMBRES Y APELLIDOS', style: 'tableHeader' },
         { text: 'NOMBRE DEL EVENTO', style: 'tableHeader' },
         { text: 'PASTOR PRINCIPAL', style: 'tableHeader' },
-        { text: 'VALOR', style: 'tableHeader' },
+        { text: 'TRADUCTOR', style: 'tableHeader' },
+        { text: 'VALOR EVENTO', style: 'tableHeader' },
       ],
     ];
 
     transactions.map((tr) => {
-      console.log('tenemos pastor', tr);
+      console.log(tr);
       if (tr.isAssistant) {
         table.push([
-          tr.user.identification ? tr.user.identification : 'INTERNACIONAL',
-          tr.user.name && tr.user.last_name
-            ? tr.user.name.toString().toUpperCase() +
-              ' ' +
-              tr.user.last_name.toString().toUpperCase()
+          tr.user?.identification ? tr.user.identification : 'INTERNACIONAL',
+          tr.user?.name && tr.user?.last_name
+            ? `${tr.user.name
+                .toString()
+                .toUpperCase()} ${tr.user.last_name.toString().toUpperCase()}`
             : '',
           tr.donation.name ? tr.donation.name.toString().toUpperCase() : '',
-          (tr.pastor.name ? tr.pastor.name.toString().toUpperCase() : '') +
-            ' ' +
-            (tr.pastor.last_name
-              ? tr?.pastor?.last_name.toString().toUpperCase()
-              : ''),
+          tr.user?.type_church?.toString().toUpperCase() === 'MCI'
+            ? `${tr.pastor?.name} ${tr.pastor?.last_name}`
+            : tr.user?.name_pastor,
+          tr.is_translator
+            ? this.formatPrice(
+                tr.transaction.currency.toString().toLowerCase(),
+                tr.price_translator
+              )
+            : 'N/A',
           tr.cut.prices[tr.transaction.currency.toString().toLowerCase()]
             ? this.formatPrice(
                 tr.transaction.currency.toString().toLowerCase(),
