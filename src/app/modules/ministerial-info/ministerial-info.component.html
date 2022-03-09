@@ -30,23 +30,13 @@
           <div class="m-x2 mt-2">
             <div class="row m-0">
               <div
-                class="
-                  col-xl-12 col-sm-12
-                  bg-light-success
-                  rounded-xl
-                  d-flex
-                  justify-content-center
-                  align-items-center
-                  p-3
-                "
+                class="col-xl-12 col-sm-12 bg-light-success rounded-xl d-flex justify-content-center align-items-center p-3"
               >
                 <a class="text-success font-weight-bold font-size-h6">
                   PASTOR /
                   {{
-                    user?.pastor?.name
-                      ? user?.pastor?.name
-                      : "" + " " + user?.pastor?.last_name
-                      ? user?.pastor?.last_name
+                    user?.pastor?.last_name
+                      ? user?.pastor?.name + " " + user?.pastor?.last_name
                       : ("" | titlecase)
                   }}
                 </a>
@@ -59,23 +49,13 @@
           <div class="m-x2 mt-2">
             <div class="row m-0">
               <div
-                class="
-                  col-xl-12 col-sm-12
-                  bg-light-success
-                  rounded-xl
-                  d-flex
-                  justify-content-center
-                  align-items-center
-                  p-3
-                "
+                class="col-xl-12 col-sm-12 bg-light-success rounded-xl d-flex justify-content-center align-items-center p-3"
               >
                 <a class="text-success font-weight-bold font-size-h6">
                   LIDER /
                   {{
-                    user?.leader?.name
-                      ? user?.leader?.name
-                      : "" + " " + user?.leader?.last_name
-                      ? user?.leader?.last_name
+                    user?.leader?.last_name
+                      ? user?.leader?.name + " " + user?.leader?.last_name
                       : ("" | titlecase)
                   }}
                 </a>
@@ -114,10 +94,8 @@
           <h4 class="h4">
             {{ user?.church?.name | titlecase }} /
             {{
-              user?.pastor?.name
-                ? user?.pastor?.name
-                : "" + " " + user?.pastor?.last_name
-                ? user?.pastor?.last_name
+              user?.pastor?.last_name
+                ? user?.pastor?.name + " " + user?.pastor?.last_name
                 : (" " | titlecase)
             }}
           </h4>
@@ -127,16 +105,21 @@
       <div class="row">
         <div class="col-sm-6 col-12 center pt-2">
           <div class="cont-count p-3">
-            <h5 class="center">Ministerios</h5>
-            <h3 class="center">{{ all_ministries }}</h3>
-          </div>
-        </div>
-        <div class="col-sm-6 col-12 center pt-2">
-          <div class="cont-count p-3">
             <h5 class="center">Lideres</h5>
             <h3 class="center">{{ leaders.length }}</h3>
           </div>
         </div>
+
+        <div class="col-sm-6 col-12 center pt-2">
+          <div class="cont-count p-3">
+            <h5 class="center">Ministerios</h5>
+            <h3 class="center">{{ all_ministries }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-13">
+        <app-main-network [leaders]="leaders"></app-main-network>
       </div>
 
       <div class="mt-10">
@@ -149,9 +132,6 @@
           [loader]="loader"
         >
         </app-ministry>
-      </div>
-      <div class="mt-13">
-        <app-main-network [leaders]="leaders"></app-main-network>
       </div>
     </div>
   </div>

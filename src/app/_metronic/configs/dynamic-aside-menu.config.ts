@@ -188,7 +188,7 @@ export let DynamicAsideMenuConfigOriginal = {
           bullet: 'dot',
           code: 'CJ1300',
           page: 'boxes/reports',
-        }
+        },
       ],
     },
 
@@ -199,9 +199,15 @@ export let DynamicAsideMenuConfigOriginal = {
       show: false,
       page: 'emails',
       code: 'EML1000',
-      
     },
-
+    {
+      title: 'Usuarios',
+      bullet: 'dot',
+      code: 'MIU1000',
+      svg: './assets/media/svg/icons/Home/Earth.svg',
+      page: '/ministerial-info',
+      show: false,
+    },
     // {
     //   title: 'Mi perfil',
     //   root: true,
@@ -303,13 +309,5 @@ export let DynamicAsideMenuConfigOriginal = {
         },
       ],
     },
-    // {
-    //   title: 'Usuarios',
-    //   root: true,
-    //   code: "EVT000",
-    //   alignment: 'left',
-    //   page: '/ministerial-info',
-    //   show: false,
-    // }
   ],
 };

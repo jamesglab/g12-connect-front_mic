@@ -19,7 +19,7 @@ export class MinisterialInfoComponent implements OnInit {
   constructor(
     private _userService: UserService,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.getProfileInfo();
@@ -29,6 +29,7 @@ export class MinisterialInfoComponent implements OnInit {
 
   getProfileInfo() {
     this._userService.getProfile().subscribe((res) => {
+      console.log('response', res);
       this.user = res;
       this.cdr.detectChanges();
     });
@@ -69,7 +70,7 @@ export class MinisterialInfoComponent implements OnInit {
       .filterMinistry({
         page: filter.paginator ? filter.paginator.pageIndex + 1 : 1,
         per_page: filter.paginator ? filter.paginator.pageSize : 10,
-        filter: filter.filter
+        filter: filter.filter,
       })
       .subscribe((res: any) => {
         this.loader = false;
