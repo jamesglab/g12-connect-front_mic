@@ -7,6 +7,8 @@ import { UpdatePasswordComponent } from './components/update-password/update-pas
 import { COUNTRIES } from 'src/app/_helpers/fake/fake-db/countries';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { StudyLevel } from 'src/app/_helpers/objects/study.level';
+import { Professions } from 'src/app/_helpers/objects/profession';
 
 @Component({
   selector: 'app-profile',
@@ -51,13 +53,16 @@ export class ProfileComponent implements OnInit {
   public pastors: any[];
   public places: any[];
   public countries: any[] = COUNTRIES;
+  public studyLevel: any[] = StudyLevel;
+  public professions: any[] = Professions;
+
   constructor(
     private _storageService: StorageService,
     private userService: UserService,
     private modalService: NgbModal,
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.getProfileUser();
@@ -68,7 +73,6 @@ export class ProfileComponent implements OnInit {
     this.userService.getProfile().subscribe((res) => {
       this.user = res;
       this.buildForm(res);
-      
     });
   }
 
@@ -84,6 +88,9 @@ export class ProfileComponent implements OnInit {
         gender: [user.gender],
         phone: [user.phone],
         birth_date: [new Date(user.birth_date)],
+        studies_level: [user?.studies_level],
+        profession: [user?.profession],
+        current_occupation: [user?.current_occupation],
       }),
       contact_information: this.fb.group({
         address: [user.address],
@@ -115,8 +122,6 @@ export class ProfileComponent implements OnInit {
       }),
     });
 
-
-
     // SI LA IGLESIA DEL USUARIO ES DE TIPO MCI RENDERIZAMOS LAS IGLESIAS MINISTERIALES PERTENECIENTES A MCI
     if (this?.user?.type_church?.toUpperCase() == 'MCI') {
       this.getPlaces(true);
@@ -134,7 +139,7 @@ export class ProfileComponent implements OnInit {
       keyboard: true,
       centered: true,
     });
-    // MODAL.componentInstance.goItem = element;
+    MODAL.componentInstance.currentUser = this.user;
     MODAL.result.then(
       (data) => {
         if (data == 'success') {
@@ -240,11 +245,20 @@ export class ProfileComponent implements OnInit {
 
   // CREAMOS EL OBJETO DE LA INFORMACION MINISTERIAL QUE EL USUARIO VA A ACTUALIZAR
   getMinisterialInfo() {
-    const { type_church, leader, headquarter, name_pastor, name_church } =
-      this.ministerialInfo;
+    const {
+      type_church,
+      leader,
+      headquarter,
+      name_pastor,
+      name_church,
+    } = this.ministerialInfo;
     if (type_church == 88) {
-
-      if (leader && headquarter && this.pastors.length != 0 && this.leaders.length != 0) {
+      if (
+        leader &&
+        headquarter &&
+        this.pastors.length != 0 &&
+        this.leaders.length != 0
+      ) {
         return {
           leader_id: leader.id,
           type_church: this.churchTypes.find(
@@ -255,7 +269,6 @@ export class ProfileComponent implements OnInit {
           name_church: null,
         };
       }
-
     } else {
       if (name_pastor && name_church) {
         return {
@@ -268,7 +281,6 @@ export class ProfileComponent implements OnInit {
           name_church: name_church,
         };
       }
-
     }
   }
 
@@ -276,29 +288,36 @@ export class ProfileComponent implements OnInit {
     this.isLoading = true;
     if (this.getMinisterialInfo()) {
       this.userService
-        .updateProfile(
-          {
-            ...this.editUserForm.getRawValue().user,
-            ...this.editUserForm.getRawValue().contact_information,
-            ...this.getMinisterialInfo(),
+        .updateProfile({
+          ...this.editUserForm.getRawValue().user,
+          ...this.editUserForm.getRawValue().contact_information,
+          ...this.getMinisterialInfo(),
+        })
+        .subscribe(
+          (res) => {
+            if (res) {
+              Swal.fire('Datos Actualizados', 'usuario actualizado', 'success');
+            }
+            this.isLoading = false;
+            this.cdr.detectChanges();
+          },
+          (err) => {
+            this.isLoading = false;
+            Swal.fire(
+              'No se actulizo ',
+              'Por favor inteta de nuevo mas tarde ',
+              'error'
+            );
+            this.cdr.detectChanges();
           }
-        )
-        .subscribe((res) => {
-          if (res) {
-            Swal.fire('Datos Actualizados', 'usuario actualizado', 'success');
-          }
-          this.isLoading = false;
-          this.cdr.detectChanges()
-
-        }, err => {
-          this.isLoading = false;
-          Swal.fire('No se actulizo ', 'Por favor inteta de nuevo mas tarde ', 'error');
-          this.cdr.detectChanges()
-        });
+        );
     } else {
       this.isLoading = false;
-      Swal.fire('Datos incompletos', 'revisa la informacion ministerial', 'warning')
+      Swal.fire(
+        'Datos incompletos',
+        'revisa la informacion ministerial',
+        'warning'
+      );
     }
-
   }
 }
