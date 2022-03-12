@@ -52,7 +52,7 @@ export const MY_FORMATS = {
 })
 export class EventReportsComponent implements OnInit {
   public isLoading: boolean = false;
-  // public date = new FormControl(moment());
+  public date = new FormControl(moment());
   public maxDate: Date;
   public campaignOne: FormGroup;
   public campaignTwo: FormGroup;
