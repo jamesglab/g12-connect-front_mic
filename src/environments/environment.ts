@@ -21,4 +21,5 @@ export const environment = {
   url_response: 'https://dev.mci12.com/g12events/proof-payment',
   reports_lamda:
     'https://1cd3-2800-484-3690-6500-197e-9881-56e6-162.ngrok.io/dev',
+  url_change_password: 'https://dev.mci12.com/auth/change-password',
 };

@@ -24,13 +24,13 @@ export const environment = {
     users: 'https://api.g12connect.com/api/v2/users',
     payments: 'https://api.g12connect.com/api/v2/payments',
     paymentsv3: 'https://api.g12connect.com/api/v3/payments',
-    reports : 'https://api.g12connect.com/api/v2/reports'
+    reports: 'https://api.g12connect.com/api/v2/reports',
   },
-  SECRETENCRYPT:"G12jk5FQg6bu8zWSECURITY#wB9jPyURESPONSE",
+  SECRETENCRYPT: 'G12jk5FQg6bu8zWSECURITY#wB9jPyURESPONSE',
   url_response: 'https://app.mci12.com/g12events/proof-payment',
   reports_lamda:
-  'https://f492-2800-484-3690-6500-4994-1ecd-317b-5594.ngrok.io/dev',
-
+    'https://f492-2800-484-3690-6500-4994-1ecd-317b-5594.ngrok.io/dev',
+  url_change_password: 'https://mci12.com/auth/change-password',
 };
 
 /*
@@ -41,4 +41,3 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
- 
