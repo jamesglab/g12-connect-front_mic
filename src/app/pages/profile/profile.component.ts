@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { StudyLevel } from 'src/app/_helpers/objects/study.level';
 import { Professions } from 'src/app/_helpers/objects/profession';
+import { EditProfileMock } from './mocks/Edit.Profile.Mock';
 
 @Component({
   selector: 'app-profile',
@@ -78,6 +79,9 @@ export class ProfileComponent implements OnInit {
 
   // RENDERIZMOS LA INFORMACION DEL USUARIO
   buildForm(user) {
+    let studyFilter = this.studyLevel.filter(
+      (x) => x.value === user?.studies_level
+    );
     this.editUserForm = this.fb.group({
       // RENDERIZAMOS LA INFORMACION PERSONAL PARA ACCEDER POR EL FORMGROUPNAME EN EL FORMULARIO REACTIVO
       user: this.fb.group({
@@ -88,46 +92,47 @@ export class ProfileComponent implements OnInit {
         gender: [user.gender],
         phone: [user.phone],
         birth_date: [new Date(user.birth_date)],
-        studies_level: [user?.studies_level],
+        studies_level: [studyFilter.length > 0 ? studyFilter[0] : null],
         profession: [user?.profession],
         current_occupation: [user?.current_occupation],
+        other_study: [user?.other_study],
       }),
       contact_information: this.fb.group({
         address: [user.address],
         phone: [user.phone],
         email: [{ value: user.email, disabled: true }],
       }),
-      ministerialInfo: this.fb.group({
-        country: [user.country.toLowerCase()], //RENDERIZAMOS EL PAIS QUE SELECCIONO
-        network: [user.network], //RENDERIZAMOS LA INFORMACION DE LA RED A LA QUE PERTENECE
-        leader: [],
-        headquarter: [],
-        pastor: [],
-        type_church: [
-          this.churchTypes.find(
-            (tCh) =>
-              tCh.code.toUpperCase() == this?.user?.type_church?.toUpperCase()
-          )?.idDetailMaster,
-        ], //VALIDAMOS EL TIPO DE IGLESIA PARA RENDERIZAS LA INFORMACION MINISTERIAL
-        name_pastor: [
-          this?.user?.type_church?.toUpperCase() != 'MCI'
-            ? user?.name_pastor
-            : null,
-        ],
-        name_church: [
-          this?.user?.type_church?.toUpperCase() != 'MCI'
-            ? user?.name_church
-            : null,
-        ],
-      }),
+      // ministerialInfo: this.fb.group({
+      //   country: [user.country.toLowerCase()], //RENDERIZAMOS EL PAIS QUE SELECCIONO
+      //   network: [user.network], //RENDERIZAMOS LA INFORMACION DE LA RED A LA QUE PERTENECE
+      //   leader: [],
+      //   headquarter: [],
+      //   pastor: [],
+      //   type_church: [
+      //     this.churchTypes.find(
+      //       (tCh) =>
+      //         tCh.code.toUpperCase() == this?.user?.type_church?.toUpperCase()
+      //     )?.idDetailMaster,
+      //   ], //VALIDAMOS EL TIPO DE IGLESIA PARA RENDERIZAS LA INFORMACION MINISTERIAL
+      //   name_pastor: [
+      //     this?.user?.type_church?.toUpperCase() != 'MCI'
+      //       ? user?.name_pastor
+      //       : null,
+      //   ],
+      //   name_church: [
+      //     this?.user?.type_church?.toUpperCase() != 'MCI'
+      //       ? user?.name_church
+      //       : null,
+      //   ],
+      // }),
     });
+    this.cdr.detectChanges();
 
     // SI LA IGLESIA DEL USUARIO ES DE TIPO MCI RENDERIZAMOS LAS IGLESIAS MINISTERIALES PERTENECIENTES A MCI
-    if (this?.user?.type_church?.toUpperCase() == 'MCI') {
-      this.getPlaces(true);
-    } else {
-      this.cdr.detectChanges();
-    }
+    // if (this?.user?.type_church?.toUpperCase() == 'MCI') {
+    //   this.getPlaces(true);
+    // } else {
+    // }
   }
 
   // ABRIMOS EL MODAL PARA ACTUALIZAR LA CONTRASEÑA DEL USUARIO
@@ -285,39 +290,42 @@ export class ProfileComponent implements OnInit {
   }
 
   updateUser() {
-    this.isLoading = true;
-    if (this.getMinisterialInfo()) {
-      this.userService
-        .updateProfile({
-          ...this.editUserForm.getRawValue().user,
-          ...this.editUserForm.getRawValue().contact_information,
-          ...this.getMinisterialInfo(),
-        })
-        .subscribe(
-          (res) => {
-            if (res) {
-              Swal.fire('Datos Actualizados', 'usuario actualizado', 'success');
-            }
-            this.isLoading = false;
-            this.cdr.detectChanges();
-          },
-          (err) => {
-            this.isLoading = false;
-            Swal.fire(
-              'No se actulizo ',
-              'Por favor inteta de nuevo mas tarde ',
-              'error'
-            );
-            this.cdr.detectChanges();
-          }
-        );
-    } else {
-      this.isLoading = false;
+    if (this.editUserForm.invalid) {
       Swal.fire(
         'Datos incompletos',
         'revisa la informacion ministerial',
         'warning'
       );
     }
+    this.isLoading = true;
+    // if (this.getMinisterialInfo()) {
+    this.userService
+      .updateProfile(
+        EditProfileMock(
+          this.editUserForm.getRawValue().user,
+          this.editUserForm.getRawValue().contact_information
+        )
+      )
+      .subscribe(
+        (res) => {
+          if (res) {
+            Swal.fire('Datos Actualizados', 'usuario actualizado', 'success');
+          }
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        },
+        (err) => {
+          this.isLoading = false;
+          Swal.fire(
+            'No se actulizo ',
+            'Por favor inteta de nuevo mas tarde ',
+            'error'
+          );
+          this.cdr.detectChanges();
+        }
+      );
+    // } else {
+
+    // }
   }
 }

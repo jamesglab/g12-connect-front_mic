@@ -77,7 +77,7 @@
                     <mat-select type="select" formControlName="studies_level">
                       <mat-option
                         *ngFor="let study of studyLevel"
-                        [value]="study.value"
+                        [value]="study"
                         >{{ study.name }}</mat-option
                       >
                     </mat-select>
@@ -125,6 +125,31 @@
                     </mat-datepicker-toggle>
                     <mat-datepicker #bornDate disabled="false"></mat-datepicker>
                   </mat-form-field>
+
+                  <ng-container
+                    *ngIf="
+                      editUserForm.controls.user['controls'].studies_level.value
+                        ?.addValue
+                    "
+                  >
+                    <mat-form-field
+                      class="example-full-width"
+                      appearance="fill"
+                    >
+                      <mat-label
+                        >Tipo de
+                        {{
+                          editUserForm.controls.user["controls"].studies_level
+                            .value.name
+                        }}</mat-label
+                      >
+                      <input
+                        matInput
+                        autocomplete="off"
+                        formControlName="other_study"
+                      />
+                    </mat-form-field>
+                  </ng-container>
 
                   <mat-form-field appearance="fill" class="w-100">
                     <mat-label>Profesión</mat-label>

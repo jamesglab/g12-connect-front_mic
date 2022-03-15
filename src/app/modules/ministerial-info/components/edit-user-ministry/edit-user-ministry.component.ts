@@ -1,5 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+} from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { StorageService } from 'src/app/modules/auth/_services/storage.service';
@@ -9,6 +14,7 @@ import { StudyLevel } from 'src/app/_helpers/objects/study.level';
 
 import Swal from 'sweetalert2';
 import { Professions } from 'src/app/_helpers/objects/profession';
+import { EditUserMock } from './mocks/edit-user-mock';
 
 @Component({
   selector: 'app-edit-user-ministry',
@@ -55,6 +61,7 @@ export class EditUserMinistryComponent implements OnInit {
   public countries: any[] = COUNTRIES;
   public studyLevel: any[] = StudyLevel;
   public professions: any[] = Professions;
+
   constructor(
     private _storageService: StorageService,
     private userService: UserService,
@@ -65,6 +72,7 @@ export class EditUserMinistryComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm(this.user);
+    console.log(this.editUserForm);
   }
 
   // CONSULTAMOS LA INFORMACION DEL USUARIO
@@ -77,9 +85,11 @@ export class EditUserMinistryComponent implements OnInit {
 
   // RENDERIZMOS LA INFORMACION DEL USUARIO
   buildForm(user) {
+    let studyFilter = this.studyLevel.filter(
+      (x) => x.value === user?.studies_level
+    );
     this.editUserForm = this.fb.group({
       // RENDERIZAMOS LA INFORMACION PERSONAL PARA ACCEDER POR EL FORMGROUPNAME EN EL FORMULARIO REACTIVO
-
       user: this.fb.group({
         id: [user?.id],
         verify: [user?.verify],
@@ -91,9 +101,10 @@ export class EditUserMinistryComponent implements OnInit {
         gender: [user?.gender],
         phone: [user?.phone],
         birth_date: [new Date(user?.birth_date)],
-        studies_level: [user?.studies_level],
+        studies_level: [studyFilter.length > 0 ? studyFilter[0] : null],
         profession: [user?.profession],
         current_occupation: [user?.current_occupation],
+        other_study: [user?.other_study],
       }),
       contact_information: this.fb.group({
         address: [user?.address],
@@ -125,13 +136,13 @@ export class EditUserMinistryComponent implements OnInit {
       //   ],
       // }),
     });
-
-    // SI LA IGLESIA DEL USUARIO ES DE TIPO MCI RENDERIZAMOS LAS IGLESIAS MINISTERIALES PERTENECIENTES A MCI
-    if (this?.user?.type_church?.toUpperCase() == 'MCI') {
-      this.getPlaces(true);
-    } else {
-      this.cdr.detectChanges();
-    }
+    console.log(studyFilter);
+    this.cdr.detectChanges();
+    // SI LA IGLESIA DEL USUARIO ES DE TIPs
+    // if (this?.user?.type_church?.toUpperCase() == 'MCI') {
+    //   this.getPlaces(true);
+    // } else {
+    // }
   }
 
   // BUSCAMOS LAS IGLESIAS MCI NACIONALES O INTERNACIONES
@@ -275,30 +286,28 @@ export class EditUserMinistryComponent implements OnInit {
       );
     }
     this.isLoading = true;
-    this.userService
-      .updateUserByPastor({
-        ...this.editUserForm.getRawValue().user,
-        ...this.editUserForm.getRawValue().contact_information,
-        // ...this.getMinisterialInfo(),
-      })
-      .subscribe(
-        (res) => {
-          if (res) {
-            Swal.fire('Datos Actualizados', 'usuario actualizado', 'success');
-            this.modal.close(res);
-          }
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        },
-        (err) => {
-          this.isLoading = false;
-          Swal.fire(
-            'No se actulizo ',
-            'Por favor inteta de nuevo mas tarde ',
-            'error'
-          );
-          this.cdr.detectChanges();
+    let payload = EditUserMock(
+      this.editUserForm.getRawValue().user,
+      this.editUserForm.getRawValue().contact_information
+    );
+    this.userService.updateUserByPastor(payload).subscribe(
+      (res) => {
+        if (res) {
+          Swal.fire('Datos Actualizados', 'usuario actualizado', 'success');
+          this.modal.close(res);
         }
-      );
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      (err) => {
+        this.isLoading = false;
+        Swal.fire(
+          'No se actulizo ',
+          'Por favor inteta de nuevo mas tarde ',
+          'error'
+        );
+        this.cdr.detectChanges();
+      }
+    );
   }
 }

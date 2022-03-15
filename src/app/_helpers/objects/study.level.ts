@@ -2,29 +2,41 @@ export const StudyLevel = [
   {
     value: 'Bachiller',
     name: 'Bachiller',
-  },
-  {
-    value: 'Tecnico',
-    name: 'Tecnico',
-  },
-  {
-    value: 'Tecgnológo',
-    name: 'Tecgnológo',
-  },
-  {
-    value: 'Profesional',
-    name: 'Profesional',
-  },
-  {
-    value: 'Especialización',
-    name: 'Especialización',
+    addValue: false,
   },
   {
     value: 'Diplomado',
     name: 'Diplomado',
+    addValue: true,
+  },
+  {
+    value: 'Especialización',
+    name: 'Especialización',
+    addValue: true,
   },
   {
     value: 'Maestria',
     name: 'Maestria',
+    addValue: true,
+  },
+  {
+    value: 'Profesional',
+    name: 'Profesional',
+    addValue: false,
+  },
+  {
+    value: 'Tecnico',
+    name: 'Tecnico',
+    addValue: false,
+  },
+  {
+    value: 'Tecgnológo',
+    name: 'Tecgnológo',
+    addValue: false,
+  },
+  {
+    value: 'Ninguno',
+    name: 'Ninguno',
+    addValue: false,
   },
 ];

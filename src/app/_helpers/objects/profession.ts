@@ -1,78 +1,92 @@
 export const Professions = [
   {
-    value: 'Ingeniería de sistemas',
-    name: 'Ingeniería de sistemas',
-  },
-  {
-    value: 'Contador',
-    name: 'Contador',
-  },
-  {
-    value: 'Ingeniería industrial',
-    name: 'Ingeniería industrial',
-  },
-  {
-    value: 'Psicología',
-    name: 'Psicología',
+    value: 'Abogado',
+    name: 'Abogado',
+    addValue: false,
   },
   {
     value: 'Adminitrador de Empresas',
     name: 'Adminitrador de Empresas',
-  },
-  {
-    value: 'Ingeniería Civil',
-    name: 'Ingeniería Civil',
-  },
-  {
-    value: 'Medico',
-    name: 'Medico',
-  },
-  {
-    value: 'Fisioterapeuta',
-    name: 'Fisioterapeuta',
-  },
-  {
-    value: 'Odontologo',
-    name: 'Odontologo',
-  },
-  {
-    value: 'Ingeniería ambiental',
-    name: 'Ingeniería ambiental',
-  },
-  {
-    value: 'Ingeniería Civil',
-    name: 'Ingeniería Civil',
-  },
-  {
-    value: 'Enfermería',
-    name: 'Enfermería',
-  },
-  {
-    value: 'Docente',
-    name: 'Docente',
-  },
-  {
-    value: 'Veterinaria',
-    name: 'Veterinaria',
-  },
-  {
-    value: 'Economia',
-    name: 'Economia',
-  },
-  {
-    value: 'Abogado',
-    name: 'Abogado',
+    addValue: false,
   },
   {
     value: 'Arquitecto',
     name: 'Arquitecto',
+    addValue: false,
+  },
+  {
+    value: 'Contador',
+    name: 'Contador',
+    addValue: false,
   },
   {
     value: 'Diseñador Grafico',
     name: 'Diseñador Grafico',
+    addValue: false,
+  },
+  {
+    value: 'Docente',
+    name: 'Docente',
+    addValue: false,
+  },
+  {
+    value: 'Economia',
+    name: 'Economia',
+    addValue: false,
+  },
+  {
+    value: 'Enfermería',
+    name: 'Enfermería',
+    addValue: false,
+  },
+  {
+    value: 'Fisioterapeuta',
+    name: 'Fisioterapeuta',
+    addValue: false,
+  },
+  {
+    value: 'Ingeniería Ambiental',
+    name: 'Ingeniería Ambiental',
+    addValue: false,
+  },
+  {
+    value: 'Ingeniería Civil',
+    name: 'Ingeniería Civil',
+    addValue: false,
+  },
+  {
+    value: 'Ingeniería de Sistemas',
+    name: 'Ingeniería de Sistemas',
+    addValue: false,
+  },
+  {
+    value: 'Ingeniería Industrial',
+    name: 'Ingeniería Industrial',
+    addValue: false,
+  },
+  {
+    value: 'Medico',
+    name: 'Medico',
+    addValue: false,
+  },
+  {
+    value: 'Odontologo',
+    name: 'Odontologo',
+    addValue: false,
+  },
+  {
+    value: 'Psicología',
+    name: 'Psicología',
+    addValue: false,
+  },
+  {
+    value: 'Veterinaria',
+    name: 'Veterinaria',
+    addValue: false,
   },
   {
     value: 'Otro',
     name: 'Otro',
+    addValue: false,
   },
 ];
