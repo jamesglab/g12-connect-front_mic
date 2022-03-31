@@ -55,7 +55,6 @@ export class AddEventComponent implements OnInit {
       name: [null, [Validators.required]],
       description: [null],
       image: [null],
-      massive_pay: [null],
       category: [[]],
       categorieAdd: [""],
       init_date: [],
@@ -69,6 +68,8 @@ export class AddEventComponent implements OnInit {
         cop: [""],
         usd: [""],
       }),
+      order_by: [null, [Validators.required]],
+      image_banner: [null, [Validators.required]],
       visibility: [null],
       limit: [null],
       location: [],
@@ -114,7 +115,6 @@ export class AddEventComponent implements OnInit {
           cut.description != ""
         ) {
           newCuts.push({
-            massive_pay: cut.massive_pay,
             name: cut.name,
             prices: { cop: cut.cop, usd: cut.usd != "" ? cut.usd : null },
             quantity: cut.quantity,
@@ -163,7 +163,6 @@ export class AddEventComponent implements OnInit {
               see_massive: cut.see_massive
             },
             description: cut.description,
-            massive_pay: cut.massive_pay,
           });
         } else {
           error = true;
@@ -191,7 +190,6 @@ export class AddEventComponent implements OnInit {
         price_group_usd: new FormControl(""),
         price_group_cop: new FormControl(""),
         date_finish: new FormControl(""),
-        massive_pay: new FormControl(""),
         quantity_register_max: new FormControl(1),
         quantity_register_min: new FormControl(1),
         description: new FormControl(""),

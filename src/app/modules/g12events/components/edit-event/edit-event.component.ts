@@ -71,6 +71,8 @@ export class EditEventComponent implements OnInit {
         }),
         visibility: [this.event.visibility[0]],
         limit: [this.event.limit],
+        order_by: [this.event.order_by || null, [Validators.required]],
+        image_banner: [this.event.image_banner || null, [Validators.required]],
         location: [],
         massive_pay: [this.event.massive_pay],
         status: [this.event.status],
@@ -418,8 +420,7 @@ export class EditEventComponent implements OnInit {
       var { translators } = this.editEventForm.getRawValue();
       let cop = translators.cop.replace('$', '').replace(',', '');
       let usd = translators.usd.replace('$', '').replace(',', '.');
-      transaction_info.translators = { cop, usd };
-
+      transaction_info.translators = { cop, usd };  
       const addEventSubscr = this.eventsService
         .update(
           { transaction_info, cuts, image: this.event.image, code_modify },
@@ -435,9 +436,10 @@ export class EditEventComponent implements OnInit {
             this.router.navigate(['g12events']);
           },
           (err) => {
+            console.log("ERROR", err)
             this.isLoading = false;
             Swal.fire(
-              err.error.error ? err.error.error : 'error inesperado',
+              err,
               '',
               'error'
             );

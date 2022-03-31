@@ -107,6 +107,16 @@
                 <input matInput autocomplete="off" formControlName="limit" />
               </mat-form-field>
 
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Orden para listar en G12 Eventos</mat-label>
+                <input matInput autocomplete="off" type="number" formControlName="order_by" />
+              </mat-form-field>
+
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Imagen Banner</mat-label>
+                <input matInput autocomplete="off" formControlName="image_banner" />
+              </mat-form-field>
+
               <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>Selecciona un rango para el evento </mat-label>
                 <mat-date-range-input [rangePicker]="picker" [max]="editEventForm.get('finish_date').value"
