@@ -72,7 +72,7 @@ export class EditEventComponent implements OnInit {
         visibility: [this.event.visibility[0]],
         limit: [this.event.limit],
         order_by: [this.event.order_by || null, [Validators.required]],
-        image_banner: [this.event.image_banner || null, [Validators.required]],
+        image_banner: [this.event.image_banner || null],
         location: [],
         massive_pay: [this.event.massive_pay],
         status: [this.event.status],

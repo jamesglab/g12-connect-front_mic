@@ -69,7 +69,7 @@ export class AddEventComponent implements OnInit {
         usd: [""],
       }),
       order_by: [null, [Validators.required]],
-      image_banner: [null, [Validators.required]],
+      image_banner: [null],
       visibility: [null],
       limit: [null],
       location: [],
