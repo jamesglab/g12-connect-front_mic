@@ -418,8 +418,8 @@ export class EditEventComponent implements OnInit {
       delete transaction_info.code_modify;
 
       var { translators } = this.editEventForm.getRawValue();
-      let cop = translators.cop.replace('$', '').replace(',', '');
-      let usd = translators.usd.replace('$', '').replace(',', '.');
+      let cop = translators?.cop?.replace('$', '').replace(',', '');
+      let usd = translators?.usd?.replace('$', '').replace(',', '.');
       transaction_info.translators = { cop, usd };  
       const addEventSubscr = this.eventsService
         .update(
